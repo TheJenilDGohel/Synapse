@@ -1,0 +1,39 @@
+node_modules/
+.npm-cache/
+dist/
+*.tsbuildinfo
+.localnest/
+.mcp.localnest.json
+.mcp.localnest.*.json
+.mcp.json
+localnest.config.json
+/CLAUDE.md
+/.claude/
+/.codex/
+
+# Tool artifacts — never belong in source tree
+.claude-flow/
+**/.claude-flow/
+
+# Build artifacts
+localnest-docs/build/
+/docs/
+*AUDIT-REPORT*.md
+*ACTION-PLAN*.md
+
+# Secrets and credentials (OSPS-BR-07.01)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.cert
+*.crt
+*.secret
+*_secret
+*_token
+*_password
+*.credentials
+.npmrc-private

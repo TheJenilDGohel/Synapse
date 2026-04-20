@@ -1,0 +1,1 @@
+{"nodes": [{"id": "sidebars", "label": "sidebars.ts", "file_type": "code", "source_file": "localnest-docs/sidebars.ts", "source_location": "L1"}], "edges": [{"source": "sidebars", "target": "plugin_content_docs", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "localnest-docs/sidebars.ts", "source_location": "L1", "weight": 1.0}]}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wmt-mobile.github.io/synapse/sitemap.xml
+

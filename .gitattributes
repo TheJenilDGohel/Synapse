@@ -1,0 +1,41 @@
+# Force LF line endings for all source/script files so Windows users with
+# core.autocrlf=true don't end up with CRLF in shebangs (which breaks the
+# `#!/usr/bin/env node` line on POSIX runtimes inside WSL/Git Bash) or in
+# JSON/YAML files (which some parsers reject).
+
+* text=auto eol=lf
+
+# Source code
+*.cjs   text eol=lf
+*.mjs   text eol=lf
+*.js    text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.sh    text eol=lf
+*.bash  text eol=lf
+
+# Markdown / docs — let Git decide based on user preference. Keep LF default
+# but allow normalization. Some Windows editors (notably Notepad) prefer CRLF.
+*.md    text
+
+# Binary assets — never touch these
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.svg   text eol=lf
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.zip   binary
+*.tar   binary
+*.gz    binary
+*.db    binary
+*.sqlite binary

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+localnest.config.json
+.mcp.localnest.json
+.localnest/
+.npm-cache/
+node_modules/

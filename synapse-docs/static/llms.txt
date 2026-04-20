@@ -1,0 +1,14 @@
+# Synapse MCP Docs
+
+Canonical: https://wmt-mobile.github.io/synapse/
+
+Primary Docs:
+- Getting Started: https://wmt-mobile.github.io/synapse/docs
+- Install: https://wmt-mobile.github.io/synapse/docs/setup/install
+- Configuration: https://wmt-mobile.github.io/synapse/docs/setup/configuration
+- Tools: https://wmt-mobile.github.io/synapse/docs/tools/overview
+- Current Release: https://wmt-mobile.github.io/synapse/docs/releases/current
+
+Repository:
+- https://github.com/wmt-mobile/synapse
+
