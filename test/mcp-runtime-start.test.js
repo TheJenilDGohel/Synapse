@@ -6,13 +6,13 @@ import path from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
-test('synapse-mcp supports stdio initialize and tool listing', async (t) => {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-mcp-start-'));
+test('synapse supports stdio initialize and tool listing', async (t) => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-start-'));
   t.after(() => fs.rmSync(tempDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }));
 
   const transport = new StdioClientTransport({
     command: process.execPath,
-    args: ['--import', 'tsx/esm', path.resolve('bin/synapse-mcp.js')],
+    args: ['--import', 'tsx/esm', path.resolve('bin/synapse.js')],
     env: {
       ...process.env,
       MCP_MODE: 'stdio',

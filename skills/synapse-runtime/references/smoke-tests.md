@@ -1,7 +1,7 @@
 ## MCP Runtime Smoke Tests
 
 - `synapse --version`
-- `synapse-mcp --version`
+- `synapse --version`
 - `synapse doctor --json`
 - `synapse setup --help`
 - import-sensitive checks for modules that should not eagerly load optional backends

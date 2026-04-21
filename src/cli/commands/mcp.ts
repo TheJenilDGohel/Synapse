@@ -11,14 +11,14 @@ import { parseFlags } from '../parse-flags.js';
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { printSubcommandHelp } from '../help.js';
 import type { VerbDef } from '../help.js';
 import { writeError as sharedWriteError } from '../output.js';
 import { buildRuntimeConfig } from '../../runtime/config.js';
 import {
-  resolveLocalnestHome,
-  buildLocalnestPaths
+  resolveSynapseHome,
+  buildSynapsePaths
 } from '../../runtime/home-layout.js';
 import { SERVER_NAME, SERVER_VERSION } from '../../runtime/version.js';
 import type { GlobalOptions } from '../options.js';
@@ -77,7 +77,7 @@ async function handleStart(args: string[], opts: GlobalOptions): Promise<void> {
 
   // Import and call main() directly -- this hands stdio to the MCP transport.
   // The process stays alive as long as the MCP client is connected.
-  const { main } = await import(serverEntry);
+  const { main } = await import(pathToFileURL(serverEntry).href);
   await main();
 }
 
@@ -95,7 +95,7 @@ async function handleStatus(_args: string[], opts: GlobalOptions): Promise<void>
   }
 
   const synapseHome: string = runtime.synapseHome;
-  const paths = buildLocalnestPaths(synapseHome);
+  const paths = buildSynapsePaths(synapseHome);
 
   // Check if config file exists
   const configExists = fs.existsSync(paths.configPath);
@@ -196,8 +196,8 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
     raw: { alias: 'r', type: 'boolean' },
   });
 
-  const synapseHome = resolveLocalnestHome();
-  const paths = buildLocalnestPaths(synapseHome);
+  const synapseHome = resolveSynapseHome();
+  const paths = buildSynapsePaths(synapseHome);
 
   // If a snippet file already exists on disk, read and output it
   if (fs.existsSync(paths.snippetPath) && !flags.raw) {
@@ -224,7 +224,7 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
   // Generate the config -- same shape as client-installer.js uses
   const serverConfig = {
     command: 'npx',
-    args: ['-y', 'synapse-mcp@latest'],
+    args: ['-y', 'synapse@latest'],
     startup_timeout_sec: 30,
     env: {},
   };
@@ -236,12 +236,12 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
     if (opts.json) {
       writeJson({
         method: 'cli',
-        command: 'claude mcp add synapse -- npx -y synapse-mcp@latest',
+        command: 'claude mcp add synapse -- npx -y synapse@latest',
         note: 'Run this command in your terminal to add Synapse to Claude Code.',
       });
     } else {
       process.stdout.write('Claude Code uses the `claude mcp add` command:\n\n');
-      process.stdout.write('  claude mcp add synapse -- npx -y synapse-mcp@latest\n\n');
+      process.stdout.write('  claude mcp add synapse -- npx -y synapse@latest\n\n');
       process.stdout.write('Run this in your terminal. No JSON config needed.\n');
     }
     return;

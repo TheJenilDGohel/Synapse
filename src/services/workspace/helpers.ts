@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
 import { expandHome } from '../../runtime/config.js';
+import { canonicalizePath } from '../../runtime/platform.js';
 
 export interface WorkspaceRoot {
   path: string;
@@ -62,11 +63,13 @@ export function normalizeTarget(workspace: WorkspaceLike, inputPath: string): st
     ? path.resolve(maybeExpanded)
     : path.resolve(workspace.roots[0].path, maybeExpanded);
 
-  if (!isUnderRoots(workspace, resolved)) {
+  const canonical = canonicalizePath(resolved);
+
+  if (!isUnderRoots(workspace, canonical)) {
     throw new Error(`path is outside configured roots: ${rawInput}`);
   }
 
-  return resolved;
+  return canonical;
 }
 
 export function resolveSearchBases(workspace: WorkspaceLike, projectPath: string | undefined, allRoots: boolean | undefined): string[] {

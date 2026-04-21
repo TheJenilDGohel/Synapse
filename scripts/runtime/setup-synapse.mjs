@@ -6,16 +6,28 @@ import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import {
   ensureSqliteVecExtension,
-  migrateLocalnestHomeLayout,
-  resolveLocalnestHome,
-  resolveWritableModelCacheDir
-} from '../../src/runtime/index.js';
+  migrateSynapseHomeLayout,
+  resolveSynapseHome,
+  resolveWritableModelCacheDir,
+  installRuntimeWarningFilter
+} from '../../src/runtime/index.ts';
 import {
-  buildLocalnestServerConfig,
-  installLocalnestIntoDetectedClients
-} from '../../src/setup/client-installer.js';
+  buildSynapseServerConfig,
+  installSynapseIntoDetectedClients
+} from '../../src/setup/client-installer.ts';
 import ora from 'ora';
-import { c, symbol, box, rule } from '../../src/cli/ansi.js';
+import {
+  c,
+  symbol,
+  box,
+  rule
+} from '../../src/cli/ansi.ts';
+import {
+  NPM_BIN,
+  NPX_BIN,
+  SYNAPSE_BIN,
+  isWindows
+} from '../../src/runtime/platform.ts';
 
 if (!process.env.DART_SUPPRESS_ANALYTICS) {
   process.env.DART_SUPPRESS_ANALYTICS = 'true';
@@ -24,8 +36,8 @@ if (!process.env.DART_SUPPRESS_ANALYTICS) {
 const cwd = process.cwd();
 // Extract only HOME for path resolution — avoids CodeQL CWE-532 taint from process.env
 const homeOnlyEnv = { HOME: process.env.HOME || '' };
-const synapseHome = resolveLocalnestHome(homeOnlyEnv);
-const layout = migrateLocalnestHomeLayout(synapseHome).paths;
+const synapseHome = resolveSynapseHome(homeOnlyEnv);
+const layout = migrateSynapseHomeLayout(synapseHome).paths;
 const configPath = layout.configPath;
 const snippetPath = layout.snippetPath;
 const defaultDbPath = layout.sqliteDbPath;
@@ -76,7 +88,10 @@ function collectSuggestions() {
 
 function commandExists(cmd, args = ['--version']) {
   try {
-    const result = spawnSync(cmd, args, { stdio: 'ignore' });
+    const result = spawnSync(cmd, args, {
+      stdio: 'ignore',
+      shell: isWindows
+    });
     return result.status === 0;
   } catch {
     return false;
@@ -84,11 +99,11 @@ function commandExists(cmd, args = ['--version']) {
 }
 
 function getNpxCommand() {
-  return process.platform === 'win32' ? 'npx.cmd' : 'npx';
+  return NPX_BIN;
 }
 
 function getGlobalCommand() {
-  return process.platform === 'win32' ? 'synapse-mcp.cmd' : 'synapse-mcp';
+  return SYNAPSE_BIN;
 }
 
 function runPreflightChecks() {
@@ -106,7 +121,7 @@ function runPreflightChecks() {
   const hasGlobal = commandExists(getGlobalCommand());
   const hasNpx = commandExists(getNpxCommand());
   if (!hasGlobal && !hasNpx) {
-    errors.push('Neither synapse-mcp nor npx is available. Install Synapse globally or fix Node.js/npm and retry.');
+    errors.push('Neither synapse nor npx is available. Install Synapse globally or fix Node.js/npm and retry.');
   }
 
   if (!commandExists('rg')) {
@@ -144,7 +159,7 @@ function resolveCompatibleSetupOptions({ backend, memoryEnabled }) {
   };
 }
 
-function buildLocalnestEnv(indexConfig) {
+function buildSynapseEnv(indexConfig) {
   const env = {
     MCP_MODE: 'stdio',
     SYNAPSE_CONFIG: configPath,
@@ -172,10 +187,10 @@ function buildClientSnippet(packageRef, indexConfig) {
   const launch = resolveLaunchPreference(packageRef);
   return {
     mcpServers: {
-      synapse: buildLocalnestServerConfig({
+      synapse: buildSynapseServerConfig({
         command: launch.command,
         args: launch.args,
-        env: buildLocalnestEnv(indexConfig)
+        env: buildSynapseEnv(indexConfig)
       })
     }
   };
@@ -186,9 +201,9 @@ function buildClientSnippet(packageRef, indexConfig) {
 function buildGlobalClientSnippet(indexConfig) {
   return {
     mcpServers: {
-      synapse: buildLocalnestServerConfig({
+      synapse: buildSynapseServerConfig({
         command: getGlobalCommand(),
-        env: buildLocalnestEnv(indexConfig)
+        env: buildSynapseEnv(indexConfig)
       })
     }
   };
@@ -452,7 +467,7 @@ function saveOutputs(roots, packageRef, indexConfig) {
 function installClientConfigs(packageRef, indexConfig) {
   const snippet = buildClientSnippet(packageRef, indexConfig);
   const serverConfig = snippet.mcpServers.synapse;
-  return installLocalnestIntoDetectedClients({
+  return installSynapseIntoDetectedClients({
     serverConfig,
     backupDir: layout.dirs.backups
   });
@@ -551,7 +566,7 @@ async function main() {
     console.log('  synapse setup');
     console.log('  synapse setup --paths="/abs/path1,/abs/path2"');
     console.log('  synapse setup --roots-json=\'[{"label":"repo","path":"/abs/repo"}]\'');
-    console.log('  synapse setup --package="synapse-mcp"');
+    console.log('  synapse setup --package="synapse"');
     console.log('  synapse setup --skip-model-download=true');
     console.log('  synapse setup --skip-sqlite-vec-install=true');
     console.log('  synapse setup --sqlite-vec-extension="/abs/path/to/vec0.so"');
@@ -565,7 +580,7 @@ async function main() {
 
   // Extract package ref to a literal default — CodeQL CWE-532 taint break
   const envPkg = process.env.SYNAPSE_NPX_PACKAGE;
-  const packageRef = parseArg('package') || (typeof envPkg === 'string' && envPkg.length > 0 ? envPkg.replace(/[^a-zA-Z0-9@/._-]/g, '') : 'synapse-mcp');
+  const packageRef = parseArg('package') || (typeof envPkg === 'string' && envPkg.length > 0 ? envPkg.replace(/[^a-zA-Z0-9@/._-]/g, '') : 'synapse');
   const existingConfig = readExistingConfig();
   const existingDefaults = buildExistingDefaults(existingConfig);
   const preflight = runPreflightChecks();

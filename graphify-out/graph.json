@@ -4,10 +4,10 @@
   "graph": {
     "hyperedges": [
       {
-        "id": "localnest_core_feature_set",
-        "label": "LocalNest Core Feature Set",
+        "id": "synapse_core_feature_set",
+        "label": "Synapse Core Feature Set",
         "nodes": [
-          "readme_localnest_mcp",
+          "readme_synapse_mcp",
           "readme_temporal_knowledge_graph",
           "readme_hybrid_search",
           "readme_agent_memory",
@@ -35,7 +35,7 @@
         "relation": "implement",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "localnest-docs/docs/tools/knowledge-graph.md"
+        "source_file": "synapse-docs/docs/tools/knowledge-graph.md"
       },
       {
         "id": "memory_tool_group",
@@ -50,7 +50,7 @@
         "relation": "implement",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "localnest-docs/docs/tools/memory.md"
+        "source_file": "synapse-docs/docs/tools/memory.md"
       },
       {
         "id": "retrieval_pipeline_group",
@@ -66,7 +66,7 @@
         "relation": "participate_in",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "localnest-docs/docs/architecture.md"
+        "source_file": "synapse-docs/docs/architecture.md"
       },
       {
         "id": "design_rationale_sqlite",
@@ -100,11 +100,11 @@
         "relation": "implement",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md"
+        "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md"
       },
       {
-        "id": "localnest_mcp_commands",
-        "label": "LocalNest MCP Skill Commands",
+        "id": "synapse_mcp_commands",
+        "label": "Synapse MCP Skill Commands",
         "nodes": [
           "cmd_selftest",
           "cmd_onboard",
@@ -120,16 +120,16 @@
         "relation": "form",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "skills/localnest-mcp/commands/selftest.md"
+        "source_file": "skills/synapse/commands/selftest.md"
       },
       {
         "id": "agentic_workflow_tools",
         "label": "Agentic Workflow Tools v0.2.0",
         "nodes": [
           "readme_agent_prime",
-          "readme_localnest_find",
-          "readme_localnest_teach",
-          "readme_localnest_audit",
+          "readme_synapse_find",
+          "readme_synapse_teach",
+          "readme_synapse_audit",
           "readme_terse_responses",
           "readme_auto_inference"
         ],
@@ -150,7 +150,7 @@
         "relation": "participate_in",
         "confidence": "EXTRACTED",
         "confidence_score": 0.9,
-        "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md"
+        "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md"
       },
       {
         "id": "search_pipeline",
@@ -164,7 +164,7 @@
         "relation": "implement",
         "confidence": "EXTRACTED",
         "confidence_score": 0.95,
-        "source_file": "localnest-docs/docs/guides/architecture.md"
+        "source_file": "synapse-docs/docs/guides/architecture.md"
       }
     ]
   },
@@ -180,7 +180,7 @@
     {
       "label": "sidebars.ts",
       "file_type": "code",
-      "source_file": "localnest-docs/sidebars.ts",
+      "source_file": "synapse-docs/sidebars.ts",
       "source_location": "L1",
       "id": "sidebars",
       "community": 130
@@ -188,7 +188,7 @@
     {
       "label": "docusaurus.config.ts",
       "file_type": "code",
-      "source_file": "localnest-docs/docusaurus.config.ts",
+      "source_file": "synapse-docs/docusaurus.config.ts",
       "source_location": "L1",
       "id": "docusaurus_config",
       "community": 89
@@ -204,7 +204,7 @@
     {
       "label": "Home()",
       "file_type": "code",
-      "source_file": "localnest-docs/src/pages/index.tsx",
+      "source_file": "synapse-docs/src/pages/index.tsx",
       "source_location": "L55",
       "id": "index_home",
       "community": 15
@@ -698,11 +698,11 @@
       "community": 41
     },
     {
-      "label": "install-localnest-skill.test.js",
+      "label": "install-synapse-skill.test.js",
       "file_type": "code",
-      "source_file": "test/install-localnest-skill.test.js",
+      "source_file": "test/install-synapse-skill.test.js",
       "source_location": "L1",
-      "id": "install_localnest_skill_test",
+      "id": "install_synapse_skill_test",
       "community": 139
     },
     {
@@ -1002,19 +1002,19 @@
       "community": 26
     },
     {
-      "label": "resolveLocalnestHome()",
+      "label": "resolveSynapseHome()",
       "file_type": "code",
       "source_file": "src/runtime/home-layout.ts",
       "source_location": "L52",
-      "id": "home_layout_resolvelocalnesthome",
+      "id": "home_layout_resolvesynapsehome",
       "community": 26
     },
     {
-      "label": "buildLocalnestPaths()",
+      "label": "buildSynapsePaths()",
       "file_type": "code",
       "source_file": "src/runtime/home-layout.ts",
       "source_location": "L56",
-      "id": "home_layout_buildlocalnestpaths",
+      "id": "home_layout_buildsynapsepaths",
       "community": 26
     },
     {
@@ -1066,11 +1066,11 @@
       "community": 26
     },
     {
-      "label": "migrateLocalnestHomeLayout()",
+      "label": "migrateSynapseHomeLayout()",
       "file_type": "code",
       "source_file": "src/runtime/home-layout.ts",
       "source_location": "L213",
-      "id": "home_layout_migratelocalnesthomelayout",
+      "id": "home_layout_migratesynapsehomelayout",
       "community": 26
     },
     {
@@ -1354,19 +1354,19 @@
       "community": 18
     },
     {
-      "label": "buildCodexLocalnestBlock()",
+      "label": "buildCodexSynapseBlock()",
       "file_type": "code",
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L63",
-      "id": "client_installer_buildcodexlocalnestblock",
+      "id": "client_installer_buildcodexsynapseblock",
       "community": 18
     },
     {
-      "label": "upsertCodexLocalnestBlock()",
+      "label": "upsertCodexSynapseBlock()",
       "file_type": "code",
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L88",
-      "id": "client_installer_upsertcodexlocalnestblock",
+      "id": "client_installer_upsertcodexsynapseblock",
       "community": 18
     },
     {
@@ -1386,11 +1386,11 @@
       "community": 18
     },
     {
-      "label": "buildLocalnestServerConfig()",
+      "label": "buildSynapseServerConfig()",
       "file_type": "code",
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L165",
-      "id": "client_installer_buildlocalnestserverconfig",
+      "id": "client_installer_buildsynapseserverconfig",
       "community": 18
     },
     {
@@ -1402,11 +1402,11 @@
       "community": 18
     },
     {
-      "label": "installLocalnestIntoDetectedClients()",
+      "label": "installSynapseIntoDetectedClients()",
       "file_type": "code",
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L282",
-      "id": "client_installer_installlocalnestintodetectedclients",
+      "id": "client_installer_installsynapseintodetectedclients",
       "community": 18
     },
     {
@@ -7618,51 +7618,51 @@
       "community": 6
     },
     {
-      "label": "localnest-mcp-setup.js",
+      "label": "synapse-setup.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp-setup.js",
+      "source_file": "bin/synapse-setup.js",
       "source_location": "L1",
-      "id": "localnest_mcp_setup",
+      "id": "synapse_mcp_setup",
       "community": 146
     },
     {
-      "label": "localnest-mcp-task-context.js",
+      "label": "synapse-task-context.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp-task-context.js",
+      "source_file": "bin/synapse-task-context.js",
       "source_location": "L1",
-      "id": "localnest_mcp_task_context",
+      "id": "synapse_mcp_task_context",
       "community": 147
     },
     {
-      "label": "localnest-mcp-upgrade.js",
+      "label": "synapse-upgrade.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp-upgrade.js",
+      "source_file": "bin/synapse-upgrade.js",
       "source_location": "L1",
-      "id": "localnest_mcp_upgrade",
+      "id": "synapse_mcp_upgrade",
       "community": 148
     },
     {
-      "label": "localnest.js",
+      "label": "synapse.js",
       "file_type": "code",
-      "source_file": "bin/localnest.js",
+      "source_file": "bin/synapse.js",
       "source_location": "L1",
-      "id": "localnest",
+      "id": "synapse",
       "community": 123
     },
     {
       "label": "main()",
       "file_type": "code",
-      "source_file": "bin/localnest.js",
+      "source_file": "bin/synapse.js",
       "source_location": "L24",
-      "id": "localnest_main",
+      "id": "synapse_main",
       "community": 123
     },
     {
-      "label": "localnest-mcp-install-skill.js",
+      "label": "synapse-install-skill.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp-install-skill.js",
+      "source_file": "bin/synapse-install-skill.js",
       "source_location": "L1",
-      "id": "localnest_mcp_install_skill",
+      "id": "synapse_mcp_install_skill",
       "community": 149
     },
     {
@@ -7674,27 +7674,27 @@
       "community": 150
     },
     {
-      "label": "localnest-mcp-doctor.js",
+      "label": "synapse-doctor.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp-doctor.js",
+      "source_file": "bin/synapse-doctor.js",
       "source_location": "L1",
-      "id": "localnest_mcp_doctor",
+      "id": "synapse_mcp_doctor",
       "community": 151
     },
     {
-      "label": "localnest-mcp.js",
+      "label": "synapse.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp.js",
+      "source_file": "bin/synapse.js",
       "source_location": "L1",
-      "id": "localnest_mcp",
+      "id": "synapse_mcp",
       "community": 152
     },
     {
-      "label": "localnest-mcp-capture-outcome.js",
+      "label": "synapse-capture-outcome.js",
       "file_type": "code",
-      "source_file": "bin/localnest-mcp-capture-outcome.js",
+      "source_file": "bin/synapse-capture-outcome.js",
       "source_location": "L1",
-      "id": "localnest_mcp_capture_outcome",
+      "id": "synapse_mcp_capture_outcome",
       "community": 153
     },
     {
@@ -7738,11 +7738,11 @@
       "community": 29
     },
     {
-      "label": "buildLocalnestCommandArgv()",
+      "label": "buildSynapseCommandArgv()",
       "file_type": "code",
       "source_file": "bin/_shared.js",
       "source_location": "L59",
-      "id": "shared_buildlocalnestcommandargv",
+      "id": "shared_buildsynapsecommandargv",
       "community": 29
     },
     {
@@ -7770,7 +7770,7 @@
       "community": 29
     },
     {
-      "label": "LocalNest MCP",
+      "label": "Synapse MCP",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": null,
@@ -7778,7 +7778,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_localnest_mcp",
+      "id": "readme_synapse_mcp",
       "community": 0
     },
     {
@@ -7938,7 +7938,7 @@
       "community": 0
     },
     {
-      "label": "localnest_agent_prime Tool",
+      "label": "synapse_agent_prime Tool",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": null,
@@ -7950,7 +7950,7 @@
       "community": 0
     },
     {
-      "label": "localnest_find Tool (fused cross-domain search)",
+      "label": "synapse_find Tool (fused cross-domain search)",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": null,
@@ -7958,11 +7958,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_localnest_find",
+      "id": "readme_synapse_find",
       "community": 0
     },
     {
-      "label": "localnest_teach Tool (behavior modifiers)",
+      "label": "synapse_teach Tool (behavior modifiers)",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": null,
@@ -7970,11 +7970,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_localnest_teach",
+      "id": "readme_synapse_teach",
       "community": 154
     },
     {
-      "label": "localnest_audit Tool (self-audit)",
+      "label": "synapse_audit Tool (self-audit)",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": null,
@@ -7982,7 +7982,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_localnest_audit",
+      "id": "readme_synapse_audit",
       "community": 155
     },
     {
@@ -8180,7 +8180,7 @@
     {
       "label": "Boot Sequence (6 steps)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8192,7 +8192,7 @@
     {
       "label": "Retrieval Pipeline (lexical+semantic+RRF)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8204,7 +8204,7 @@
     {
       "label": "Indexing Model (chunk\u2192term+embedding\u2192SQLite)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8216,7 +8216,7 @@
     {
       "label": "Knowledge Graph Pipeline",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8228,7 +8228,7 @@
     {
       "label": "Memory Pipeline (event\u2192dedup\u2192score\u2192promote)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8240,7 +8240,7 @@
     {
       "label": "Hooks Pipeline (pre/post/cancel/transform)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8252,7 +8252,7 @@
     {
       "label": "Design Decisions (stdio-only, local-first, SQLite-for-everything)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8264,7 +8264,7 @@
     {
       "label": "Background Runtime Monitors",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8312,7 +8312,7 @@
     {
       "label": "KG Entity Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8324,7 +8324,7 @@
     {
       "label": "KG Triple Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8336,7 +8336,7 @@
     {
       "label": "KG Temporal Tools (as_of, timeline)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8348,7 +8348,7 @@
     {
       "label": "KG Traversal Tools (graph_traverse, bridges)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8360,7 +8360,7 @@
     {
       "label": "Memory Workflow Tools (task_context, capture_outcome)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/memory.md",
+      "source_file": "synapse-docs/docs/tools/memory.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8372,7 +8372,7 @@
     {
       "label": "Memory CRUD Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/memory.md",
+      "source_file": "synapse-docs/docs/tools/memory.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8384,7 +8384,7 @@
     {
       "label": "Memory Relation Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/memory.md",
+      "source_file": "synapse-docs/docs/tools/memory.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8394,9 +8394,9 @@
       "community": 0
     },
     {
-      "label": "localnest_search_hybrid Tool",
+      "label": "synapse_search_hybrid Tool",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/search.md",
+      "source_file": "synapse-docs/docs/tools/search.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8408,7 +8408,7 @@
     {
       "label": "Indexing Tools (index_status, index_project)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/indexing.md",
+      "source_file": "synapse-docs/docs/tools/indexing.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8420,7 +8420,7 @@
     {
       "label": "Hooks MCP Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/hooks.md",
+      "source_file": "synapse-docs/docs/tools/hooks.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8432,7 +8432,7 @@
     {
       "label": "Nest/Branch Organization Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/organization.md",
+      "source_file": "synapse-docs/docs/tools/organization.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8444,7 +8444,7 @@
     {
       "label": "Agent Diary Tools",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/organization.md",
+      "source_file": "synapse-docs/docs/tools/organization.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8454,9 +8454,9 @@
       "community": 163
     },
     {
-      "label": "CLI Reference (localnest noun verb)",
+      "label": "CLI Reference (synapse noun verb)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/tools/cli.md",
+      "source_file": "synapse-docs/docs/tools/cli.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8466,9 +8466,9 @@
       "community": 164
     },
     {
-      "label": "LocalNest v0.0.3",
+      "label": "Synapse v0.0.3",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.3/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.3/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8478,9 +8478,9 @@
       "community": 84
     },
     {
-      "label": "LocalNest v0.0.4-beta.4",
+      "label": "Synapse v0.0.4-beta.4",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.4/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.4/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8490,9 +8490,9 @@
       "community": 84
     },
     {
-      "label": "LocalNest v0.0.4-beta.7",
+      "label": "Synapse v0.0.4-beta.7",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.7/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.7/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8502,9 +8502,9 @@
       "community": 85
     },
     {
-      "label": "LocalNest v0.0.7-beta.2",
+      "label": "Synapse v0.0.7-beta.2",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8514,9 +8514,9 @@
       "community": 0
     },
     {
-      "label": "LocalNest v0.0.7-beta.3",
+      "label": "Synapse v0.0.7-beta.3",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.3/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.3/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8526,9 +8526,9 @@
       "community": 126
     },
     {
-      "label": "LocalNest main branch",
+      "label": "Synapse main branch",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/main/overview.md",
+      "source_file": "synapse-docs/docs/versions/main/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8540,7 +8540,7 @@
     {
       "label": "Opt-in Local Memory Store",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.4/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.4/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8552,7 +8552,7 @@
     {
       "label": "Hugging Face Embeddings Runtime",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.7/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.7/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8564,7 +8564,7 @@
     {
       "label": "sqlite-vec Extension",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.7/configuration.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.7/configuration.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8576,7 +8576,7 @@
     {
       "label": "Temporal Knowledge Graph",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8588,7 +8588,7 @@
     {
       "label": "Multi-hop Graph Traversal",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8600,7 +8600,7 @@
     {
       "label": "Nest/Branch Two-level Hierarchy",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8612,7 +8612,7 @@
     {
       "label": "Semantic Duplicate Detection",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8624,7 +8624,7 @@
     {
       "label": "Conversation Ingestion",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8636,7 +8636,7 @@
     {
       "label": "Pre/Post Operation Hooks System",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8648,7 +8648,7 @@
     {
       "label": "CLI-First Architecture",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8660,7 +8660,7 @@
     {
       "label": "Agent-Scoped Private Diary",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8672,7 +8672,7 @@
     {
       "label": "13-Client Skill Distribution",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8684,7 +8684,7 @@
     {
       "label": "nest:* Slash Commands (11 agentic orchestration)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.3/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.3/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8696,7 +8696,7 @@
     {
       "label": "Schema v5 through v9 (additive migrations)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8708,7 +8708,7 @@
     {
       "label": "SQLite Recursive CTEs for Graph Traversal",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8718,9 +8718,9 @@
       "community": 0
     },
     {
-      "label": "LocalNest v0.0.1-beta.1",
+      "label": "Synapse v0.0.1-beta.1",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.0.1-beta.1/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.1-beta.1/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8730,9 +8730,9 @@
       "community": 168
     },
     {
-      "label": "LocalNest v0.1.0",
+      "label": "Synapse v0.1.0",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8744,7 +8744,7 @@
     {
       "label": "Full TypeScript Migration",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8756,7 +8756,7 @@
     {
       "label": "Composite SQLite Indexes",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8768,7 +8768,7 @@
     {
       "label": "Embedding LRU Cache",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8778,9 +8778,9 @@
       "community": 0
     },
     {
-      "label": "LocalNest Architecture Guide",
+      "label": "Synapse Architecture Guide",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8792,7 +8792,7 @@
     {
       "label": "Future Retrieval Roadmap",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8804,7 +8804,7 @@
     {
       "label": "sqlite-vec Backend",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8816,7 +8816,7 @@
     {
       "label": "Hybrid Search (RRF Merge)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8828,7 +8828,7 @@
     {
       "label": "Knowledge Graph Subsystem",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8840,7 +8840,7 @@
     {
       "label": "MemoryHooks Pub-Sub System",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8852,7 +8852,7 @@
     {
       "label": "Forward-Only Schema Migrations (v1-v9)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8864,7 +8864,7 @@
     {
       "label": "Nest/Branch Taxonomy",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8876,7 +8876,7 @@
     {
       "label": "Temporal Knowledge Graph (valid_from/valid_to)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8888,7 +8888,7 @@
     {
       "label": "72 MCP Tool Surface",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8900,7 +8900,7 @@
     {
       "label": "Xenova/all-MiniLM-L6-v2 Embedding Model",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8912,7 +8912,7 @@
     {
       "label": "Ripgrep Lexical Search",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8924,7 +8924,7 @@
     {
       "label": "LanceDB (Alternative Backend Candidate)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8936,7 +8936,7 @@
     {
       "label": "Qdrant (Opt-In Advanced Backend)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8948,7 +8948,7 @@
     {
       "label": "vec1 (Preferred Future Backend)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8960,7 +8960,7 @@
     {
       "label": "README Translation Policy",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/i18n/TRANSLATION_POLICY.md",
+      "source_file": "synapse-docs/docs/i18n/TRANSLATION_POLICY.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8972,7 +8972,7 @@
     {
       "label": "Setup Install Guide",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/setup/install.md",
+      "source_file": "synapse-docs/docs/setup/install.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8984,7 +8984,7 @@
     {
       "label": "Release 0.1.0 (Current Stable)",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/releases/0.1.0.md",
+      "source_file": "synapse-docs/docs/releases/0.1.0.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -8996,7 +8996,7 @@
     {
       "label": "Release Matrix History",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/releases/history.md",
+      "source_file": "synapse-docs/docs/releases/history.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9008,7 +9008,7 @@
     {
       "label": "Version Selection Guide",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/releases/version-selection.md",
+      "source_file": "synapse-docs/docs/releases/version-selection.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9018,33 +9018,33 @@
       "community": 173
     },
     {
-      "label": "LocalNest SQL Adapter Skill",
+      "label": "Synapse SQL Adapter Skill",
       "file_type": "document",
-      "source_file": "skills/localnest-sql-adapter/SKILL.md",
+      "source_file": "skills/synapse-sql-adapter/SKILL.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "skill_localnest_sql_adapter",
+      "id": "skill_synapse_sql_adapter",
       "community": 11
     },
     {
-      "label": "LocalNest MCP Skill",
+      "label": "Synapse MCP Skill",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/SKILL.md",
+      "source_file": "skills/synapse/SKILL.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "skill_localnest_mcp",
+      "id": "skill_synapse_mcp",
       "community": 0
     },
     {
       "label": "72 MCP Tools Surface",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/releases/current.md",
+      "source_file": "synapse-docs/docs/releases/current.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9056,7 +9056,7 @@
     {
       "label": "Config Schema Version 3",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/setup/configuration.md",
+      "source_file": "synapse-docs/docs/setup/configuration.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9068,7 +9068,7 @@
     {
       "label": "13 AI Client Skill Support",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/setup/configuration.md",
+      "source_file": "synapse-docs/docs/setup/configuration.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9078,117 +9078,117 @@
       "community": 175
     },
     {
-      "label": "localnest-mcp npm Package",
+      "label": "synapse npm Package",
       "file_type": "document",
-      "source_file": "localnest-docs/docs/releases/version-selection.md",
+      "source_file": "synapse-docs/docs/releases/version-selection.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "package_localnest_mcp",
+      "id": "package_synapse_mcp",
       "community": 176
     },
     {
-      "label": "localnest_agent_prime Tool",
+      "label": "synapse_agent_prime Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_agent_prime",
+      "id": "tool_ref_synapse_agent_prime",
       "community": 86
     },
     {
-      "label": "localnest_find Tool",
+      "label": "synapse_find Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_find",
+      "id": "tool_ref_synapse_find",
       "community": 87
     },
     {
-      "label": "localnest_search_hybrid Tool (reference)",
+      "label": "synapse_search_hybrid Tool (reference)",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_search_hybrid",
+      "id": "tool_ref_synapse_search_hybrid",
       "community": 177
     },
     {
-      "label": "localnest_kg_add_triple Tool",
+      "label": "synapse_kg_add_triple Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_kg_add_triple",
+      "id": "tool_ref_synapse_kg_add_triple",
       "community": 11
     },
     {
-      "label": "localnest_kg_as_of Tool",
+      "label": "synapse_kg_as_of Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_kg_as_of",
+      "id": "tool_ref_synapse_kg_as_of",
       "community": 11
     },
     {
-      "label": "localnest_kg_timeline Tool",
+      "label": "synapse_kg_timeline Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_kg_timeline",
+      "id": "tool_ref_synapse_kg_timeline",
       "community": 178
     },
     {
-      "label": "localnest_memory_store Tool (reference)",
+      "label": "synapse_memory_store Tool (reference)",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_memory_store",
+      "id": "tool_ref_synapse_memory_store",
       "community": 127
     },
     {
-      "label": "localnest_graph_traverse Tool",
+      "label": "synapse_graph_traverse Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tool_ref_localnest_graph_traverse",
+      "id": "tool_ref_synapse_graph_traverse",
       "community": 179
     },
     {
       "label": "Batch Operations v0.2.0",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9200,7 +9200,7 @@
     {
       "label": "Agent Prime Cold-Start Pattern",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9212,7 +9212,7 @@
     {
       "label": "Reciprocal Rank Fusion Cross-Source Ranking",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9222,9 +9222,9 @@
       "community": 87
     },
     {
-      "label": "localnest:selftest Command",
+      "label": "synapse:selftest Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/selftest.md",
+      "source_file": "skills/synapse/commands/selftest.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9234,9 +9234,9 @@
       "community": 180
     },
     {
-      "label": "localnest:onboard Command",
+      "label": "synapse:onboard Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/onboard.md",
+      "source_file": "skills/synapse/commands/onboard.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9246,9 +9246,9 @@
       "community": 181
     },
     {
-      "label": "localnest:teach Command",
+      "label": "synapse:teach Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/teach.md",
+      "source_file": "skills/synapse/commands/teach.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9258,9 +9258,9 @@
       "community": 182
     },
     {
-      "label": "localnest:fact Command",
+      "label": "synapse:fact Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/fact.md",
+      "source_file": "skills/synapse/commands/fact.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9270,9 +9270,9 @@
       "community": 11
     },
     {
-      "label": "localnest:recall Command",
+      "label": "synapse:recall Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/recall.md",
+      "source_file": "skills/synapse/commands/recall.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9282,9 +9282,9 @@
       "community": 11
     },
     {
-      "label": "localnest:status Command",
+      "label": "synapse:status Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/status.md",
+      "source_file": "skills/synapse/commands/status.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9294,9 +9294,9 @@
       "community": 183
     },
     {
-      "label": "localnest:find Command",
+      "label": "synapse:find Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/find.md",
+      "source_file": "skills/synapse/commands/find.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9306,9 +9306,9 @@
       "community": 87
     },
     {
-      "label": "localnest:prime Command",
+      "label": "synapse:prime Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/prime.md",
+      "source_file": "skills/synapse/commands/prime.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9318,9 +9318,9 @@
       "community": 86
     },
     {
-      "label": "localnest:search Command",
+      "label": "synapse:search Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/search.md",
+      "source_file": "skills/synapse/commands/search.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9330,9 +9330,9 @@
       "community": 0
     },
     {
-      "label": "localnest:remember Command",
+      "label": "synapse:remember Command",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/commands/remember.md",
+      "source_file": "skills/synapse/commands/remember.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9342,45 +9342,45 @@
       "community": 127
     },
     {
-      "label": "LocalNest MCP Troubleshooting Guide",
+      "label": "Synapse MCP Troubleshooting Guide",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp/troubleshooting.md",
+      "source_file": "skills/synapse/troubleshooting.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "troubleshooting_localnest_mcp",
+      "id": "troubleshooting_synapse_mcp",
       "community": 184
     },
     {
-      "label": "localnest-node-compat Skill",
+      "label": "synapse-node-compat Skill",
       "file_type": "document",
-      "source_file": "skills/localnest-node-compat/SKILL.md",
+      "source_file": "skills/synapse-node-compat/SKILL.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "skill_localnest_node_compat",
+      "id": "skill_synapse_node_compat",
       "community": 88
     },
     {
-      "label": "localnest-mcp-runtime Skill",
+      "label": "synapse-runtime Skill",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp-runtime/SKILL.md",
+      "source_file": "skills/synapse-runtime/SKILL.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "skill_localnest_mcp_runtime",
+      "id": "skill_synapse_mcp_runtime",
       "community": 128
     },
     {
       "label": "node:sqlite Built-in Module",
       "file_type": "document",
-      "source_file": "skills/localnest-node-compat/SKILL.md",
+      "source_file": "skills/synapse-node-compat/SKILL.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9392,7 +9392,7 @@
     {
       "label": "Node.js 22+ Requirement",
       "file_type": "document",
-      "source_file": "skills/localnest-node-compat/references/version-boundaries.md",
+      "source_file": "skills/synapse-node-compat/references/version-boundaries.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9402,21 +9402,21 @@
       "community": 88
     },
     {
-      "label": "localnest doctor CLI Tool",
+      "label": "synapse doctor CLI Tool",
       "file_type": "document",
-      "source_file": "skills/localnest-mcp-runtime/SKILL.md",
+      "source_file": "skills/synapse-runtime/SKILL.md",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_localnest_doctor",
+      "id": "concept_synapse_doctor",
       "community": 128
     },
     {
-      "label": "LocalNest MCP Social Card",
+      "label": "Synapse MCP Social Card",
       "file_type": "image",
-      "source_file": "localnest-docs/static/img/social-card.svg",
+      "source_file": "synapse-docs/static/img/social-card.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9426,9 +9426,9 @@
       "community": 0
     },
     {
-      "label": "LocalNest Logo Mark",
+      "label": "Synapse Logo Mark",
       "file_type": "image",
-      "source_file": "localnest-docs/static/img/logo-mark.svg",
+      "source_file": "synapse-docs/static/img/logo-mark.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
@@ -9438,15 +9438,15 @@
       "community": 0
     },
     {
-      "label": "LocalNest Brand Identity",
+      "label": "Synapse Brand Identity",
       "file_type": "document",
-      "source_file": "localnest-docs/static/img/social-card.svg",
+      "source_file": "synapse-docs/static/img/social-card.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "localnest_brand",
+      "id": "synapse_brand",
       "community": 0
     }
   ],
@@ -9454,7 +9454,7 @@
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
-      "source_file": "localnest-docs/docusaurus.config.ts",
+      "source_file": "synapse-docs/docusaurus.config.ts",
       "source_location": "L1",
       "weight": 1.0,
       "_src": "docusaurus_config",
@@ -9466,7 +9466,7 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "localnest-docs/src/pages/index.tsx",
+      "source_file": "synapse-docs/src/pages/index.tsx",
       "source_location": "L55",
       "weight": 1.0,
       "_src": "index",
@@ -10358,9 +10358,9 @@
       "source_location": "L52",
       "weight": 1.0,
       "_src": "home_layout",
-      "_tgt": "home_layout_resolvelocalnesthome",
+      "_tgt": "home_layout_resolvesynapsehome",
       "source": "home_layout",
-      "target": "home_layout_resolvelocalnesthome",
+      "target": "home_layout_resolvesynapsehome",
       "confidence_score": 1.0
     },
     {
@@ -10370,9 +10370,9 @@
       "source_location": "L56",
       "weight": 1.0,
       "_src": "home_layout",
-      "_tgt": "home_layout_buildlocalnestpaths",
+      "_tgt": "home_layout_buildsynapsepaths",
       "source": "home_layout",
-      "target": "home_layout_buildlocalnestpaths",
+      "target": "home_layout_buildsynapsepaths",
       "confidence_score": 1.0
     },
     {
@@ -10454,9 +10454,9 @@
       "source_location": "L213",
       "weight": 1.0,
       "_src": "home_layout",
-      "_tgt": "home_layout_migratelocalnesthomelayout",
+      "_tgt": "home_layout_migratesynapsehomelayout",
       "source": "home_layout",
-      "target": "home_layout_migratelocalnesthomelayout",
+      "target": "home_layout_migratesynapsehomelayout",
       "confidence_score": 1.0
     },
     {
@@ -10466,8 +10466,8 @@
       "source_location": "L114",
       "weight": 1.0,
       "_src": "home_layout_resolvewritablemodelcachedir",
-      "_tgt": "home_layout_resolvelocalnesthome",
-      "source": "home_layout_resolvelocalnesthome",
+      "_tgt": "home_layout_resolvesynapsehome",
+      "source": "home_layout_resolvesynapsehome",
       "target": "home_layout_resolvewritablemodelcachedir",
       "confidence_score": 1.0
     },
@@ -10478,8 +10478,8 @@
       "source_location": "L195",
       "weight": 1.0,
       "_src": "home_layout_resolveconfigpath",
-      "_tgt": "home_layout_resolvelocalnesthome",
-      "source": "home_layout_resolvelocalnesthome",
+      "_tgt": "home_layout_resolvesynapsehome",
+      "source": "home_layout_resolvesynapsehome",
       "target": "home_layout_resolveconfigpath",
       "confidence_score": 1.0
     },
@@ -10490,8 +10490,8 @@
       "source_location": "L196",
       "weight": 1.0,
       "_src": "home_layout_resolveconfigpath",
-      "_tgt": "home_layout_buildlocalnestpaths",
-      "source": "home_layout_buildlocalnestpaths",
+      "_tgt": "home_layout_buildsynapsepaths",
+      "source": "home_layout_buildsynapsepaths",
       "target": "home_layout_resolveconfigpath",
       "confidence_score": 1.0
     },
@@ -10501,10 +10501,10 @@
       "source_file": "src/runtime/home-layout.ts",
       "source_location": "L214",
       "weight": 1.0,
-      "_src": "home_layout_migratelocalnesthomelayout",
-      "_tgt": "home_layout_buildlocalnestpaths",
-      "source": "home_layout_buildlocalnestpaths",
-      "target": "home_layout_migratelocalnesthomelayout",
+      "_src": "home_layout_migratesynapsehomelayout",
+      "_tgt": "home_layout_buildsynapsepaths",
+      "source": "home_layout_buildsynapsepaths",
+      "target": "home_layout_migratesynapsehomelayout",
       "confidence_score": 1.0
     },
     {
@@ -10549,10 +10549,10 @@
       "source_file": "src/runtime/home-layout.ts",
       "source_location": "L224",
       "weight": 1.0,
-      "_src": "home_layout_migratelocalnesthomelayout",
+      "_src": "home_layout_migratesynapsehomelayout",
       "_tgt": "home_layout_moveifneeded",
       "source": "home_layout_moveifneeded",
-      "target": "home_layout_migratelocalnesthomelayout",
+      "target": "home_layout_migratesynapsehomelayout",
       "confidence_score": 1.0
     },
     {
@@ -10561,10 +10561,10 @@
       "source_file": "src/runtime/home-layout.ts",
       "source_location": "L229",
       "weight": 1.0,
-      "_src": "home_layout_migratelocalnesthomelayout",
+      "_src": "home_layout_migratesynapsehomelayout",
       "_tgt": "home_layout_movesqlitefamily",
       "source": "home_layout_movesqlitefamily",
-      "target": "home_layout_migratelocalnesthomelayout",
+      "target": "home_layout_migratesynapsehomelayout",
       "confidence_score": 1.0
     },
     {
@@ -11174,9 +11174,9 @@
       "source_location": "L63",
       "weight": 1.0,
       "_src": "client_installer",
-      "_tgt": "client_installer_buildcodexlocalnestblock",
+      "_tgt": "client_installer_buildcodexsynapseblock",
       "source": "client_installer",
-      "target": "client_installer_buildcodexlocalnestblock",
+      "target": "client_installer_buildcodexsynapseblock",
       "confidence_score": 1.0
     },
     {
@@ -11186,9 +11186,9 @@
       "source_location": "L88",
       "weight": 1.0,
       "_src": "client_installer",
-      "_tgt": "client_installer_upsertcodexlocalnestblock",
+      "_tgt": "client_installer_upsertcodexsynapseblock",
       "source": "client_installer",
-      "target": "client_installer_upsertcodexlocalnestblock",
+      "target": "client_installer_upsertcodexsynapseblock",
       "confidence_score": 1.0
     },
     {
@@ -11222,9 +11222,9 @@
       "source_location": "L165",
       "weight": 1.0,
       "_src": "client_installer",
-      "_tgt": "client_installer_buildlocalnestserverconfig",
+      "_tgt": "client_installer_buildsynapseserverconfig",
       "source": "client_installer",
-      "target": "client_installer_buildlocalnestserverconfig",
+      "target": "client_installer_buildsynapseserverconfig",
       "confidence_score": 1.0
     },
     {
@@ -11246,9 +11246,9 @@
       "source_location": "L282",
       "weight": 1.0,
       "_src": "client_installer",
-      "_tgt": "client_installer_installlocalnestintodetectedclients",
+      "_tgt": "client_installer_installsynapseintodetectedclients",
       "source": "client_installer",
-      "target": "client_installer_installlocalnestintodetectedclients",
+      "target": "client_installer_installsynapseintodetectedclients",
       "confidence_score": 1.0
     },
     {
@@ -11257,10 +11257,10 @@
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L76",
       "weight": 1.0,
-      "_src": "client_installer_buildcodexlocalnestblock",
+      "_src": "client_installer_buildcodexsynapseblock",
       "_tgt": "client_installer_isplainobject",
       "source": "client_installer_isplainobject",
-      "target": "client_installer_buildcodexlocalnestblock",
+      "target": "client_installer_buildcodexsynapseblock",
       "confidence_score": 1.0
     },
     {
@@ -11341,10 +11341,10 @@
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L66",
       "weight": 1.0,
-      "_src": "client_installer_buildcodexlocalnestblock",
+      "_src": "client_installer_buildcodexsynapseblock",
       "_tgt": "client_installer_serializetomlstring",
       "source": "client_installer_serializetomlstring",
-      "target": "client_installer_buildcodexlocalnestblock",
+      "target": "client_installer_buildcodexsynapseblock",
       "confidence_score": 1.0
     },
     {
@@ -11353,10 +11353,10 @@
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L70",
       "weight": 1.0,
-      "_src": "client_installer_buildcodexlocalnestblock",
+      "_src": "client_installer_buildcodexsynapseblock",
       "_tgt": "client_installer_serializetomlarray",
       "source": "client_installer_serializetomlarray",
-      "target": "client_installer_buildcodexlocalnestblock",
+      "target": "client_installer_buildcodexsynapseblock",
       "confidence_score": 1.0
     },
     {
@@ -11378,8 +11378,8 @@
       "source_location": "L149",
       "weight": 1.0,
       "_src": "client_installer_installintocodextarget",
-      "_tgt": "client_installer_buildcodexlocalnestblock",
-      "source": "client_installer_buildcodexlocalnestblock",
+      "_tgt": "client_installer_buildcodexsynapseblock",
+      "source": "client_installer_buildcodexsynapseblock",
       "target": "client_installer_installintocodextarget",
       "confidence_score": 1.0
     },
@@ -11390,8 +11390,8 @@
       "source_location": "L150",
       "weight": 1.0,
       "_src": "client_installer_installintocodextarget",
-      "_tgt": "client_installer_upsertcodexlocalnestblock",
-      "source": "client_installer_upsertcodexlocalnestblock",
+      "_tgt": "client_installer_upsertcodexsynapseblock",
+      "source": "client_installer_upsertcodexsynapseblock",
       "target": "client_installer_installintocodextarget",
       "confidence_score": 1.0
     },
@@ -11401,10 +11401,10 @@
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L296",
       "weight": 1.0,
-      "_src": "client_installer_installlocalnestintodetectedclients",
+      "_src": "client_installer_installsynapseintodetectedclients",
       "_tgt": "client_installer_installintojsontarget",
       "source": "client_installer_installintojsontarget",
-      "target": "client_installer_installlocalnestintodetectedclients",
+      "target": "client_installer_installsynapseintodetectedclients",
       "confidence_score": 1.0
     },
     {
@@ -11413,10 +11413,10 @@
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L300",
       "weight": 1.0,
-      "_src": "client_installer_installlocalnestintodetectedclients",
+      "_src": "client_installer_installsynapseintodetectedclients",
       "_tgt": "client_installer_installintocodextarget",
       "source": "client_installer_installintocodextarget",
-      "target": "client_installer_installlocalnestintodetectedclients",
+      "target": "client_installer_installsynapseintodetectedclients",
       "confidence_score": 1.0
     },
     {
@@ -11425,10 +11425,10 @@
       "source_file": "src/setup/client-installer.ts",
       "source_location": "L291",
       "weight": 1.0,
-      "_src": "client_installer_installlocalnestintodetectedclients",
+      "_src": "client_installer_installsynapseintodetectedclients",
       "_tgt": "client_installer_detectaitooltargets",
       "source": "client_installer_detectaitooltargets",
-      "target": "client_installer_installlocalnestintodetectedclients",
+      "target": "client_installer_installsynapseintodetectedclients",
       "confidence_score": 1.0
     },
     {
@@ -25102,13 +25102,13 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "bin/localnest.js",
+      "source_file": "bin/synapse.js",
       "source_location": "L24",
       "weight": 1.0,
-      "_src": "localnest",
-      "_tgt": "localnest_main",
-      "source": "localnest",
-      "target": "localnest_main",
+      "_src": "synapse",
+      "_tgt": "synapse_main",
+      "source": "synapse",
+      "target": "synapse_main",
       "confidence_score": 1.0
     },
     {
@@ -25166,9 +25166,9 @@
       "source_location": "L59",
       "weight": 1.0,
       "_src": "shared",
-      "_tgt": "shared_buildlocalnestcommandargv",
+      "_tgt": "shared_buildsynapsecommandargv",
       "source": "shared",
-      "target": "shared_buildlocalnestcommandargv",
+      "target": "shared_buildsynapsecommandargv",
       "confidence_score": 1.0
     },
     {
@@ -25214,8 +25214,8 @@
       "source_location": "L86",
       "weight": 1.0,
       "_src": "shared_forwarddeprecatedcommand",
-      "_tgt": "shared_buildlocalnestcommandargv",
-      "source": "shared_buildlocalnestcommandargv",
+      "_tgt": "shared_buildsynapsecommandargv",
+      "source": "shared_buildsynapsecommandargv",
       "target": "shared_forwarddeprecatedcommand",
       "confidence_score": 1.0
     },
@@ -25250,9 +25250,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_mcp_server",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_mcp_server"
     },
     {
@@ -25262,9 +25262,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_temporal_knowledge_graph",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_temporal_knowledge_graph"
     },
     {
@@ -25274,9 +25274,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_hybrid_search",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_hybrid_search"
     },
     {
@@ -25286,9 +25286,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_agent_memory",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_agent_memory"
     },
     {
@@ -25298,9 +25298,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_hooks_system",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_hooks_system"
     },
     {
@@ -25310,9 +25310,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_nest_branch_hierarchy",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_nest_branch_hierarchy"
     },
     {
@@ -25322,9 +25322,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_sqlite_backend",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_sqlite_backend"
     },
     {
@@ -25334,9 +25334,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_batch_operations",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_batch_operations"
     },
     {
@@ -25346,9 +25346,9 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_skill_distribution",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_skill_distribution"
     },
     {
@@ -25358,22 +25358,22 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_mcp",
+      "_src": "readme_synapse_mcp",
       "_tgt": "readme_conversation_ingestion",
-      "source": "readme_localnest_mcp",
+      "source": "readme_synapse_mcp",
       "target": "readme_conversation_ingestion"
     },
     {
       "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
-      "source_file": "localnest-docs/static/img/social-card.svg",
+      "source_file": "synapse-docs/static/img/social-card.svg",
       "source_location": null,
       "weight": 0.8,
-      "_src": "localnest_brand",
-      "_tgt": "readme_localnest_mcp",
-      "source": "readme_localnest_mcp",
-      "target": "localnest_brand"
+      "_src": "synapse_brand",
+      "_tgt": "readme_synapse_mcp",
+      "source": "readme_synapse_mcp",
+      "target": "synapse_brand"
     },
     {
       "relation": "calls",
@@ -25442,16 +25442,16 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_find",
+      "_src": "readme_synapse_find",
       "_tgt": "readme_temporal_knowledge_graph",
       "source": "readme_temporal_knowledge_graph",
-      "target": "readme_localnest_find"
+      "target": "readme_synapse_find"
     },
     {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_kg_pipeline",
@@ -25463,7 +25463,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_kg_entities",
@@ -25475,7 +25475,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_kg_triples",
@@ -25487,7 +25487,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_kg_temporal",
@@ -25499,7 +25499,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 0.9,
       "_src": "concept_temporal_kg",
@@ -25511,7 +25511,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 0.85,
       "_src": "feature_temporal_kg",
@@ -25562,16 +25562,16 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_find",
+      "_src": "readme_synapse_find",
       "_tgt": "readme_hybrid_search",
       "source": "readme_hybrid_search",
-      "target": "readme_localnest_find"
+      "target": "readme_synapse_find"
     },
     {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_retrieval_pipeline",
@@ -25583,7 +25583,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/search.md",
+      "source_file": "synapse-docs/docs/tools/search.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_search_hybrid",
@@ -25595,7 +25595,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 0.9,
       "_src": "concept_hybrid_search",
@@ -25658,16 +25658,16 @@
       "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "readme_localnest_find",
+      "_src": "readme_synapse_find",
       "_tgt": "readme_agent_memory",
       "source": "readme_agent_memory",
-      "target": "readme_localnest_find"
+      "target": "readme_synapse_find"
     },
     {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/memory.md",
+      "source_file": "synapse-docs/docs/tools/memory.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_memory_workflow",
@@ -25679,7 +25679,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/memory.md",
+      "source_file": "synapse-docs/docs/tools/memory.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_memory_crud",
@@ -25691,7 +25691,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/memory.md",
+      "source_file": "synapse-docs/docs/tools/memory.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_memory_relations",
@@ -25715,7 +25715,7 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_design_decisions",
@@ -25763,7 +25763,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_retrieval_pipeline",
@@ -25787,7 +25787,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_retrieval_pipeline",
@@ -25799,7 +25799,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_hooks_pipeline",
@@ -25811,7 +25811,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/hooks.md",
+      "source_file": "synapse-docs/docs/tools/hooks.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_hooks",
@@ -25823,7 +25823,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/organization.md",
+      "source_file": "synapse-docs/docs/tools/organization.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_nest_branch",
@@ -25835,7 +25835,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_memory_pipeline",
@@ -25847,7 +25847,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 0.9,
       "_src": "feature_semantic_dedup",
@@ -25859,7 +25859,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_memory_pipeline",
@@ -25883,7 +25883,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md",
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "tools_kg_traversal",
@@ -25907,7 +25907,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_indexing_model",
@@ -25967,7 +25967,7 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md",
+      "source_file": "synapse-docs/docs/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_design_decisions",
@@ -25979,7 +25979,7 @@
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "weight": 0.9,
       "_src": "concept_batch_ops",
@@ -26015,7 +26015,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/search.md",
+      "source_file": "skills/synapse/commands/search.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "cmd_search",
@@ -26027,7 +26027,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.4/configuration.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.4/configuration.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_4_beta4",
@@ -26039,7 +26039,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.4/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.4/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_4_beta4",
@@ -26051,7 +26051,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.7/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.7/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_4_beta7",
@@ -26063,7 +26063,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.4-beta.7/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.4-beta.7/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_4_beta7",
@@ -26075,7 +26075,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26087,7 +26087,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26099,7 +26099,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26111,7 +26111,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26123,7 +26123,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26135,7 +26135,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26147,7 +26147,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26159,7 +26159,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26171,7 +26171,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta2",
@@ -26183,7 +26183,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.3/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.3/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_0_7_beta3",
@@ -26195,19 +26195,19 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/SKILL.md",
+      "source_file": "skills/synapse/SKILL.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "skill_localnest_mcp",
+      "_src": "skill_synapse_mcp",
       "_tgt": "feature_temporal_kg",
       "source": "feature_temporal_kg",
-      "target": "skill_localnest_mcp"
+      "target": "skill_synapse_mcp"
     },
     {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "feature_multihop_traversal",
@@ -26219,7 +26219,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_1_0",
@@ -26231,7 +26231,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_1_0",
@@ -26243,7 +26243,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.1.0/overview.md",
+      "source_file": "synapse-docs/docs/versions/0.1.0/overview.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "version_0_1_0",
@@ -26255,7 +26255,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/releases/0.1.0.md",
+      "source_file": "synapse-docs/docs/releases/0.1.0.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "release_0_1_0",
@@ -26267,7 +26267,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26279,7 +26279,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26291,7 +26291,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26303,7 +26303,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26315,7 +26315,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26327,7 +26327,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26339,7 +26339,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "architecture_guide",
@@ -26351,7 +26351,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "future_retrieval_roadmap",
@@ -26363,7 +26363,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "future_retrieval_roadmap",
@@ -26375,7 +26375,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "future_retrieval_roadmap",
@@ -26387,7 +26387,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md",
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "future_retrieval_roadmap",
@@ -26399,19 +26399,19 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-sql-adapter/SKILL.md",
+      "source_file": "skills/synapse-sql-adapter/SKILL.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "skill_localnest_sql_adapter",
+      "_src": "skill_synapse_sql_adapter",
       "_tgt": "concept_sqlite_vec",
       "source": "concept_sqlite_vec",
-      "target": "skill_localnest_sql_adapter"
+      "target": "skill_synapse_sql_adapter"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "concept_hybrid_search",
@@ -26423,7 +26423,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "concept_hybrid_search",
@@ -26435,7 +26435,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/guides/architecture.md",
+      "source_file": "synapse-docs/docs/guides/architecture.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "concept_knowledge_graph",
@@ -26447,31 +26447,31 @@
       "relation": "implements",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "weight": 0.9,
-      "_src": "tool_ref_localnest_kg_add_triple",
+      "_src": "tool_ref_synapse_kg_add_triple",
       "_tgt": "concept_temporal_kg",
       "source": "concept_temporal_kg",
-      "target": "tool_ref_localnest_kg_add_triple"
+      "target": "tool_ref_synapse_kg_add_triple"
     },
     {
       "relation": "implements",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "weight": 0.9,
-      "_src": "tool_ref_localnest_kg_as_of",
+      "_src": "tool_ref_synapse_kg_as_of",
       "_tgt": "concept_temporal_kg",
       "source": "concept_temporal_kg",
-      "target": "tool_ref_localnest_kg_as_of"
+      "target": "tool_ref_synapse_kg_as_of"
     },
     {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/releases/0.1.0.md",
+      "source_file": "synapse-docs/docs/releases/0.1.0.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "release_0_1_0",
@@ -26483,7 +26483,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/releases/history.md",
+      "source_file": "synapse-docs/docs/releases/history.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "release_history",
@@ -26495,127 +26495,127 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/SKILL.md",
+      "source_file": "skills/synapse/SKILL.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "skill_localnest_mcp",
+      "_src": "skill_synapse_mcp",
       "_tgt": "feature_72_mcp_tools",
-      "source": "skill_localnest_mcp",
+      "source": "skill_synapse_mcp",
       "target": "feature_72_mcp_tools"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/prime.md",
+      "source_file": "skills/synapse/commands/prime.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "cmd_prime",
-      "_tgt": "tool_ref_localnest_agent_prime",
-      "source": "tool_ref_localnest_agent_prime",
+      "_tgt": "tool_ref_synapse_agent_prime",
+      "source": "tool_ref_synapse_agent_prime",
       "target": "cmd_prime"
     },
     {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "tool_ref_localnest_agent_prime",
+      "_src": "tool_ref_synapse_agent_prime",
       "_tgt": "concept_agent_prime",
-      "source": "tool_ref_localnest_agent_prime",
+      "source": "tool_ref_synapse_agent_prime",
       "target": "concept_agent_prime"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/find.md",
+      "source_file": "skills/synapse/commands/find.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "cmd_find",
-      "_tgt": "tool_ref_localnest_find",
-      "source": "tool_ref_localnest_find",
+      "_tgt": "tool_ref_synapse_find",
+      "source": "tool_ref_synapse_find",
       "target": "cmd_find"
     },
     {
       "relation": "implements",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "skills/localnest-mcp/tool-reference.md",
+      "source_file": "skills/synapse/tool-reference.md",
       "source_location": null,
       "weight": 0.9,
-      "_src": "tool_ref_localnest_find",
+      "_src": "tool_ref_synapse_find",
       "_tgt": "concept_rrf",
-      "source": "tool_ref_localnest_find",
+      "source": "tool_ref_synapse_find",
       "target": "concept_rrf"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/fact.md",
+      "source_file": "skills/synapse/commands/fact.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "cmd_fact",
-      "_tgt": "tool_ref_localnest_kg_add_triple",
-      "source": "tool_ref_localnest_kg_add_triple",
+      "_tgt": "tool_ref_synapse_kg_add_triple",
+      "source": "tool_ref_synapse_kg_add_triple",
       "target": "cmd_fact"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/recall.md",
+      "source_file": "skills/synapse/commands/recall.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "cmd_recall",
-      "_tgt": "tool_ref_localnest_kg_as_of",
-      "source": "tool_ref_localnest_kg_as_of",
+      "_tgt": "tool_ref_synapse_kg_as_of",
+      "source": "tool_ref_synapse_kg_as_of",
       "target": "cmd_recall"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/remember.md",
+      "source_file": "skills/synapse/commands/remember.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "cmd_remember",
-      "_tgt": "tool_ref_localnest_memory_store",
-      "source": "tool_ref_localnest_memory_store",
+      "_tgt": "tool_ref_synapse_memory_store",
+      "source": "tool_ref_synapse_memory_store",
       "target": "cmd_remember"
     },
     {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-node-compat/SKILL.md",
+      "source_file": "skills/synapse-node-compat/SKILL.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "skill_localnest_node_compat",
+      "_src": "skill_synapse_node_compat",
       "_tgt": "concept_node_sqlite",
-      "source": "skill_localnest_node_compat",
+      "source": "skill_synapse_node_compat",
       "target": "concept_node_sqlite"
     },
     {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp-runtime/SKILL.md",
+      "source_file": "skills/synapse-runtime/SKILL.md",
       "source_location": null,
       "weight": 1.0,
-      "_src": "skill_localnest_mcp_runtime",
-      "_tgt": "concept_localnest_doctor",
-      "source": "skill_localnest_mcp_runtime",
-      "target": "concept_localnest_doctor"
+      "_src": "skill_synapse_mcp_runtime",
+      "_tgt": "concept_synapse_doctor",
+      "source": "skill_synapse_mcp_runtime",
+      "target": "concept_synapse_doctor"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-node-compat/references/version-boundaries.md",
+      "source_file": "skills/synapse-node-compat/references/version-boundaries.md",
       "source_location": null,
       "weight": 1.0,
       "_src": "concept_node_sqlite",
@@ -26627,33 +26627,33 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/static/img/social-card.svg",
+      "source_file": "synapse-docs/static/img/social-card.svg",
       "source_location": null,
       "weight": 1.0,
       "_src": "social_card_svg",
-      "_tgt": "localnest_brand",
+      "_tgt": "synapse_brand",
       "source": "social_card_svg",
-      "target": "localnest_brand"
+      "target": "synapse_brand"
     },
     {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/static/img/logo-mark.svg",
+      "source_file": "synapse-docs/static/img/logo-mark.svg",
       "source_location": null,
       "weight": 1.0,
       "_src": "logo_mark_svg",
-      "_tgt": "localnest_brand",
+      "_tgt": "synapse_brand",
       "source": "logo_mark_svg",
-      "target": "localnest_brand"
+      "target": "synapse_brand"
     }
   ],
   "hyperedges": [
     {
-      "id": "localnest_core_feature_set",
-      "label": "LocalNest Core Feature Set",
+      "id": "synapse_core_feature_set",
+      "label": "Synapse Core Feature Set",
       "nodes": [
-        "readme_localnest_mcp",
+        "readme_synapse_mcp",
         "readme_temporal_knowledge_graph",
         "readme_hybrid_search",
         "readme_agent_memory",
@@ -26681,7 +26681,7 @@
       "relation": "implement",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/knowledge-graph.md"
+      "source_file": "synapse-docs/docs/tools/knowledge-graph.md"
     },
     {
       "id": "memory_tool_group",
@@ -26696,7 +26696,7 @@
       "relation": "implement",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/tools/memory.md"
+      "source_file": "synapse-docs/docs/tools/memory.md"
     },
     {
       "id": "retrieval_pipeline_group",
@@ -26712,7 +26712,7 @@
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/architecture.md"
+      "source_file": "synapse-docs/docs/architecture.md"
     },
     {
       "id": "design_rationale_sqlite",
@@ -26746,11 +26746,11 @@
       "relation": "implement",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "localnest-docs/docs/versions/0.0.7-beta.2/overview.md"
+      "source_file": "synapse-docs/docs/versions/0.0.7-beta.2/overview.md"
     },
     {
-      "id": "localnest_mcp_commands",
-      "label": "LocalNest MCP Skill Commands",
+      "id": "synapse_mcp_commands",
+      "label": "Synapse MCP Skill Commands",
       "nodes": [
         "cmd_selftest",
         "cmd_onboard",
@@ -26766,16 +26766,16 @@
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "skills/localnest-mcp/commands/selftest.md"
+      "source_file": "skills/synapse/commands/selftest.md"
     },
     {
       "id": "agentic_workflow_tools",
       "label": "Agentic Workflow Tools v0.2.0",
       "nodes": [
         "readme_agent_prime",
-        "readme_localnest_find",
-        "readme_localnest_teach",
-        "readme_localnest_audit",
+        "readme_synapse_find",
+        "readme_synapse_teach",
+        "readme_synapse_audit",
         "readme_terse_responses",
         "readme_auto_inference"
       ],
@@ -26796,7 +26796,7 @@
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 0.9,
-      "source_file": "localnest-docs/docs/guides/future-retrieval-roadmap.md"
+      "source_file": "synapse-docs/docs/guides/future-retrieval-roadmap.md"
     },
     {
       "id": "search_pipeline",
@@ -26810,7 +26810,7 @@
       "relation": "implement",
       "confidence": "EXTRACTED",
       "confidence_score": 0.95,
-      "source_file": "localnest-docs/docs/guides/architecture.md"
+      "source_file": "synapse-docs/docs/guides/architecture.md"
     }
   ]
 }

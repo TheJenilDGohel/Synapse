@@ -83,7 +83,7 @@ Synapse now installs and runs on Windows. Multiple critical Windows blockers wer
 
 ### Fixed
 
-- **`bin/_boot.cjs` is no longer Windows-broken.** The previous loader detected which bin command was invoked by inspecting the symlink name in `process.argv[1]`. npm does not create symlinks on Windows — it generates `.cmd` shims that all spawn `node bin/_boot.cjs`, so every Windows user got `_boot` as the detected name and every bin command (`synapse`, `synapse-mcp`, `synapse-mcp-setup`, `synapse-mcp-doctor`, etc.) failed with a wrong-target ESM resolution error. `_boot.cjs` is now an exported `runTarget(scriptName)` runner, and each of the 8 bin entries has its own tiny shim under `bin/<name>.cjs` that hard-codes its target. Works identically on Linux, macOS, and Windows.
+- **`bin/_boot.cjs` is no longer Windows-broken.** The previous loader detected which bin command was invoked by inspecting the symlink name in `process.argv[1]`. npm does not create symlinks on Windows — it generates `.cmd` shims that all spawn `node bin/_boot.cjs`, so every Windows user got `_boot` as the detected name and every bin command (`synapse`, `synapse`, `synapse-setup`, `synapse-doctor`, etc.) failed with a wrong-target ESM resolution error. `_boot.cjs` is now an exported `runTarget(scriptName)` runner, and each of the 8 bin entries has its own tiny shim under `bin/<name>.cjs` that hard-codes its target. Works identically on Linux, macOS, and Windows.
 - **`expandHome()` cross-platform.** `src/runtime/config.ts` was reading `process.env.HOME` directly (undefined on Windows) and only matching `~/` (never `~\`). Replaced with `os.homedir()` and a regex that accepts both separators. User-supplied config paths starting with `~` now expand correctly on every OS.
 - **`preinstall-cleanup.mjs` cross-platform paths.** Replaced `path.join('/', ...)` Unix root build with proper drive-aware reconstruction, swapped `URL().pathname` (which returns `/C:/...` on Windows) for `fileURLToPath()`, made the git-dep-prep detection use `path.join` instead of literal `/.npm/_cacache/tmp/`, and routed `npm root -g` through `npm.cmd` on Windows.
 - **`spawnSync('rg', …)` resolves on Windows.** Node does not auto-resolve PATHEXT inside `child_process.spawn`, so `'rg'` was failing with `ENOENT` on Windows even when ripgrep was installed. Introduced `src/runtime/platform.ts` exporting `RG_BIN` (`rg.exe` on Windows, `rg` elsewhere) and routed every ripgrep spawn site through it (`lexical-search.ts` x2, `runtime/config.ts`, `cli/commands/selftest-checks.ts`). `search_code` and `search_hybrid` now work on Windows.
@@ -97,7 +97,7 @@ Synapse now installs and runs on Windows. Multiple critical Windows blockers wer
 ### New files
 
 - `src/runtime/platform.ts` — centralised `isWindows`, `RG_BIN`, `NPM_BIN`, `NPX_BIN`, `SYNAPSE_BIN`, `platformBin()` helpers so the platform check lives in exactly one place.
-- `bin/synapse.cjs`, `bin/synapse-mcp.cjs`, `bin/synapse-mcp-setup.cjs`, `bin/synapse-mcp-doctor.cjs`, `bin/synapse-mcp-upgrade.cjs`, `bin/synapse-mcp-install-skill.cjs`, `bin/synapse-mcp-task-context.cjs`, `bin/synapse-mcp-capture-outcome.cjs` — per-bin shims that route through `_boot.cjs`'s `runTarget`.
+- `bin/synapse.cjs`, `bin/synapse.cjs`, `bin/synapse-setup.cjs`, `bin/synapse-doctor.cjs`, `bin/synapse-upgrade.cjs`, `bin/synapse-install-skill.cjs`, `bin/synapse-task-context.cjs`, `bin/synapse-capture-outcome.cjs` — per-bin shims that route through `_boot.cjs`'s `runTarget`.
 
 ### Deeper Windows CI fixes (from the full green-build chase)
 
@@ -382,7 +382,7 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 - **Global flags**: `--json`, `--verbose`, `--quiet`, `--config` work on all commands.
 - **Colored help**: organized by command categories (Core, Memory, KG, Skills, Diagnostics).
 - **Shell completions**: `synapse completion bash|zsh|fish` for tab completion.
-- **Legacy deprecation**: old `synapse-mcp-*` binaries now show yellow deprecation warnings and redirect to canonical commands.
+- **Legacy deprecation**: old `synapse-*` binaries now show yellow deprecation warnings and redirect to canonical commands.
 
 ### Migration Safety
 
@@ -431,8 +431,8 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 ### CLI
 
 - Added canonical `synapse task-context` and `synapse capture-outcome` commands for memory workflow automation.
-- Soft-deprecated legacy helper binaries by turning `synapse-mcp-setup`, `synapse-mcp-doctor`, `synapse-mcp-upgrade`, `synapse-mcp-install-skill`, `synapse-mcp-task-context`, and `synapse-mcp-capture-outcome` into warning-forwarding compatibility wrappers.
-- Kept the `synapse-mcp` MCP server binary unchanged so existing client configs continue to start the server without migration.
+- Soft-deprecated legacy helper binaries by turning `synapse-setup`, `synapse-doctor`, `synapse-upgrade`, `synapse-install-skill`, `synapse-task-context`, and `synapse-capture-outcome` into warning-forwarding compatibility wrappers.
+- Kept the `synapse` MCP server binary unchanged so existing client configs continue to start the server without migration.
 
 ### Docs & Guidance
 
@@ -457,7 +457,7 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 
 ### Runtime Fixes
 
-- Fixed bundled skill version reporting so `synapse-mcp-install-skill` now reports the actual package version instead of stale metadata.
+- Fixed bundled skill version reporting so `synapse-install-skill` now reports the actual package version instead of stale metadata.
 - Made the skill installer treat `package.json` as the version source of truth, preventing future drift between the package version and bundled skill metadata.
 
 ### Quality
@@ -490,8 +490,8 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 
 ### CLI
 
-- `synapse-mcp-task-context` and `synapse-mcp-capture-outcome` now support `--help` / `-h` with full usage documentation printed to stdout.
-- `synapse-mcp-capture-outcome` now accepts a `--tags` CSV argument for tagging captured events at the CLI level.
+- `synapse-task-context` and `synapse-capture-outcome` now support `--help` / `-h` with full usage documentation printed to stdout.
+- `synapse-capture-outcome` now accepts a `--tags` CSV argument for tagging captured events at the CLI level.
 
 ### Security & Dependencies
 
@@ -561,7 +561,7 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 ## [0.0.4-beta.4] - 2026-03-03
 
 ### Added
-- `synapse-mcp --version` CLI output for quick runtime/package verification.
+- `synapse --version` CLI output for quick runtime/package verification.
 - Automatic npm update checks with local cache/backoff via new `UpdateService`.
 - New MCP tools:
   - `synapse_task_context` (runtime + memory status + recall bundle for substantive tasks)
@@ -578,8 +578,8 @@ This major update transforms Synapse into an **Expert Steering** system for auto
   - `synapse_update_status` (cached npm version check with optional force refresh)
   - `synapse_update_self` (approved self-update + bundled skill sync, with dry-run support)
 - New CLI wrappers for deterministic hook usage:
-  - `synapse-mcp-task-context`
-  - `synapse-mcp-capture-outcome`
+  - `synapse-task-context`
+  - `synapse-capture-outcome`
 - Local memory subsystem:
   - SQLite-backed canonical memory store with revisions, scoped metadata, recall counters, and dedupe fingerprinting
   - background capture event log with promotion/ignore decisions
@@ -611,7 +611,7 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 ### Changed
 - Package/runtime version bumped to `0.0.4-beta.4`.
 - Bundled skill install now checks installed skill metadata and only resyncs when the installed skill is missing, outdated, or `--force` is used.
-- `synapse-mcp-setup` now asks for one-time user consent before enabling local memory and persists memory config into `synapse.config.json` and generated MCP snippets.
+- `synapse-setup` now asks for one-time user consent before enabling local memory and persists memory config into `synapse.config.json` and generated MCP snippets.
 - README, bundled `SKILL.md`, and OpenAI agent manifest now document retrieval + memory flow, including pre-task recall and post-task capture guidance.
 - Memory guidance now prefers the higher-level task-context and capture-outcome flow over hand-orchestrating low-level recall/capture tools.
 - `synapse_search_hybrid` now reports `ranking_mode` so callers can tell whether results are hybrid, semantic-only, lexical-only, or empty.
@@ -659,8 +659,8 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 - Added MCP tool annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) across exposed tools.
 - Added `response_format` support (`json`/`markdown`) to tool responses.
 - Added pagination metadata for list-style tools (`total_count`, `count`, `limit`, `offset`, `has_more`, `next_offset`, `items`).
-- Added bundled skill distribution in package under `skills/synapse-mcp`.
-- Added new command: `synapse-mcp-install-skill`.
+- Added bundled skill distribution in package under `skills/synapse`.
+- Added new command: `synapse-install-skill`.
 - Added automatic bundled skill install on package install (`postinstall`) with opt-out `SYNAPSE_SKIP_SKILL_INSTALL=true`.
 - Added comprehensive test suite for config, migrator, search, workspace, vector index, and sqlite index flows.
 
@@ -682,7 +682,7 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 
 ### Added
 - Single-package Node.js layout at repository root (no `node-mcp/` subfolder).
-- `synapse-mcp-doctor` command for environment and config diagnostics.
+- `synapse-doctor` command for environment and config diagnostics.
 - Phase 1 local semantic indexing service (`synapse.index.json`) with chunked TF-IDF-style retrieval.
 - New MCP tools:
   - `index_status`

@@ -111,7 +111,7 @@ export function registerCoreTools({
     ['synapse_update_status'],
     {
       title: 'Update Status',
-      description: 'Check npm for the latest synapse-mcp version on the selected channel (cached, default every 120 minutes).',
+      description: 'Check npm for the latest synapse version on the selected channel (cached, default every 120 minutes).',
       inputSchema: {
         force_check: z.boolean().default(false),
         channel: z.enum(['stable', 'beta']).default('stable')
@@ -136,7 +136,7 @@ export function registerCoreTools({
     ['synapse_update_self'],
     {
       title: 'Update Self',
-      description: 'Update synapse-mcp globally via npm and sync bundled skill. Supports stable, beta, or explicit version targets. Requires explicit user approval.',
+      description: 'Update synapse globally via npm and sync bundled skill. Supports stable, beta, or explicit version targets. Requires explicit user approval.',
       inputSchema: {
         approved_by_user: z.boolean().default(false),
         dry_run: z.boolean().default(false),

@@ -10,10 +10,10 @@
 This beta still uses the same general setup flow:
 
 ```bash
-npm install -g synapse-mcp@0.0.2-beta.3
-synapse-mcp-install-skill
-npx -y synapse-mcp-setup
-npx -y synapse-mcp-doctor
+npm install -g synapse@0.0.2-beta.3
+synapse-install-skill
+npx -y synapse-setup
+npx -y synapse-doctor
 ```
 
 Global install was becoming the clearer path, but `npx` remained common in docs and workflow examples.

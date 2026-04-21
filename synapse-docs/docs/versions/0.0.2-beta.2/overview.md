@@ -19,5 +19,5 @@ This beta turned Synapse into a more coherent MCP package and client integration
 - `response_format`
 - pagination metadata
 - bundled skill distribution
-- `synapse-mcp-install-skill`
+- `synapse-install-skill`
 - broader automated test coverage

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { ensureConfigUpgraded } from '../src/migrations/config-migrator.js';
-import { buildLocalnestPaths } from '../src/runtime/home-layout.js';
+import { buildSynapsePaths } from '../src/runtime/home-layout.js';
 
 function makeTempDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-migrator-test-'));
@@ -33,7 +33,7 @@ test('ensureConfigUpgraded handles missing/invalid config', () => {
 
 test('ensureConfigUpgraded migrates old config and creates backup', () => {
   const root = makeTempDir();
-  const cfgPath = buildLocalnestPaths(root).configPath;
+  const cfgPath = buildSynapsePaths(root).configPath;
   fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
   fs.writeFileSync(
     cfgPath,
@@ -51,7 +51,7 @@ test('ensureConfigUpgraded migrates old config and creates backup', () => {
   assert.equal(upgraded.version, 4);
   assert.equal(upgraded.index.backend, 'sqlite-vec');
   assert.equal(upgraded.index.maxIndexedFiles, 20000);
-  assert.equal(upgraded.index.dbPath, buildLocalnestPaths(root).sqliteDbPath);
+  assert.equal(upgraded.index.dbPath, buildSynapsePaths(root).sqliteDbPath);
   assert.equal(upgraded.index.embeddingProvider, 'huggingface');
   assert.equal(upgraded.index.embeddingModel, 'sentence-transformers/all-MiniLM-L6-v2');
   assert.equal(upgraded.index.embeddingDimensions, 384);
@@ -66,7 +66,7 @@ test('ensureConfigUpgraded migrates old config and creates backup', () => {
 
 test('ensureConfigUpgraded returns up-to-date without rewrite', () => {
   const root = makeTempDir();
-  const cfgPath = buildLocalnestPaths(root).configPath;
+  const cfgPath = buildSynapsePaths(root).configPath;
   fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
   const data = {
     version: 4,

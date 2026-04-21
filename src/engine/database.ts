@@ -36,3 +36,7 @@ export { ensureSchema, runMigrations, SCHEMA_VERSION } from '../services/memory/
 // SQLite performance tuning (WAL mode, cache size, mmap, busy_timeout)
 export { applySqliteTuning } from '../services/memory/sqlite-tuning.js';
 export type { SqliteExecHost } from '../services/memory/sqlite-tuning.js';
+
+// Backup and Restore (VACUUM INTO)
+export { backupDatabase, restoreDatabase } from '../services/memory/backup.js';
+export type { BackupResult, RestoreResult } from '../services/memory/backup.js';

@@ -185,7 +185,7 @@ codebase-memory-mcp is the closest competitor — code + KG in a single binary w
 
 ```bash
 # Install
-npm install -g synapse-mcp
+npm install -g synapse
 
 # Setup workspace + embedding model
 synapse setup
@@ -200,7 +200,7 @@ Add to your MCP client config (Claude Code, Cursor, Windsurf, Cline):
 {
   "mcpServers": {
     "synapse": {
-      "command": "synapse-mcp",
+      "command": "synapse",
       "startup_timeout_sec": 30,
       "env": {
         "MCP_MODE": "stdio",
@@ -241,7 +241,7 @@ MIT licensed, open source: [github.com/wmt-mobile/synapse](https://github.com/wm
 Full documentation: [wmt-mobile.github.io/synapse](https://wmt-mobile.github.io/synapse/)
 
 ```bash
-npm install -g synapse-mcp && synapse setup && synapse doctor
+npm install -g synapse && synapse setup && synapse doctor
 ```
 
 Your AI agent just grew a permanent brain.

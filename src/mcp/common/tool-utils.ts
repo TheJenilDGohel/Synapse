@@ -226,7 +226,7 @@ export function buildRipgrepHelpMessage(): string {
   }
 
   return [
-    'ripgrep (rg) is required by synapse-mcp for fast code search.',
+    'ripgrep (rg) is required by synapse for fast code search.',
     install,
     'If rg is installed but MCP still fails, set PATH in your MCP client env.',
     'Run doctor for detailed checks: synapse doctor'

@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import { IDEMPOTENT_WRITE_ANNOTATIONS, DESTRUCTIVE_ANNOTATIONS } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import { ACK_RESULT_SCHEMA } from '../common/schemas.js';
-import { backupDatabase, restoreDatabase } from '../../services/memory/backup.js';
-import type { Adapter } from '../../services/memory/types.js';
+import { backupDatabase, restoreDatabase } from '../../engine/index.js';
+import type { Adapter } from '../../engine/index.js';
 
 export interface RegisterBackupToolsOptions {
   registerJsonTool: RegisterJsonToolFn;

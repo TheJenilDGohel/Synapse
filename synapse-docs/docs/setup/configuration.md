@@ -66,7 +66,7 @@ Most teams only adjust these values:
 | `SYNAPSE_MEMORY_DB_PATH` | `~/.synapse/data/synapse.memory.db` | SQLite memory DB path |
 | `SYNAPSE_MEMORY_AUTO_CAPTURE` | `false` | background memory capture behavior |
 | `SYNAPSE_MEMORY_CONSENT_DONE` | `false` | whether setup already collected memory consent |
-| `SYNAPSE_UPDATE_PACKAGE` | `synapse-mcp` | package checked for updates |
+| `SYNAPSE_UPDATE_PACKAGE` | `synapse` | package checked for updates |
 | `SYNAPSE_UPDATE_CHECK_INTERVAL_MINUTES` | `120` | update check cache interval |
 | `SYNAPSE_UPDATE_FAILURE_BACKOFF_MINUTES` | `15` | retry backoff after failures |
 

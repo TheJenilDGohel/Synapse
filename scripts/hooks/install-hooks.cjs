@@ -37,7 +37,7 @@ function writeSettings(filePath, settings) {
   fs.writeFileSync(filePath, JSON.stringify(settings, null, 2) + '\n', 'utf8');
 }
 
-function hasLocalnestHook(hookArray, scriptName) {
+function hasSynapseHook(hookArray, scriptName) {
   if (!Array.isArray(hookArray)) return false;
   return hookArray.some(entry =>
     entry.hooks?.some(h => h.command?.includes(scriptName))
@@ -59,7 +59,7 @@ function installToSettings(settingsPath) {
   // Matcher includes mcp__synapse__.* so the hook can observe agent_prime
   // calls and clear the "session not primed" reminder.
   if (!settings.hooks.PreToolUse) settings.hooks.PreToolUse = [];
-  if (!hasLocalnestHook(settings.hooks.PreToolUse, 'synapse-pre-tool')) {
+  if (!hasSynapseHook(settings.hooks.PreToolUse, 'synapse-pre-tool')) {
     settings.hooks.PreToolUse.push({
       matcher: 'Edit|Write|Bash|MultiEdit|mcp__synapse__.*',
       hooks: [{
@@ -73,7 +73,7 @@ function installToSettings(settingsPath) {
 
   // Post-tool hook (outcome capture)
   if (!settings.hooks.PostToolUse) settings.hooks.PostToolUse = [];
-  if (!hasLocalnestHook(settings.hooks.PostToolUse, 'synapse-post-tool')) {
+  if (!hasSynapseHook(settings.hooks.PostToolUse, 'synapse-post-tool')) {
     settings.hooks.PostToolUse.push({
       matcher: 'Bash|Edit|Write|MultiEdit',
       hooks: [{
@@ -96,7 +96,7 @@ function main() {
   // Verify hook files exist
   if (!fs.existsSync(PRE_HOOK)) {
     console.error(`[synapse] Hook file not found: ${PRE_HOOK}`);
-    console.error('[synapse] Package may be corrupted. Reinstall with: npm install -g synapse-mcp');
+    console.error('[synapse] Package may be corrupted. Reinstall with: npm install -g synapse');
     process.exit(1);
   }
 

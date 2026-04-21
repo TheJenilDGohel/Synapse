@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildLocalnestPaths } from '../../runtime/home-layout.js';
+import { buildSynapsePaths } from '../../runtime/index.js';
 import {
   parseIsoTime,
   compareVersions,
@@ -90,7 +90,7 @@ export class UpdateService {
     this.checkIntervalMinutes = checkIntervalMinutes;
     this.failureBackoffMinutes = failureBackoffMinutes;
     this.commandRunner = commandRunner;
-    this.cachePath = (buildLocalnestPaths(synapseHome) as { updateStatusPath: string }).updateStatusPath;
+    this.cachePath = (buildSynapsePaths(synapseHome) as { updateStatusPath: string }).updateStatusPath;
   }
 
   normalizeStatusRecord(status: Partial<UpdateStatus> | null): UpdateStatus {

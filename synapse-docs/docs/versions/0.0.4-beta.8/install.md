@@ -8,8 +8,8 @@
 </div>
 
 ```bash
-npm install -g synapse-mcp@0.0.4-beta.8
-synapse-mcp-install-skill
+npm install -g synapse@0.0.4-beta.8
+synapse-install-skill
 synapse setup
 synapse doctor
 synapse upgrade
@@ -18,7 +18,7 @@ synapse upgrade
 ## Beta-specific notes
 
 - `synapse setup` and `synapse doctor` remain the preferred bootstrap path.
-- direct `synapse-mcp` binary startup is still preferred for MCP clients; `npx` remains fallback behavior.
+- direct `synapse` binary startup is still preferred for MCP clients; `npx` remains fallback behavior.
 - startup no longer blocks on the synchronous npm warm-check that caused early MCP delays in prior builds.
 - sqlite-vec index status now degrades safely when the database is locked instead of hanging or crashing status calls.
 

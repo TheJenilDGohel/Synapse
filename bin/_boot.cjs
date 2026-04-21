@@ -35,7 +35,7 @@ function resolveTsxEsm() {
   try {
     return pathToFileURL(req.resolve('tsx/esm')).href;
   } catch {
-    process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse-mcp\n');
+    process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse\n');
     process.exit(1);
   }
 }

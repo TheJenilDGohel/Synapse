@@ -1,12 +1,12 @@
 ---
-name: localnest-sql-adapter
-description: "Use when changing LocalNest SQLite-backed indexing or memory code, especially adapter boundaries, extension loading, migrations, backend fallback behavior, or sqlite-vec runtime loading."
+name: synapse-sql-adapter
+description: "Use when changing Synapse SQLite-backed indexing or memory code, especially adapter boundaries, extension loading, migrations, backend fallback behavior, or sqlite-vec runtime loading."
 user-invocable: false
 ---
 
-# LocalNest SQL Adapter
+# Synapse SQL Adapter
 
-Use this skill when working on LocalNest database access in:
+Use this skill when working on Synapse database access in:
 - `src/services/retrieval/sqlite-vec/`
 - `src/services/memory/`
 - `src/app/create-services.ts`

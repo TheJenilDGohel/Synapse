@@ -8,7 +8,7 @@
 </div>
 
 ```bash
-npm install -g synapse-mcp@0.0.4-beta.9
+npm install -g synapse@0.0.4-beta.9
 synapse install skills
 synapse setup
 synapse doctor
@@ -18,7 +18,7 @@ synapse upgrade
 ## Beta-specific notes
 
 - `synapse install skills` is the preferred bundled-skill sync command for this version line.
-- `synapse-mcp-install-skill` remains available as a legacy alias.
+- `synapse-install-skill` remains available as a legacy alias.
 - bundled skill version reporting now uses the package version as the source of truth.
 - installs may still show one upstream ONNX-runtime deprecation warning, but Synapse behavior is unchanged.
 

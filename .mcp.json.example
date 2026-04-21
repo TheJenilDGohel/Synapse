@@ -1,17 +1,17 @@
 {
   "mcpServers": {
-    "localnest": {
+    "synapse": {
       "command": "npx",
       "args": [
         "-y",
-        "localnest-mcp"
+        "synapse"
       ],
       "env": {
         "MCP_MODE": "stdio",
-        "LOCALNEST_CONFIG": "/Users/you/.localnest/localnest.config.json",
-        "LOCALNEST_INDEX_BACKEND": "sqlite-vec",
-        "LOCALNEST_DB_PATH": "/Users/you/.localnest/localnest.db",
-        "LOCALNEST_INDEX_PATH": "/Users/you/.localnest/localnest.index.json"
+        "SYNAPSE_CONFIG": "/Users/you/.synapse/synapse.config.json",
+        "SYNAPSE_INDEX_BACKEND": "sqlite-vec",
+        "SYNAPSE_DB_PATH": "/Users/you/.synapse/synapse.db",
+        "SYNAPSE_INDEX_PATH": "/Users/you/.synapse/synapse.index.json"
       }
     }
   }

@@ -6,15 +6,16 @@ import readline from 'node:readline/promises';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { stdin as input, stdout as output } from 'node:process';
-import { migrateLocalnestHomeLayout, resolveLocalnestHome } from '../../src/runtime/index.js';
-import { SERVER_VERSION } from '../../src/runtime/version.js';
-import { normalizeInstallTarget, normalizeUpdateChannel } from '../../src/services/update/helpers.js';
+import { migrateSynapseHomeLayout, resolveSynapseHome } from '../../src/runtime/index.ts';
+import { SERVER_VERSION } from '../../src/runtime/version.ts';
+import { normalizeInstallTarget, normalizeUpdateChannel } from '../../src/services/update/helpers.ts';
 import {
   findMissingRequiredSetupFields,
   normalizeUpgradeConfig
-} from '../../src/services/update/index.js';
+} from '../../src/services/update/index.ts';
 import ora from 'ora';
-import { c, symbol, rule, box } from '../../src/cli/ansi.js';
+import { c, symbol, rule, box } from '../../src/cli/ansi.ts';
+import { NPM_BIN, SYNAPSE_BIN, isWindows } from '../../src/runtime/platform.ts';
 
 if (!process.env.DART_SUPPRESS_ANALYTICS) {
   process.env.DART_SUPPRESS_ANALYTICS = 'true';
@@ -22,8 +23,8 @@ if (!process.env.DART_SUPPRESS_ANALYTICS) {
 
 const argv = process.argv.slice(2);
 // Extract only HOME for path resolution — avoids CodeQL CWE-532 taint
-const synapseHome = resolveLocalnestHome({ HOME: process.env.HOME || '' });
-const layout = migrateLocalnestHomeLayout(synapseHome).paths;
+const synapseHome = resolveSynapseHome({ HOME: process.env.HOME || '' });
+const layout = migrateSynapseHomeLayout(synapseHome).paths;
 const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
 
 function parseArg(name) {
@@ -79,7 +80,11 @@ function readExistingConfig() {
 
 function runCommand(command, args, label) {
   const spinner = ora(`${label}…`).start();
-  const run = spawnSync(command, args, { stdio: 'pipe', encoding: 'utf8' });
+  const run = spawnSync(command, args, {
+    stdio: 'pipe',
+    encoding: 'utf8',
+    shell: isWindows
+  });
   if (run.error) {
     spinner.fail(`${label} failed: ${run.error.message || run.error}`);
     throw new Error(`${label} failed: ${run.error.message || run.error}`);
@@ -93,7 +98,10 @@ function runCommand(command, args, label) {
 }
 
 function runCommandCapture(command, args, label) {
-  const run = spawnSync(command, args, { encoding: 'utf8' });
+  const run = spawnSync(command, args, {
+    encoding: 'utf8',
+    shell: isWindows
+  });
   return {
     ok: run.status === 0 && !run.error,
     status: run.status,
@@ -263,14 +271,14 @@ async function main() {
     console.log('');
     console.log(c.bold('Options:'));
     console.log(`  ${c.cyan('--version')}=<semver|latest|stable|beta>  target package version`);
-    console.log(`  ${c.cyan('--package')}=<npm-package>              package name (default synapse-mcp)`);
+    console.log(`  ${c.cyan('--package')}=<npm-package>              package name (default synapse)`);
     console.log(`  ${c.cyan('--skip-skill')}                         skip skill sync step`);
     console.log(`  ${c.cyan('--yes')}                                continue without confirmation`);
     console.log(`  ${c.cyan('--dry-run')}                           print actions only`);
     return;
   }
 
-  const packageName = parseArg('package') || 'synapse-mcp';
+  const packageName = parseArg('package') || 'synapse';
   const targetVersion = resolveTargetVersion();
   const installTarget = normalizeInstallTarget(targetVersion);
   const skipSkill = hasFlag('skip-skill');
@@ -309,8 +317,8 @@ async function main() {
   const mergedConfig = normalizeUpgradeConfig({ existingConfig, defaults });
   const finalConfig = assumeYes ? mergedConfig : await fillMissingFields(mergedConfig, missing);
 
-  const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-  const skillCmd = process.platform === 'win32' ? 'synapse.cmd' : 'synapse';
+  const npmCmd = NPM_BIN;
+  const skillCmd = SYNAPSE_BIN;
   const setupScript = path.resolve(scriptsDir, 'setup-synapse.mjs');
   const setupArgs = [
     setupScript,

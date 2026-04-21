@@ -1,5 +1,5 @@
 ---
-name: synapse-mcp
+name: synapse
 version: 0.3.0-beta.2
 description: Primary MCP for local code retrieval AND persistent agent memory. Specializes in context rehydration and temporal knowledge modeling.
 category: tools

@@ -4,9 +4,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {
-  buildLocalnestServerConfig,
+  buildSynapseServerConfig,
   detectAiToolTargets,
-  installLocalnestIntoDetectedClients
+  installSynapseIntoDetectedClients
 } from '../src/setup/client-installer.js';
 
 function makeTempDir() {
@@ -40,7 +40,7 @@ test('detectAiToolTargets reports supported and unsupported local tools', () => 
   fs.rmSync(homeDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 });
 
-test('installLocalnestIntoDetectedClients updates json and toml configs', () => {
+test('installSynapseIntoDetectedClients updates json and toml configs', () => {
   const homeDir = makeTempDir();
   const backupDir = path.join(homeDir, '.synapse', 'backups');
 
@@ -71,15 +71,15 @@ test('installLocalnestIntoDetectedClients updates json and toml configs', () => 
     'utf8'
   );
 
-  const serverConfig = buildLocalnestServerConfig({
-    command: 'synapse-mcp',
+  const serverConfig = buildSynapseServerConfig({
+    command: 'synapse',
     env: {
       MCP_MODE: 'stdio',
       SYNAPSE_CONFIG: '/tmp/synapse.config.json'
     }
   });
 
-  const result = installLocalnestIntoDetectedClients({
+  const result = installSynapseIntoDetectedClients({
     homeDir,
     serverConfig,
     backupDir
@@ -90,7 +90,7 @@ test('installLocalnestIntoDetectedClients updates json and toml configs', () => 
 
   const cursor = JSON.parse(fs.readFileSync(path.join(homeDir, '.cursor', 'mcp.json'), 'utf8'));
   assert.equal(cursor.mcpServers.existing.command, 'foo');
-  assert.equal(cursor.mcpServers.synapse.command, 'synapse-mcp');
+  assert.equal(cursor.mcpServers.synapse.command, 'synapse');
 
   const gemini = JSON.parse(fs.readFileSync(path.join(homeDir, '.gemini', 'settings.json'), 'utf8'));
   assert.equal(gemini.ui.theme, 'Dracula');
@@ -98,17 +98,17 @@ test('installLocalnestIntoDetectedClients updates json and toml configs', () => 
 
   const kiro = JSON.parse(fs.readFileSync(path.join(homeDir, '.kiro', 'settings', 'mcp.json'), 'utf8'));
   assert.equal(kiro.mcpServers.fetch.command, 'uvx');
-  assert.equal(kiro.mcpServers.synapse.command, 'synapse-mcp');
+  assert.equal(kiro.mcpServers.synapse.command, 'synapse');
 
   const windsurf = JSON.parse(fs.readFileSync(path.join(homeDir, '.windsurf', 'mcp.json'), 'utf8'));
-  assert.equal(windsurf.mcpServers.synapse.command, 'synapse-mcp');
+  assert.equal(windsurf.mcpServers.synapse.command, 'synapse');
 
   const codeiumWindsurf = JSON.parse(fs.readFileSync(path.join(homeDir, '.codeium', 'windsurf', 'mcp_config.json'), 'utf8'));
-  assert.equal(codeiumWindsurf.mcpServers.synapse.command, 'synapse-mcp');
+  assert.equal(codeiumWindsurf.mcpServers.synapse.command, 'synapse');
 
   const codex = fs.readFileSync(path.join(homeDir, '.codex', 'config.toml'), 'utf8');
   assert.match(codex, /\[mcp_servers\.synapse\]/);
-  assert.match(codex, /command = "synapse-mcp"/);
+  assert.match(codex, /command = "synapse"/);
   assert.match(codex, /\[mcp_servers\.synapse\.env\]/);
   assert.match(codex, /SYNAPSE_CONFIG = "\/tmp\/synapse\.config\.json"/);
 

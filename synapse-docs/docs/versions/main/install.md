@@ -10,7 +10,7 @@
 The install flow is the same as `0.1.0`:
 
 ```bash
-npm install -g synapse-mcp
+npm install -g synapse
 synapse install skills
 synapse setup
 synapse doctor

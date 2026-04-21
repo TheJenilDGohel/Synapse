@@ -3,7 +3,7 @@
 <div className="docPanel docPanel--compact">
   <p>
     CLI canonicalization release. Introduced canonical <code>synapse</code> commands and
-    soft-deprecated legacy <code>synapse-mcp-*</code> helper binaries.
+    soft-deprecated legacy <code>synapse-*</code> helper binaries.
   </p>
 </div>
 
@@ -11,7 +11,7 @@
 
 - Added canonical `synapse task-context` and `synapse capture-outcome` commands
 - Soft-deprecated legacy helper binaries with warning-forwarding compatibility wrappers
-- Kept `synapse-mcp` server binary unchanged for existing client configs
+- Kept `synapse` server binary unchanged for existing client configs
 - Updated CLI help and README to prefer canonical commands
 
 ## Tools

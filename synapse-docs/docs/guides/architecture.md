@@ -10,7 +10,7 @@ A TypeScript MCP server that gives AI clients safe, read-focused access to your 
 
 ```mermaid
 flowchart LR
-    A["AI Client"] -->|JSON-RPC over stdio| B["synapse-mcp"]
+    A["AI Client"] -->|JSON-RPC over stdio| B["synapse"]
     B --> C["Your Files"]
     B --> D["Index DB"]
     B --> E["Memory DB"]

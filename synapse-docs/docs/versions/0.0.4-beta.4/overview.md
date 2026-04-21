@@ -23,4 +23,4 @@ description: Overview of Synapse v0.0.4-beta.4 beta docs, including memory workf
 
 ## Best use
 
-Use this version archive when your MCP client is pinned to `synapse-mcp@0.0.4-beta.4` and you want docs aligned exactly to that runtime behavior.
+Use this version archive when your MCP client is pinned to `synapse@0.0.4-beta.4` and you want docs aligned exactly to that runtime behavior.

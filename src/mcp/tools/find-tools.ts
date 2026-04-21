@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createToolResponse, READ_ONLY_ANNOTATIONS } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
-import { unifiedFind } from '../../services/unified-find/find.js';
+import { unifiedFind } from '../../engine/index.js';
 import { SEARCH_RESULT_SCHEMA } from '../common/schemas.js';
 import { applyReadFormat } from '../common/terse-utils.js';
 import type { ReadResponseFormat } from '../common/terse-utils.js';

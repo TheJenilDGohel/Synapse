@@ -67,7 +67,7 @@ test('synapse task-context help prints canonical usage without executing workflo
 });
 
 test('legacy setup wrapper prints deprecation warning and forwards to canonical help', (t) => {
-  const scriptPath = path.resolve('bin/synapse-mcp-setup.js');
+  const scriptPath = path.resolve('bin/synapse-setup.js');
   const result = spawnSync(process.execPath, ['--import', 'tsx/esm', scriptPath, '--help'], { encoding: 'utf8' });
   if (result.error?.code === 'EPERM') {
     t.skip('process spawning is blocked in this environment');

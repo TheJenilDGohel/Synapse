@@ -3,3 +3,4 @@ export * from './home-layout.js';
 export * from './sqlite-vec-extension.js';
 export * from './version.js';
 export * from './warning-filter.js';
+export * from './diagnostics.js';

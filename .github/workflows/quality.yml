@@ -96,4 +96,4 @@ jobs:
         shell: bash
         run: |
           node bin/synapse.cjs --version
-          node bin/synapse-mcp-doctor.cjs --help || true
+          node bin/synapse-doctor.cjs --help || true

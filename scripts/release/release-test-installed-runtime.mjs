@@ -95,9 +95,9 @@ function buildDefaultConfig(overrides = {}) {
     configPath: path.join(synapseHome, 'config', 'synapse.config.json'),
     dbPath: path.join(synapseHome, 'data', 'synapse.db'),
     indexPath: path.join(synapseHome, 'data', 'synapse.index.json'),
-    runtimeLabel: overrides.runtimeLabel || 'globally installed `synapse-mcp`',
+    runtimeLabel: overrides.runtimeLabel || 'globally installed `synapse`',
     versionLabel: overrides.versionLabel || 'installed-runtime',
-    command: overrides.command || 'synapse-mcp'
+    command: overrides.command || 'synapse'
   };
 }
 

@@ -7,7 +7,7 @@ Symptom: `sdk_import` check fails (`ERR_MODULE_NOT_FOUND`).
 Fix:
 ```bash
 npm install
-synapse-mcp-doctor
+synapse-doctor
 ```
 
 ## ripgrep missing

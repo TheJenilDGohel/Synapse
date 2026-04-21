@@ -2,11 +2,11 @@ node_modules/
 .npm-cache/
 dist/
 *.tsbuildinfo
-.localnest/
-.mcp.localnest.json
-.mcp.localnest.*.json
+.synapse/
+.mcp.synapse.json
+.mcp.synapse.*.json
 .mcp.json
-localnest.config.json
+synapse.config.json
 /CLAUDE.md
 /.claude/
 /.codex/
@@ -16,7 +16,7 @@ localnest.config.json
 **/.claude-flow/
 
 # Build artifacts
-localnest-docs/build/
+synapse-docs/build/
 /docs/
 *AUDIT-REPORT*.md
 *ACTION-PLAN*.md

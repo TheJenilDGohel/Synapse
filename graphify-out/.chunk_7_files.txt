@@ -1,10 +1,10 @@
-localnest-docs/docs/tools/memory.md
-localnest-docs/docs/tools/indexing.md
-localnest-docs/docs/tools/updates.md
-localnest-docs/docs/tools/knowledge-graph.md
-localnest-docs/docs/tools/hooks.md
-localnest-docs/docs/tools/overview.md
-localnest-docs/docs/tools/search.md
+synapse-docs/docs/tools/memory.md
+synapse-docs/docs/tools/indexing.md
+synapse-docs/docs/tools/updates.md
+synapse-docs/docs/tools/knowledge-graph.md
+synapse-docs/docs/tools/hooks.md
+synapse-docs/docs/tools/overview.md
+synapse-docs/docs/tools/search.md
 src/cli/options.ts
 src/cli/router.ts
 src/cli/spinner.ts

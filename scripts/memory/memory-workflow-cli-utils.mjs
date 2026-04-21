@@ -19,7 +19,7 @@ export function printTaskContextHelp() {
   console.log(`  synapse task-context ${c.cyan('--json')} '{"task":"investigate issue"}'`);
   console.log('');
   console.log(c.dim('Compatibility alias (deprecated):'));
-  console.log(c.dim('  synapse-mcp-task-context'));
+  console.log(c.dim('  synapse-task-context'));
   console.log('');
   console.log(c.bold('Options:'));
   console.log(`  ${c.cyan('--task')}=<text>            task description`);
@@ -42,7 +42,7 @@ export function printCaptureOutcomeHelp() {
   console.log(`  synapse capture-outcome ${c.cyan('--json')} '{"task":"fix issue","summary":"what changed"}'`);
   console.log('');
   console.log(c.dim('Compatibility alias (deprecated):'));
-  console.log(c.dim('  synapse-mcp-capture-outcome'));
+  console.log(c.dim('  synapse-capture-outcome'));
   console.log('');
   console.log(c.bold('Options:'));
   console.log(`  ${c.cyan('--task')}=<text>             task title`);
@@ -128,7 +128,7 @@ function buildRuntimeSummary(runtime) {
 
 export async function createMemoryWorkflow() {
   const { buildRuntimeConfig, installRuntimeWarningFilter } = await import('../../src/runtime/index.js');
-  const { MemoryService, MemoryWorkflowService } = await import('../../src/services/memory/index.js');
+  const { MemoryService, MemoryWorkflowService } = await import('../../src/engine/index.js');
   installRuntimeWarningFilter();
   const runtime = buildRuntimeConfig(process.env);
   const memory = new MemoryService({

@@ -38,7 +38,7 @@ synapse upgrade 0.1.0
 
 ## Related branch behavior
 
-- `synapse-mcp --version` now reports the runtime/package version directly.
+- `synapse --version` now reports the runtime/package version directly.
 - `synapse install skills` now checks bundled skill metadata and skips reinstalling when the installed skill is already current, unless `--force` is used.
 
 ## Safe usage pattern

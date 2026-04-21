@@ -38,7 +38,7 @@ import {
   registerSymbolTools,
   registerBackupTools
 } from '../mcp/index.js';
-import { MemoryWorkflowService } from '../services/memory/index.js';
+import { MemoryWorkflowService } from '../engine/index.js';
 import type { AppServices } from './create-services.js';
 
 export function registerAppTools(server: any, runtime: any, services: any): void {

@@ -17,7 +17,7 @@
 
 | Setting | Expected beta.5 behavior |
 | --- | --- |
-| MCP startup command | prefer `synapse-mcp` directly when installed globally |
+| MCP startup command | prefer `synapse` directly when installed globally |
 | Startup timeout | keep `startup_timeout_sec` at `30` or higher |
 | Index backend | `sqlite-vec` preferred, JSON fallback still supported |
 | Memory database | `~/.synapse/data/synapse.memory.db` when memory is enabled |

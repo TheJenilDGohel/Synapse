@@ -17,6 +17,6 @@ src/services/update/service.ts
 src/services/update/upgrade-assistant.ts
 src/services/update/index.ts
 src/services/update/helpers.ts
-localnest-docs/docs/versions/0.0.4-beta.7/install.md
-localnest-docs/docs/versions/0.0.4-beta.7/tools.md
-localnest-docs/docs/versions/0.0.4-beta.7/overview.md
+synapse-docs/docs/versions/0.0.4-beta.7/install.md
+synapse-docs/docs/versions/0.0.4-beta.7/tools.md
+synapse-docs/docs/versions/0.0.4-beta.7/overview.md

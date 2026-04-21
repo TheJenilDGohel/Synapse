@@ -4,7 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import {
   buildForwardArgv,
-  buildLocalnestCommandArgv,
+  buildSynapseCommandArgv,
   hasVersionFlag
 } from '../bin/_shared.js';
 import { SERVER_VERSION } from '../src/runtime/version.js';
@@ -32,11 +32,11 @@ test('buildForwardArgv preserves process launcher slots', () => {
   assert.deepEqual(out, ['node', 'bin/synapse.js', 'doctor', '--verbose']);
 });
 
-test('buildLocalnestCommandArgv rewrites legacy wrapper argv to canonical synapse command', () => {
-  const out = buildLocalnestCommandArgv(
+test('buildSynapseCommandArgv rewrites legacy wrapper argv to canonical synapse command', () => {
+  const out = buildSynapseCommandArgv(
     ['setup'],
-    new URL('../bin/synapse-mcp-setup.js', import.meta.url),
-    ['node', 'bin/synapse-mcp-setup.js', '--json']
+    new URL('../bin/synapse-setup.js', import.meta.url),
+    ['node', 'bin/synapse-setup.js', '--json']
   );
 
   assert.equal(out[0], 'node');
@@ -50,7 +50,7 @@ test('synapse --version prints version without starting runtime-heavy paths', (t
   assertVersionCommand(t, scriptPath);
 });
 
-test('synapse-mcp --version prints version without starting MCP server', (t) => {
-  const scriptPath = path.resolve('bin/synapse-mcp.js');
+test('synapse --version prints version without starting MCP server', (t) => {
+  const scriptPath = path.resolve('bin/synapse.js');
   assertVersionCommand(t, scriptPath);
 });

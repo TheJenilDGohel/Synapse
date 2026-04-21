@@ -17,16 +17,16 @@ test('listBundledSkillDirs discovers all bundled skills', () => {
 
   const resolved = listBundledSkillDirs(fakeMetaUrl).map((entry) => path.basename(entry));
 
-  assert.ok(resolved.includes('synapse-mcp'));
+  assert.ok(resolved.includes('synapse'));
   assert.ok(resolved.includes('synapse-sql-adapter'));
-  assert.ok(resolved.includes('synapse-mcp-runtime'));
+  assert.ok(resolved.includes('synapse-runtime'));
   assert.ok(resolved.includes('synapse-node-compat'));
 });
 
 test('bundled skill metadata version matches package version', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
   const skill = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), 'skills', 'synapse-mcp', '.synapse-skill.json'), 'utf8')
+    fs.readFileSync(path.join(process.cwd(), 'skills', 'synapse', '.synapse-skill.json'), 'utf8')
   );
 
   assert.equal(skill.version, pkg.version);
@@ -64,17 +64,17 @@ test('known project skill locations include github and claude layouts', () => {
 });
 
 test('detectSkillToolFamily resolves supported tool families from target path', () => {
-  assert.equal(detectSkillToolFamily('/tmp/home/.codex/skills/synapse-mcp'), 'codex');
-  assert.equal(detectSkillToolFamily('/tmp/home/.copilot/skills/synapse-mcp'), 'copilot');
-  assert.equal(detectSkillToolFamily('/tmp/home/.claude/skills/synapse-mcp'), 'claude');
-  assert.equal(detectSkillToolFamily('/tmp/home/.cursor/skills/synapse-mcp'), 'cursor');
-  assert.equal(detectSkillToolFamily('/tmp/home/.codeium/windsurf/skills/synapse-mcp'), 'windsurf');
-  assert.equal(detectSkillToolFamily('/tmp/home/.opencode/skills/synapse-mcp'), 'opencode');
-  assert.equal(detectSkillToolFamily('/tmp/home/.config/opencode/skills/synapse-mcp'), 'opencode');
-  assert.equal(detectSkillToolFamily('/tmp/home/.gemini/skills/synapse-mcp'), 'gemini');
-  assert.equal(detectSkillToolFamily('/tmp/home/.gemini/antigravity/skills/synapse-mcp'), 'antigravity');
-  assert.equal(detectSkillToolFamily('/tmp/home/.cline/skills/synapse-mcp'), 'cline');
-  assert.equal(detectSkillToolFamily('/tmp/home/.continue/skills/synapse-mcp'), 'continue');
-  assert.equal(detectSkillToolFamily('/tmp/home/.agents/skills/synapse-mcp'), 'agents');
+  assert.equal(detectSkillToolFamily('/tmp/home/.codex/skills/synapse'), 'codex');
+  assert.equal(detectSkillToolFamily('/tmp/home/.copilot/skills/synapse'), 'copilot');
+  assert.equal(detectSkillToolFamily('/tmp/home/.claude/skills/synapse'), 'claude');
+  assert.equal(detectSkillToolFamily('/tmp/home/.cursor/skills/synapse'), 'cursor');
+  assert.equal(detectSkillToolFamily('/tmp/home/.codeium/windsurf/skills/synapse'), 'windsurf');
+  assert.equal(detectSkillToolFamily('/tmp/home/.opencode/skills/synapse'), 'opencode');
+  assert.equal(detectSkillToolFamily('/tmp/home/.config/opencode/skills/synapse'), 'opencode');
+  assert.equal(detectSkillToolFamily('/tmp/home/.gemini/skills/synapse'), 'gemini');
+  assert.equal(detectSkillToolFamily('/tmp/home/.gemini/antigravity/skills/synapse'), 'antigravity');
+  assert.equal(detectSkillToolFamily('/tmp/home/.cline/skills/synapse'), 'cline');
+  assert.equal(detectSkillToolFamily('/tmp/home/.continue/skills/synapse'), 'continue');
+  assert.equal(detectSkillToolFamily('/tmp/home/.agents/skills/synapse'), 'agents');
 });
 

@@ -32,22 +32,34 @@ interface WorkspaceLike {
   safeReadText(filePath: string): string;
 }
 
-function parseRipgrepPlainOutput(out: string, maxResults: number): LexicalMatch[] {
+export function parseRipgrepPlainOutput(out: string, maxResults: number): LexicalMatch[] {
   const matches: LexicalMatch[] = [];
   const lines = out.split(/\r?\n/).filter(Boolean);
   for (const row of lines) {
-    const first = row.indexOf(':');
-    if (first <= 0) continue;
-    const second = row.indexOf(':', first + 1);
-    if (second <= first) continue;
+    // Find the first occurrence of ':digit+:' which marks the line number field
+    // We skip the drive letter part on Windows (e.g., C:\)
+    let startSearch = 0;
+    if (row.length > 2 && row[1] === ':' && /[a-zA-Z]/.test(row[0]) && (row[2] === '\\' || row[2] === '/')) {
+      startSearch = 2;
+    }
 
-    const file = row.slice(0, first);
-    const lineNumRaw = row.slice(first + 1, second);
-    const line = Number.parseInt(lineNumRaw, 10);
-    const text = row.slice(second + 1).trim();
-
-    if (!Number.isFinite(line)) continue;
-    matches.push({ file, line, text });
+    // Match the first colon after startSearch
+    let first = row.indexOf(':', startSearch);
+    while (first !== -1) {
+      const second = row.indexOf(':', first + 1);
+      if (second !== -1) {
+        const lineNumRaw = row.slice(first + 1, second);
+        const line = Number.parseInt(lineNumRaw, 10);
+        if (Number.isFinite(line) && /^\d+$/.test(lineNumRaw)) {
+          // Found it!
+          const file = row.slice(0, first);
+          const text = row.slice(second + 1).trim();
+          matches.push({ file, line, text });
+          break;
+        }
+      }
+      first = row.indexOf(':', first + 1);
+    }
     if (matches.length >= maxResults) break;
   }
   return matches;

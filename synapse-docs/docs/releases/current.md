@@ -1,10 +1,10 @@
 ---
-description: Current release notes for synapse-mcp, including the modern interactive CLI, TUI dashboard, and improved diagnostics. Current release is 0.3.0-beta.2.
+description: Current release notes for synapse, including the modern interactive CLI, TUI dashboard, and improved diagnostics. Current release is 0.3.0-beta.2.
 ---
 
 # Current Release
 
-Current package documentation for `synapse-mcp@0.3.0-beta.2`, covering the modernization update, interactive TUI dashboard, refactored CLI infrastructure, and the active canonical `synapse_*` tool contract.
+Current package documentation for `synapse@0.3.0-beta.2`, covering the modernization update, interactive TUI dashboard, refactored CLI infrastructure, and the active canonical `synapse_*` tool contract.
 
 <div className="docGrid docGrid--3">
   <div className="docPanel">
@@ -27,7 +27,7 @@ Current package documentation for `synapse-mcp@0.3.0-beta.2`, covering the moder
 <div className="docGrid docGrid--3">
   <a className="docLinkCard" href="/docs/setup/install">
     <strong>Install Beta</strong>
-    <span>Install using `npm install -g synapse-mcp@beta` to get the modernization update.</span>
+    <span>Install using `npm install -g synapse@beta` to get the modernization update.</span>
   </a>
   <a className="docLinkCard" href="/docs/setup/configuration">
     <strong>Configure MCP</strong>

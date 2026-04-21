@@ -110,7 +110,7 @@ function main() {
         '### Upgrade',
         '',
         '```bash',
-        `npm install -g synapse-mcp@${version}`,
+        `npm install -g synapse@${version}`,
         '```',
       ].join('\n');
 

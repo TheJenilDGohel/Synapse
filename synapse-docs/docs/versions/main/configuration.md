@@ -11,7 +11,7 @@
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `SYNAPSE_UPDATE_PACKAGE` | `synapse-mcp` | package used for update checks |
+| `SYNAPSE_UPDATE_PACKAGE` | `synapse` | package used for update checks |
 | `SYNAPSE_UPDATE_CHECK_INTERVAL_MINUTES` | `120` | cached update interval |
 | `SYNAPSE_UPDATE_FAILURE_BACKOFF_MINUTES` | `15` | retry interval after failures |
 

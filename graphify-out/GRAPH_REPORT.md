@@ -22,25 +22,25 @@
 
 ## Surprising Connections (you probably didn't know these)
 - `Temporal Knowledge Graph (valid_from/valid_to)` --semantically_similar_to--> `Temporal Knowledge Graph`  [INFERRED] [semantically similar]
-  localnest-docs/docs/guides/architecture.md → README.md
+  synapse-docs/docs/guides/architecture.md → README.md
 - `Hybrid Search (RRF Merge)` --semantically_similar_to--> `Hybrid Search (Lexical + Semantic RRF)`  [INFERRED] [semantically similar]
-  localnest-docs/docs/guides/architecture.md → README.md
-- `LocalNest Brand Identity` --references--> `LocalNest MCP`  [INFERRED]
-  localnest-docs/static/img/social-card.svg → README.md
+  synapse-docs/docs/guides/architecture.md → README.md
+- `Synapse Brand Identity` --references--> `Synapse MCP`  [INFERRED]
+  synapse-docs/static/img/social-card.svg → README.md
 - `Temporal Knowledge Graph` --semantically_similar_to--> `Temporal Knowledge Graph`  [INFERRED] [semantically similar]
-  localnest-docs/docs/versions/0.0.7-beta.2/overview.md → README.md
+  synapse-docs/docs/versions/0.0.7-beta.2/overview.md → README.md
 - `Semantic Duplicate Detection` --semantically_similar_to--> `Semantic Deduplication (0.92 cosine gate)`  [INFERRED] [semantically similar]
-  localnest-docs/docs/versions/0.0.7-beta.2/overview.md → README.md
+  synapse-docs/docs/versions/0.0.7-beta.2/overview.md → README.md
 
 ## Hyperedges (group relationships)
-- **LocalNest Core Feature Set** — readme_localnest_mcp, readme_temporal_knowledge_graph, readme_hybrid_search, readme_agent_memory, readme_hooks_system, readme_nest_branch_hierarchy, readme_sqlite_backend, readme_semantic_dedup, readme_batch_operations [EXTRACTED 1.00]
+- **Synapse Core Feature Set** — readme_synapse_mcp, readme_temporal_knowledge_graph, readme_hybrid_search, readme_agent_memory, readme_hooks_system, readme_nest_branch_hierarchy, readme_sqlite_backend, readme_semantic_dedup, readme_batch_operations [EXTRACTED 1.00]
 - **Knowledge Graph Tool Group** — tools_kg_entities, tools_kg_triples, tools_kg_temporal, tools_kg_traversal, readme_temporal_knowledge_graph [EXTRACTED 1.00]
 - **Memory Tool Group** — tools_memory_workflow, tools_memory_crud, tools_memory_relations, readme_agent_memory, readme_nest_branch_hierarchy [EXTRACTED 1.00]
 - **Retrieval Pipeline Components** — architecture_retrieval_pipeline, readme_ripgrep, readme_huggingface_embeddings, readme_reranker, readme_sqlite_vec, readme_ast_chunking [EXTRACTED 1.00]
 - **SQLite-for-Everything Design Rationale** — claude_md_alternatives, claude_md_tech_stack, architecture_design_decisions, readme_sqlite_backend, readme_multi_hop_traversal [EXTRACTED 1.00]
 - **v0.0.7-beta.2 Major Feature Set** — version_0_0_7_beta2, feature_temporal_kg, feature_multihop_traversal, feature_nest_branch_hierarchy, feature_semantic_dedup, feature_conversation_ingestion, feature_hooks_system, feature_cli_first, feature_agent_diary [EXTRACTED 1.00]
-- **LocalNest MCP Skill Commands** — cmd_selftest, cmd_onboard, cmd_teach, cmd_fact, cmd_recall, cmd_status, cmd_find, cmd_prime, cmd_search, cmd_remember [EXTRACTED 1.00]
-- **Agentic Workflow Tools v0.2.0** — readme_agent_prime, readme_localnest_find, readme_localnest_teach, readme_localnest_audit, readme_terse_responses, readme_auto_inference [EXTRACTED 1.00]
+- **Synapse MCP Skill Commands** — cmd_selftest, cmd_onboard, cmd_teach, cmd_fact, cmd_recall, cmd_status, cmd_find, cmd_prime, cmd_search, cmd_remember [EXTRACTED 1.00]
+- **Agentic Workflow Tools v0.2.0** — readme_agent_prime, readme_synapse_find, readme_synapse_teach, readme_synapse_audit, readme_terse_responses, readme_auto_inference [EXTRACTED 1.00]
 - **Retrieval Backend Evaluation** — concept_sqlite_vec, concept_lancedb, concept_qdrant, concept_vec1 [EXTRACTED 0.90]
 - **Hybrid Search Pipeline** — concept_hybrid_search, concept_ripgrep, concept_miniLM, concept_sqlite_vec [EXTRACTED 0.95]
 
@@ -92,7 +92,7 @@ Nodes (1): SqliteVecIndexService
 
 ### Community 11 - "MCP Tool Surface (Docs)"
 Cohesion: 0.12
-Nodes (18): LocalNest Architecture Guide, localnest:fact Command, localnest:recall Command, 72 MCP Tool Surface, Hybrid Search (RRF Merge), Knowledge Graph Subsystem, LanceDB (Alternative Backend Candidate), Xenova/all-MiniLM-L6-v2 Embedding Model (+10 more)
+Nodes (18): Synapse Architecture Guide, synapse:fact Command, synapse:recall Command, 72 MCP Tool Surface, Hybrid Search (RRF Merge), Knowledge Graph Subsystem, LanceDB (Alternative Backend Candidate), Xenova/all-MiniLM-L6-v2 Embedding Model (+10 more)
 
 ### Community 12 - "Workspace & Project Service"
 Cohesion: 0.12
@@ -120,7 +120,7 @@ Nodes (12): buildRuntimeConfig(), detectRipgrep(), expandHome(), normalizeRootEn
 
 ### Community 18 - "Client Installer"
 Cohesion: 0.31
-Nodes (12): backupFile(), buildCodexLocalnestBlock(), detectAiToolTargets(), ensureDir(), installIntoCodexTarget(), installIntoJsonTarget(), installLocalnestIntoDetectedClients(), isPlainObject() (+4 more)
+Nodes (12): backupFile(), buildCodexSynapseBlock(), detectAiToolTargets(), ensureDir(), installIntoCodexTarget(), installIntoJsonTarget(), installSynapseIntoDetectedClients(), isPlainObject() (+4 more)
 
 ### Community 19 - "Hooks System"
 Cohesion: 0.16
@@ -152,7 +152,7 @@ Nodes (10): confirm(), getSkillModule(), handleInstall(), handleList(), handleRe
 
 ### Community 26 - "Module Group 26"
 Cohesion: 0.4
-Nodes (9): buildLocalnestPaths(), migrateLocalnestHomeLayout(), moveIfNeeded(), moveSqliteFamily(), resolveConfigPath(), resolveLocalnestHome(), resolveWritableModelCacheDir(), sanitizeOwnerToken() (+1 more)
+Nodes (9): buildSynapsePaths(), migrateSynapseHomeLayout(), moveIfNeeded(), moveSqliteFamily(), resolveConfigPath(), resolveSynapseHome(), resolveWritableModelCacheDir(), sanitizeOwnerToken() (+1 more)
 
 ### Community 27 - "Module Group 27"
 Cohesion: 0.38
@@ -164,7 +164,7 @@ Nodes (3): ensureSqliteVecTable(), getVecTableDefinition(), shouldRebuildVecTabl
 
 ### Community 29 - "Module Group 29"
 Cohesion: 0.31
-Nodes (4): buildLocalnestCommandArgv(), forwardDeprecatedCommand(), importRelative(), printDeprecationWarning()
+Nodes (4): buildSynapseCommandArgv(), forwardDeprecatedCommand(), importRelative(), printDeprecationWarning()
 
 ### Community 30 - "Module Group 30"
 Cohesion: 0.46
@@ -384,23 +384,23 @@ Nodes (0):
 
 ### Community 84 - "Module Group 84"
 Cohesion: 0.67
-Nodes (3): Opt-in Local Memory Store, LocalNest v0.0.3, LocalNest v0.0.4-beta.4
+Nodes (3): Opt-in Local Memory Store, Synapse v0.0.3, Synapse v0.0.4-beta.4
 
 ### Community 85 - "Module Group 85"
 Cohesion: 0.67
-Nodes (3): Hugging Face Embeddings Runtime, sqlite-vec Extension, LocalNest v0.0.4-beta.7
+Nodes (3): Hugging Face Embeddings Runtime, sqlite-vec Extension, Synapse v0.0.4-beta.7
 
 ### Community 86 - "Module Group 86"
 Cohesion: 0.67
-Nodes (3): localnest:prime Command, Agent Prime Cold-Start Pattern, localnest_agent_prime Tool
+Nodes (3): synapse:prime Command, Agent Prime Cold-Start Pattern, synapse_agent_prime Tool
 
 ### Community 87 - "Module Group 87"
 Cohesion: 0.67
-Nodes (3): localnest:find Command, Reciprocal Rank Fusion Cross-Source Ranking, localnest_find Tool
+Nodes (3): synapse:find Command, Reciprocal Rank Fusion Cross-Source Ranking, synapse_find Tool
 
 ### Community 88 - "Module Group 88"
 Cohesion: 0.67
-Nodes (3): Node.js 22+ Requirement, node:sqlite Built-in Module, localnest-node-compat Skill
+Nodes (3): Node.js 22+ Requirement, node:sqlite Built-in Module, synapse-node-compat Skill
 
 ### Community 89 - "Module Group 89"
 Cohesion: 1.0
@@ -552,15 +552,15 @@ Nodes (2): TypeScript Migration (96 .ts files), Release v0.1.0 (2026-04-09)
 
 ### Community 126 - "Module Group 126"
 Cohesion: 1.0
-Nodes (2): nest:* Slash Commands (11 agentic orchestration), LocalNest v0.0.7-beta.3
+Nodes (2): nest:* Slash Commands (11 agentic orchestration), Synapse v0.0.7-beta.3
 
 ### Community 127 - "Module Group 127"
 Cohesion: 1.0
-Nodes (2): localnest:remember Command, localnest_memory_store Tool (reference)
+Nodes (2): synapse:remember Command, synapse_memory_store Tool (reference)
 
 ### Community 128 - "Module Group 128"
 Cohesion: 1.0
-Nodes (2): localnest doctor CLI Tool, localnest-mcp-runtime Skill
+Nodes (2): synapse doctor CLI Tool, synapse-runtime Skill
 
 ### Community 129 - "Module Group 129"
 Cohesion: 1.0
@@ -664,11 +664,11 @@ Nodes (0):
 
 ### Community 154 - "Module Group 154"
 Cohesion: 1.0
-Nodes (1): localnest_teach Tool (behavior modifiers)
+Nodes (1): synapse_teach Tool (behavior modifiers)
 
 ### Community 155 - "Module Group 155"
 Cohesion: 1.0
-Nodes (1): localnest_audit Tool (self-audit)
+Nodes (1): synapse_audit Tool (self-audit)
 
 ### Community 156 - "Module Group 156"
 Cohesion: 1.0
@@ -704,11 +704,11 @@ Nodes (1): Agent Diary Tools
 
 ### Community 164 - "Module Group 164"
 Cohesion: 1.0
-Nodes (1): CLI Reference (localnest noun verb)
+Nodes (1): CLI Reference (synapse noun verb)
 
 ### Community 165 - "Module Group 165"
 Cohesion: 1.0
-Nodes (1): LocalNest main branch
+Nodes (1): Synapse main branch
 
 ### Community 166 - "Module Group 166"
 Cohesion: 1.0
@@ -720,7 +720,7 @@ Nodes (1): 13-Client Skill Distribution
 
 ### Community 168 - "Module Group 168"
 Cohesion: 1.0
-Nodes (1): LocalNest v0.0.1-beta.1
+Nodes (1): Synapse v0.0.1-beta.1
 
 ### Community 169 - "Module Group 169"
 Cohesion: 1.0
@@ -752,42 +752,42 @@ Nodes (1): 13 AI Client Skill Support
 
 ### Community 176 - "Module Group 176"
 Cohesion: 1.0
-Nodes (1): localnest-mcp npm Package
+Nodes (1): synapse npm Package
 
 ### Community 177 - "Module Group 177"
 Cohesion: 1.0
-Nodes (1): localnest_search_hybrid Tool (reference)
+Nodes (1): synapse_search_hybrid Tool (reference)
 
 ### Community 178 - "Module Group 178"
 Cohesion: 1.0
-Nodes (1): localnest_kg_timeline Tool
+Nodes (1): synapse_kg_timeline Tool
 
 ### Community 179 - "Module Group 179"
 Cohesion: 1.0
-Nodes (1): localnest_graph_traverse Tool
+Nodes (1): synapse_graph_traverse Tool
 
 ### Community 180 - "Module Group 180"
 Cohesion: 1.0
-Nodes (1): localnest:selftest Command
+Nodes (1): synapse:selftest Command
 
 ### Community 181 - "Module Group 181"
 Cohesion: 1.0
-Nodes (1): localnest:onboard Command
+Nodes (1): synapse:onboard Command
 
 ### Community 182 - "Module Group 182"
 Cohesion: 1.0
-Nodes (1): localnest:teach Command
+Nodes (1): synapse:teach Command
 
 ### Community 183 - "Module Group 183"
 Cohesion: 1.0
-Nodes (1): localnest:status Command
+Nodes (1): synapse:status Command
 
 ### Community 184 - "Module Group 184"
 Cohesion: 1.0
-Nodes (1): LocalNest MCP Troubleshooting Guide
+Nodes (1): Synapse MCP Troubleshooting Guide
 
 ## Knowledge Gaps
-- **92 isolated node(s):** `sqlite-vec Index Backend`, `Contradiction Detection`, `localnest_teach Tool (behavior modifiers)`, `localnest_audit Tool (self-audit)`, `Conversation Ingestion (Markdown/JSON)` (+87 more)
+- **92 isolated node(s):** `sqlite-vec Index Backend`, `Contradiction Detection`, `synapse_teach Tool (behavior modifiers)`, `synapse_audit Tool (self-audit)`, `Conversation Ingestion (Markdown/JSON)` (+87 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Module Group 89`** (2 nodes): `docusaurus.config.ts`, `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -857,17 +857,17 @@ Nodes (1): LocalNest MCP Troubleshooting Guide
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 122`** (2 nodes): `tool-count.ts`, `countToolRegistrations()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 123`** (2 nodes): `localnest.js`, `main()`
+- **Thin community `Module Group 123`** (2 nodes): `synapse.js`, `main()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 124`** (2 nodes): `Indexing Model (chunk→term+embedding→SQLite)`, `AST-Aware Chunking`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 125`** (2 nodes): `TypeScript Migration (96 .ts files)`, `Release v0.1.0 (2026-04-09)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 126`** (2 nodes): `nest:* Slash Commands (11 agentic orchestration)`, `LocalNest v0.0.7-beta.3`
+- **Thin community `Module Group 126`** (2 nodes): `nest:* Slash Commands (11 agentic orchestration)`, `Synapse v0.0.7-beta.3`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 127`** (2 nodes): `localnest:remember Command`, `localnest_memory_store Tool (reference)`
+- **Thin community `Module Group 127`** (2 nodes): `synapse:remember Command`, `synapse_memory_store Tool (reference)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 128`** (2 nodes): `localnest doctor CLI Tool`, `localnest-mcp-runtime Skill`
+- **Thin community `Module Group 128`** (2 nodes): `synapse doctor CLI Tool`, `synapse-runtime Skill`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 129`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -889,7 +889,7 @@ Nodes (1): LocalNest MCP Troubleshooting Guide
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 138`** (1 nodes): `create-services-import.test.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 139`** (1 nodes): `install-localnest-skill.test.js`
+- **Thin community `Module Group 139`** (1 nodes): `install-synapse-skill.test.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 140`** (1 nodes): `mcp-runtime-start.test.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -903,25 +903,25 @@ Nodes (1): LocalNest MCP Troubleshooting Guide
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 145`** (1 nodes): `schemas.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 146`** (1 nodes): `localnest-mcp-setup.js`
+- **Thin community `Module Group 146`** (1 nodes): `synapse-setup.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 147`** (1 nodes): `localnest-mcp-task-context.js`
+- **Thin community `Module Group 147`** (1 nodes): `synapse-task-context.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 148`** (1 nodes): `localnest-mcp-upgrade.js`
+- **Thin community `Module Group 148`** (1 nodes): `synapse-upgrade.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 149`** (1 nodes): `localnest-mcp-install-skill.js`
+- **Thin community `Module Group 149`** (1 nodes): `synapse-install-skill.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 150`** (1 nodes): `_shared.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 151`** (1 nodes): `localnest-mcp-doctor.js`
+- **Thin community `Module Group 151`** (1 nodes): `synapse-doctor.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 152`** (1 nodes): `localnest-mcp.js`
+- **Thin community `Module Group 152`** (1 nodes): `synapse.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 153`** (1 nodes): `localnest-mcp-capture-outcome.js`
+- **Thin community `Module Group 153`** (1 nodes): `synapse-capture-outcome.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 154`** (1 nodes): `localnest_teach Tool (behavior modifiers)`
+- **Thin community `Module Group 154`** (1 nodes): `synapse_teach Tool (behavior modifiers)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 155`** (1 nodes): `localnest_audit Tool (self-audit)`
+- **Thin community `Module Group 155`** (1 nodes): `synapse_audit Tool (self-audit)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 156`** (1 nodes): `Auto-Inference for memory_store`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -939,15 +939,15 @@ Nodes (1): LocalNest MCP Troubleshooting Guide
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 163`** (1 nodes): `Agent Diary Tools`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 164`** (1 nodes): `CLI Reference (localnest noun verb)`
+- **Thin community `Module Group 164`** (1 nodes): `CLI Reference (synapse noun verb)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 165`** (1 nodes): `LocalNest main branch`
+- **Thin community `Module Group 165`** (1 nodes): `Synapse main branch`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 166`** (1 nodes): `Conversation Ingestion`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 167`** (1 nodes): `13-Client Skill Distribution`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 168`** (1 nodes): `LocalNest v0.0.1-beta.1`
+- **Thin community `Module Group 168`** (1 nodes): `Synapse v0.0.1-beta.1`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 169`** (1 nodes): `MemoryHooks Pub-Sub System`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -963,23 +963,23 @@ Nodes (1): LocalNest MCP Troubleshooting Guide
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Module Group 175`** (1 nodes): `13 AI Client Skill Support`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 176`** (1 nodes): `localnest-mcp npm Package`
+- **Thin community `Module Group 176`** (1 nodes): `synapse npm Package`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 177`** (1 nodes): `localnest_search_hybrid Tool (reference)`
+- **Thin community `Module Group 177`** (1 nodes): `synapse_search_hybrid Tool (reference)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 178`** (1 nodes): `localnest_kg_timeline Tool`
+- **Thin community `Module Group 178`** (1 nodes): `synapse_kg_timeline Tool`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 179`** (1 nodes): `localnest_graph_traverse Tool`
+- **Thin community `Module Group 179`** (1 nodes): `synapse_graph_traverse Tool`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 180`** (1 nodes): `localnest:selftest Command`
+- **Thin community `Module Group 180`** (1 nodes): `synapse:selftest Command`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 181`** (1 nodes): `localnest:onboard Command`
+- **Thin community `Module Group 181`** (1 nodes): `synapse:onboard Command`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 182`** (1 nodes): `localnest:teach Command`
+- **Thin community `Module Group 182`** (1 nodes): `synapse:teach Command`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 183`** (1 nodes): `localnest:status Command`
+- **Thin community `Module Group 183`** (1 nodes): `synapse:status Command`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Module Group 184`** (1 nodes): `LocalNest MCP Troubleshooting Guide`
+- **Thin community `Module Group 184`** (1 nodes): `Synapse MCP Troubleshooting Guide`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
@@ -991,7 +991,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
 - **Why does `WorkspaceService` connect `Workspace & Project Service` to `SQLite Vec + Embedding Service`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **What connects `sqlite-vec Index Backend`, `Contradiction Detection`, `localnest_teach Tool (behavior modifiers)` to the rest of the system?**
+- **What connects `sqlite-vec Index Backend`, `Contradiction Detection`, `synapse_teach Tool (behavior modifiers)` to the rest of the system?**
   _92 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Architecture & Core Design` be split into smaller, more focused modules?**
   _Cohesion score 0.04 - nodes in this community are weakly interconnected._

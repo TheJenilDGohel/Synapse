@@ -29,7 +29,7 @@ test('verifySupportedClientTargets detects configured and missing real-style cli
   const mod = await import('../scripts/release/release-exit-criteria.mjs');
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-exit-home-'));
   fs.mkdirSync(path.join(home, '.codex'), { recursive: true });
-  fs.writeFileSync(path.join(home, '.codex', 'config.toml'), '[mcp_servers.synapse]\ncommand = "synapse-mcp"\n', 'utf8');
+  fs.writeFileSync(path.join(home, '.codex', 'config.toml'), '[mcp_servers.synapse]\ncommand = "synapse"\n', 'utf8');
   fs.mkdirSync(path.join(home, '.cursor'), { recursive: true });
   fs.writeFileSync(path.join(home, '.cursor', 'mcp.json'), '{"mcpServers":{}}', 'utf8');
 

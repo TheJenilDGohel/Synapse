@@ -23,17 +23,17 @@ Install ripgrep:
 ## Global install
 
 ```bash
-npm install -g synapse-mcp@0.0.3
-synapse-mcp-install-skill
-synapse-mcp-setup
-synapse-mcp-doctor
+npm install -g synapse@0.0.3
+synapse-install-skill
+synapse-setup
+synapse-doctor
 ```
 
 ## npx fallback
 
 ```bash
-npx -y synapse-mcp-setup
-npx -y synapse-mcp-doctor
+npx -y synapse-setup
+npx -y synapse-doctor
 ```
 
 ## MCP client config
@@ -45,7 +45,7 @@ npx -y synapse-mcp-doctor
   "mcpServers": {
     "synapse": {
       "command": "npx",
-      "args": ["-y", "synapse-mcp"],
+      "args": ["-y", "synapse"],
       "startup_timeout_sec": 30,
       "env": {
         "MCP_MODE": "stdio",

@@ -17,7 +17,7 @@
 
 | Setting | Expected beta.8 behavior |
 | --- | --- |
-| MCP startup command | prefer `synapse-mcp` directly when installed globally |
+| MCP startup command | prefer `synapse` directly when installed globally |
 | Startup timeout | keep `startup_timeout_sec` at `30` or higher |
 | Index backend | `sqlite-vec` preferred, JSON fallback still supported |
 | sqlite extension | auto-detected when possible, explicit path override supported |

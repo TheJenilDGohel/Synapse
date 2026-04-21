@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { applyConsolePolicy, buildRuntimeConfig, expandHome } from '../src/runtime/config.js';
-import { buildLocalnestPaths } from '../src/runtime/home-layout.js';
+import { buildSynapsePaths } from '../src/runtime/home-layout.js';
 
 function makeTempDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-config-test-'));
@@ -44,7 +44,7 @@ test('buildRuntimeConfig prioritizes PROJECT_ROOTS and env tuning', () => {
   const rootA = makeTempDir();
   const rootB = makeTempDir();
   const synapseHome = makeTempDir();
-  const cfgPath = buildLocalnestPaths(synapseHome).configPath;
+  const cfgPath = buildSynapsePaths(synapseHome).configPath;
   fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
   fs.writeFileSync(cfgPath, JSON.stringify({ version: 2, roots: [{ label: 'cfg', path: rootA }] }), 'utf8');
 
@@ -109,7 +109,7 @@ test('buildRuntimeConfig disables background index sweeps by default in stdio mo
 test('buildRuntimeConfig uses config file roots when PROJECT_ROOTS missing', () => {
   const rootA = makeTempDir();
   const synapseHome = makeTempDir();
-  const cfgPath = buildLocalnestPaths(synapseHome).configPath;
+  const cfgPath = buildSynapsePaths(synapseHome).configPath;
   fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
   fs.writeFileSync(
     cfgPath,
@@ -177,7 +177,7 @@ test('buildRuntimeConfig migrates flat synapse home files into subdirectories', 
   const runtime = buildRuntimeConfig({
     SYNAPSE_HOME: synapseHome
   });
-  const layout = buildLocalnestPaths(synapseHome);
+  const layout = buildSynapsePaths(synapseHome);
 
   assert.equal(runtime.sqliteDbPath, layout.sqliteDbPath);
   assert.equal(runtime.vectorIndexPath, layout.jsonIndexPath);
@@ -202,7 +202,7 @@ test('buildRuntimeConfig honors legacy SYNAPSE_CONFIG path after layout migratio
     SYNAPSE_HOME: synapseHome,
     SYNAPSE_CONFIG: legacyConfig
   });
-  const layout = buildLocalnestPaths(synapseHome);
+  const layout = buildSynapsePaths(synapseHome);
 
   assert.equal(runtime.roots[0].path, synapseHome);
   assert.ok(fs.existsSync(layout.configPath));
@@ -263,7 +263,7 @@ test('buildRuntimeConfig falls back to writable model cache directory', () => {
 
 test('buildRuntimeConfig uses default cache path cleanly on a fresh writable home', () => {
   const synapseHome = makeTempDir();
-  const layout = buildLocalnestPaths(synapseHome);
+  const layout = buildSynapsePaths(synapseHome);
 
   const { result: runtime, output } = captureStderr(() => buildRuntimeConfig({
     SYNAPSE_HOME: synapseHome

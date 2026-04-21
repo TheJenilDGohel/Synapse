@@ -6,17 +6,17 @@ import {
   TEXT_EXTENSIONS
 } from '../runtime/config.js';
 import { SERVER_VERSION } from '../runtime/version.js';
-import { WorkspaceService } from '../services/workspace/index.js';
 import {
   SearchService,
   VectorIndexService,
   EmbeddingService,
   AstChunker,
   RerankerService,
-  SymbolIndexService
-} from '../services/retrieval/index.js';
-import { UpdateService } from '../services/update/index.js';
-import { MemoryService } from '../services/memory/index.js';
+  SymbolIndexService,
+  MemoryService,
+  WorkspaceService,
+  UpdateService
+} from '../engine/index.js';
 
 function createWorkspace(runtime: any): WorkspaceService {
   return new WorkspaceService({

@@ -18,7 +18,7 @@ name: Release
 #
 # AUTHENTICATION:
 #  Uses OIDC trusted publishing (no secrets required).
-#  Configure at: https://www.npmjs.com/package/synapse-mcp/access
+#  Configure at: https://www.npmjs.com/package/synapse/access
 #  Fallback: Set NPM_TOKEN secret if OIDC is not yet configured.
 
 on:
@@ -64,7 +64,7 @@ jobs:
         run: |
           if [ -z "$NODE_AUTH_TOKEN" ]; then
             echo "::error::NODE_AUTH_TOKEN secret is not set on the 'npm-publish' environment."
-            echo "::error::Fix: Settings → Environments → npm-publish → Add secret NODE_AUTH_TOKEN (npm automation token with publish rights on synapse-mcp)."
+            echo "::error::Fix: Settings → Environments → npm-publish → Add secret NODE_AUTH_TOKEN (npm automation token with publish rights on synapse)."
             echo "::error::Token format: npm_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx — generate at https://www.npmjs.com/settings/~/tokens"
             exit 1
           fi
@@ -79,14 +79,14 @@ jobs:
             echo "::error::Last error: $WHOAMI"
             echo "::error::Fix: Regenerate a 'Classic Automation Token' at https://www.npmjs.com/settings/~/tokens/new/automation"
             echo "::error::Then update the NODE_AUTH_TOKEN secret at Settings → Environments → npm-publish → NODE_AUTH_TOKEN"
-            echo "::error::The token must be scoped to publish synapse-mcp (either granular with 'Read and write' + explicit package, or classic automation)."
+            echo "::error::The token must be scoped to publish synapse (either granular with 'Read and write' + explicit package, or classic automation)."
             exit 1
           fi
           echo "npm whoami succeeded: $WHOAMI"
           # Also verify publish rights against the specific package, which catches
           # the case where the token is valid but scoped to a different package.
-          if ! npm access list packages 2>&1 | grep -q "synapse-mcp"; then
-            echo "::warning::npm access list did not include synapse-mcp — token may not be scoped for publishing this package. Continuing anyway."
+          if ! npm access list packages 2>&1 | grep -q "synapse"; then
+            echo "::warning::npm access list did not include synapse — token may not be scoped for publishing this package. Continuing anyway."
           fi
 
       - name: Read local version
@@ -139,7 +139,7 @@ jobs:
             cat pack-output.txt
             exit 1
           fi
-          for required in "bin/synapse.js" "bin/synapse-mcp.js" "src/app/mcp-server.ts" "package.json"; do
+          for required in "bin/synapse.js" "bin/synapse.js" "src/app/mcp-server.ts" "package.json"; do
             if ! grep -q "$required" pack-output.txt; then
               echo "::error::Required file missing from tarball: $required"
               exit 1

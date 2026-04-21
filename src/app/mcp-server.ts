@@ -39,7 +39,7 @@ export async function main(): Promise<void> {
 
   if (!runtime.hasRipgrep) {
     process.stderr.write(
-      `[synapse-mcp] warning: ripgrep (rg) not found — search_code and search_hybrid ` +
+      `[synapse] warning: ripgrep (rg) not found — search_code and search_hybrid ` +
       `will use slower JS fallback. ${buildRipgrepHelpMessage()}\n`
     );
   }
@@ -64,7 +64,7 @@ const isDirectExecution = process.argv[1]
 
 if (isDirectExecution) {
   main().catch((error: unknown) => {
-    console.error('[synapse-mcp] fatal:', error);
+    console.error('[synapse] fatal:', error);
     process.exit(1);
   });
 }

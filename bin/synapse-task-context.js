@@ -3,6 +3,6 @@ import { forwardDeprecatedCommand } from './_shared.js';
 
 await forwardDeprecatedCommand({
   metaUrl: import.meta.url,
-  legacyCommand: 'synapse-mcp-capture-outcome',
-  replacementCommand: 'synapse capture-outcome'
+  legacyCommand: 'synapse-task-context',
+  replacementCommand: 'synapse task-context'
 });

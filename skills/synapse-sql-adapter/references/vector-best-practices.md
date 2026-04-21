@@ -3,7 +3,7 @@
 Efficiently managing `sqlite-vec` virtual tables in Synapse.
 
 ## Indexing Strategy
-- **Batching**: Always use `synapse-mcp-ingest` for bulk files to avoid opening/closing the DB for every file.
+- **Batching**: Always use `synapse-ingest` for bulk files to avoid opening/closing the DB for every file.
 - **Normalization**: Text is normalized (TRIM, lowercase) before embedding.
 - **Dimensions**: Ensure your embedding model (default: `all-MiniLM-L6-v2`) matches the `vec0` dimensions (384).
 

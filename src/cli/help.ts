@@ -55,6 +55,8 @@ const CATEGORIES: CategoryDef[] = [
       { name: 'memory list', desc: 'List stored memories' },
       { name: 'memory show', desc: 'View one memory with revisions' },
       { name: 'memory delete', desc: 'Remove a memory entry' },
+      { name: 'memory context', desc: 'Synthesize task-relevant context' },
+      { name: 'memory outcome', desc: 'Capture task outcome' },
     ],
   },
   {
@@ -90,8 +92,6 @@ const CATEGORIES: CategoryDef[] = [
       { name: 'mcp config', desc: 'Output MCP config JSON' },
       { name: 'ingest', desc: 'Import a conversation file' },
       { name: 'completion', desc: 'Generate shell completions' },
-      { name: 'task-context', desc: 'Retrieve runtime + memory context' },
-      { name: 'capture-outcome', desc: 'Save a task outcome to memory' },
     ],
   },
 ];

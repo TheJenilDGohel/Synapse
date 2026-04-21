@@ -27,7 +27,13 @@
 export * from './database.js';
 
 // Memory domain — entries, events, knowledge graph, taxonomy, audit (CORE-01)
-export * from './memory.js';
+export {
+  MemoryStore,
+  MemoryHooks,
+  MemoryWorkflowService,
+  MemoryService
+} from './memory.js';
+export * from './memory.js'; // Keep the rest for types and low-level ops
 
 // Retrieval services — semantic search, embeddings, vector index (CORE-02)
 // Explicitly re-export to resolve ambiguity with EmbeddingService interface in memory types
@@ -37,5 +43,12 @@ export {
   EmbeddingService,
   AstChunker,
   RerankerService,
-  SymbolIndexService
+  SymbolIndexService,
+  unifiedFind,
+  WorkspaceService,
+  UpdateService
 } from './retrieval.js';
+
+// Runtime & Infrastructure — diagnostics, health, setup
+export { DiagnosticService } from '../runtime/diagnostics.js';
+export type { DoctorCheckResult, DoctorReport } from '../runtime/diagnostics.js';

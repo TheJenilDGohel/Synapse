@@ -8,16 +8,16 @@
 </div>
 
 ```bash
-npm install -g synapse-mcp@0.0.4-beta.4
-synapse-mcp-install-skill
-synapse-mcp-setup
-synapse-mcp-doctor
+npm install -g synapse@0.0.4-beta.4
+synapse-install-skill
+synapse-setup
+synapse-doctor
 ```
 
 ## Beta-specific notes
 
-- `synapse-mcp-setup` includes one-time memory consent prompts.
+- `synapse-setup` includes one-time memory consent prompts.
 - Generated MCP snippets include memory env vars when enabled.
-- `synapse-mcp-install-skill` skips reinstall when installed skill is already current.
+- `synapse-install-skill` skips reinstall when installed skill is already current.
 
 Need another version line? Use [/docs/releases/version-selection](/docs/releases/version-selection).

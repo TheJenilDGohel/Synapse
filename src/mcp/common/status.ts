@@ -304,7 +304,7 @@ const HELP_RULES: TaskRule[] = [
       t('synapse_health', 'Compact health smoke check'),
       t('synapse_usage_guide', 'Best-practice guidance from the server')],
     workflow: ['1. Run server_status to check runtime health.', '2. If issues, run health for a compact diagnostic.', '3. Call usage_guide for embedded best practices.'],
-    tip: 'Most setup issues are resolved by: npm install -g synapse-mcp && synapse setup && synapse doctor.' },
+    tip: 'Most setup issues are resolved by: npm install -g synapse && synapse setup && synapse doctor.' },
   { pattern: /\b(nest|branch|organize|taxonomy|hierarchy|tree)\b/i, type: 'taxonomy',
     tools: [t('synapse_nest_tree', 'Full hierarchy view: nests -> branches -> counts'),
       t('synapse_nest_list', 'List top-level nests with counts'),

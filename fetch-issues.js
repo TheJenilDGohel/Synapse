@@ -1,4 +1,4 @@
-fetch('https://api.github.com/repos/wmt-mobile/localnest/issues?state=all&per_page=100')
+fetch('https://api.github.com/repos/wmt-mobile/synapse/issues?state=all&per_page=100')
   .then(res => res.json())
   .then(issues => {
     const windowsIssues = issues.filter(i => {

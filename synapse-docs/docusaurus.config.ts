@@ -117,7 +117,7 @@ const config: Config = {
               price: '0',
               priceCurrency: 'USD'
             },
-            url: 'https://www.npmjs.com/package/synapse-mcp',
+            url: 'https://www.npmjs.com/package/synapse',
             description: `The only MCP server combining code intelligence, knowledge graph, and AI memory in one local-first package. ${TOOL_COUNT} tools for AI coding agents. Zero cloud dependencies.`
           },
           {
@@ -202,7 +202,7 @@ const config: Config = {
           position: 'right'
         },
         {
-          href: 'https://www.npmjs.com/package/synapse-mcp',
+          href: 'https://www.npmjs.com/package/synapse',
           label: 'v0.3.0-beta.2',
           position: 'right'
         }
@@ -231,7 +231,7 @@ const config: Config = {
           title: 'Community',
           items: [
             { label: 'GitHub', href: 'https://github.com/wmt-mobile/synapse' },
-            { label: 'npm', href: 'https://www.npmjs.com/package/synapse-mcp' },
+            { label: 'npm', href: 'https://www.npmjs.com/package/synapse' },
             { label: 'Issues', href: 'https://github.com/wmt-mobile/synapse/issues' }
           ]
         }

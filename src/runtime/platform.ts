@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 /**
  * Cross-platform shim helpers for spawning external binaries.
  *
@@ -33,4 +36,26 @@ export const SYNAPSE_BIN = isWindows ? 'synapse.cmd' : 'synapse';
  */
 export function platformBin(name: string, winSuffix = '.cmd'): string {
   return isWindows ? `${name}${winSuffix}` : name;
+}
+
+/** Case-insensitive path equality check on Windows. */
+export function equalPaths(a: string, b: string): boolean {
+  if (isWindows) return a.toLowerCase() === b.toLowerCase();
+  return a === b;
+}
+
+/** Case-insensitive string matching for paths on Windows. */
+export function isPathInside(parent: string, child: string): boolean {
+  const p = isWindows ? parent.toLowerCase() : parent;
+  const c = isWindows ? child.toLowerCase() : child;
+  return c === p || (!c.startsWith('..') && c.startsWith(p + (isWindows ? '\\' : '/')));
+}
+
+/** Get canonical casing for a path on disk. */
+export function canonicalizePath(p: string): string {
+  try {
+    return fs.realpathSync.native(p);
+  } catch {
+    return path.resolve(p);
+  }
 }

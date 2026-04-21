@@ -59,11 +59,11 @@ function fileContainsAll(filePath, patterns) {
   return patterns.every((pattern) => pattern.test(text));
 }
 
-function hasCodexLocalnestBlock(rawText) {
+function hasCodexSynapseBlock(rawText) {
   return /^\[mcp_servers\.synapse\]$/m.test(rawText);
 }
 
-function hasJsonLocalnestEntry(rawText) {
+function hasJsonSynapseEntry(rawText) {
   if (!rawText.trim()) return false;
   const parsed = JSON.parse(rawText);
   return !!parsed?.mcpServers?.synapse;
@@ -77,8 +77,8 @@ function verifySupportedClientTargets({ homeDir = os.homedir() } = {}) {
     let error = null;
 
     try {
-      if (target.kind === 'toml') configured = hasCodexLocalnestBlock(rawText);
-      if (target.kind === 'json') configured = hasJsonLocalnestEntry(rawText);
+      if (target.kind === 'toml') configured = hasCodexSynapseBlock(rawText);
+      if (target.kind === 'json') configured = hasJsonSynapseEntry(rawText);
     } catch (caught) {
       error = caught?.message || String(caught);
     }

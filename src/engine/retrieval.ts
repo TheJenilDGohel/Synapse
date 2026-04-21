@@ -32,3 +32,12 @@ export { RerankerService } from '../services/retrieval/reranker/service.js';
 
 // Symbol-aware code intelligence index (functions, classes, imports)
 export { SymbolIndexService } from '../services/retrieval/symbols/index.js';
+
+export { unifiedFind } from '../services/unified-find/find.js';
+export type { FindInput, FindResult, FindResultItem } from '../services/unified-find/find.js';
+
+// Workspace & Project Discovery
+export { WorkspaceService } from '../services/workspace/index.js';
+
+// Update & Lifecycle Management
+export { UpdateService } from '../services/update/index.js';

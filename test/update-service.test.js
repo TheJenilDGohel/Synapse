@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { UpdateService, compareVersions } from '../src/services/update/index.js';
-import { buildLocalnestPaths } from '../src/runtime/home-layout.js';
+import { buildSynapsePaths } from '../src/runtime/home-layout.js';
 
 function makeTempHome() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-update-test-'));
@@ -27,7 +27,7 @@ test('getStatus fetches npm live result and then serves cache while fresh', asyn
   let calls = 0;
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -46,7 +46,7 @@ test('getStatus fetches npm live result and then serves cache while fresh', asyn
   assert.equal(live.can_attempt_update, true);
   assert.equal(live.using_cached_data, false);
   assert.ok(live.next_check_at);
-  assert.ok(fs.existsSync(buildLocalnestPaths(home).updateStatusPath));
+  assert.ok(fs.existsSync(buildSynapsePaths(home).updateStatusPath));
 
   const cached = await service.getStatus({ force: false });
   assert.equal(calls, 1);
@@ -59,7 +59,7 @@ test('getStatus can check beta channel via npm dist-tags', async () => {
   const calls = [];
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.4-beta.8',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -78,10 +78,10 @@ test('getStatus can check beta channel via npm dist-tags', async () => {
 
 test('getStatus falls back to cache on npm failure', async () => {
   const home = makeTempHome();
-  const cachePath = buildLocalnestPaths(home).updateStatusPath;
+  const cachePath = buildSynapsePaths(home).updateStatusPath;
   fs.mkdirSync(path.dirname(cachePath), { recursive: true });
   fs.writeFileSync(cachePath, `${JSON.stringify({
-    package_name: 'synapse-mcp',
+    package_name: 'synapse',
     current_version: '0.0.3',
     latest_version: '0.0.4',
     is_outdated: true,
@@ -91,7 +91,7 @@ test('getStatus falls back to cache on npm failure', async () => {
 
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -111,7 +111,7 @@ test('getStatus stays informative when npm fails without cache', async () => {
   const home = makeTempHome();
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.4-beta.6',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -133,7 +133,7 @@ test('getCachedStatus returns informative fallback without npm access', () => {
   const home = makeTempHome();
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.4-beta.6',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -153,10 +153,10 @@ test('getCachedStatus returns informative fallback without npm access', () => {
 
 test('getCachedStatus overrides stale cached current_version with installed runtime version', () => {
   const home = makeTempHome();
-  const cachePath = buildLocalnestPaths(home).updateStatusPath;
+  const cachePath = buildSynapsePaths(home).updateStatusPath;
   fs.mkdirSync(path.dirname(cachePath), { recursive: true });
   fs.writeFileSync(cachePath, `${JSON.stringify({
-    package_name: 'synapse-mcp',
+    package_name: 'synapse',
     current_version: '0.0.4',
     latest_version: '0.0.3',
     is_outdated: false,
@@ -166,7 +166,7 @@ test('getCachedStatus overrides stale cached current_version with installed runt
 
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.4-beta.8',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -189,7 +189,7 @@ test('selfUpdate requires explicit approval', async () => {
   const home = makeTempHome();
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -206,7 +206,7 @@ test('selfUpdate runs install and skill sync when approved', async () => {
   const calls = [];
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -225,7 +225,7 @@ test('selfUpdate runs install and skill sync when approved', async () => {
 
   assert.equal(out.ok, true);
   assert.equal(out.restart_required, true);
-  assert.ok(calls.some((line) => line.includes('install -g synapse-mcp@latest')));
+  assert.ok(calls.some((line) => line.includes('install -g synapse@latest')));
   // Cross-platform: command binary is `synapse` on POSIX and `synapse.cmd`
   // on Windows (per src/services/update/helpers.ts). Match either.
   assert.ok(calls.some((line) => /\bsynapse(?:\.cmd)? install skills --force\b/.test(line)));
@@ -236,7 +236,7 @@ test('selfUpdate beta channel installs npm beta tag and refreshes beta status', 
   const calls = [];
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.4-beta.8',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -256,8 +256,8 @@ test('selfUpdate beta channel installs npm beta tag and refreshes beta status', 
 
   assert.equal(out.ok, true);
   assert.equal(out.update_status.update_channel, 'beta');
-  assert.ok(calls.some((line) => line.includes('install -g synapse-mcp@beta')));
-  assert.ok(calls.some((line) => line.includes('view synapse-mcp dist-tags.beta --json')));
+  assert.ok(calls.some((line) => line.includes('install -g synapse@beta')));
+  assert.ok(calls.some((line) => line.includes('view synapse dist-tags.beta --json')));
 });
 
 test('selfUpdate dry-run does not execute commands', async () => {
@@ -265,7 +265,7 @@ test('selfUpdate dry-run does not execute commands', async () => {
   const calls = [];
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -296,7 +296,7 @@ test('selfUpdate dry-run reports validation failures without mutating', async ()
   const home = makeTempHome();
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -327,7 +327,7 @@ test('selfUpdate reports npm install failure and stops before skill sync', async
   const calls = [];
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -354,7 +354,7 @@ test('selfUpdate reports skill sync failure after successful install', async () 
   const calls = [];
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.0.3',
     checkIntervalMinutes: 120,
     failureBackoffMinutes: 15,
@@ -386,11 +386,11 @@ test('selfUpdate reports skill sync failure after successful install', async () 
 
 test('getStatus invalidates cache when current_version advances past cached latest_version', async () => {
   const home = makeTempHome();
-  const cachePath = buildLocalnestPaths(home).updateStatusPath;
+  const cachePath = buildSynapsePaths(home).updateStatusPath;
   fs.mkdirSync(path.dirname(cachePath), { recursive: true });
   // Simulate: 30 days ago, the user was running 0.0.3 and latest was 0.0.3.
   fs.writeFileSync(cachePath, `${JSON.stringify({
-    package_name: 'synapse-mcp',
+    package_name: 'synapse',
     current_version: '0.0.3',
     latest_version: '0.0.3',
     update_channel: 'stable',
@@ -402,7 +402,7 @@ test('getStatus invalidates cache when current_version advances past cached late
   let npmCalls = 0;
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.1.0', // user has since upgraded locally
     checkIntervalMinutes: 60,
     failureBackoffMinutes: 15,
@@ -425,11 +425,11 @@ test('getStatus invalidates cache when current_version advances past cached late
 
 test('getCachedStatus neutralizes stale latest_version when current_version drifted', () => {
   const home = makeTempHome();
-  const cachePath = buildLocalnestPaths(home).updateStatusPath;
+  const cachePath = buildSynapsePaths(home).updateStatusPath;
   fs.mkdirSync(path.dirname(cachePath), { recursive: true });
   // Fresh timestamp so the ONLY stale signal is the current_version drift.
   fs.writeFileSync(cachePath, `${JSON.stringify({
-    package_name: 'synapse-mcp',
+    package_name: 'synapse',
     current_version: '0.0.3',
     latest_version: '0.0.3',
     update_channel: 'stable',
@@ -440,7 +440,7 @@ test('getCachedStatus neutralizes stale latest_version when current_version drif
 
   const service = new UpdateService({
     synapseHome: home,
-    packageName: 'synapse-mcp',
+    packageName: 'synapse',
     currentVersion: '0.1.0',
     checkIntervalMinutes: 60,
     failureBackoffMinutes: 15,

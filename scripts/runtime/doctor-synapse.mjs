@@ -4,14 +4,24 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import {
-  buildLocalnestPaths,
+  buildSynapsePaths,
   findSqliteVecExtensionPath,
   resolveConfigPath as resolveDefaultConfigPath,
-  resolveLocalnestHome,
+  resolveSynapseHome,
   resolveWritableModelCacheDir,
   installRuntimeWarningFilter
-} from '../../src/runtime/index.js';
-import { c, symbol, bar } from '../../src/cli/ansi.js';
+} from '../../src/runtime/index.ts';
+import {
+  c,
+  symbol,
+  bar
+} from '../../src/cli/ansi.ts';
+import {
+  NPM_BIN,
+  NPX_BIN,
+  RG_BIN,
+  isWindows
+} from '../../src/runtime/platform.ts';
 
 if (!process.env.DART_SUPPRESS_ANALYTICS) {
   process.env.DART_SUPPRESS_ANALYTICS = 'true';
@@ -44,21 +54,20 @@ function parseBoolean(value, fallback) {
 
 function commandExists(cmd, args = ['--version']) {
   try {
-    const result = spawnSync(cmd, args, { stdio: 'ignore' });
+    const result = spawnSync(cmd, args, {
+      stdio: 'ignore',
+      shell: isWindows
+    });
     return result.status === 0;
   } catch {
     return false;
   }
 }
 
-function getNpxCommand() {
-  return process.platform === 'win32' ? 'npx.cmd' : 'npx';
-}
-
 function resolveConfigPath() {
   return resolveDefaultConfigPath({
     env: safeEnv,
-    synapseHome: resolveLocalnestHome(safeEnv)
+    synapseHome: resolveSynapseHome(safeEnv)
   });
 }
 
@@ -113,12 +122,11 @@ function checkNodeVersion() {
 }
 
 function checkNpmNpx() {
-  const npmOk = commandExists('npm', ['--version']);
-  const npxCmd = getNpxCommand();
-  const npxOk = commandExists(npxCmd, ['--version']);
+  const npmOk = commandExists(NPM_BIN, ['--version']);
+  const npxOk = commandExists(NPX_BIN, ['--version']);
 
   if (npmOk && npxOk) {
-    return { id: 'npm_npx', ok: true, detail: `npm and ${npxCmd} available` };
+    return { id: 'npm_npx', ok: true, detail: `npm and npx available` };
   }
 
   return {
@@ -130,7 +138,7 @@ function checkNpmNpx() {
 }
 
 function checkRipgrep() {
-  const ok = commandExists('rg');
+  const ok = commandExists(RG_BIN);
   if (ok) {
     return { id: 'ripgrep', ok: true, detail: 'ripgrep available' };
   }
@@ -246,7 +254,7 @@ function checkSqliteVecExtension() {
   }
 
   const configured = (safeEnv.SYNAPSE_SQLITE_VEC_EXTENSION || '').trim();
-  const synapseHome = resolveLocalnestHome(safeEnv);
+  const synapseHome = resolveSynapseHome(safeEnv);
   const configuredPath = configured ? path.resolve(configured) : '';
   const detected = configuredPath
     ? (fs.existsSync(configuredPath) ? { path: configuredPath, source: 'configured' } : null)
@@ -274,9 +282,9 @@ function checkSqliteVecExtension() {
 }
 
 function checkModelCacheWritable() {
-  const synapseHome = resolveLocalnestHome(safeEnv);
+  const synapseHome = resolveSynapseHome(safeEnv);
   const configCaches = parseConfigForModelCacheDirs();
-  const defaultCache = buildLocalnestPaths(synapseHome).dirs.cache;
+  const defaultCache = buildSynapsePaths(synapseHome).dirs.cache;
   const embedPreferred = path.resolve(
     (safeEnv.SYNAPSE_EMBED_CACHE_DIR || '').trim() ||
     configCaches.embeddingCacheDir ||
@@ -322,15 +330,17 @@ function checkGlobalInstallStaleTempDirs() {
   let nodeModulesDir;
   try {
     const isWindows = process.platform === 'win32';
-    const npmBin = isWindows ? 'npm.cmd' : 'npm';
-    nodeModulesDir = spawnSync(npmBin, ['root', '-g'], { encoding: 'utf8', shell: isWindows }).stdout.trim();
+    nodeModulesDir = spawnSync(NPM_BIN, ['root', '-g'], {
+      encoding: 'utf8',
+      shell: isWindows
+    }).stdout.trim();
   } catch { /* ignore */ }
   if (!nodeModulesDir || !fs.existsSync(nodeModulesDir)) {
     return { id: 'global_stale_temp', ok: true, detail: 'Could not locate global node_modules (skipped)' };
   }
 
   const entries = fs.readdirSync(nodeModulesDir);
-  const stalePrefix = '.synapse-mcp-';
+  const stalePrefix = '.synapse-';
   const stale = entries.filter((e) => e.startsWith(stalePrefix));
 
   if (stale.length === 0) {
@@ -395,8 +405,8 @@ function printHelp() {
   process.stdout.write('  synapse doctor --verbose\n');
   process.stdout.write('  synapse doctor --json\n');
   process.stdout.write('\nCompatibility alias (deprecated):\n');
-  process.stdout.write('  synapse-mcp-doctor\n');
-  process.stdout.write('  synapse-mcp-doctor --json\n');
+  process.stdout.write('  synapse-doctor\n');
+  process.stdout.write('  synapse-doctor --json\n');
   process.stdout.write('Options:\n');
   process.stdout.write('  --json      print JSON output\n');
   process.stdout.write('  --fix       auto-fix detected issues (e.g. stale npm temp dirs)\n');

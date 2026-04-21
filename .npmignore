@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
-localnest.config.json
-.mcp.localnest.json
-.localnest/
+synapse.config.json
+.mcp.synapse.json
+.synapse/
 .npm-cache/
 node_modules/

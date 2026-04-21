@@ -1,5 +1,5 @@
 ---
-name: synapse-mcp-runtime
+name: synapse-runtime
 version: 0.3.0-beta.2
 description: Expert system for Synapse runtime architecture, installation orchestration, and diagnostic systems.
 category: tools

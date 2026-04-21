@@ -29,13 +29,13 @@ const NOUN_MODULES: Map<string, string> = new Map([
   ['onboard', '../src/cli/commands/onboard.js'],
   ['dashboard', '../src/cli/commands/dashboard.js'],
   ['backup', '../src/cli/commands/backup.js'],
+  ['doctor', '../src/cli/commands/doctor.js'],
+  ['setup', '../src/cli/commands/setup.js'],
+  ['upgrade', '../src/cli/commands/upgrade.js'],
 ]);
 
 /** flat command -> script path (relative to bin/) */
 const LEGACY_MODULES: Map<string, string> = new Map([
-  ['setup', '../scripts/runtime/setup-synapse.mjs'],
-  ['doctor', '../scripts/runtime/doctor-synapse.mjs'],
-  ['upgrade', '../scripts/runtime/upgrade-synapse.mjs'],
   ['task-context', '../scripts/memory/task-context-synapse.mjs'],
   ['capture-outcome', '../scripts/memory/capture-outcome-synapse.mjs'],
 ]);

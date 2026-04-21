@@ -1,10 +1,10 @@
 ---
-name: localnest-node-compat
-description: "Use when making LocalNest work cleanly across different Node versions, especially around built-in modules, optional native dependencies, version gating, and compatibility fallbacks."
+name: synapse-node-compat
+description: "Use when making Synapse work cleanly across different Node versions, especially around built-in modules, optional native dependencies, version gating, and compatibility fallbacks."
 user-invocable: false
 ---
 
-# LocalNest Node Compat
+# Synapse Node Compat
 
 Use this skill for Node-version compatibility work, especially when a feature depends on:
 - `node:sqlite`

@@ -32,14 +32,14 @@ No data leaves your machine. Embeddings, index, and memory stay local.
 ## Quick Start
 
 ```bash
-npm install -g synapse-mcp
+npm install -g synapse
 synapse setup
 synapse doctor
 ```
 
 **Beta track** (interactive TUI dashboard):
 ```bash
-npm install -g synapse-mcp@beta
+npm install -g synapse@beta
 synapse dashboard
 ```
 

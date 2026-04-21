@@ -12,10 +12,10 @@ This beta added a cleaner package install and skill distribution flow.
 ## Install commands
 
 ```bash
-npm install -g synapse-mcp@0.0.2-beta.2
-synapse-mcp-install-skill
-npx -y synapse-mcp-setup
-npx -y synapse-mcp-doctor
+npm install -g synapse@0.0.2-beta.2
+synapse-install-skill
+npx -y synapse-setup
+npx -y synapse-doctor
 ```
 
 Setup prints a ready-to-paste `mcpServers.synapse` block in this release line.

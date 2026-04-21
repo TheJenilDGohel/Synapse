@@ -19,6 +19,8 @@
 
 export { MemoryStore } from '../services/memory/store.js';
 export { MemoryHooks } from '../services/memory/hooks.js';
+export { MemoryWorkflowService } from '../services/memory/workflow.js';
+export { MemoryService } from '../services/memory/service.js';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Entry store operations (adapter-level — CORE-01)

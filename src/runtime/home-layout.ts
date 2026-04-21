@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-export interface LocalnestPaths {
+export interface SynapsePaths {
   home: string;
   dirs: {
     config: string;
@@ -46,14 +46,14 @@ export interface WritableModelCacheResult {
 
 export interface MigrationResult {
   changed: boolean;
-  paths: LocalnestPaths;
+  paths: SynapsePaths;
 }
 
-export function resolveLocalnestHome(env: Record<string, string | undefined> = process.env as Record<string, string | undefined>): string {
+export function resolveSynapseHome(env: Record<string, string | undefined> = process.env as Record<string, string | undefined>): string {
   return path.resolve(env.SYNAPSE_HOME || path.join(os.homedir(), '.synapse'));
 }
 
-export function buildLocalnestPaths(synapseHome: string): LocalnestPaths {
+export function buildSynapsePaths(synapseHome: string): SynapsePaths {
   const home = path.resolve(synapseHome);
   const configDir = path.join(home, 'config');
   const dataDir = path.join(home, 'data');
@@ -111,7 +111,7 @@ export interface ResolveWritableModelCacheDirOptions {
 export function resolveWritableModelCacheDir(
   { preferredDir, synapseHome, env = process.env as Record<string, string | undefined> }: ResolveWritableModelCacheDirOptions = {}
 ): WritableModelCacheResult {
-  const preferred = path.resolve(preferredDir || path.join(resolveLocalnestHome(env), 'cache'));
+  const preferred = path.resolve(preferredDir || path.join(resolveSynapseHome(env), 'cache'));
   const uid = typeof process.getuid === 'function' ? process.getuid() : null;
   const owner = Number.isInteger(uid) ? `uid-${uid}` : sanitizeOwnerToken(env.USER || env.USERNAME || 'user');
   const fallbackBase = path.join(os.tmpdir(), `synapse-models-${owner}`);
@@ -192,8 +192,8 @@ export interface ResolveConfigPathOptions {
 }
 
 export function resolveConfigPath({ env = process.env as Record<string, string | undefined>, synapseHome }: ResolveConfigPathOptions = {}): string {
-  const home = synapseHome || resolveLocalnestHome(env);
-  const paths = buildLocalnestPaths(home);
+  const home = synapseHome || resolveSynapseHome(env);
+  const paths = buildSynapsePaths(home);
   if (env.SYNAPSE_CONFIG) {
     const explicit = path.resolve(env.SYNAPSE_CONFIG);
     if (fs.existsSync(explicit)) return explicit;
@@ -210,8 +210,8 @@ export function resolveConfigPath({ env = process.env as Record<string, string |
   return paths.configPath;
 }
 
-export function migrateLocalnestHomeLayout(synapseHome: string): MigrationResult {
-  const paths = buildLocalnestPaths(synapseHome);
+export function migrateSynapseHomeLayout(synapseHome: string): MigrationResult {
+  const paths = buildSynapsePaths(synapseHome);
   fs.mkdirSync(paths.home, { recursive: true });
   fs.mkdirSync(paths.dirs.config, { recursive: true });
   fs.mkdirSync(paths.dirs.data, { recursive: true });

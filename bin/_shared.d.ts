@@ -13,7 +13,7 @@ export function ensureTsx(): void;
 export function relaunchWithTsx(): boolean;
 export function hasVersionFlag(argv?: string[]): boolean;
 export function buildForwardArgv(rest: any, argv?: string[]): any[];
-export function buildLocalnestCommandArgv(commandArgs: any[] | undefined, metaUrl: any, argv?: string[]): any[];
+export function buildSynapseCommandArgv(commandArgs: any[] | undefined, metaUrl: any, argv?: string[]): any[];
 export function printDeprecationWarning({ legacyCommand, replacementCommand, note }: {
     legacyCommand: any;
     replacementCommand: any;

@@ -8,8 +8,8 @@
 </div>
 
 ```bash
-npm install -g synapse-mcp@0.0.4-beta.7
-synapse-mcp-install-skill
+npm install -g synapse@0.0.4-beta.7
+synapse-install-skill
 synapse setup
 synapse doctor
 synapse upgrade
@@ -18,7 +18,7 @@ synapse upgrade
 ## Beta-specific notes
 
 - `synapse setup` and `synapse doctor` remain the preferred bootstrap path.
-- direct `synapse-mcp` binary startup is preferred for MCP clients; `npx` is only fallback behavior.
+- direct `synapse` binary startup is preferred for MCP clients; `npx` is only fallback behavior.
 - the setup output in this version still documented `xenova`-style env values in some generated snippets, even though the shipped runtime had moved to Hugging Face.
 - install noise was reduced significantly relative to beta.6, but one upstream ONNX warning could still appear.
 

@@ -4,7 +4,7 @@
   <rect x="96" y="124" width="96" height="292" rx="18" fill="#14B8A6"/>
   <rect x="220" y="124" width="96" height="184" rx="18" fill="#38BDF8"/>
   <rect x="220" y="332" width="214" height="84" rx="18" fill="#0F766E"/>
-  <text x="480" y="240" fill="#08111E" font-family="Arial, sans-serif" font-size="74" font-weight="700">LocalNest MCP</text>
+  <text x="480" y="240" fill="#08111E" font-family="Arial, sans-serif" font-size="74" font-weight="700">Synapse MCP</text>
   <text x="480" y="318" fill="#274255" font-family="Arial, sans-serif" font-size="30">Local-first documentation for setup, search, indexing, and releases.</text>
   <text x="480" y="388" fill="#0F766E" font-family="Arial, sans-serif" font-size="28" font-weight="700">Deployable. Versionable. Honest.</text>
   <defs>

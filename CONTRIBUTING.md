@@ -63,7 +63,7 @@ Tools are registered in `src/mcp/tools/*.ts` using `registerJsonTool`. Each tool
 
 ### Updating the skill
 
-The skill at `skills/synapse-mcp/SKILL.md` is the source of truth. After editing it, sync to the installed location:
+The skill at `skills/synapse/SKILL.md` is the source of truth. After editing it, sync to the installed location:
 ```bash
 npm run install:skill
 ```
@@ -81,7 +81,7 @@ Changing the tokenizer requires a `SCHEMA_VERSION` bump in `src/services/retriev
 
 - Keep PRs focused — one concern per PR
 - Run `npm run quality` before opening a PR
-- Update `skills/synapse-mcp/SKILL.md` if you add or change any tool
+- Update `skills/synapse/SKILL.md` if you add or change any tool
 - Do not bump the version — maintainers handle releases
 
 ## Reporting Issues

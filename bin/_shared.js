@@ -56,7 +56,7 @@ export function buildForwardArgv(rest, argv = process.argv) {
   return [argv[0], argv[1], ...rest];
 }
 
-export function buildLocalnestCommandArgv(commandArgs = [], metaUrl, argv = process.argv) {
+export function buildSynapseCommandArgv(commandArgs = [], metaUrl, argv = process.argv) {
   return [
     argv[0],
     fileURLToPath(new URL('./synapse.js', metaUrl)),
@@ -83,7 +83,7 @@ export async function forwardDeprecatedCommand({
   note = ''
 }) {
   printDeprecationWarning({ legacyCommand, replacementCommand, note });
-  process.argv = buildLocalnestCommandArgv(commandArgs, metaUrl, process.argv);
+  process.argv = buildSynapseCommandArgv(commandArgs, metaUrl, process.argv);
   return importRelative('./synapse.js', metaUrl);
 }
 

@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/synapse-mcp"><img src="https://img.shields.io/npm/v/synapse-mcp.svg?style=for-the-badge&color=success" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/synapse"><img src="https://img.shields.io/npm/v/synapse.svg?style=for-the-badge&color=success" alt="npm version"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-gold.svg?style=for-the-badge" alt="License: MIT"></a>
   <a href="https://github.com/wmt-mobile/synapse/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/wmt-mobile/synapse/quality.yml?branch=main&style=for-the-badge&label=Quality" alt="Quality"></a>
 </p>
@@ -93,7 +93,7 @@ No other MCP server covers all three pillars. Here's how the landscape breaks do
 
 ```bash
 # Install
-npm install -g synapse-mcp
+npm install -g synapse
 
 # Setup workspace + embeddings
 synapse setup
@@ -115,7 +115,7 @@ After setup, add this to your AI client config:
 {
   "mcpServers": {
     "synapse": {
-      "command": "synapse-mcp",
+      "command": "synapse",
       "startup_timeout_sec": 30,
       "env": {
         "MCP_MODE": "stdio",
@@ -210,7 +210,7 @@ Direct `npm install -g git+https://...` may fail with `TAR_ENTRY_ERRORS`. This i
 ```bash
 git clone https://github.com/wmt-mobile/synapse.git
 cd synapse && npm pack
-npm install -g ./synapse-mcp-*.tgz
+npm install -g ./synapse-*.tgz
 ```
 </details>
 
@@ -218,7 +218,7 @@ npm install -g ./synapse-mcp-*.tgz
 <summary><b>Semantic search not working</b></summary>
 
 ```bash
-cd $(npm root -g)/synapse-mcp && npm install --no-save @huggingface/transformers
+cd $(npm root -g)/synapse && npm install --no-save @huggingface/transformers
 synapse doctor
 ```
 </details>

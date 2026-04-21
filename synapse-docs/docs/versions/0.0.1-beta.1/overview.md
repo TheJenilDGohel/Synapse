@@ -16,7 +16,7 @@ This is the first published Synapse beta documented in the changelog.
 ## Major additions
 
 - single-package root layout
-- `synapse-mcp-doctor`
+- `synapse-doctor`
 - first semantic indexing service
 - `index_status`
 - `index_project`

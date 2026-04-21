@@ -60,7 +60,7 @@ interface InstallResult {
   backupPath: string | null;
 }
 
-function buildCodexLocalnestBlock(serverConfig: ServerConfig): string {
+function buildCodexSynapseBlock(serverConfig: ServerConfig): string {
   const lines: string[] = [
     '[mcp_servers.synapse]',
     `command = ${serializeTomlString(serverConfig.command)}`
@@ -85,7 +85,7 @@ function buildCodexLocalnestBlock(serverConfig: ServerConfig): string {
   return `${lines.join('\n')}\n`;
 }
 
-function upsertCodexLocalnestBlock(rawText: string, block: string): string {
+function upsertCodexSynapseBlock(rawText: string, block: string): string {
   const lines = rawText.split(/\r?\n/);
   const kept: string[] = [];
 
@@ -146,8 +146,8 @@ function installIntoCodexTarget(target: InstallTarget, serverConfig: ServerConfi
   const existed = fs.existsSync(target.configPath);
   const backupPath = backupFile(target.configPath, backupDir, target.id);
   const rawText = existed ? fs.readFileSync(target.configPath, 'utf8') : '';
-  const block = buildCodexLocalnestBlock(serverConfig);
-  const nextText = upsertCodexLocalnestBlock(rawText, block);
+  const block = buildCodexSynapseBlock(serverConfig);
+  const nextText = upsertCodexSynapseBlock(rawText, block);
   const changed = rawText !== nextText;
 
   fs.writeFileSync(target.configPath, nextText, 'utf8');
@@ -162,7 +162,7 @@ function installIntoCodexTarget(target: InstallTarget, serverConfig: ServerConfi
   };
 }
 
-export function buildLocalnestServerConfig({ command, args, env }: { command: string; args?: string[]; env?: Record<string, string> }): ServerConfig {
+export function buildSynapseServerConfig({ command, args, env }: { command: string; args?: string[]; env?: Record<string, string> }): ServerConfig {
   const config: ServerConfig = {
     command,
     startup_timeout_sec: 30,
@@ -274,12 +274,12 @@ export function detectAiToolTargets({ homeDir = os.homedir() }: { homeDir?: stri
   };
 }
 
-export interface InstallLocalnestResult {
+export interface InstallSynapseResult {
   installed: InstallResult[];
   unsupported: InstallTarget[];
 }
 
-export function installLocalnestIntoDetectedClients({
+export function installSynapseIntoDetectedClients({
   homeDir = os.homedir(),
   serverConfig,
   backupDir
@@ -287,7 +287,7 @@ export function installLocalnestIntoDetectedClients({
   homeDir?: string;
   serverConfig: ServerConfig;
   backupDir: string;
-}): InstallLocalnestResult {
+}): InstallSynapseResult {
   const detection = detectAiToolTargets({ homeDir });
   const results: InstallResult[] = [];
 

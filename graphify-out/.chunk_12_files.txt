@@ -1,7 +1,7 @@
-skills/localnest-mcp/examples.md
-localnest-docs/sidebars.ts
-localnest-docs/docusaurus.config.ts
-localnest-docs/README.md
+skills/synapse/examples.md
+synapse-docs/sidebars.ts
+synapse-docs/docusaurus.config.ts
+synapse-docs/README.md
 src/services/memory/events/list.ts
 src/services/memory/events/heuristics.ts
 src/services/memory/events/capture.ts
@@ -11,9 +11,9 @@ src/services/retrieval/chunker/languages.ts
 src/services/workspace/service.ts
 src/services/workspace/index.ts
 src/services/workspace/helpers.ts
-localnest-docs/docs/index.md
-localnest-docs/docs/architecture.md
-localnest-docs/docs/overview.md
+synapse-docs/docs/index.md
+synapse-docs/docs/architecture.md
+synapse-docs/docs/overview.md
 src/services/memory/taxonomy/taxonomy.ts
 src/services/memory/taxonomy/scopes.ts
 src/services/memory/workflow/teach.ts

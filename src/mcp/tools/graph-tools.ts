@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MemoryHooks } from '../../services/memory/hooks.js';
+import { MemoryHooks } from '../../engine/index.js';
 import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,

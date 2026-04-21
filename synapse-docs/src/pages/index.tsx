@@ -76,7 +76,7 @@ export default function Home(): React.JSX.Element {
         </section>
 
         <div className="siteHome__install">
-          <pre><code>npm install -g synapse-mcp{'\n'}synapse setup{'\n'}synapse doctor</code></pre>
+          <pre><code>npm install -g synapse{'\n'}synapse setup{'\n'}synapse doctor</code></pre>
         </div>
 
         <div className="siteHome__stats">

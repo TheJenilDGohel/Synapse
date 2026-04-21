@@ -3,7 +3,7 @@ import { forwardDeprecatedCommand } from './_shared.js';
 
 await forwardDeprecatedCommand({
   metaUrl: import.meta.url,
-  legacyCommand: 'synapse-mcp-setup',
-  replacementCommand: 'synapse setup',
-  commandArgs: ['setup']
+  legacyCommand: 'synapse-install-skill',
+  replacementCommand: 'synapse skill install',
+  commandArgs: ['skill', 'install']
 });

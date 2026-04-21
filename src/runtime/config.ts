@@ -3,11 +3,11 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ensureConfigUpgraded } from '../migrations/config-migrator.js';
-import { RG_BIN } from './platform.js';
+import { RG_BIN, canonicalizePath } from './platform.js';
 import {
-  migrateLocalnestHomeLayout,
+  migrateSynapseHomeLayout,
   resolveConfigPath as resolveDefaultConfigPath,
-  resolveLocalnestHome,
+  resolveSynapseHome,
   resolveWritableModelCacheDir
 } from './home-layout.js';
 import type { WritableModelCacheResult } from './home-layout.js';
@@ -122,9 +122,11 @@ function normalizeRootEntry(label: string | undefined, rootPath: string): RootEn
     return null;
   }
 
+  const canonical = canonicalizePath(resolved);
+
   return {
-    label: (label || path.basename(resolved) || 'root').trim(),
-    path: resolved
+    label: (label || path.basename(canonical) || 'root').trim(),
+    path: canonical
   };
 }
 
@@ -322,9 +324,9 @@ export interface RuntimeConfig {
 }
 
 export function buildRuntimeConfig(env: Record<string, string | undefined> = process.env as Record<string, string | undefined>): RuntimeConfig {
-  const synapseHome = resolveLocalnestHome(env);
+  const synapseHome = resolveSynapseHome(env);
   const mcpMode = (env.MCP_MODE || 'stdio').toLowerCase();
-  const layout = migrateLocalnestHomeLayout(synapseHome).paths;
+  const layout = migrateSynapseHomeLayout(synapseHome).paths;
   const configPath = resolveDefaultConfigPath({ env, synapseHome });
   const migration = ensureConfigUpgraded({
     configPath: path.resolve(configPath),
@@ -441,7 +443,7 @@ export function buildRuntimeConfig(env: Record<string, string | undefined> = pro
     ),
     rerankerCacheDir: rerankerCacheResolved.path,
     rerankerCacheStatus: rerankerCacheResolved,
-    updatePackageName: parseStringEnv(env.SYNAPSE_UPDATE_PACKAGE, 'synapse-mcp'),
+    updatePackageName: parseStringEnv(env.SYNAPSE_UPDATE_PACKAGE, 'synapse'),
     updateCheckIntervalMinutes: parseIntEnvClamped(
       env.SYNAPSE_UPDATE_CHECK_INTERVAL_MINUTES,
       60,

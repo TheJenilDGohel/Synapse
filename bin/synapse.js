@@ -22,7 +22,14 @@ const command = args[0] || '';
 const rest = args.slice(1);
 
 async function main() {
-  // --version / -v anywhere (even without a command)
+  // 0. Auto-start MCP server if spawned in stdio/sse mode by a client
+  if (process.env.MCP_MODE === 'stdio' || process.env.MCP_MODE === 'sse') {
+    const { startMcpServer } = await importRelative('../src/app/index.js', import.meta.url);
+    await startMcpServer();
+    return;
+  }
+
+  // 1. --version / -v anywhere (even without a command)
   if (hasVersionFlag(rawArgs)) {
     if (globalOpts.json) {
       process.stdout.write(JSON.stringify({ version: SERVER_VERSION }) + '\n');

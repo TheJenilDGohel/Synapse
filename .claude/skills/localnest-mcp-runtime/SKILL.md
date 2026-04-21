@@ -1,10 +1,10 @@
 ---
-name: localnest-mcp-runtime
-description: "Use when changing LocalNest MCP startup, setup, doctor, config generation, tool wiring, installed-package behavior, or runtime fallback behavior across environments."
+name: synapse-runtime
+description: "Use when changing Synapse MCP startup, setup, doctor, config generation, tool wiring, installed-package behavior, or runtime fallback behavior across environments."
 user-invocable: false
 ---
 
-# LocalNest MCP Runtime
+# Synapse MCP Runtime
 
 Use this skill when touching:
 - `scripts/runtime/`
@@ -23,9 +23,9 @@ Use this skill when touching:
 ### 1. Reproduce on the runtime surface
 
 Choose the narrowest entry point:
-- `localnest setup`
-- `localnest doctor`
-- `localnest start`
+- `synapse setup`
+- `synapse doctor`
+- `synapse start`
 - MCP tool status and index tools
 
 ### 2. Check import timing

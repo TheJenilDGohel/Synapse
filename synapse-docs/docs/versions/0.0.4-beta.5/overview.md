@@ -23,4 +23,4 @@ description: Overview of Synapse v0.0.4-beta.5 beta docs, including the top-leve
 
 ## Best use
 
-Use this version archive when your MCP client or deployment is pinned to `synapse-mcp@0.0.4-beta.5` and you want docs aligned exactly to that runtime behavior.
+Use this version archive when your MCP client or deployment is pinned to `synapse@0.0.4-beta.5` and you want docs aligned exactly to that runtime behavior.

@@ -25,19 +25,19 @@ Choose your release track:
 
 **Stable Track (v0.2.0):**
 ```bash
-npm install -g synapse-mcp
+npm install -g synapse
 ```
 
 **Beta Track (v0.3.0-beta.2 — Interactive CLI & TUI):**
 ```bash
-npm install -g synapse-mcp@beta
+npm install -g synapse@beta
 ```
 
 ## Quick Start Sequence
 
 ```bash
 # 1. Install the package (Stable or Beta)
-npm install -g synapse-mcp
+npm install -g synapse
 
 # 2. Install bundled skills to your AI clients
 synapse install skills
@@ -72,7 +72,7 @@ After setup, copy the `mcpServers` block from `~/.synapse/config/mcp.synapse.jso
 {
   "mcpServers": {
     "synapse": {
-      "command": "synapse-mcp",
+      "command": "synapse",
       "startup_timeout_sec": 30,
       "env": {
         "MCP_MODE": "stdio",
@@ -90,7 +90,7 @@ After setup, copy the `mcpServers` block from `~/.synapse/config/mcp.synapse.jso
 Synapse uses `@huggingface/transformers` for local embedding generation (MiniLM-L6-v2). This is installed automatically during postinstall. If it wasn't installed, add it manually:
 
 ```bash
-cd $(npm root -g)/synapse-mcp
+cd $(npm root -g)/synapse
 npm install --no-save @huggingface/transformers
 ```
 
@@ -108,18 +108,18 @@ git clone https://github.com/wmt-mobile/synapse.git
 cd synapse
 git checkout release/0.3.0  # or main for stable
 npm pack
-npm install -g ./synapse-mcp-*.tgz
+npm install -g ./synapse-*.tgz
 ```
 
 **Alternative: install with --ignore-scripts, then rebuild**
 ```bash
 npm install -g --ignore-scripts git+https://github.com/wmt-mobile/synapse.git#release/0.3.0
-cd $(npm root -g)/synapse-mcp && npm install
+cd $(npm root -g)/synapse && npm install
 ```
 
 After either method, enable semantic search:
 ```bash
-cd $(npm root -g)/synapse-mcp && npm install --no-save @huggingface/transformers
+cd $(npm root -g)/synapse && npm install --no-save @huggingface/transformers
 ```
 
 ## Troubleshooting
@@ -136,9 +136,9 @@ cd $(npm root -g)/synapse-mcp && npm install --no-save @huggingface/transformers
 | `TAR_ENTRY_ERROR ENOENT` | npm git-dep auto-bundling bug | Use `npm pack` + `npm install -g ./file.tgz` |
 | `spawn sh ENOENT` | Concurrent extraction race | Same as above |
 | `tarball data (null) corrupted` | Stale npm cache | `npm cache clean --force` then retry |
-| Semantic search disabled | `@huggingface/transformers` not installed | `cd $(npm root -g)/synapse-mcp && npm install --no-save @huggingface/transformers` |
+| Semantic search disabled | `@huggingface/transformers` not installed | `cd $(npm root -g)/synapse && npm install --no-save @huggingface/transformers` |
 | `synapse: command not found` | Global bin not in PATH | Check `npm root -g` is accessible |
-| `tsx not found` | Incomplete install | `cd $(npm root -g)/synapse-mcp && npm install` |
+| `tsx not found` | Incomplete install | `cd $(npm root -g)/synapse && npm install` |
 
 ---
 

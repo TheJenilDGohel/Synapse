@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildLocalnestPaths } from '../runtime/home-layout.js';
+import { buildSynapsePaths } from '../runtime/home-layout.js';
 
 interface IndexDefaults {
   backend: string;
@@ -36,7 +36,7 @@ export interface MigrationResult {
 
 function backupFile(configPath: string, synapseHome: string): string {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupDir: string = buildLocalnestPaths(synapseHome).dirs.backups;
+  const backupDir: string = buildSynapsePaths(synapseHome).dirs.backups;
   fs.mkdirSync(backupDir, { recursive: true });
   const backupPath = path.join(backupDir, `${path.basename(configPath)}.bak.${stamp}`);
   fs.copyFileSync(configPath, backupPath);
@@ -50,7 +50,7 @@ function safeWriteJson(filePath: string, value: unknown): void {
 }
 
 function defaultIndex(synapseHome: string): IndexDefaults {
-  const layout = buildLocalnestPaths(synapseHome);
+  const layout = buildSynapsePaths(synapseHome);
   return {
     backend: 'sqlite-vec',
     dbPath: layout.sqliteDbPath,
@@ -70,7 +70,7 @@ function defaultIndex(synapseHome: string): IndexDefaults {
 }
 
 function defaultMemory(synapseHome: string): MemoryDefaults {
-  const layout = buildLocalnestPaths(synapseHome);
+  const layout = buildSynapsePaths(synapseHome);
   return {
     enabled: false,
     backend: 'auto',

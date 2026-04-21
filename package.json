@@ -29,13 +29,12 @@
   "description": "The only MCP server combining semantic code search, temporal knowledge graph, and persistent AI memory. 74 tools, zero cloud, pure SQLite. Alternative to Mem0, GitNexus, Graphiti.",
   "bin": {
     "synapse": "bin/synapse.cjs",
-    "synapse-mcp": "bin/synapse-mcp.cjs",
-    "synapse-mcp-upgrade": "bin/synapse-mcp-upgrade.cjs",
-    "synapse-mcp-setup": "bin/synapse-mcp-setup.cjs",
-    "synapse-mcp-doctor": "bin/synapse-mcp-doctor.cjs",
-    "synapse-mcp-install-skill": "bin/synapse-mcp-install-skill.cjs",
-    "synapse-mcp-task-context": "bin/synapse-mcp-task-context.cjs",
-    "synapse-mcp-capture-outcome": "bin/synapse-mcp-capture-outcome.cjs"
+    "synapse-upgrade": "bin/synapse-upgrade.cjs",
+    "synapse-setup": "bin/synapse-setup.cjs",
+    "synapse-doctor": "bin/synapse-doctor.cjs",
+    "synapse-install-skill": "bin/synapse-install-skill.cjs",
+    "synapse-task-context": "bin/synapse-task-context.cjs",
+    "synapse-capture-outcome": "bin/synapse-capture-outcome.cjs"
   },
   "files": [
     "bin",
@@ -51,12 +50,12 @@
   },
   "scripts": {
     "postinstall": "node -e \"try{require('child_process').execSync('node scripts/runtime/install-synapse-skill.mjs --quiet',{stdio:'ignore'})}catch(e){}\"",
-    "setup": "node scripts/runtime/setup-synapse.mjs",
-    "upgrade": "node scripts/runtime/upgrade-synapse.mjs",
-    "doctor": "node scripts/runtime/doctor-synapse.mjs",
+    "setup": "tsx scripts/runtime/setup-synapse.mjs",
+    "upgrade": "tsx scripts/runtime/upgrade-synapse.mjs",
+    "doctor": "tsx scripts/runtime/doctor-synapse.mjs",
     "install:skill": "node scripts/runtime/install-synapse-skill.mjs",
-    "task-context": "node scripts/memory/task-context-synapse.mjs",
-    "capture-outcome": "node scripts/memory/capture-outcome-synapse.mjs",
+    "task-context": "node scripts/memory/synapse-task-context.mjs",
+    "capture-outcome": "node scripts/memory/synapse-capture-outcome.mjs",
     "start": "tsx src/app/mcp-server.ts",
     "stress:synapse": "node scripts/quality/stress-synapse.mjs",
     "test": "tsx --test",
@@ -67,7 +66,7 @@
     "quality:package": "node scripts/quality/quality-package.mjs",
     "quality:audit": "node scripts/quality/quality-audit.mjs",
     "quality": "npm run check && npm run lint && npm run test:coverage && npm run quality:cycles && npm run quality:deps && npm run quality:package && npm run quality:audit",
-    "check": "tsc --noEmit && node --check bin/_boot.cjs && node --check bin/_shared.js && node --check bin/synapse.cjs && node --check bin/synapse-mcp.cjs && node --check bin/synapse-mcp-setup.cjs && node --check bin/synapse-mcp-doctor.cjs && node --check bin/synapse-mcp-upgrade.cjs && node --check bin/synapse-mcp-install-skill.cjs && node --check bin/synapse-mcp-task-context.cjs && node --check bin/synapse-mcp-capture-outcome.cjs && node --check bin/synapse.js && node --check bin/synapse-mcp.js && node --check bin/synapse-mcp-upgrade.js && node --check bin/synapse-mcp-setup.js && node --check bin/synapse-mcp-doctor.js && node --check bin/synapse-mcp-install-skill.js && node --check bin/synapse-mcp-task-context.js && node --check bin/synapse-mcp-capture-outcome.js && node --check scripts/runtime/setup-synapse.mjs && node --check scripts/runtime/upgrade-synapse.mjs && node --check scripts/runtime/doctor-synapse.mjs && node --check scripts/runtime/install-synapse-skill.mjs && node --check scripts/memory/task-context-synapse.mjs && node --check scripts/memory/capture-outcome-synapse.mjs && node --check scripts/memory/memory-workflow-cli-utils.mjs && node --check scripts/quality/quality-audit.mjs && node --check scripts/quality/quality-package.mjs && node --check scripts/quality/stress-synapse.mjs && node --check scripts/release/release-test-installed-runtime.mjs && node --check scripts/release/release-exit-criteria.mjs",
+    "check": "tsc --noEmit && node --check bin/_boot.cjs && node --check bin/_shared.js && node --check bin/synapse.cjs && node --check bin/synapse-setup.cjs && node --check bin/synapse-doctor.cjs && node --check bin/synapse-upgrade.cjs && node --check bin/synapse-install-skill.cjs && node --check bin/synapse-task-context.cjs && node --check bin/synapse-capture-outcome.cjs && node --check bin/synapse.js && node --check bin/synapse-upgrade.js && node --check bin/synapse-setup.js && node --check bin/synapse-doctor.js && node --check bin/synapse-install-skill.js && node --check bin/synapse-task-context.js && node --check bin/synapse-capture-outcome.js && node --check scripts/runtime/setup-synapse.mjs && node --check scripts/runtime/upgrade-synapse.mjs && node --check scripts/runtime/doctor-synapse.mjs && node --check scripts/runtime/install-synapse-skill.mjs && node --check scripts/memory/synapse-task-context.mjs && node --check scripts/memory/synapse-capture-outcome.mjs && node --check scripts/memory/memory-workflow-cli-utils.mjs && node --check scripts/quality/quality-audit.mjs && node --check scripts/quality/quality-package.mjs && node --check scripts/quality/stress-synapse.mjs && node --check scripts/release/release-test-installed-runtime.mjs && node --check scripts/release/release-exit-criteria.mjs",
     "build": "tsc",
     "build:check": "tsc --noEmit",
     "prepublishOnly": "npm run check",
@@ -78,17 +77,24 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "ora": "^9.3.0",
+    "tree-sitter-c-sharp": "0.23.5",
+    "tree-sitter-cpp": "0.23.4",
+    "tree-sitter-java": "0.23.5",
+    "tree-sitter-php": "0.24.2",
+    "tree-sitter-ruby": "0.23.1",
+    "tree-sitter-rust": "0.24.0",
+    "tree-sitter-typescript": "0.23.2",
     "tsx": "^4.21.0",
     "zod": "^4.3.6"
   },
   "optionalDependencies": {
-    "tree-sitter": "^0.25.0",
+    "tree-sitter": "0.21.0",
     "tree-sitter-bash": "^0.25.1",
     "tree-sitter-dart": "^1.0.0",
-    "tree-sitter-go": "^0.25.0",
-    "tree-sitter-javascript": "^0.25.0",
+    "tree-sitter-go": "0.25.0",
+    "tree-sitter-javascript": "0.25.0",
     "tree-sitter-lua": "^2.1.3",
-    "tree-sitter-python": "^0.25.0"
+    "tree-sitter-python": "0.25.0"
   },
   "overrides": {
     "hono": "^4.12.7",
