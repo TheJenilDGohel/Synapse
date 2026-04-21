@@ -92,7 +92,7 @@ Not applicable for this phase — Phase 40 is framework/typing infrastructure, n
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
 | All tests pass (full suite green) | `npm test` | `# pass 165 / # fail 0 / duration_ms 9017` | PASS |
-| TypeScript build clean | `npm run build` | `> synapse-mcp@0.2.0 build / > tsc` (exit 0, no errors) | PASS |
+| TypeScript build clean | `npm run build` | `> synapse@0.2.0 build / > tsc` (exit 0, no errors) | PASS |
 | Archetype count in schemas.ts | `grep -c "^export const.*RESULT_SCHEMA ="` | 8 (SEARCH, TRIPLE, STATUS, BATCH, MEMORY, ACK, BUNDLE, FREEFORM) | PASS |
 | Tool-level outputSchema count | `grep -rc "outputSchema:" src/mcp/tools/` | 72 total (10 files) | PASS |
 | FREEFORM budget ≤ 5 | Count `FREEFORM_RESULT_SCHEMA` tool-level usages | 3 (help, usage_guide, diary_read) | PASS |

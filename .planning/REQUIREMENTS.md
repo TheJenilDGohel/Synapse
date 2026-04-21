@@ -8,7 +8,7 @@
 ## Restructuring & Decoupling (The Great Tear-Down)
 
 ### Phase 1 Context
-The existing architecture (inherited from LocalNest) suffers from monolithic entanglement. The CLI commands, MCP server protocol, database layer, and AI integrations (like SKILL.md generation) are tightly coupled, making the core hard to modify and slow to initialize. This restructure will enforce elegant module boundaries.
+The existing architecture (inherited from Synapse) suffers from monolithic entanglement. The CLI commands, MCP server protocol, database layer, and AI integrations (like SKILL.md generation) are tightly coupled, making the core hard to modify and slow to initialize. This restructure will enforce elegant module boundaries.
 
 ### REQ-CORE: The Engine 
 - [ ] **CORE-01**: The SQLite database connection and interaction logic MUST be isolated strictly into a `src/engine/` module.
@@ -24,4 +24,4 @@ The existing architecture (inherited from LocalNest) suffers from monolithic ent
 
 ### REQ-AWARE: Native AI Awareness
 - [ ] **AWARE-01**: The system must have a unified `SKILL.md` or `.claude.md` generation pipeline that drops directly into the host OS so agents know how to boot the brain.
-- [ ] **AWARE-02**: Eliminate all hardcoded "localnest" legacy terminology and strings buried in variables or database defaults. 
+- [ ] **AWARE-02**: Eliminate all hardcoded "synapse" legacy terminology and strings buried in variables or database defaults. 

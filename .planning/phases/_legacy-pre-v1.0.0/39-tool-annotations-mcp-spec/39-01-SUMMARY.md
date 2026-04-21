@@ -159,7 +159,7 @@ The plan only called out `update_self` as an exception, but the static audit in 
 
 ```
 $ npm run build
-> synapse-mcp@0.2.0 build
+> synapse@0.2.0 build
 > tsc
 (clean)
 

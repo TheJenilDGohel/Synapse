@@ -250,11 +250,11 @@ assert.equal(runtimeHigh.updateCheckIntervalMinutes, 1440); // max clamp (unchan
     ```js
     test('getStatus invalidates cache when current_version advances past cached latest_version', async () => {
       const home = makeTempHome();
-      const cachePath = buildLocalnestPaths(home).updateStatusPath;
+      const cachePath = buildSynapsePaths(home).updateStatusPath;
       fs.mkdirSync(path.dirname(cachePath), { recursive: true });
       // Simulate: a month ago, user was on 0.0.3 and latest was 0.0.3
       fs.writeFileSync(cachePath, `${JSON.stringify({
-        package_name: 'synapse-mcp',
+        package_name: 'synapse',
         current_version: '0.0.3',
         latest_version: '0.0.3',
         update_channel: 'stable',
@@ -266,7 +266,7 @@ assert.equal(runtimeHigh.updateCheckIntervalMinutes, 1440); // max clamp (unchan
       let npmCalls = 0;
       const service = new UpdateService({
         synapseHome: home,
-        packageName: 'synapse-mcp',
+        packageName: 'synapse',
         currentVersion: '0.1.0',   // user has since upgraded
         checkIntervalMinutes: 60,
         failureBackoffMinutes: 15,
@@ -290,10 +290,10 @@ assert.equal(runtimeHigh.updateCheckIntervalMinutes, 1440); // max clamp (unchan
     ```js
     test('getCachedStatus neutralizes stale latest_version when current_version drifted', () => {
       const home = makeTempHome();
-      const cachePath = buildLocalnestPaths(home).updateStatusPath;
+      const cachePath = buildSynapsePaths(home).updateStatusPath;
       fs.mkdirSync(path.dirname(cachePath), { recursive: true });
       fs.writeFileSync(cachePath, `${JSON.stringify({
-        package_name: 'synapse-mcp',
+        package_name: 'synapse',
         current_version: '0.0.3',
         latest_version: '0.0.3',
         update_channel: 'stable',
@@ -304,7 +304,7 @@ assert.equal(runtimeHigh.updateCheckIntervalMinutes, 1440); // max clamp (unchan
 
       const service = new UpdateService({
         synapseHome: home,
-        packageName: 'synapse-mcp',
+        packageName: 'synapse',
         currentVersion: '0.1.0',
         checkIntervalMinutes: 60,
         failureBackoffMinutes: 15,
@@ -320,7 +320,7 @@ assert.equal(runtimeHigh.updateCheckIntervalMinutes, 1440); // max clamp (unchan
     ```
 
     Notes:
-    - Reuse imports already at the top of the file (`UpdateService`, `compareVersions`, `buildLocalnestPaths`, `fs`, `path`, `makeTempHome`).
+    - Reuse imports already at the top of the file (`UpdateService`, `compareVersions`, `buildSynapsePaths`, `fs`, `path`, `makeTempHome`).
     - Do NOT modify the other existing tests; they must still pass untouched.
     - Do NOT create a new test file -- CLAUDE.md forbids root-level test files, and update-service.test.js already exists.
   </action>

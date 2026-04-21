@@ -152,7 +152,7 @@ checkpoints), compressing backups, backup rotation policy.
 - `DatabaseSync` has no native `.backup()` method — `VACUUM INTO` is the only
   option without closing the DB.
 - `src/runtime/home-layout.ts` already defines `dirs.backups` directory; it is
-  created by `migrateLocalnestHomeLayout()` at startup. The `memoryDbPath` and
+  created by `migrateSynapseHomeLayout()` at startup. The `memoryDbPath` and
   `synapseHome` are both in `runtime` object at `registerAppTools` time.
 
 ### Established Patterns

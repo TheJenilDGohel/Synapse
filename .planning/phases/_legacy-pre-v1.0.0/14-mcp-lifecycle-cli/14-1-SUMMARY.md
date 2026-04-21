@@ -36,7 +36,7 @@ Replaced the Phase 14 stub in src/cli/commands/mcp.js with three working subcomm
 
 **mcp start** -- Resolves the mcp-server.js entry point relative to the CLI command file, dynamically imports it, and calls main(). The process stays alive as the MCP transport holds stdio open. Supports --json for structured output before handoff.
 
-**mcp status** -- Calls buildRuntimeConfig() and buildLocalnestPaths() to gather all server settings. Reports: server name/version/mode, config file path and existence, snippet file status, index backend and DB existence, memory enabled/backend/DB, embedding provider/model/cache, and ripgrep availability. Supports --json for full structured output.
+**mcp status** -- Calls buildRuntimeConfig() and buildSynapsePaths() to gather all server settings. Reports: server name/version/mode, config file path and existence, snippet file status, index backend and DB existence, memory enabled/backend/DB, embedding provider/model/cache, and ripgrep availability. Supports --json for full structured output.
 
 **mcp config** -- First checks for a saved snippet at ~/.synapse/config/mcp.synapse.json (created by setup). If found, outputs it directly. If not (or --raw is passed), generates a generic npx-based mcpServers JSON block. The --client claude flag outputs the `claude mcp add` command instead. Supports --json for all paths.
 

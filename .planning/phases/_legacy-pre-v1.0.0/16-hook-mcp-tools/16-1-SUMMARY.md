@@ -14,8 +14,8 @@ key_files:
   created: []
   modified:
     - src/mcp/tools/graph-tools.js
-    - skills/synapse-mcp/SKILL.md
-    - skills/synapse-mcp/tool-reference.md
+    - skills/synapse/SKILL.md
+    - skills/synapse/tool-reference.md
 decisions:
   - Access hooks via memory.store.hooks (MemoryService.store.hooks) for instance stats
   - Import MemoryHooks class for static validEvents() call
@@ -34,8 +34,8 @@ Hook introspection MCP tools exposing MemoryHooks stats and valid event names, w
 | Task | Name | Commit | Files |
 |------|------|--------|-------|
 | 1 | Add hook MCP tools to graph-tools.js | 4c054ff | src/mcp/tools/graph-tools.js |
-| 2 | Add hooks workflow and examples to SKILL.md | c107ba2 | skills/synapse-mcp/SKILL.md |
-| 3 | Add hook tools to tool-reference.md | ea323f6 | skills/synapse-mcp/tool-reference.md |
+| 2 | Add hooks workflow and examples to SKILL.md | c107ba2 | skills/synapse/SKILL.md |
+| 3 | Add hook tools to tool-reference.md | ea323f6 | skills/synapse/tool-reference.md |
 
 ## Implementation Details
 

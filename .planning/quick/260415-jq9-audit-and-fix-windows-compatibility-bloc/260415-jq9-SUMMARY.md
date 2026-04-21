@@ -15,7 +15,7 @@ Multiple Windows users reported they cannot install or use Synapse. No specific 
 
 ### CRITICAL — broke install or basic runtime
 
-1. **`bin/_boot.cjs` symlink-name detection** (B1) — Loader detected which bin entry to launch via `basename(process.argv[1])` against a symlink name. npm doesn't create symlinks on Windows — it generates `.cmd` shims that all spawn `node bin/_boot.cjs`. Result: `basename` always returned `_boot` on Windows, the legacy fallback path treated `process.argv[2]` (the user's first CLI arg) as the target script name, and every bin command (`synapse`, `synapse-mcp`, `synapse-mcp-setup`, `synapse-mcp-doctor`, `synapse-mcp-upgrade`, `synapse-mcp-install-skill`, `synapse-mcp-task-context`, `synapse-mcp-capture-outcome`) was broken. **Fix:** `_boot.cjs` is now a module exporting `runTarget(targetName, [argv])`. Each of the 8 bin entries gets its own tiny shim under `bin/<name>.cjs` that calls `require('./_boot.cjs').runTarget('<target>.js')`. The `package.json` `bin` map points at the per-bin shims. Direct invocation of `_boot.cjs` and the legacy POSIX symlink path are preserved as fallbacks.
+1. **`bin/_boot.cjs` symlink-name detection** (B1) — Loader detected which bin entry to launch via `basename(process.argv[1])` against a symlink name. npm doesn't create symlinks on Windows — it generates `.cmd` shims that all spawn `node bin/_boot.cjs`. Result: `basename` always returned `_boot` on Windows, the legacy fallback path treated `process.argv[2]` (the user's first CLI arg) as the target script name, and every bin command (`synapse`, `synapse`, `synapse-setup`, `synapse-doctor`, `synapse-upgrade`, `synapse-install-skill`, `synapse-task-context`, `synapse-capture-outcome`) was broken. **Fix:** `_boot.cjs` is now a module exporting `runTarget(targetName, [argv])`. Each of the 8 bin entries gets its own tiny shim under `bin/<name>.cjs` that calls `require('./_boot.cjs').runTarget('<target>.js')`. The `package.json` `bin` map points at the per-bin shims. Direct invocation of `_boot.cjs` and the legacy POSIX symlink path are preserved as fallbacks.
 
 2. **`expandHome()` in `src/runtime/config.ts`** (B2) — Used `process.env.HOME` directly (undefined on Windows; Windows uses `USERPROFILE`) and the regex `/^~(?=$|\/)/` only matched `~/`, never `~\`. User-supplied config paths starting with `~` silently expanded to `''`. **Fix:** Switched to `os.homedir()` (which already handles `USERPROFILE` vs `HOME` correctly) and widened the regex to `/^~(?=$|[\\/])/` so both separators work.
 
@@ -48,13 +48,13 @@ Multiple Windows users reported they cannot install or use Synapse. No specific 
 **New (10):**
 - `src/runtime/platform.ts`
 - `bin/synapse.cjs`
-- `bin/synapse-mcp.cjs`
-- `bin/synapse-mcp-setup.cjs`
-- `bin/synapse-mcp-doctor.cjs`
-- `bin/synapse-mcp-upgrade.cjs`
-- `bin/synapse-mcp-install-skill.cjs`
-- `bin/synapse-mcp-task-context.cjs`
-- `bin/synapse-mcp-capture-outcome.cjs`
+- `bin/synapse.cjs`
+- `bin/synapse-setup.cjs`
+- `bin/synapse-doctor.cjs`
+- `bin/synapse-upgrade.cjs`
+- `bin/synapse-install-skill.cjs`
+- `bin/synapse-task-context.cjs`
+- `bin/synapse-capture-outcome.cjs`
 - `.gitattributes`
 
 **Modified (12):**
@@ -79,7 +79,7 @@ Multiple Windows users reported they cannot install or use Synapse. No specific 
 - `npm run check` (tsc + node --check on all bin/ shims, all bin/ ESM targets, all script files) → green.
 - `npx tsx --test test/config.test.js test/mcp-annotations.test.js test/mcp-tools.test.js` → 16/16 pass (config expandHome regression check + 74-tool MCP annotations + tools register-and-execute).
 - `node bin/synapse.cjs --version` → `0.3.0-beta.4`.
-- `node bin/synapse-mcp.cjs --version` → `0.3.0-beta.4`.
+- `node bin/synapse.cjs --version` → `0.3.0-beta.4`.
 - The new Windows CI matrix will run on the next push to `release/0.3.0` and surface anything the static audit missed.
 
 ## Out of scope / follow-ups

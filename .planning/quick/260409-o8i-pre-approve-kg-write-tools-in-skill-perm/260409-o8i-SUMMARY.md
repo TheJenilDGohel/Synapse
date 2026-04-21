@@ -2,14 +2,14 @@
 phase: quick-260409-o8i
 plan: 1
 subsystem: tooling
-tags: [claude-code, skills, permissions, mcp, allowed-tools, synapse-mcp]
+tags: [claude-code, skills, permissions, mcp, allowed-tools, synapse]
 
 # Dependency graph
 requires: []
 provides:
   - Per-command MCP tool pre-approvals for /synapse:fact, :remember, :ingest, :search, :recall, :context, :status
   - Unblocked subagent bulk KG/memory building (no more serial permission prompts)
-affects: [skills/synapse-mcp, dogfooding, bulk-ingest-workflows]
+affects: [skills/synapse, dogfooding, bulk-ingest-workflows]
 
 # Tech tracking
 tech-stack:
@@ -20,19 +20,19 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - skills/synapse-mcp/commands/fact.md
-    - skills/synapse-mcp/commands/remember.md
-    - skills/synapse-mcp/commands/ingest.md
-    - skills/synapse-mcp/commands/search.md
-    - skills/synapse-mcp/commands/recall.md
-    - skills/synapse-mcp/commands/context.md
-    - skills/synapse-mcp/commands/status.md
+    - skills/synapse/commands/fact.md
+    - skills/synapse/commands/remember.md
+    - skills/synapse/commands/ingest.md
+    - skills/synapse/commands/search.md
+    - skills/synapse/commands/recall.md
+    - skills/synapse/commands/context.md
+    - skills/synapse/commands/status.md
 
 key-decisions:
   - "Scoped allowlists strictly per command — only the MCP tools that command's <process> actually calls, not blanket approval"
   - "Excluded destructive tools (synapse_memory_delete, synapse_update_self, synapse_memory_remove_relation) from every allowlist"
   - "Left dashboard.md, onboard.md, selftest.md untouched — CLI-only commands, no MCP tool calls"
-  - "Left synapse-mcp-runtime / synapse-node-compat / synapse-sql-adapter untouched — internal-dev skills with user-invocable: false"
+  - "Left synapse-runtime / synapse-node-compat / synapse-sql-adapter untouched — internal-dev skills with user-invocable: false"
   - "Used mcp__synapse__<tool> format (verified synapse is the MCP server name via src/runtime/version.ts SERVER_NAME)"
 
 patterns-established:
@@ -80,23 +80,23 @@ Each task was committed atomically:
 
 ### Write commands (Task 1)
 
-- `skills/synapse-mcp/commands/fact.md` — added `mcp__synapse__synapse_kg_add_triple`
-- `skills/synapse-mcp/commands/remember.md` — added `memory_store`, `memory_suggest_relations`, `memory_add_relation`
-- `skills/synapse-mcp/commands/ingest.md` — added `synapse_ingest_markdown`, `synapse_ingest_json`
+- `skills/synapse/commands/fact.md` — added `mcp__synapse__synapse_kg_add_triple`
+- `skills/synapse/commands/remember.md` — added `memory_store`, `memory_suggest_relations`, `memory_add_relation`
+- `skills/synapse/commands/ingest.md` — added `synapse_ingest_markdown`, `synapse_ingest_json`
 
 ### Read commands (Task 2)
 
-- `skills/synapse-mcp/commands/search.md` — added `search_files`, `search_code`, `memory_recall`, `kg_query`
-- `skills/synapse-mcp/commands/recall.md` — added `memory_recall`, `memory_status`, `kg_query`
-- `skills/synapse-mcp/commands/context.md` — added `synapse_task_context`
-- `skills/synapse-mcp/commands/status.md` — added `server_status`, `memory_status`, `kg_stats`, `hooks_stats`
+- `skills/synapse/commands/search.md` — added `search_files`, `search_code`, `memory_recall`, `kg_query`
+- `skills/synapse/commands/recall.md` — added `memory_recall`, `memory_status`, `kg_query`
+- `skills/synapse/commands/context.md` — added `synapse_task_context`
+- `skills/synapse/commands/status.md` — added `server_status`, `memory_status`, `kg_stats`, `hooks_stats`
 
 ### Intentionally unchanged
 
-- `skills/synapse-mcp/commands/dashboard.md` — CLI-only (Bash wrapper for `synapse dashboard`)
-- `skills/synapse-mcp/commands/onboard.md` — CLI-only (Bash wrapper for `synapse onboard`)
-- `skills/synapse-mcp/commands/selftest.md` — CLI-only (Bash wrapper for `synapse selftest`)
-- `skills/synapse-mcp-runtime/` — internal development guide, `user-invocable: false`
+- `skills/synapse/commands/dashboard.md` — CLI-only (Bash wrapper for `synapse dashboard`)
+- `skills/synapse/commands/onboard.md` — CLI-only (Bash wrapper for `synapse onboard`)
+- `skills/synapse/commands/selftest.md` — CLI-only (Bash wrapper for `synapse selftest`)
+- `skills/synapse-runtime/` — internal development guide, `user-invocable: false`
 - `skills/synapse-node-compat/` — internal development guide, `user-invocable: false`
 - `skills/synapse-sql-adapter/` — internal development guide, `user-invocable: false`
 
@@ -113,7 +113,7 @@ None — plan executed exactly as written.
 
 ## Issues Encountered
 
-- `npm run lint` reported 6 pre-existing ESLint errors in `.js` files (`bin/_shared.js`, `dist/cli/commands/mcp.js`, `dist/cli/commands/onboard.js`, `dist/cli/router.js`, `dist/mcp/common/response-normalizers.js`) during Task 3 verification. All are unrelated to this plan's scope (Markdown frontmatter edits in `skills/synapse-mcp/commands/`) and pre-exist on HEAD~2. Recorded in `deferred-items.md` alongside this summary for a future cleanup quick task. Note: ESLint is also scanning `dist/` (generated output), which is likely a lint-config oversight — `dist/` should probably be in `.eslintignore`.
+- `npm run lint` reported 6 pre-existing ESLint errors in `.js` files (`bin/_shared.js`, `dist/cli/commands/mcp.js`, `dist/cli/commands/onboard.js`, `dist/cli/router.js`, `dist/mcp/common/response-normalizers.js`) during Task 3 verification. All are unrelated to this plan's scope (Markdown frontmatter edits in `skills/synapse/commands/`) and pre-exist on HEAD~2. Recorded in `deferred-items.md` alongside this summary for a future cleanup quick task. Note: ESLint is also scanning `dist/` (generated output), which is likely a lint-config oversight — `dist/` should probably be in `.eslintignore`.
 - Build not run (CLAUDE.md rule: "dont build app until prompted").
 
 ## Closes

@@ -15,22 +15,19 @@ An uncompromisingly fast, purely local cognitive layer that flawlessly bridges h
 - ✓ SQLite-backed storage for vector memory and relationships — existing paradigm
 - ✓ Dual interface: Human CLI access and AI MCP tool exposure — existing paradigm
 
-### Active
-
-- [ ] Complete structural redesign tearing down the old monolith to create an elegant, modular architecture
-- [ ] Core CLI UX refinement providing premium terminal interactions
-- [ ] First-class AI awareness (SKILL.md, .claude.md integration) so LLMs automatically know how to query the Brain
+- ✓ Complete structural redesign: Decoupled cognitive engine from transport layers (CLI/MCP)
+- ✓ Core CLI UX refinement: Premium, noun-verb routing in a unified binary
+- ✓ First-class AI awareness: SKILL.md and .claude.md integration
 
 ### Out of Scope
 
 - A full graphic UI framework (Web dashboard etc.) — The focus remains on CLI and MCP-driven backend power.
 - Cloud orchestration / Hosted variants — Synapse remains strictly local-first and self-hosted.
 
-## Context
-
-- The project was previously known as "LocalNest" but has undergone a complete re-brand and philosophical pivot to "Synapse". 
-- We are shedding legacy technical debt to completely rebuild the component structures from the bottom up. 
-- While it overlaps in purpose with memory tools like Mem0, Synapse stakes its own identity as a superior, self-reliant "AI Brain" focusing aggressively on speed, temporal code understanding, and local-first data ownership.
+### Current Status
+- Milestone 1 (Architecture Teardown & Engine Decoupling) is **100% Complete**.
+- The project is now modular, well-tested, and fully rebranded as **Synapse**.
+- CLI and MCP layers are strictly consumers of a unified `src/engine` core.
 
 ## Constraints
 
@@ -43,7 +40,7 @@ An uncompromisingly fast, purely local cognitive layer that flawlessly bridges h
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Pivot to autonomous CLI/MCP dual-identity | Allows both human and AI agents to transparently manage memory. | — Pending |
-| Total Structural Rewrite | Tearing down the "LocalNest" monolith is necessary to achieve the speed and architecture required for a proper AI Brain. | — Pending |
+| Total Structural Rewrite | Tearing down the "Synapse" monolith is necessary to achieve the speed and architecture required for a proper AI Brain. | — Pending |
 
 ## Evolution
 
@@ -63,4 +60,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-20 after initialization*
+*Last updated: 2026-04-21 after completing Milestone 1*

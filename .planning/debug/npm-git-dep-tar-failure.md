@@ -16,7 +16,7 @@ next_action: research npm git dep flow, examine prepare scripts, check bundleDep
 
 expected: npm install -g git+https://github.com/wmt-mobile/synapse.git#release/0.3.0 completes successfully
 actual: Install fails with hundreds of TAR_ENTRY_ERRORS for onnxruntime-web, onnxruntime-node, sharp subdirectories
-errors: ENOENT lstat lib/, ENOENT open dist/ort.bundle.min.mjs, Cannot cd into synapse-mcp, tarball data seems corrupted (null)
+errors: ENOENT lstat lib/, ENOENT open dist/ort.bundle.min.mjs, Cannot cd into synapse, tarball data seems corrupted (null)
 reproduction: clean state + clean cache + npm install -g git+... = fails every time
 started: when @huggingface/transformers@4.0.1 was added as dependency
 
@@ -27,7 +27,7 @@ started: when @huggingface/transformers@4.0.1 was added as dependency
   timestamp: prior investigation
 
 - hypothesis: moving @huggingface/transformers to optionalDependencies fixes it
-  evidence: TAR corruption of main synapse-mcp dir blocks everything regardless
+  evidence: TAR corruption of main synapse dir blocks everything regardless
   timestamp: prior investigation
 
 - hypothesis: removing onnxruntime from node_modules before pack fixes it
@@ -70,5 +70,5 @@ started: when @huggingface/transformers@4.0.1 was added as dependency
 
 root_cause: npm-shrinkwrap.json is stale (version 0.1.0, 466 packages). It declares @huggingface/transformers in root deps but has NO resolved entry for it or its subdeps (onnxruntime-node, onnxruntime-web, sharp). When npm installs from git, the shrinkwrap is shipped in the tarball and used as authoritative for dep resolution. The mismatch between shrinkwrap (missing HF tree) and package.json (declaring HF) causes npm to fail during concurrent dep resolution, manifesting as TAR_ENTRY_ERRORS. The shrinkwrap also contains 192 stale prod entries (express, hono, protobufjs, etc.) that are NOT actual deps anymore.
 fix: Remove npm-shrinkwrap.json from the repository and from the files array in package.json. Let npm resolve dependencies dynamically from package.json. This is the correct approach for a git-installed package because: (1) shrinkwrap locks transitive dep versions which is problematic when onnxruntime/sharp release platform-specific fixes, (2) git installs already do npm install + prepare which resolves from package.json, (3) npm docs discourage shrinkwrap for libraries/tools that have transitive deps needing flexibility.
-verification: Self-verified via npm pack (tarball no longer includes shrinkwrap, 277KB vs 330KB) and npm install -g ./synapse-mcp-0.3.0-beta.1.tgz (222 packages installed with zero errors, onnxruntime-web/node/common/sharp/@huggingface/transformers all present and directories intact). Awaiting human verification with actual git+https:// install after commit+push.
+verification: Self-verified via npm pack (tarball no longer includes shrinkwrap, 277KB vs 330KB) and npm install -g ./synapse-0.3.0-beta.1.tgz (222 packages installed with zero errors, onnxruntime-web/node/common/sharp/@huggingface/transformers all present and directories intact). Awaiting human verification with actual git+https:// install after commit+push.
 files_changed: [package.json, npm-shrinkwrap.json (deleted)]

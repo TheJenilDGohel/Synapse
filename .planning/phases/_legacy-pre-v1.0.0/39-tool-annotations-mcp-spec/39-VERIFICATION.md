@@ -25,7 +25,7 @@ must_haves:
     - path: test/mcp-annotations.test.js
       status: verified
 human_verification:
-  - test: "Connect a real MCP client (Claude Desktop / Cursor / a third-party UI) to synapse-mcp and call synapse_kg_delete_entity"
+  - test: "Connect a real MCP client (Claude Desktop / Cursor / a third-party UI) to synapse and call synapse_kg_delete_entity"
     expected: "Client surfaces a destructive-action warning / confirmation prompt because destructiveHint=true"
     why_human: "Cannot programmatically simulate client-side annotation handling — depends on each client's UX policy"
   - test: "Same MCP client calls synapse_search_hybrid"
@@ -136,7 +136,7 @@ Phase 39 is annotation metadata. Annotations are advisory hints consumed by MCP 
 
 #### 1. Destructive warning on delete tools
 
-**Test:** Connect a real MCP client (Claude Desktop, Cursor, etc.) to synapse-mcp and invoke `synapse_kg_delete_entity` (or any of the 5 delete tools).
+**Test:** Connect a real MCP client (Claude Desktop, Cursor, etc.) to synapse and invoke `synapse_kg_delete_entity` (or any of the 5 delete tools).
 
 **Expected:** Client surfaces a confirmation/warning prompt because `destructiveHint: true`.
 

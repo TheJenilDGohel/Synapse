@@ -15,7 +15,7 @@ Shrink the agent-facing API surface so that agents can use Synapse memory with m
 ## Implementation Decisions
 
 ### SKILL.md Rewrite (SLIM-01)
-- Current SKILL.md is ~360 lines across `skills/synapse-mcp/SKILL.md` and `.claude/skills/synapse-mcp/SKILL.md` (both are nearly identical copies).
+- Current SKILL.md is ~360 lines across `skills/synapse/SKILL.md` and `.claude/skills/synapse/SKILL.md` (both are nearly identical copies).
 - Target: ~50 lines. One paragraph of philosophy ("local-first, evidence-first, capture decisions"), a pointer to `synapse_help(task)`, and a minimal "first three tools to try" list.
 - Both copies must be updated in sync.
 
@@ -100,8 +100,8 @@ inputSchema: {
 - Good place to add `synapse_help`
 
 ### SKILL.md locations
-- `skills/synapse-mcp/SKILL.md` (359 lines) -- published skill
-- `.claude/skills/synapse-mcp/SKILL.md` (361 lines) -- Claude-local skill
+- `skills/synapse/SKILL.md` (359 lines) -- published skill
+- `.claude/skills/synapse/SKILL.md` (361 lines) -- Claude-local skill
 - Both must be rewritten to ~50 lines
 
 </code_context>

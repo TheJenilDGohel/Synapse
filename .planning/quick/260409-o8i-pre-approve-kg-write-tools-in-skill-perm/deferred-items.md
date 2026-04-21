@@ -2,7 +2,7 @@
 
 Out-of-scope issues discovered during execution. Not fixed because they are
 unrelated to the plan (Markdown-only frontmatter edits in
-`skills/synapse-mcp/commands/`) and pre-existed on HEAD~2.
+`skills/synapse/commands/`) and pre-existed on HEAD~2.
 
 ## Pre-existing ESLint errors (`npm run lint`)
 

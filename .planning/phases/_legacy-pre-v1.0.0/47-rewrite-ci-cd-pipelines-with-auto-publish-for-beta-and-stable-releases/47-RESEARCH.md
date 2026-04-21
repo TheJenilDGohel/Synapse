@@ -6,7 +6,7 @@
 
 ## Summary
 
-This phase replaces the existing 5 GitHub Actions workflows with a clean, from-scratch CI/CD pipeline designed for the synapse-mcp package's two-track release model: beta releases from `release/*` branches and stable releases from `main`. The current workflows are functional but have critical gaps -- the release workflow only triggers on `main` and `beta` branches (not `release/*`), uses a `beta` branch that is stale/divergent from the actual `release/*` branching model, and still references the now-deprecated NPM_TOKEN secret approach (npm classic tokens were permanently revoked December 2025).
+This phase replaces the existing 5 GitHub Actions workflows with a clean, from-scratch CI/CD pipeline designed for the synapse package's two-track release model: beta releases from `release/*` branches and stable releases from `main`. The current workflows are functional but have critical gaps -- the release workflow only triggers on `main` and `beta` branches (not `release/*`), uses a `beta` branch that is stale/divergent from the actual `release/*` branching model, and still references the now-deprecated NPM_TOKEN secret approach (npm classic tokens were permanently revoked December 2025).
 
 The key technical challenges are: (1) migrating from NPM_TOKEN to OIDC trusted publishing or granular access tokens, (2) handling the @huggingface/transformers postinstall dependency that installs a ~200MB ML runtime not listed in package.json dependencies, (3) designing branch trigger patterns that match `release/*` for beta and `main` for stable, and (4) keeping changelog generation compatible with the existing manual CHANGELOG.md format.
 
@@ -146,7 +146,7 @@ steps:
 ```
 
 **Prerequisites on npmjs.com:**
-1. Go to https://www.npmjs.com/package/synapse-mcp/access
+1. Go to https://www.npmjs.com/package/synapse/access
 2. Add a "Trusted Publisher" for GitHub Actions
 3. Configure: org=wmt-mobile, repo=synapse, workflow=release.yml, environment=npm-publish (optional)
 
@@ -203,7 +203,7 @@ The existing release.yml checks for 50+ files and specific required entries (bin
 
 **What goes wrong:** OIDC trusted publishing doesn't work for the very first version of a new package
 **Why it happens:** The package must exist on npm before trusted publishers can be configured
-**How to avoid:** synapse-mcp is already published (latest: 0.2.0, beta: 0.0.7-beta.2) so this is not an issue. But if package name ever changes, first publish must be manual.
+**How to avoid:** synapse is already published (latest: 0.2.0, beta: 0.0.7-beta.2) so this is not an issue. But if package name ever changes, first publish must be manual.
 **Warning signs:** "Package not found" error when configuring trusted publisher
 
 ### Pitfall 4: Postinstall Breaks CI
@@ -323,7 +323,7 @@ concurrency:
 ## Open Questions
 
 1. **OIDC Trusted Publisher Configuration on npmjs.com**
-   - What we know: Requires configuring on https://www.npmjs.com/package/synapse-mcp/access with org=wmt-mobile, repo=synapse, workflow=release.yml
+   - What we know: Requires configuring on https://www.npmjs.com/package/synapse/access with org=wmt-mobile, repo=synapse, workflow=release.yml
    - What's unclear: Whether the wmt-mobile npm account has already configured trusted publishers, or if this is a first-time setup
    - Recommendation: Plan should include a manual prerequisite step for the human to configure trusted publishing on npmjs.com before first CI publish. Include fallback to granular access token (NPM_TOKEN secret) if OIDC setup is blocked.
 

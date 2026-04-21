@@ -6,7 +6,7 @@ tags: [deprecation, cli, backward-compat]
 dependency_graph:
   requires: [Phase 10, Phase 13]
   provides: [DEP-01, DEP-02, DEP-03, DEP-04]
-  affects: [bin/_shared.js, bin/synapse-mcp-*.js]
+  affects: [bin/_shared.js, bin/synapse-*.js]
 tech_stack:
   added: []
   patterns: [ANSI escape codes for colored stderr warnings]
@@ -14,14 +14,14 @@ key_files:
   created: []
   modified:
     - bin/_shared.js
-    - bin/synapse-mcp-setup.js
-    - bin/synapse-mcp-doctor.js
-    - bin/synapse-mcp-upgrade.js
-    - bin/synapse-mcp-install-skill.js
+    - bin/synapse-setup.js
+    - bin/synapse-doctor.js
+    - bin/synapse-upgrade.js
+    - bin/synapse-install-skill.js
 decisions:
   - "Yellow ANSI codes (\\x1b[33m) for deprecation warning color, consistent with Phase 10 raw ANSI approach"
   - "Fixed broken command forwarding by adding commandArgs to all 4 binaries"
-  - "Changed synapse-mcp-install-skill replacement from 'synapse install skills' to 'synapse skill install' per DEP-04"
+  - "Changed synapse-install-skill replacement from 'synapse install skills' to 'synapse skill install' per DEP-04"
 metrics:
   duration: "1m46s"
   completed: "2026-04-08"
@@ -41,10 +41,10 @@ Fixed all 4 legacy binaries to include `commandArgs` so they actually forward to
 
 | Legacy Binary | Replacement | commandArgs |
 |---|---|---|
-| synapse-mcp-setup | synapse setup | `['setup']` |
-| synapse-mcp-doctor | synapse doctor | `['doctor']` |
-| synapse-mcp-upgrade | synapse upgrade | `['upgrade']` |
-| synapse-mcp-install-skill | synapse skill install | `['skill', 'install']` |
+| synapse-setup | synapse setup | `['setup']` |
+| synapse-doctor | synapse doctor | `['doctor']` |
+| synapse-upgrade | synapse upgrade | `['upgrade']` |
+| synapse-install-skill | synapse skill install | `['skill', 'install']` |
 
 ## Deviations from Plan
 
@@ -52,21 +52,21 @@ Fixed all 4 legacy binaries to include `commandArgs` so they actually forward to
 
 **1. [Rule 1 - Bug] Fixed broken command forwarding in all 4 binaries**
 - **Found during:** Task 1
-- **Issue:** Legacy binaries called `forwardDeprecatedCommand` without `commandArgs`, so `buildLocalnestCommandArgv` produced argv with no command token. This meant `synapse.js` saw an empty command and showed help instead of executing the intended command.
+- **Issue:** Legacy binaries called `forwardDeprecatedCommand` without `commandArgs`, so `buildSynapseCommandArgv` produced argv with no command token. This meant `synapse.js` saw an empty command and showed help instead of executing the intended command.
 - **Fix:** Added `commandArgs` to each binary's `forwardDeprecatedCommand` call (e.g., `['setup']`, `['doctor']`, `['upgrade']`, `['skill', 'install']`)
-- **Files modified:** bin/synapse-mcp-setup.js, bin/synapse-mcp-doctor.js, bin/synapse-mcp-upgrade.js, bin/synapse-mcp-install-skill.js
+- **Files modified:** bin/synapse-setup.js, bin/synapse-doctor.js, bin/synapse-upgrade.js, bin/synapse-install-skill.js
 - **Commit:** 1332253
 
-**2. [Rule 1 - Bug] Fixed synapse-mcp-install-skill replacement command**
+**2. [Rule 1 - Bug] Fixed synapse-install-skill replacement command**
 - **Found during:** Task 1
 - **Issue:** `replacementCommand` was `'synapse install skills'` but DEP-04 specifies `'synapse skill install'` (noun-verb pattern)
 - **Fix:** Changed to `'synapse skill install'` with `commandArgs: ['skill', 'install']`
-- **Files modified:** bin/synapse-mcp-install-skill.js
+- **Files modified:** bin/synapse-install-skill.js
 - **Commit:** 1332253
 
 ## Out-of-Scope Discoveries
 
-Two other deprecated binaries (`synapse-mcp-capture-outcome.js`, `synapse-mcp-task-context.js`) have the same missing-commandArgs bug but are not in the DEP-01..04 scope.
+Two other deprecated binaries (`synapse-capture-outcome.js`, `synapse-task-context.js`) have the same missing-commandArgs bug but are not in the DEP-01..04 scope.
 
 ## Commits
 
