@@ -107,7 +107,7 @@
     "@huggingface/transformers": "^4.0.1",
     "@types/node": "^25.5.2",
     "depcheck": "^1.4.7",
-    "eslint": "^10.2.0",
+    "eslint": "^10.2.1",
     "globals": "^17.4.0",
     "madge": "^8.0.0",
     "publint": "^0.3.18",
