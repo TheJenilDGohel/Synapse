@@ -41,12 +41,22 @@ function writeLines(lines: string[]): void {
 /* ------------------------------------------------------------------ */
 
 function stepHeader(num: number, total: number, label: string): void {
+  const isAgent = process.env.AI_AGENT === 'true';
+  if (isAgent) {
+    write(`[${num}/${total}] ${label}`);
+    return;
+  }
   const progress = c.gray(`[${num}/${total}]`);
   write('');
   write(`  ${progress} ${c.bold(label)}`);
 }
 
 function resultLine(ok: boolean, label: string): void {
+  const isAgent = process.env.AI_AGENT === 'true';
+  if (isAgent) {
+    write(`${ok ? '✓' : '!'} ${label}`);
+    return;
+  }
   const icon = ok ? c.green(c.B.check) : c.yellow(c.B.circle);
   write(`  ${icon} ${label}`);
 }
@@ -331,25 +341,33 @@ async function runOnboard(): Promise<void> {
 
   // Completion summary
   const allOk = setupOk && doctorOk;
+  const isAgent = process.env.AI_AGENT === 'true';
 
-  writeLines(box([
-    allOk
-      ? `${c.green(c.B.check)} ${c.bold('Synapse is ready!')}`
-      : `${c.yellow('!')} ${c.bold('Synapse is partially configured')}`,
-    '',
-    `${c.green(c.B.check)} ${c.dim(`${TOOL_COUNT} MCP tools available`)}`,
-    env.clientCount > 0
-      ? `${c.green(c.B.check)} ${c.dim(`Skills installed in ${env.clientCount} AI client(s)`)}`
-      : `${c.yellow(c.B.circle)} ${c.dim('No AI clients detected for skill install')}`,
-    env.claudeCode
-      ? `${c.green(c.B.check)} ${c.dim('Memory hooks active in Claude Code')}`
-      : `${c.yellow(c.B.circle)} ${c.dim('Claude Code hooks skipped')}`,
-    '',
-    c.bold('Try these commands:'),
-    `  ${c.cyan('/synapse:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
-    `  ${c.cyan('/synapse:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
-    `  ${c.cyan('/synapse:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
-  ], { padding: 1 }));
+  if (isAgent) {
+    writeLines([
+      allOk ? '✓ Synapse ready.' : '! Synapse partially configured.',
+      `${TOOL_COUNT} MCP tools active.`
+    ]);
+  } else {
+    writeLines(box([
+      allOk
+        ? `${c.green(c.B.check)} ${c.bold('Synapse is ready!')}`
+        : `${c.yellow('!')} ${c.bold('Synapse is partially configured')}`,
+      '',
+      `${c.green(c.B.check)} ${c.dim(`${TOOL_COUNT} MCP tools available`)}`,
+      env.clientCount > 0
+        ? `${c.green(c.B.check)} ${c.dim(`Skills installed in ${env.clientCount} AI client(s)`)}`
+        : `${c.yellow(c.B.circle)} ${c.dim('No AI clients detected for skill install')}`,
+      env.claudeCode
+        ? `${c.green(c.B.check)} ${c.dim('Memory hooks active in Claude Code')}`
+        : `${c.yellow(c.B.circle)} ${c.dim('Claude Code hooks skipped')}`,
+      '',
+      c.bold('Try these commands:'),
+      `  ${c.cyan('/synapse:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
+      `  ${c.cyan('/synapse:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
+      `  ${c.cyan('/synapse:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
+    ], { padding: 1 }));
+  }
 
   process.exitCode = allOk ? 0 : 1;
 }

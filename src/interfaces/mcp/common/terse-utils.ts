@@ -229,12 +229,40 @@ export function applyReadFormat(item: unknown, format: ReadResponseFormat = 'ver
  * mutate without touching the original.
  */
 export function applyReadFormatToItems<T = unknown>(
-  response: { items: T[]; [key: string]: unknown },
+  response: { items: T[]; [key: string]: unknown } | any,
   format: ReadResponseFormat = 'verbose'
 ): { items: unknown[]; [key: string]: unknown } {
   const items = Array.isArray(response?.items) ? response.items : [];
   return {
     ...response,
-    items: items.map((it) => applyReadFormat(it, format))
+    items: items.map((it: any) => applyReadFormat(it, format))
   };
+}
+
+/**
+ * Advanced: apply `applyReadFormat` to ANY array key found in a response object.
+ * This is essential for bundles (agent_prime, task_context) that contain
+ * multiple sets of items (memories, entities, files, suggestions).
+ */
+export function applyReadFormatToBundle(
+  response: unknown,
+  format: ReadResponseFormat = 'verbose'
+): unknown {
+  if (format === 'verbose') return response;
+  if (!response || typeof response !== 'object' || Array.isArray(response)) return response;
+
+  const src = response as Record<string, unknown>;
+  const out: Record<string, unknown> = { ...src };
+
+  for (const key of Object.keys(out)) {
+    const val = out[key];
+    if (Array.isArray(val)) {
+      out[key] = val.map((it) => applyReadFormat(it, format));
+    } else if (val && typeof val === 'object') {
+      // Basic recursive cleaning for status/meta objects
+      out[key] = stripEmptyFields(val);
+    }
+  }
+
+  return out;
 }

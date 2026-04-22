@@ -83,12 +83,19 @@ export function registerMemoryWorkflowTools({
         topic: z.string().optional(),
         feature: z.string().optional(),
         kind: MEMORY_KIND_SCHEMA.optional(),
-        limit: z.number().int().min(1).max(20).default(8)
+        limit: z.number().int().min(1).max(20).default(8),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
     },
-    async (args: Record<string, unknown>) => normalizeTaskContextResult(await memoryWorkflow.getTaskContext(args), args)
+    async (args: Record<string, unknown>) => {
+      const result = await memoryWorkflow.getTaskContext(args);
+      return applyReadFormatToBundle(
+        normalizeTaskContextResult(result, args),
+        (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+      );
+    }
   );
 
   registerJsonTool(
@@ -195,14 +202,19 @@ export function registerMemoryWorkflowTools({
         branch: z.string().max(200).optional(),
         max_memories: z.number().int().min(1).max(10).default(5),
         max_entities: z.number().int().min(1).max(20).default(10),
-        max_files: z.number().int().min(1).max(10).default(5)
+        max_files: z.number().int().min(1).max(10).default(5),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
     },
-    async (args: Record<string, unknown>) => normalizeAgentPrimeResult(
-      await memoryWorkflow.agentPrime(args as any)
-    )
+    async (args: Record<string, unknown>) => {
+      const result = await memoryWorkflow.agentPrime(args as any);
+      return applyReadFormatToBundle(
+        normalizeAgentPrimeResult(result),
+        (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+      );
+    }
   );
 
   registerJsonTool(

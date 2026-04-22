@@ -22,7 +22,7 @@ export function startSpinner(text: string): Ora {
   return ora({
     text,
     color: 'cyan',
-    isEnabled: isTTY && colorEnabled,
+    isEnabled: isTTY && colorEnabled && process.env.AI_AGENT !== 'true',
     stream: process.stdout,
   }).start();
 }

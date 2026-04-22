@@ -6,7 +6,12 @@ import {
   IDEMPOTENT_WRITE_ANNOTATIONS
 } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
-import { toMinimalWriteResponse } from '../common/terse-utils.js';
+import {
+  toMinimalWriteResponse,
+  applyReadFormatToItems,
+  applyReadFormatToBundle
+} from '../common/terse-utils.js';
+import type { ReadResponseFormat } from '../common/terse-utils.js';
 
 type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
 interface SharedSchemas {
@@ -65,7 +70,7 @@ export function registerGraphTools({
     ['synapse_kg_add_entity'],
     {
       title: 'KG Add Entity',
-      description: 'Create or update an entity in the knowledge graph. Entity IDs are auto-generated as normalized slugs (lowercase, underscored).',
+      description: 'Create or update a KG entity. IDs are auto-generated as normalized slugs.',
       inputSchema: {
         name: z.string().min(1).max(400),
         type: z.string().max(100).default('concept'),
@@ -84,7 +89,7 @@ export function registerGraphTools({
     ['synapse_kg_add_triple'],
     {
       title: 'KG Add Triple',
-      description: 'Add a subject-predicate-object triple to the knowledge graph. Entities are auto-created on first reference. Detects contradictions (same subject+predicate with different valid object) and warns without blocking.',
+      description: 'Add a subject-predicate-object triple. Entities are auto-created. Detects contradictions.',
       inputSchema: {
         subject_name: z.string().min(1).max(400),
         predicate: z.string().min(1).max(400),
@@ -138,7 +143,7 @@ export function registerGraphTools({
     ['synapse_kg_add_triples_batch'],
     {
       title: 'KG Add Triples Batch',
-      description: 'Add up to 500 triples in a single transactional batch. Entities auto-created on first reference. Deduplicates against active triples.',
+      description: 'Transactional batch add of triples (up to 500). Entities auto-created.',
       inputSchema: {
         triples: z.array(z.object({
           subject_name: z.string().min(1).max(400), predicate: z.string().min(1).max(400),
@@ -173,13 +178,17 @@ export function registerGraphTools({
         type: z.string().max(100).optional(),
         name_contains: z.string().max(200).optional(),
         limit: z.number().int().min(1).max(200).default(20),
-        offset: z.number().int().min(0).default(0)
+        offset: z.number().int().min(0).default(0),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ type, name_contains, limit, offset }: Record<string, unknown>) =>
-      memory.listEntities({ type, nameContains: name_contains, limit, offset })
+    async ({ type, name_contains, limit, offset, item_format }: Record<string, unknown>) =>
+      applyReadFormatToItems(
+        await memory.listEntities({ type, nameContains: name_contains, limit, offset }),
+        (item_format as ReadResponseFormat | undefined) ?? 'verbose'
+      )
   );
 
   registerJsonTool(
@@ -190,13 +199,20 @@ export function registerGraphTools({
       inputSchema: {
         entity_id: z.string().min(1).max(400),
         direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
-        include_invalid: z.boolean().default(false)
+        include_invalid: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
     },
-    async ({ entity_id, direction, include_invalid }: Record<string, unknown>) =>
-      memory.queryEntityRelationships(entity_id as string, { direction, includeInvalid: include_invalid })
+    async (args: Record<string, unknown>) =>
+      applyReadFormatToBundle(
+        await memory.queryEntityRelationships(args.entity_id as string, {
+          direction: args.direction as any,
+          includeInvalid: args.include_invalid as boolean
+        }),
+        (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+      )
   );
 
   registerJsonTool(
