@@ -1,0 +1,99 @@
+name: Quality
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'readme/**'
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
+  push:
+    branches:
+      - main
+      - 'release/**'
+    paths-ignore:
+      - 'docs/**'
+      - 'readme/**'
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality:
+    name: Quality (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup Node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install ripgrep (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y ripgrep
+
+      - name: Install ripgrep (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: choco install ripgrep -y --no-progress
+
+      - name: Install
+        run: npm ci --ignore-scripts
+
+      - name: Verify @types/node is present (debug Windows install)
+        shell: bash
+        run: |
+          echo "=== node_modules/@types contents ==="
+          ls node_modules/@types || echo "MISSING: node_modules/@types"
+          echo ""
+          echo "=== node_modules/@types/node head ==="
+          ls node_modules/@types/node | head -20 || echo "MISSING: node_modules/@types/node"
+          echo ""
+          echo "=== installed @types/node version ==="
+          node -e "try { console.log(require('@types/node/package.json').version) } catch (e) { console.log('FAIL: ' + e.message) }"
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Install ML dependencies for typecheck & tests
+        shell: bash
+        run: node scripts/runtime/install-synapse-skill.mjs --quiet 2>/dev/null || true
+
+      - name: Typecheck
+        run: npm run check
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Check circular deps
+        run: npm run quality:cycles
+
+      - name: Check unused deps
+        run: npm run quality:deps
+
+      - name: Package quality
+        run: npm run quality:package
+
+      - name: Audit quality
+        run: npm run quality:audit
+
+      - name: Smoke test bin shims (cross-platform install path)
+        shell: bash
+        run: |
+          node bin/synapse.cjs --version
+          node bin/synapse-doctor.cjs --help || true

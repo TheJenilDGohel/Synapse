@@ -1,0 +1,63 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for Synapse
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please describe the problem you're trying to solve, not just the solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user need or pain point
+      placeholder: When I'm working with Synapse in Cursor, I can't...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches did you think about?
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - New MCP tool
+        - New CLI command
+        - Existing tool enhancement
+        - Performance improvement
+        - Documentation
+        - Developer experience
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Use cases, screenshots, links to similar features in other tools
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: This aligns with Synapse's local-first, zero-cloud philosophy
+          required: true

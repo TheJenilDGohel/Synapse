@@ -1,0 +1,41 @@
+node_modules/
+.npm-cache/
+dist/
+*.tsbuildinfo
+.synapse/
+.mcp.synapse.json
+.mcp.synapse.*.json
+.mcp.json
+synapse.config.json
+/CLAUDE.md
+/.claude/
+/.codex/
+/.opencode/
+/.windsurf/
+
+# Tool artifacts — never belong in source tree
+.claude-flow/
+**/.claude-flow/
+
+# Build artifacts
+docs/build/
+docs/.docusaurus/
+*AUDIT-REPORT*.md
+*ACTION-PLAN*.md
+
+# Secrets and credentials (OSPS-BR-07.01)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.cert
+*.crt
+*.secret
+*_secret
+*_token
+*_password
+*.credentials
+.npmrc-private

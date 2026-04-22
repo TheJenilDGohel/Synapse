@@ -1,0 +1,32 @@
+{
+  "name": "synapse-docs",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "NO_UPDATE_NOTIFIER=1 docusaurus start",
+    "build": "NO_UPDATE_NOTIFIER=1 docusaurus build",
+    "serve": "NO_UPDATE_NOTIFIER=1 docusaurus serve",
+    "swizzle": "NO_UPDATE_NOTIFIER=1 docusaurus swizzle",
+    "deploy": "NO_UPDATE_NOTIFIER=1 docusaurus deploy",
+    "clear": "NO_UPDATE_NOTIFIER=1 docusaurus clear",
+    "write-translations": "NO_UPDATE_NOTIFIER=1 docusaurus write-translations",
+    "write-heading-ids": "NO_UPDATE_NOTIFIER=1 docusaurus write-heading-ids"
+  },
+  "dependencies": {
+    "@docusaurus/core": "latest",
+    "@docusaurus/preset-classic": "latest",
+    "@docusaurus/theme-mermaid": "latest",
+    "@easyops-cn/docusaurus-search-local": "^0.55.1",
+    "@mdx-js/react": "latest",
+    "clsx": "latest",
+    "docusaurus-plugin-llms": "^0.3.0",
+    "prism-react-renderer": "latest",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "latest",
+    "@docusaurus/tsconfig": "latest",
+    "typescript": "latest"
+  }
+}
