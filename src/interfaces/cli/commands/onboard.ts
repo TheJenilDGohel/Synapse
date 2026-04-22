@@ -349,7 +349,6 @@ async function runOnboard(): Promise<void> {
     `  ${c.cyan('/synapse:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
     `  ${c.cyan('/synapse:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
     `  ${c.cyan('/synapse:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
-    `  ${c.cyan('/synapse:boost')}     ${c.gray(c.B.arrow)} ${c.dim('re-generate priority rules')}`,
   ], { padding: 1 }));
 
   process.exitCode = allOk ? 0 : 1;
