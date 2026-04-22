@@ -7,7 +7,9 @@ export async function run(args: string[], opts: GlobalOptions): Promise<void> {
   const fix = args.includes('--fix');
   const service = new DiagnosticService();
   
-  if (!opts.json) {
+  const isAgent = process.env.AI_AGENT === 'true';
+  
+  if (!opts.json && !isAgent) {
     console.log(c.bold('Synapse Doctor'));
     console.log('');
   }
@@ -32,9 +34,12 @@ export async function run(args: string[], opts: GlobalOptions): Promise<void> {
 
   const passed = report.checks.filter((r) => r.ok).length;
   const failed = report.checks.length - passed;
-  console.log('');
-  console.log(`Health: ${bar(passed, report.checks.length)}`);
-  console.log('');
+  
+  if (!isAgent) {
+    console.log('');
+    console.log(`Health: ${bar(passed, report.checks.length)}`);
+    console.log('');
+  }
   
   if (failed === 0) {
     console.log(`${symbol.ok()} ${c.green('Doctor result: healthy')}`);

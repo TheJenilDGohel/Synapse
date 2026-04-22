@@ -6,7 +6,11 @@ import {
   normalizeTaskContextResult,
   normalizeAgentPrimeResult
 } from '../common/response-normalizers.js';
-import { applyReadFormatToItems, toMinimalWriteResponse } from '../common/terse-utils.js';
+import {
+  applyReadFormatToItems,
+  applyReadFormatToBundle,
+  toMinimalWriteResponse
+} from '../common/terse-utils.js';
 import type { ReadResponseFormat } from '../common/terse-utils.js';
 import { READ_ONLY_ANNOTATIONS, WRITE_ANNOTATIONS } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';

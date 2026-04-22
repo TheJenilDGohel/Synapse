@@ -21,7 +21,8 @@
 **Milestone Goal:** Establish the "Universal Transmission Layer"—the infrastructure for 5-minute onboarding and cross-platform installation.
 
 - [x] **Phase 10: Seamless Onboarding & Distribution** - Build `synapse link` orchestrator for cross-platform AI client patching. Implement `scripts/install.sh` and `install.ps1`. Automate GitHub Actions for universal package distribution.
-- [ ] **Phase 11: AI-Native Optimization** - Implement token-tier response formatting (`compact`/`lite`) across all high-traffic tools. Suppress CLI ANSI-decoration when AI_AGENT=true. Refactor core schemas for context-window efficiency.
+- [x] **Phase 11: AI-Native Optimization** - Implement token-tier response formatting (`compact`/`lite`) across all high-traffic tools. Suppress CLI ANSI-decoration when AI_AGENT=true. Refactor core schemas for context-window efficiency.
+- [x] **Phase 12: End-to-End Verification** - Stress-test `install.ps1/sh` in sandboxed paths. Verify MCP rehydration depth. Perform final smoke test with `AI_AGENT=true` override.
 
 ## Progress
 
@@ -31,4 +32,5 @@
 | 9 | Engine Sanitization | Cleanup dependencies and modules | [0.3.0] | ✅ Completed | 2026-04-22 |
 | 10 | Seamless Onboarding | Universal installer + Neural Link | [1.3.0] | ✅ Completed |
 | 11 | AI-Native Optimization | Token tiers & CLI silencing | [1.4.0] | ✅ Completed | 2026-04-22 |
+| 12 | End-to-End Verification | Installer & Multi-client Stress Test | [1.5.0] | ✅ Completed | 2026-04-22 |
 | 🚀 | **Production Launch** | **v1.0.0 Release Cycle** | **v1.0.0** | ⏹️ Pending |

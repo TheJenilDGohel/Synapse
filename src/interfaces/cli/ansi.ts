@@ -80,12 +80,15 @@ export const symbol = {
 };
 
 /** Legacy Box Drawing Functions */
-export const boxTop    = (w = 62) => `${B.tl}${B.h.repeat(w)}${B.tr}`;
-export const boxBottom = (w = 62) => `${B.bl}${B.h.repeat(w)}${B.br}`;
-export const boxEmpty  = (w = 62) => `${B.v}${' '.repeat(w)}${B.v}`;
-export const separator = (w = 62) => `${B.m}${B.d.repeat(w)}${B.r}`;
+export const boxTop    = (w = 62) => process.env.AI_AGENT === 'true' ? '' : `${B.tl}${B.h.repeat(w)}${B.tr}`;
+export const boxBottom = (w = 62) => process.env.AI_AGENT === 'true' ? '' : `${B.bl}${B.h.repeat(w)}${B.br}`;
+export const boxEmpty  = (w = 62) => process.env.AI_AGENT === 'true' ? '' : `${B.v}${' '.repeat(w)}${B.v}`;
+export const separator = (w = 62) => process.env.AI_AGENT === 'true' ? '' : `${B.m}${B.d.repeat(w)}${B.r}`;
 
 export const boxLine = (text = '', w = 62) => {
+  if (process.env.AI_AGENT === 'true') {
+    return text.trim() === '' ? '' : text;
+  }
   const inner = w - 2; // 2 spaces padding
   const plainText = text.replace(/\x1b\[[0-9;]*m/g, ''); // strip potential ANSI for length calc
   const pad = Math.max(0, inner - plainText.length);

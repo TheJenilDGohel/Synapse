@@ -35,20 +35,20 @@ Synapse is your primary context and memory layer.
     try {
       if (!fs.existsSync(filePath)) {
         fs.writeFileSync(filePath, `${directive}\n`, 'utf8');
-        process.stdout.write(`  ${c.green(symbol.check)} Created ${c.cyan(rule.name)}\n`);
+        process.stdout.write(`  ${c.green(c.B.check)} Created ${c.cyan(rule.name)}\n`);
         created += 1;
       } else {
         const content = fs.readFileSync(filePath, 'utf8');
         if (!content.includes('Synapse Priority Directive')) {
           fs.appendFileSync(filePath, `\n${directive}\n`, 'utf8');
-          process.stdout.write(`  ${c.green(symbol.check)} Updated ${c.cyan(rule.name)} with priority directive\n`);
+          process.stdout.write(`  ${c.green(c.B.check)} Updated ${c.cyan(rule.name)} with priority directive\n`);
           created += 1;
         } else {
-          process.stdout.write(`  ${c.gray(symbol.circle)} ${c.cyan(rule.name)} already has priority directive\n`);
+          process.stdout.write(`  ${c.gray(c.B.circle)} ${c.cyan(rule.name)} already has priority directive\n`);
         }
       }
     } catch (err) {
-      process.stderr.write(`  ${c.red(symbol.cross)} Failed to write ${rule.name}: ${err instanceof Error ? err.message : String(err)}\n`);
+      process.stderr.write(`  ${c.red(c.B.cross)} Failed to write ${rule.name}: ${err instanceof Error ? err.message : String(err)}\n`);
     }
   }
 
