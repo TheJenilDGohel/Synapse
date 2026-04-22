@@ -227,12 +227,29 @@ export function detectAiToolTargets({ homeDir = os.homedir() }: { homeDir?: stri
       present: fs.existsSync(path.join(homeDir, '.kiro'))
     },
     {
-      id: 'claude',
+      id: 'claude-desktop',
+      label: 'Claude Desktop',
+      kind: 'json',
+      configPath: ((): string => {
+        const platform = os.platform();
+        if (platform === 'win32') return path.join(homeDir, 'AppData', 'Roaming', 'Claude', 'claude_desktop_config.json');
+        if (platform === 'darwin') return path.join(homeDir, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json');
+        return path.join(homeDir, '.config', 'Claude', 'claude_desktop_config.json');
+      })(),
+      present: ((): boolean => {
+        const platform = os.platform();
+        if (platform === 'win32') return fs.existsSync(path.join(homeDir, 'AppData', 'Roaming', 'Claude'));
+        if (platform === 'darwin') return fs.existsSync(path.join(homeDir, 'Library', 'Application Support', 'Claude'));
+        return fs.existsSync(path.join(homeDir, '.config', 'Claude'));
+      })()
+    },
+    {
+      id: 'claude-code',
       label: 'Claude Code',
       kind: 'unsupported',
       configPath: '',
       present: fs.existsSync(path.join(homeDir, '.claude')) || fs.existsSync(path.join(homeDir, '.claude.json')),
-      reason: 'No stable standalone MCP config file was detected for safe automatic edits.'
+      reason: 'Claude Code uses a dynamic tool-discovery system; hooks are currently the best way to integrate.'
     },
     {
       id: 'continue',

@@ -108,13 +108,13 @@ export function printHelp(): void {
   const lines: string[] = [];
 
   lines.push('');
-  lines.push(`  ${c.bold('Synapse')} ${c.cyan(`v${SERVER_VERSION}`)} ${c.gray(BOX.h.repeat(2))} ${c.dim('local-first MCP memory server')}`);
+  lines.push(`  ${c.bold('Synapse')} ${c.cyan(`v${SERVER_VERSION}`)} ${c.gray(BOX.h.repeat(2))} ${c.dim('Bridging Context. Helping AI do the job.')}`);
   lines.push('');
   lines.push(boxTop(W));
   lines.push(boxLine(`${c.bold('Synapse')}  ${c.gray(`v${SERVER_VERSION}`)}  ${c.badge('MCP')}`, W));
-  lines.push(boxLine(`${c.italic(c.gray('Local-first AI memory, code retrieval & knowledge graph'))}`, W));
+  lines.push(boxLine(`${c.italic(c.gray('The Transmission Layer for persistent AI context and memory'))}`, W));
   lines.push(boxLine('', W));
-  lines.push(boxLine(`${c.green(BOX.check)} ${c.dim(`${TOOL_COUNT} MCP tools`)}  ${c.cyan(BOX.dot)} ${c.dim('Zero cloud deps')}  ${c.magenta('◇')} ${c.dim('Temporal KG')}`, W));
+  lines.push(boxLine(`${c.green(BOX.check)} ${c.dim(`${TOOL_COUNT} MCP tools`)}  ${c.cyan(BOX.dot)} ${c.dim('Local-first')}  ${c.magenta('◇')} ${c.dim('Bridging Context')}`, W));
   lines.push(boxBottom(W));
   lines.push('');
 

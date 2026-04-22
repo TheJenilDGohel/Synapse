@@ -34,7 +34,7 @@ test('detectAiToolTargets reports supported and unsupported local tools', () => 
   );
   assert.deepEqual(
     detected.unsupported.map((item) => item.id).sort(),
-    ['claude']
+    ['claude-code']
   );
 
   fs.rmSync(homeDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });

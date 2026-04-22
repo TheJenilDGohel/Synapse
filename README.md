@@ -1,19 +1,29 @@
-<h1 align="center">Synapse MCP</h1>
+<p align="center">
+  <img src="media/logo_minimal.png" width="200" alt="Synapse Logo" />
+</p>
+
+<h1 align="center">Synapse</h1>
 
 <p align="center">
-  <strong>Code Intelligence + Knowledge Graph + AI Memory — One Local MCP Server</strong>
+  <strong>Bridging Context. Helping AI do the job.</strong>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/synapse"><img src="https://img.shields.io/npm/v/synapse.svg?style=for-the-badge&color=success" alt="npm version"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-gold.svg?style=for-the-badge" alt="License: MIT"></a>
-  <a href="https://github.com/wmt-mobile/synapse/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/wmt-mobile/synapse/quality.yml?branch=main&style=for-the-badge&label=Quality" alt="Quality"></a>
+  The minimalist transmission layer for AI context. Bio-inspired <b>persistent memory</b>, <b>knowledge graph</b>, and <b>semantic recall</b> designed to empower AI agents with the project intelligence they need to succeed.<br/>
+  <b>Zero cloud. Local-first. Pure SQLite.</b>
 </p>
 
-<p align="center">
-  The only MCP server that unifies <b>semantic code search</b>, a <b>temporal knowledge graph</b>, and <b>persistent AI memory</b> in a single local-first package.<br/>
-  74 tools. Zero cloud. Pure SQLite.
-</p>
+---
+
+## The Philosophy: Bridging the Gap
+
+In biology, a **Synapse** is the transmission point—the specialized gap between neurons where signals pass. Without this gap, information cannot flow, and the system is paralyzed.
+
+In the AI ecosystem, we are that gap.
+
+Every AI task fails because of a **loss of signal**: the agent doesn't know the architectural history, the recent breaking changes, or the specific "lessons learned" from past attempts.
+
+**Synapse is the transmission layer** that ensures the signal reaches the AI with zero friction. We aren't the AI doing the fighting; we are the infrastructure that ensures the AI has the right context to **do the job**.
 
 ---
 
@@ -67,25 +77,22 @@ No other MCP server covers all three pillars. Here's how the landscape breaks do
 
 ### Full Feature Matrix
 
-| Feature | Synapse | codebase-memory-mcp | GitNexus | claude-context | Basic Memory | Mem0 |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Semantic code search (hybrid BM25+vec) | **Yes** | Yes | Yes | Yes | No | No |
-| Knowledge graph (entities + triples) | **Yes** | Code-only | Code-only | No | No | No |
-| Persistent AI memory | **Yes** | No | No | No | Yes | Yes |
-| Symbol finding (defs/usages/callers) | **Yes** | Yes | Yes | No | No | No |
-| AST-aware chunking | **Yes** | Yes | Yes | Yes | No | No |
-| Temporal time-travel queries | **Yes** | No | No | No | No | No |
-| Multi-hop graph traversal | **Yes** | No | No | No | No | No |
-| Conversation ingestion | **Yes** | No | No | No | No | No |
-| Agent-scoped isolation | **Yes** | No | No | No | No | No |
-| Semantic dedup | **Yes** | No | No | No | No | No |
-| Hooks system (pre/post callbacks) | **Yes** | No | No | No | No | No |
-| Interactive TUI dashboard | **Yes** | No | No | No | No | No |
-| Local-first / no cloud | **Yes** | Yes | Yes | Partial | Yes | Hybrid |
-| MCP tools | **74** | 14 | 16 | ~5 | ~10 | 8 |
-| Zero external deps | No (Node.js) | Yes (binary) | No | No | No | No |
+**Synapse is the only infrastructure that unifies all three pillars into a single, local-first binary.**
 
-**Synapse is the only server that checks every box in the first three rows.**
+---
+
+## Helping AI Do The Job
+
+Synapse isn't just a database; it’s an active participant in the agentic lifecycle:
+
+| Workflow Step | How Synapse Helps |
+|:---|:---|
+| **Cold Start** | `agent_prime` instantly hydrates the context window with relevant memories and recent changes. |
+| **Deep Investigation** | `find` runs fused search across code fragments and historical design decisions. |
+| **Continuous Learning** | `teach` saves architectural rules that persist across sessions, ensuring agents never repeat mistakes. |
+| **Outcome Capture** | `capture_outcome` records what worked and what didn't, building an experience base over time. |
+
+---
 
 ---
 
@@ -180,22 +187,14 @@ Full parameter reference: [Tool Documentation](https://wmt-mobile.github.io/syna
 
 ---
 
-## Agentic Workflows
+## Enterprise-Grade Reliability
 
-Synapse is designed as the foundational context layer for AI coding agents:
+Synapse is built for mission-critical development workflows:
 
-- **Cold start** — `agent_prime` instantly hydrates the context window with relevant memories, recent changes, and project state.
-- **Deep investigation** — `find` runs fused search across code fragments and historical design decisions in a single call.
-- **Continuous learning** — `teach` saves architectural rules that persist across sessions, ensuring agents never repeat mistakes.
-- **Outcome capture** — `capture_outcome` records what worked and what didn't, building an experience base over time.
-
----
-
-## Enterprise-Grade Quality
-
-- **OIDC Trusted Publishing** for verifiable npm provenance
-- **Continuous CodeQL** static analysis on all branches
-- **OpenSSF Scorecard** monitoring and proactive Dependabot updates
+- **OIDC Trusted Publishing**: Verifiable npm provenance via GitHub Actions.
+- **Continuous CodeQL**: Deep static analysis on every commit.
+- **OpenSSF Best Practices**: Proactive security monitoring and dependency hygiene.
+- **Zero-Cloud Privacy**: Your code and memories never leave your machine. No telemetry, no external APIs.
 
 ---
 
@@ -208,7 +207,7 @@ Direct `npm install -g git+https://...` may fail with `TAR_ENTRY_ERRORS`. This i
 
 **Fix: clone, pack, install**
 ```bash
-git clone https://github.com/wmt-mobile/synapse.git
+git clone https://github.com/TheJenilDGohel/synapse.git
 cd synapse && npm pack
 npm install -g ./synapse-*.tgz
 ```

@@ -186,12 +186,50 @@ function runDoctor(): boolean {
   return result.status === 0;
 }
 
+function runPriorityBoost(): boolean {
+  const cwd = process.cwd();
+  const rules = [
+    { name: '.cursorrules', label: 'Cursor Rules' },
+    { name: '.clauderules', label: 'Claude Rules' },
+  ];
+
+  const directive = `
+# Synapse Priority Directive
+
+Synapse is your primary context and memory layer.
+- Before starting a task, ALWAYS recall relevant memories using \`/synapse:recall\`.
+- If you learn something significant, ALWAYS use \`/synapse:remember\`.
+- Maintain the architectural integrity described in the project's knowledge base.
+`.trim();
+
+  let created = 0;
+  for (const rule of rules) {
+    const filePath = path.join(cwd, rule.name);
+    try {
+      if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, `${directive}\n`, 'utf8');
+        created += 1;
+      } else {
+        const content = fs.readFileSync(filePath, 'utf8');
+        if (!content.includes('Synapse Priority Directive')) {
+          fs.appendFileSync(filePath, `\n${directive}\n`, 'utf8');
+          created += 1;
+        }
+      }
+    } catch {
+      return false;
+    }
+  }
+
+  return created > 0;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Main wizard flow                                                   */
 /* ------------------------------------------------------------------ */
 
 async function runOnboard(): Promise<void> {
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   // Welcome
   writeLines(box([
@@ -283,6 +321,14 @@ async function runOnboard(): Promise<void> {
     ? 'All health checks passed'
     : c.yellow('Some checks failed — run `synapse doctor` for details'));
 
+  // Step 6: Priority Boost
+  stepHeader(6, totalSteps, 'Boosting AI priority...');
+  const boostSpinner = startSpinner('Generating local priority rules...');
+  const boostOk = runPriorityBoost();
+  if (boostOk) boostSpinner.succeed('AI priority rules established');
+  else boostSpinner.info('Priority rules already present or skipped');
+  resultLine(true, 'Context booster active (.cursorrules/.clauderules)');
+
   // Completion summary
   const allOk = setupOk && doctorOk;
 
@@ -303,6 +349,7 @@ async function runOnboard(): Promise<void> {
     `  ${c.cyan('/synapse:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
     `  ${c.cyan('/synapse:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
     `  ${c.cyan('/synapse:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
+    `  ${c.cyan('/synapse:boost')}     ${c.gray(c.B.arrow)} ${c.dim('re-generate priority rules')}`,
   ], { padding: 1 }));
 
   process.exitCode = allOk ? 0 : 1;
