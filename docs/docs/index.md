@@ -255,11 +255,11 @@ synapse doctor
 
 ## Resources
 
-- **[Documentation](https://TheJenilDGohel.github.io/synapse/)** — Full tool reference, architecture, and guides
-- **[Comparison](https://TheJenilDGohel.github.io/synapse/docs/comparison)** — Detailed competitive analysis
-- **[Architecture](https://TheJenilDGohel.github.io/synapse/docs/architecture)** — Retrieval pipeline and memory graph internals
-- **[Changelog](./CHANGELOG.md)** — Release history
-- **[Security](./SECURITY.md)** — Vulnerability disclosure policy
+- **[Documentation](/)** — Full tool reference, architecture, and guides
+- **[Comparison](/docs/index#how-synapse-compares)** — Detailed competitive analysis
+- **[Architecture](./architecture.md)** — Retrieval pipeline and memory graph internals
+- **[Changelog](./changelog.md)** — Release history
+- **[Security](./security.md)** — Vulnerability disclosure policy
 
 ---
 
