@@ -214,7 +214,7 @@ Synapse exposes **74 specialized MCP tools**, organized into focused suites:
 
 </details>
 
-Full parameter reference: [Tool Documentation](https://TheJenilDGohel.github.io/synapse/docs/tools/overview)
+Full parameter reference: [Tool Documentation](#tool-suites)
 
 ---
 
