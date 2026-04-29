@@ -10,14 +10,9 @@ import TabItem from '@theme/TabItem';
 
 <h1 align="center">Synapse</h1>
 
-<p align="center">
-  <strong>Bridging Context. Helping AI do the job.</strong>
-</p>
+<p align="center"><strong>Bridging Context. Helping AI do the job.</strong></p>
 
-<p align="center">
-  The minimalist transmission layer for AI context. Bio-inspired <b>persistent memory</b>, <b>knowledge graph</b>, and <b>semantic recall</b> designed to empower AI agents with the project intelligence they need to succeed.<br/>
-  <b>Zero cloud. Local-first. Pure SQLite.</b>
-</p>
+<p align="center">The minimalist transmission layer for AI context. Bio-inspired <b>persistent memory</b>, <b>knowledge graph</b>, and <b>semantic recall</b> designed to empower AI agents with the project intelligence they need to succeed.<br/><b>Zero cloud. Local-first. Pure SQLite.</b></p>
 
 ---
 
@@ -253,10 +248,17 @@ synapse doctor
 
 ---
 
+## Advanced Configuration
+
+### Model Cache & Fallback
+Synapse uses local embedding models. If the preferred cache directory is not writable, Synapse will attempt to use a temporary fallback. 
+- **Cache fallback is acceptable**: The system will continue to work using a temporary directory, though models may need to be re-downloaded in future sessions if the temp dir is cleared.
+- You can manually specify the cache directory using the `SYNAPSE_EMBED_CACHE_DIR` environment variable to ensure persistence.
+
 ## Resources
 
 - **[Documentation](/)** — Full tool reference, architecture, and guides
-- **[Comparison](/docs/index#how-synapse-compares)** — Detailed competitive analysis
+- **[Comparison](/docs/#how-synapse-compares)** — Detailed competitive analysis
 - **[Architecture](./architecture.md)** — Retrieval pipeline and memory graph internals
 - **[Changelog](./changelog.md)** — Release history
 - **[Security](./security.md)** — Vulnerability disclosure policy
