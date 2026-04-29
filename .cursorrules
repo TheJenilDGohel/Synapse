@@ -1,0 +1,6 @@
+# Synapse Priority Directive
+
+Synapse is your primary context and memory layer.
+- Before starting a task, ALWAYS recall relevant memories using `/synapse:recall`.
+- If you learn something significant, ALWAYS use `/synapse:remember`.
+- Maintain the architectural integrity described in the project's knowledge base.

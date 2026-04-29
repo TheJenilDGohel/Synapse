@@ -2,40 +2,41 @@
 
 ## Project Reference
 **Core Value**: Unified context layer (Code, KG, Memory) for AI agents.
-**Current Focus**: Improving retrieval relevance via local LLM enrichment.
+**Current Focus**: Stabilization and Release (Milestone 3).
 
 ## Current Position
-**Phase**: Milestone 2: React Documentation Site
-**Plan**: Phase 3: Integration & Polish
-**Status**: Ready for Execution
+**Phase**: Milestone 3: Stabilization & Release
+**Plan**: Completed
+**Status**: Completed
 
 ```mermaid
 graph TD
     M1[Milestone 1: Scaling] --> M2[Milestone 2: React Docs]
-    style M2 fill:#f9f,stroke:#333,stroke-width:4px
+    M2 --> M3[Milestone 3: Stabilization]
+    style M3 fill:#0f0,stroke:#333,stroke-width:4px
 ```
 
 ## Performance Metrics
-- **74/74** MCP tools active.
-- **0.3.2** current version.
-- **1** new requirement area (React Ecosystem).
+- **76/76** MCP tools active.
+- **0.3.2** current version (stabilized).
+- **0** pending critical issues.
 
 ## Accumulated Context
 ### Decisions
-- [2026-04-28] Transitioned to Milestone 2: React Documentation Site.
-- [2026-04-28] Selected Docusaurus as the React framework for official documentation.
-- [2026-04-29] Completed Phase 1: Foundation & Setup.
-- [2026-04-29] Completed Phase 2: Content Migration & MDX.
-- [2026-04-30] Planned Phase 3: Integration & Polish.
+- [2026-04-30] Initiated Milestone 3 to address critical installation and runtime issues found in testing.
+- [2026-04-29] Fixed global 'synapse' command and Windows doctor diagnostics.
+- [2026-04-29] Repaired stress-synapse.mjs and standardized release-check script.
+- [2026-04-29] Unblocked release gate with 6/6 passing criteria.
 
 ### Todos
-- [x] Initialize Docusaurus in `docs/`
-- [x] Add `npm run docs:dev` to root `package.json`
-- [x] Port existing Markdown documentation to MDX (02-02-PLAN)
-- [x] Implement interactive React components in docs (02-02-PLAN)
-- [ ] Finalize theme adjustments and brand polish (02-03-PLAN)
-- [ ] Verify production build success (02-03-PLAN)
+- [x] Fix global `synapse` command shims (M003-01)
+- [x] Repair installed-runtime MCP sweep (M003-02)
+- [x] Correct Windows doctor npm/npx detection (M003-03)
+- [x] Fix CLI help behavior for doctor/selftest (M003-04)
+- [x] Update stress script for new architecture (M003-05)
+- [x] Standardize release script execution (M003-06)
+- [x] Pass final release exit criteria (M003-07)
 
 ## Session Continuity
-**Last Action**: Created Phase 3 Execution Plan (02-03-PLAN.md).
-**Next Step**: Execute Phase 3.
+**Last Action**: Completed Milestone 3: Stabilization & Release.
+**Next Step**: Milestone Audit and final cleanup.

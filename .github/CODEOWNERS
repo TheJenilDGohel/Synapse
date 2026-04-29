@@ -1,0 +1,24 @@
+# Synapse Code Owners
+# These owners will be automatically requested for review when someone opens a PR.
+# https://docs.github.com/en/repositories/managing-your-repositories-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @TheJenilDGohel
+
+# Workflows + CI
+/.github/ @TheJenilDGohel
+
+# Core memory + KG services
+/src/services/memory/ @TheJenilDGohel
+/src/services/retrieval/ @TheJenilDGohel
+
+# MCP layer
+/src/mcp/ @TheJenilDGohel
+
+# CLI
+/src/cli/ @TheJenilDGohel
+
+# Documentation
+/synapse-docs/ @TheJenilDGohel
+/README.md @TheJenilDGohel
+/CHANGELOG.md @TheJenilDGohel

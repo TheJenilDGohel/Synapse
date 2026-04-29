@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+synapse.config.json
+.mcp.synapse.json
+.synapse/
+.npm-cache/
+node_modules/

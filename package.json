@@ -1,0 +1,116 @@
+{
+  "name": "synapse",
+  "version": "0.0.1-beta.1",
+  "license": "MIT",
+  "author": "Jenil",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "synapse",
+    "ai",
+    "agents",
+    "knowledge-graph",
+    "memory",
+    "code-search",
+    "code-intelligence",
+    "sqlite",
+    "local-first",
+    "embeddings",
+    "semantic-search",
+    "ai-memory",
+    "code-assistant",
+    "temporal-graph",
+    "offline-ai"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "description": "The only MCP server combining semantic code search, temporal knowledge graph, and persistent AI memory. 74 tools, zero cloud, pure SQLite. Alternative to Mem0, GitNexus, Graphiti.",
+  "bin": {
+    "synapse": "bin/synapse.cjs",
+    "synapse-upgrade": "bin/synapse-upgrade.cjs",
+    "synapse-setup": "bin/synapse-setup.cjs",
+    "synapse-doctor": "bin/synapse-doctor.cjs",
+    "synapse-install-skill": "bin/synapse-install-skill.cjs",
+    "synapse-task-context": "bin/synapse-task-context.cjs",
+    "synapse-capture-outcome": "bin/synapse-capture-outcome.cjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "scripts",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "scripts": {
+    "postinstall": "node -e \"try{require('child_process').execSync('node scripts/runtime/install-synapse-skill.mjs --quiet',{stdio:'ignore'})}catch(e){}\"",
+    "setup": "tsx scripts/runtime/setup-synapse.mjs",
+    "upgrade": "tsx scripts/runtime/upgrade-synapse.mjs",
+    "doctor": "tsx scripts/runtime/doctor-synapse.mjs",
+    "install:skill": "node scripts/runtime/install-synapse-skill.mjs",
+    "task-context": "node scripts/memory/task-context-synapse.mjs",
+    "capture-outcome": "node scripts/memory/capture-outcome-synapse.mjs",
+    "start": "tsx src/interfaces/app/mcp-server.ts",
+    "stress:synapse": "node scripts/quality/stress-synapse.mjs",
+    "test": "tsx --test",
+    "test:coverage": "node --import tsx/esm --test --experimental-test-coverage",
+    "lint": "eslint . --max-warnings=0",
+    "quality:cycles": "madge --circular --extensions js,mjs,ts src",
+    "quality:deps": "depcheck --json --ignores=publint,@huggingface/transformers,tree-sitter-*",
+    "quality:package": "node scripts/quality/quality-package.mjs",
+    "quality:audit": "node scripts/quality/quality-audit.mjs",
+    "quality": "npm run check && npm run lint && npm run test:coverage && npm run quality:cycles && npm run quality:deps && npm run quality:package && npm run quality:audit",
+    "release:check": "tsx scripts/release/release-exit-criteria.mjs",
+    "check": "tsc --noEmit && node --check bin/_boot.cjs && node --check bin/_shared.js && node --check bin/synapse.cjs && node --check bin/synapse-setup.cjs && node --check bin/synapse-doctor.cjs && node --check bin/synapse-upgrade.cjs && node --check bin/synapse-install-skill.cjs && node --check bin/synapse-task-context.cjs && node --check bin/synapse-capture-outcome.cjs && node --check bin/synapse.js && node --check bin/synapse-upgrade.js && node --check bin/synapse-setup.js && node --check bin/synapse-doctor.js && node --check bin/synapse-install-skill.js && node --check bin/synapse-task-context.js && node --check bin/synapse-capture-outcome.js && node --check scripts/runtime/setup-synapse.mjs && node --check scripts/runtime/upgrade-synapse.mjs && node --check scripts/runtime/doctor-synapse.mjs && node --check scripts/runtime/install-synapse-skill.mjs && node --check scripts/memory/task-context-synapse.mjs && node --check scripts/memory/capture-outcome-synapse.mjs && node --check scripts/memory/memory-workflow-cli-utils.mjs && node --check scripts/quality/quality-audit.mjs && node --check scripts/quality/quality-package.mjs && node --check scripts/quality/stress-synapse.mjs && node --check scripts/release/release-test-installed-runtime.mjs && node --check scripts/release/release-exit-criteria.mjs",
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "prepublishOnly": "npm run check",
+    "release:beta": "npm publish --tag beta",
+    "release:latest": "npm publish",
+    "docs:dev": "npm run start --prefix docs",
+    "docs:build": "npm run build --prefix docs",
+    "docs:serve": "npm run serve --prefix docs",
+    "bump:beta": "npm version prerelease --preid=beta --no-git-tag-version"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "ora": "^9.3.0",
+    "sqlite-vec": "^0.1.9",
+    "tsx": "^4.21.0",
+    "zod": "^4.3.6"
+  },
+  "optionalDependencies": {
+    "tree-sitter": "0.21.0",
+    "tree-sitter-bash": "0.21.0",
+    "tree-sitter-dart": "^1.0.0",
+    "tree-sitter-go": "0.21.0",
+    "tree-sitter-javascript": "0.21.0",
+    "tree-sitter-lua": "0.21.0",
+    "tree-sitter-python": "0.21.0",
+    "tree-sitter-rust": "0.21.0",
+    "tree-sitter-typescript": "0.21.0"
+  },
+  "overrides": {
+    "hono": "^4.12.7",
+    "@hono/node-server": "^1.19.10",
+    "express-rate-limit": "^8.3.0",
+    "flatted": "^3.4.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@huggingface/transformers": "^4.2.0",
+    "@types/node": "^25.5.2",
+    "depcheck": "^1.4.7",
+    "eslint": "^10.2.0",
+    "globals": "^17.4.0",
+    "madge": "^8.0.0",
+    "publint": "^0.3.18",
+    "typescript": "^6.0.2"
+  }
+}
