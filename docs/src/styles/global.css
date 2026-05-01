@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import "@fontsource/geist-sans";
+@import "@fontsource/geist-mono";
+
+@theme {
+  --font-sans: "Geist Sans", sans-serif;
+  --font-mono: "Geist Mono", monospace;
+
+  --color-bg-obsidian: #050505;
+  --color-signal-teal: #2dd4bf;
+  --color-pulse-purple: #a855f7;
+  --color-signal-rose: #f43f5e;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 2%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 2%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 171 66% 50%;
+    --primary-foreground: 171 66% 5%;
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 9%;
+    --input: 0 0% 9%;
+    --ring: 171 66% 50%;
+    --radius: 0.5rem;
+  }
+}

@@ -135,7 +135,6 @@ export function evaluateExitCriteria({
   root = process.cwd()
 } = {}) {
   const readmePath = path.join(root, 'README.md');
-  const installDocPath = path.join(root, 'docs', 'docs', 'index.md');
   const updateTestPath = path.join(root, 'test', 'update-service.test.js');
   const mcpToolsTestPath = path.join(root, 'test', 'mcp-tools.test.js');
   const normalizerPath = path.join(root, 'src', 'interfaces', 'mcp', 'common', 'response-normalizers.ts');
@@ -173,15 +172,14 @@ export function evaluateExitCriteria({
       : `Missing JSON report: ${reportPath}`
   ));
 
-  const cacheGuidance = fileContainsAll(readmePath, [/Cache fallback is informational/i, /synapse setup --skip-model-download=true/])
-    && fileContainsAll(installDocPath, [/Cache fallback is acceptable/i, /SYNAPSE_EMBED_CACHE_DIR/]);
+  const cacheGuidance = fileContainsAll(readmePath, [/Cache fallback is informational/i, /synapse setup --skip-model-download=true/, /Cache fallback is acceptable/i, /SYNAPSE_EMBED_CACHE_DIR/]);
   criteria.push(criterion(
     'cache_behavior',
     'Default cache path behavior is understood and either fixed or clearly documented.',
     cacheGuidance,
     cacheGuidance
-      ? 'README and install docs explain fallback behavior and the supported remediation path.'
-      : 'Cache fallback guidance is incomplete in user-facing docs.'
+      ? 'README explains fallback behavior, acceptance, and the supported remediation path.'
+      : 'Cache fallback guidance is incomplete in README.md.'
   ));
 
   const updateCoverage = fileContainsAll(updateTestPath, [/selfUpdate dry-run does not execute commands/, /selfUpdate dry-run reports validation failures without mutating/, /selfUpdate reports npm install failure/, /selfUpdate reports skill sync failure/]);

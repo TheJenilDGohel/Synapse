@@ -39,3 +39,19 @@ docs/.docusaurus/
 *_password
 *.credentials
 .npmrc-private
+
+# Local development artifacts
+benchmark-10m.db
+debug-chunk.ts
+debug-grammar.ts
+init_context.json
+reports/
+*.db
+*.db-wal
+*.db-shm
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*

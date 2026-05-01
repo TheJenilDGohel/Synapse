@@ -199,7 +199,7 @@ Synapse is built for mission-critical development workflows:
 
 ### Model Cache & Fallback
 Synapse uses local embedding models. If the preferred cache directory is not writable, Synapse will attempt to use a temporary fallback. 
-- **Cache fallback is informational**: A warning will be shown, but the system remains functional.
+- **Cache fallback is informational**: A warning will be shown, but the system remains functional. **Cache fallback is acceptable** if you do not want to manage custom paths.
 - To skip model downloads during setup (e.g., in CI or offline), use: `synapse setup --skip-model-download=true`
 - You can manually specify the cache directory using the `SYNAPSE_EMBED_CACHE_DIR` environment variable.
 

@@ -1,0 +1,36 @@
+---
+title: Code Intelligence
+description: Deep understanding of code structure and semantics.
+---
+
+import { CodeIntelligenceHighlights } from '../../../components/PillarHighlights';
+
+Synapse's Code Intelligence pillar provides high-precision retrieval and navigation for large codebases. It goes beyond simple text search by combining traditional lexical indexing with modern vector embeddings and AST awareness.
+
+<CodeIntelligenceHighlights client:load />
+
+## Hybrid Search (BM25 + Vector)
+Synapse uses a **fused search strategy** to deliver the most relevant results:
+1. **Lexical (BM25)**: Excellent for exact symbol matches, specific identifiers, and known keywords.
+2. **Vector (Semantic)**: Captures the conceptual meaning of code. Useful when you know *what* you want to do but not the specific variable names.
+
+Results are normalized and reranked using Reciprocal Rank Fusion (RRF) to ensure the best of both worlds.
+
+## AST-Aware Chunking
+Unlike naive line-based splitters, Synapse's chunker understands the structure of your code using **Tree-sitter**.
+- **Smart Boundaries**: Chunks are aligned with functions, classes, and methods.
+- **Context Preservation**: Each chunk includes relevant metadata about the parent scope.
+- **Multi-Language**: Native support for TypeScript, Python, Go, and Rust.
+
+## Symbol Navigation
+Empower your AI agent to navigate your codebase like a senior engineer:
+- **`find_definition`**: Jump straight to the source of any symbol.
+- **`find_usages`**: See everywhere a component or variable is used.
+- **`find_callers`**: Trace the execution flow of any method.
+- **`find_implementations`**: Find all classes or objects implementing a specific interface.
+
+## Unified Find
+The `find` tool is the entry point for deep investigation. it searches across:
+- Active code files.
+- Historical design decisions in the Knowledge Graph.
+- Past task outcomes in AI Memory.

@@ -13,8 +13,9 @@ export default [
       'coverage/**',
       'build/**',
       '.docusaurus/**',
-      'docs/build/**',
-      'docs/.docusaurus/**',
+      'docs/dist/**',
+      'docs/.astro/**',
+      'docs/node_modules/**',
       'synapse-docs/build/**',
       'synapse-docs/.docusaurus/**'
     ]

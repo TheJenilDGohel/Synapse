@@ -141,9 +141,9 @@ for (const { name, node } of captures) {
 | LANG-01 | Symbol extraction finds definitions and calls in Python/Go/Rust | integration | `tsx --test test/polyglot-symbols.test.ts` | ❌ Wave 0 |
 
 ### Wave 0 Gaps
-- [ ] `test/multi-lang-load.test.ts` — verifies optional dependency loading
-- [ ] `test/polyglot-chunking.test.ts` — verifies chunking logic with sample files
-- [ ] `test/polyglot-symbols.test.ts` — verifies symbol extraction with sample files
+- [x] `test/multi-lang-load.test.ts` — verifies optional dependency loading
+- [x] `test/polyglot-chunking.test.ts` — verifies chunking logic with sample files
+- [x] `test/polyglot-symbols.test.ts` — verifies symbol extraction with sample files
 
 ## Security Domain
 

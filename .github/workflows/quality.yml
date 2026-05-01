@@ -59,18 +59,6 @@ jobs:
       - name: Install
         run: npm ci --ignore-scripts
 
-      - name: Verify @types/node is present (debug Windows install)
-        shell: bash
-        run: |
-          echo "=== node_modules/@types contents ==="
-          ls node_modules/@types || echo "MISSING: node_modules/@types"
-          echo ""
-          echo "=== node_modules/@types/node head ==="
-          ls node_modules/@types/node | head -20 || echo "MISSING: node_modules/@types/node"
-          echo ""
-          echo "=== installed @types/node version ==="
-          node -e "try { console.log(require('@types/node/package.json').version) } catch (e) { console.log('FAIL: ' + e.message) }"
-
       - name: Lint
         run: npm run lint
 

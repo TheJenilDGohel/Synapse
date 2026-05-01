@@ -4,6 +4,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.1-beta] - 2026-05-01
+
+### Initial Beta Release
+
+- **Pillars of Intelligence**: Semantic Code Search, Temporal Knowledge Graph, and Persistent AI Memory.
+- **Local-First Architecture**: Pure SQLite backend with zero cloud dependencies.
+- **AST-Aware Intelligence**: Native support for 9+ languages (TypeScript, Python, Go, Rust, etc.).
+- **Bio-Inspired UI**: Custom documentation suite with neural aesthetics.
+
 ## [0.3.2] - 2026-04-16
 
 ### Fixed
@@ -678,7 +687,7 @@ This major update transforms Synapse into an **Expert Steering** system for auto
 - Replaced sqlite transaction helper usage with explicit `BEGIN/COMMIT/ROLLBACK` for runtime compatibility.
 - Improved oversized file handling in `read_file`: keep cap guard but return streamed line-window content with warning metadata instead of hard failure.
 
-## [0.0.1-beta.1] - 2026-02-24
+## [0.0.1-beta] - 2026-02-24
 
 ### Added
 - Single-package Node.js layout at repository root (no `node-mcp/` subfolder).
