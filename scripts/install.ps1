@@ -20,7 +20,7 @@ Write-Host " OK ($nodeVersion)" -ForegroundColor Green
 
 # 2. Install Synapse
 Write-Host "[2/3] Installing Synapse via NPM..."
-npm install -g synapse
+npm install -g synapse-cortex
 
 # 3. Trigger Onboarding
 Write-Host "[3/3] Launching neural link..."

@@ -39,7 +39,7 @@ async function handleInstall(): Promise<void> {
   const installerPath = path.join(HOOKS_DIR, 'install-hooks.cjs');
   if (!fs.existsSync(installerPath)) {
     writeError(`Hook installer not found at ${installerPath}`);
-    writeError('Package may be corrupted. Reinstall with: npm install -g synapse');
+    writeError('Package may be corrupted. Reinstall with: npm install -g synapse-cortex');
     process.exitCode = 1;
     return;
   }

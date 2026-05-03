@@ -129,7 +129,7 @@ function main() {
   // Verify hook files exist
   if (!fs.existsSync(PRE_HOOK)) {
     console.error(`[synapse] Hook file not found: ${PRE_HOOK}`);
-    console.error('[synapse] Package may be corrupted. Reinstall with: npm install -g synapse');
+    console.error('[synapse] Package may be corrupted. Reinstall with: npm install -g synapse-cortex');
     process.exit(1);
   }
 

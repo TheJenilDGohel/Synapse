@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/synapse"><img src="https://img.shields.io/npm/v/synapse?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/synapse-cortex"><img src="https://img.shields.io/npm/v/synapse-cortex?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/synapse?color=2dd4bf&style=flat-square" alt="license"></a>
   <a href="https://github.com/TheJenilDGohel/synapse/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/synapse/quality.yml?branch=main&label=quality&style=flat-square" alt="quality status"></a>
   <a href="https://github.com/TheJenilDGohel/synapse/security/advisories"><img src="https://img.shields.io/badge/security-monitored-2dd4bf?style=flat-square" alt="security monitored"></a>
@@ -82,7 +82,7 @@ No other MCP server covers all three pillars. Here's how the landscape breaks do
 
 ```bash
 # Install
-npm install -g synapse
+npm install -g synapse-cortex
 
 # Setup workspace + dependencies (ripgrep, sqlite-vec)
 synapse setup

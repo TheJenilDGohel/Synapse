@@ -27,7 +27,7 @@ echo -e " ${GREEN}OK ($node_version)${NC}"
 
 # 2. Install Synapse
 echo -e "[2/3] Installing Synapse via NPM..."
-sudo npm install -g synapse
+sudo npm install -g synapse-cortex
 
 # 3. Trigger Onboarding
 echo -e "[3/3] Launching neural link..."

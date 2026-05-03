@@ -26,6 +26,7 @@ graph TD
 
 ## Accumulated Context
 ### Decisions
+- [2026-05-03] Renamed npm package to `synapse-cortex` to resolve naming conflict while maintaining core 'Synapse' identity.
 - [2026-05-03] Consolidated project truth into `README.md`, removed external documentation links, and polished community files (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`) for professional open-source readiness.
 - [2026-05-03] Enhanced installation robustness: bundled `ripgrep-bin`, implemented fallback path resolution for `rg` in `platform.ts`, and updated setup preflight checks for zero-friction global installs.
 - [2026-05-01] Reverted version to `0.0.1-beta` for release consistency across all artifacts.

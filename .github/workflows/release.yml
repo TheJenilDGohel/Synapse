@@ -85,8 +85,8 @@ jobs:
           echo "npm whoami succeeded: $WHOAMI"
           # Also verify publish rights against the specific package, which catches
           # the case where the token is valid but scoped to a different package.
-          if ! npm access list packages 2>&1 | grep -q "synapse"; then
-            echo "::warning::npm access list did not include synapse — token may not be scoped for publishing this package. Continuing anyway."
+          if ! npm access list packages 2>&1 | grep -q "synapse-cortex"; then
+            echo "::warning::npm access list did not include synapse-cortex — token may not be scoped for publishing this package. Continuing anyway."
           fi
 
       - name: Read local version
