@@ -1,0 +1,46 @@
+name: GitHub Release
+
+# Auto-create a GitHub Release when a tag is pushed.
+# This workflow complements the npm release workflow by ensuring
+# GitHub releases are well-maintained with automatically generated
+# release notes based on the CHANGELOG.md.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - name: Extract changelog section
+        id: changelog
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          # Find the section for this version in CHANGELOG.md
+          # It starts with ## [VERSION] and ends with the next ## [ or EOF
+          sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | sed '$d' > release-notes.md
+          
+          if [ ! -s release-notes.md ]; then
+            echo "No changelog entry found for $VERSION"
+            echo "Initial release" > release-notes.md
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2
+        with:
+          body_path: release-notes.md
+          prerelease: ${{ contains(github.ref_name, '-beta') || contains(github.ref_name, '-alpha') }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
