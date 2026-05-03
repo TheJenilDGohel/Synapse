@@ -4,6 +4,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.1-beta.1] - 2026-05-03
+
+### 🔄 Redistribution & Sync
+- **Package Rename**: Official redistribution as `synapse-cortex` on npm.
+- **CI/CD Stabilization**: Synchronized version markers and release tags for automated distribution.
+
 ## [0.0.1-beta] - 2026-05-03
 
 ### 🚀 Zero-Friction Installation
