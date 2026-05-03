@@ -26,6 +26,7 @@ graph TD
 
 ## Accumulated Context
 ### Decisions
+- [2026-05-03] Enhanced installation robustness: bundled `ripgrep-bin`, implemented fallback path resolution for `rg` in `platform.ts`, and updated setup preflight checks for zero-friction global installs.
 - [2026-05-01] Reverted version to `0.0.1-beta` for release consistency across all artifacts.
 - [2026-05-01] Completed interactive UI Redesign (Milestone 5) with Aceternity components.
 - [2026-05-01] Refactored `index.mdx` to use encapsulated `NeuralEngine` component, resolving React hydration build errors.
@@ -40,6 +41,7 @@ graph TD
 - [x] Standardize release script execution (M003-06)
 - [x] Pass final release exit criteria (M003-07)
 - [x] Audit and Cleanup (M005-Final)
+- [x] Verify Zero-Friction Installation (M005-PostAudit)
 
 ## Session Continuity
 **Last Action**: Completed Milestone 5 and version consistency audit.

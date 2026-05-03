@@ -24,6 +24,7 @@ import {
 import {
   NPX_BIN,
   SYNAPSE_BIN,
+  RG_BIN,
   isWindows
 } from '../../src/core/runtime/platform.ts';
 
@@ -122,8 +123,8 @@ function runPreflightChecks() {
     errors.push('Neither synapse nor npx is available. Install Synapse globally or fix Node.js/npm and retry.');
   }
 
-  if (!commandExists('rg')) {
-    errors.push('ripgrep (rg) is required for efficient search. Install it and re-run setup.');
+  if (!commandExists(RG_BIN)) {
+    errors.push(`ripgrep (${RG_BIN}) is required for efficient search but was not found. Try 'npm install' to ensure dependencies are resolved.`);
   }
 
   return { errors, warnings, majorNode };

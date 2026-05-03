@@ -46,72 +46,56 @@ npm run install:skill
 
 ## Project Structure
 
-Contributor references:
-- [`synapse-docs/docs/guides/architecture.md`](./synapse-docs/docs/guides/architecture.md) — module layout and design decisions
-- [`synapse-docs/docs/guides/future-retrieval-roadmap.md`](./synapse-docs/docs/guides/future-retrieval-roadmap.md) — planned retrieval improvements
-- [`synapse-docs/docs/architecture.md`](./synapse-docs/docs/architecture.md) — public-facing architecture overview
+Synapse follows a strictly decoupled, layered architecture:
+
+- **Core (`src/core/`)**: System fundamentals, runtime constraints, database adapters, and migration logic.
+- **Services (`src/services/`)**: Bounded business logic contexts.
+  - `/memory`: Intelligent persistent knowledge graph and AI memory logic.
+  - `/retrieval`: Code search, text embeddings, and vector similarity querying.
+  - `/workspace`: Directory lifecycle and project boundary management.
+- **Interfaces (`src/interfaces/`)**: External boundaries (CLI, MCP, App) that orchestrate services.
+
+For a detailed breakdown, see the [Architecture Overview](./ARCHITECTURE.md).
 
 ## Making Changes
 
 ### Adding or modifying a tool
 
-Tools are registered in `src/mcp/tools/*.ts` using `registerJsonTool`. Each tool needs:
+Tools are registered in `src/interfaces/mcp/tools/*.ts`. Each tool needs:
 - A canonical name (`synapse_*`)
 - Zod input schema
-- `readOnlyHint` / `destructiveHint` annotations
-- Handler returning plain data (serialization is handled by `toolResult`)
+- Handler returning plain data
 
 ### Updating the skill
 
-The skill at `skills/synapse/SKILL.md` is the source of truth. After editing it, sync to the installed location:
+The skill at `skills/synapse/SKILL.md` is the source of truth for AI agent behavior. After editing it, sync to your local installation:
 ```bash
 npm run install:skill
 ```
 
-### Index backends
-
-- `VectorIndexService` (`src/services/retrieval/vector-index/service.ts`) — JSON backend, works on all Node versions
-- `SqliteVecIndexService` (`src/services/retrieval/sqlite-vec/service.ts`) — sqlite-vec backend, requires Node 22+; uses `term_index` inverted index for fast semantic lookup
-
-The server auto-falls back to JSON if sqlite-vec is unavailable. Both implement the same interface and share the tokenizer from `src/services/retrieval/core/tokenizer.ts`.
-
-Changing the tokenizer requires a `SCHEMA_VERSION` bump in `src/services/retrieval/sqlite-vec/schema.ts` and a corresponding migration branch that clears stale index data.
-
 ## Pull Request Guidelines
 
-- Keep PRs focused — one concern per PR
-- Run `npm run quality` before opening a PR
-- Update `skills/synapse/SKILL.md` if you add or change any tool
-- Do not bump the version — maintainers handle releases
+- Keep PRs focused — one concern per PR.
+- Run `npm run quality` before opening a PR.
+- Update `skills/synapse/SKILL.md` if you add or change any tool.
+- Maintainers handle versioning; do not bump the version in your PR.
 
 ## Reporting Issues
 
 Open an issue with:
 - Node.js version (`node --version`)
 - Platform (macOS/Linux/Windows)
-- Output of `synapse doctor --verbose`
-- Steps to reproduce
+- Output of `synapse doctor`
+- Clear steps to reproduce
 
 ## Publishing (Maintainers Only)
 
-Synapse auto-publishes to npm via GitHub Actions when `package.json` version changes on `main` or `release/*`. See `.github/workflows/release.yml` for the full pipeline.
+Synapse auto-publishes to npm via GitHub Actions when the version in `package.json` is updated on the main branch.
 
-**To trigger a release:**
-1. Bump version in `package.json` and `src/runtime/version.ts`
-2. Bump skill metadata in `skills/*/.synapse-skill.json`
-3. Update `CHANGELOG.md` with the new version section
-4. Commit, push to `main` (stable) or `release/*` (prerelease)
-5. The release workflow runs the full quality pipeline, publishes to npm with provenance, then creates a GitHub release
-
-**Manual release commands (if workflow is unavailable):**
+**Manual release commands:**
 ```bash
 npm run check
 npm test
 npm publish --access public              # stable
 npm publish --access public --tag beta   # prerelease
-```
-
-**Dry-run pack validation:**
-```bash
-npm pack --dry-run
 ```

@@ -1,4 +1,3 @@
-
 <h1 align="center">Synapse</h1>
 
 <p align="center">
@@ -10,9 +9,16 @@
   <b>Zero cloud. Local-first. Pure SQLite.</b>
 </p>
 
+<p align="center">
+  <a href="https://www.npmjs.com/package/synapse"><img src="https://img.shields.io/npm/v/synapse?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/synapse?color=2dd4bf&style=flat-square" alt="license"></a>
+  <a href="https://github.com/TheJenilDGohel/synapse/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/synapse/quality.yml?branch=main&label=quality&style=flat-square" alt="quality status"></a>
+  <a href="https://github.com/TheJenilDGohel/synapse/security/advisories"><img src="https://img.shields.io/badge/security-monitored-2dd4bf?style=flat-square" alt="security monitored"></a>
+</p>
+
 ---
 
-## The Philosophy: Bridging the Gap
+## 🧬 The Philosophy: Bridging the Gap
 
 In biology, a **Synapse** is the transmission point—the specialized gap between neurons where signals pass. Without this gap, information cannot flow, and the system is paralyzed.
 
@@ -24,7 +30,7 @@ Every AI task fails because of a **loss of signal**: the agent doesn't know the 
 
 ---
 
-## Why Synapse?
+## 💎 Why Synapse?
 
 Every other MCP server forces you to choose: memory **or** code intelligence. Never both.
 
@@ -38,7 +44,7 @@ Synapse is the first to combine all three pillars into one server that runs enti
 
 ---
 
-## How Synapse Compares
+## 📊 How Synapse Compares
 
 No other MCP server covers all three pillars. Here's how the landscape breaks down:
 
@@ -70,50 +76,24 @@ No other MCP server covers all three pillars. Here's how the landscape breaks do
 | Local-first / no cloud | **Yes** | Yes | Partial | Yes | Yes |
 | MCP tools | **74** | 16 | ~5 | 14 | ~10 |
 
-> GitNexus (27k stars) has strong code search but no memory. claude-context (Zilliz, 5.9k stars) is Milvus-backed with no KG or memory. codebase-memory-mcp (DeusData) is the closest competitor — code + KG in a single binary — but has no AI memory layer.
-
-### Full Feature Matrix
-
-**Synapse is the only infrastructure that unifies all three pillars into a single, local-first binary.**
-
 ---
 
-## Helping AI Do The Job
-
-Synapse isn't just a database; it’s an active participant in the agentic lifecycle:
-
-| Workflow Step | How Synapse Helps |
-|:---|:---|
-| **Cold Start** | `agent_prime` instantly hydrates the context window with relevant memories and recent changes. |
-| **Deep Investigation** | `find` runs fused search across code fragments and historical design decisions. |
-| **Continuous Learning** | `teach` saves architectural rules that persist across sessions, ensuring agents never repeat mistakes. |
-| **Outcome Capture** | `capture_outcome` records what worked and what didn't, building an experience base over time. |
-
----
-
----
-
-## Quick Start
+## 🚀 Quick Start
 
 ```bash
 # Install
 npm install -g synapse
 
-# Setup workspace + embeddings
+# Setup workspace + dependencies (ripgrep, sqlite-vec)
 synapse setup
 
-# Verify
+# Verify installation health
 synapse doctor
 ```
 
-**Interactive dashboard:**
-```bash
-synapse dashboard
-```
+### MCP Client Configuration
 
-### MCP Client Config
-
-After setup, add this to your AI client config:
+Add this to your AI client config (e.g., Claude Desktop, Cursor, Windsurf):
 
 ```json
 {
@@ -132,11 +112,11 @@ After setup, add this to your AI client config:
 }
 ```
 
-Works with Claude Code, Cursor, Windsurf, Cline, Continue, Gemini CLI, and any MCP-compatible client.
+Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, **Continue**, **Gemini CLI**, and any MCP-compatible client.
 
 ---
 
-## Tool Suites
+## 🛠️ Tool Suites
 
 Synapse exposes **74 specialized MCP tools**, organized into focused suites:
 
@@ -161,81 +141,41 @@ Synapse exposes **74 specialized MCP tools**, organized into focused suites:
 </details>
 
 <details>
-<summary><b>Organization</b> — nests, branches, agent isolation, diary</summary>
-<p><code>nest_list</code>, <code>nest_branches</code>, <code>nest_tree</code>, <code>diary_write</code>, <code>diary_read</code></p>
-</details>
-
-<details>
-<summary><b>Ingestion & Hooks</b> — conversation import, lifecycle callbacks</summary>
-<p><code>ingest_markdown</code>, <code>ingest_json</code>, <code>hooks_stats</code>, <code>hooks_list_events</code></p>
-</details>
-
-<details>
 <summary><b>Agent Context</b> — priming, teaching, outcomes, task context</summary>
 <p><code>agent_prime</code>, <code>teach</code>, <code>capture_outcome</code>, <code>task_context</code>, <code>whats_new</code></p>
 </details>
 
-<details>
-<summary><b>System</b> — health, indexing, updates, embedding status</summary>
-<p><code>health</code>, <code>server_status</code>, <code>index_project</code>, <code>index_status</code>, <code>embed_status</code>, <code>update_self</code>, <code>update_status</code>, <code>audit</code>, <code>backup</code>, <code>restore</code>, <code>help</code>, <code>usage_guide</code></p>
-</details>
+---
 
-Full parameter reference: [Tool Documentation](https://TheJenilDGohel.github.io/synapse/docs/tools/overview)
+## 🏗️ Architecture
+
+Synapse follows a strictly decoupled, layered architecture to ensure performance and reliability:
+
+- **Core (`src/core/`)**: System fundamentals, runtime constraints, and SQLite storage layout.
+- **Services (`src/services/`)**: Bounded business logic contexts (Memory, Retrieval, Workspace).
+- **Interfaces (`src/interfaces/`)**: Entrypoints (CLI, MCP, App) that orchestrate services.
+
+For deeper technical details, see the [Architecture Overview](./ARCHITECTURE.md).
 
 ---
 
-## Enterprise-Grade Reliability
-
-Synapse is built for mission-critical development workflows:
+## 🛡️ Enterprise-Grade Reliability
 
 - **OIDC Trusted Publishing**: Verifiable npm provenance via GitHub Actions.
 - **Continuous CodeQL**: Deep static analysis on every commit.
-- **OpenSSF Best Practices**: Proactive security monitoring and dependency hygiene.
 - **Zero-Cloud Privacy**: Your code and memories never leave your machine. No telemetry, no external APIs.
+- **Local-First**: Powered by SQLite and native vector extensions for maximum speed.
 
 ---
 
-## Advanced Configuration
+## 🤝 Contributing & Community
 
-### Model Cache & Fallback
-Synapse uses local embedding models. If the preferred cache directory is not writable, Synapse will attempt to use a temporary fallback. 
-- **Cache fallback is informational**: A warning will be shown, but the system remains functional. **Cache fallback is acceptable** if you do not want to manage custom paths.
-- To skip model downloads during setup (e.g., in CI or offline), use: `synapse setup --skip-model-download=true`
-- You can manually specify the cache directory using the `SYNAPSE_EMBED_CACHE_DIR` environment variable.
+We welcome contributions from the community! Whether it's fixing bugs, adding new tool suites, or improving documentation.
 
-## Troubleshooting
-
-<details>
-<summary><b>Installing from GitHub fails</b></summary>
-
-Direct `npm install -g git+https://...` may fail with `TAR_ENTRY_ERRORS`. This is a [known npm limitation](https://github.com/npm/cli/issues/3910).
-
-**Fix: clone, pack, install**
-```bash
-git clone https://github.com/TheJenilDGohel/synapse.git
-cd synapse && npm pack
-npm install -g ./synapse-*.tgz
-```
-</details>
-
-<details>
-<summary><b>Semantic search not working</b></summary>
-
-```bash
-cd $(npm root -g)/synapse && npm install --no-save @huggingface/transformers
-synapse doctor
-```
-</details>
-
----
-
-## Resources
-
-- **[Documentation](https://TheJenilDGohel.github.io/synapse/)** — Full tool reference, architecture, and guides
-- **[Comparison](https://TheJenilDGohel.github.io/synapse/docs/comparison)** — Detailed competitive analysis
-- **[Architecture](https://TheJenilDGohel.github.io/synapse/docs/architecture)** — Retrieval pipeline and memory graph internals
-- **[Changelog](./CHANGELOG.md)** — Release history
-- **[Security](./SECURITY.md)** — Vulnerability disclosure policy
+- **[Contributing Guide](./CONTRIBUTING.md)** — How to get started with development.
+- **[Code of Conduct](./CODE_OF_CONDUCT.md)** — Our community standards.
+- **[Security Policy](./SECURITY.md)** — How to report vulnerabilities.
+- **[Changelog](./CHANGELOG.md)** — Track our progress.
 
 ---
 

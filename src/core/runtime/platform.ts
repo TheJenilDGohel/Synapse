@@ -19,7 +19,35 @@ import path from 'node:path';
 export const isWindows = process.platform === 'win32';
 
 /** ripgrep binary name — `rg.exe` on Windows, `rg` everywhere else. */
-export const RG_BIN = isWindows ? 'rg.exe' : 'rg';
+const RG_BASE = isWindows ? 'rg.exe' : 'rg';
+
+/**
+ * Resolve the absolute path to the ripgrep binary.
+ * 1. Checks system PATH (standard 'rg').
+ * 2. Checks local node_modules/.bin (if ripgrep-bin is installed).
+ * 3. Checks global node_modules/.bin fallback.
+ */
+export function resolveRgBin(): string {
+  // 1. Try system path first
+  try {
+    const res = require('node:child_process').spawnSync(RG_BASE, ['--version'], { stdio: 'ignore', shell: isWindows });
+    if (res.status === 0) return RG_BASE;
+  } catch { /* ignore */ }
+
+  // 2. Try to find it in node_modules (if ripgrep-bin is present)
+  try {
+    // This file is at <root>/src/core/runtime/platform.ts
+    // node_modules is at <root>/node_modules
+    const __dirname = path.dirname(new URL(import.meta.url).pathname);
+    const pkgRoot = path.resolve(__dirname, '..', '..', '..');
+    const localRg = path.join(pkgRoot, 'node_modules', '.bin', RG_BASE);
+    if (fs.existsSync(localRg)) return localRg;
+  } catch { /* ignore */ }
+
+  return RG_BASE;
+}
+
+export const RG_BIN = resolveRgBin();
 
 /** npm binary — `npm.cmd` on Windows. */
 export const NPM_BIN = isWindows ? 'npm.cmd' : 'npm';
