@@ -24,8 +24,8 @@ const RG_BASE = isWindows ? 'rg.exe' : 'rg';
 /**
  * Resolve the absolute path to the ripgrep binary.
  * 1. Checks system PATH (standard 'rg').
- * 2. Checks local node_modules/.bin (if ripgrep-bin is installed).
- * 3. Checks global node_modules/.bin fallback.
+ * 2. Checks local node_modules/@vscode/ripgrep/bin (if bundled).
+ * 3. Checks global node_modules/@vscode/ripgrep/bin fallback.
  */
 export function resolveRgBin(): string {
   // 1. Try system path first
@@ -34,14 +34,12 @@ export function resolveRgBin(): string {
     if (res.status === 0) return RG_BASE;
   } catch { /* ignore */ }
 
-  // 2. Try to find it in node_modules (if ripgrep-bin is present)
+  // 2. Try to find it via @vscode/ripgrep package resolution
   try {
-    // This file is at <root>/src/core/runtime/platform.ts
-    // node_modules is at <root>/node_modules
-    const __dirname = path.dirname(new URL(import.meta.url).pathname);
-    const pkgRoot = path.resolve(__dirname, '..', '..', '..');
-    const localRg = path.join(pkgRoot, 'node_modules', '.bin', RG_BASE);
-    if (fs.existsSync(localRg)) return localRg;
+    const rgPath = require('@vscode/ripgrep').rgPath;
+    if (rgPath && fs.existsSync(rgPath)) {
+      return rgPath;
+    }
   } catch { /* ignore */ }
 
   return RG_BASE;

@@ -4,6 +4,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.1-beta.2] - 2026-05-03
+
+### 🛠️ Hotfixes
+- **Dependency Stabilization**: Resolved strict peer dependency conflicts with `tree-sitter` and its language parsers that were preventing clean global installations.
+- **Search Binary Fix**: Replaced problematic `ripgrep-bin` with `@vscode/ripgrep` to ensure `rg` works flawlessly across all platforms without requiring native compilation (make/gcc) on Windows.
+
 ## [0.0.1-beta.1] - 2026-05-03
 
 ### 🔄 Redistribution & Sync

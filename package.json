@@ -81,22 +81,22 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "@vscode/ripgrep": "^1.17.1",
     "ora": "^9.3.0",
-    "ripgrep-bin": "^13.0.0",
     "sqlite-vec": "^0.1.9",
     "tsx": "^4.21.0",
     "zod": "^4.3.6"
   },
   "optionalDependencies": {
-    "tree-sitter": "0.21.0",
-    "tree-sitter-bash": "0.21.0",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-bash": "^0.21.0",
     "tree-sitter-dart": "^1.0.0",
-    "tree-sitter-go": "0.21.0",
-    "tree-sitter-javascript": "0.21.0",
-    "tree-sitter-lua": "0.21.0",
-    "tree-sitter-python": "0.21.0",
-    "tree-sitter-rust": "0.21.0",
-    "tree-sitter-typescript": "0.21.0"
+    "tree-sitter-go": "^0.21.0",
+    "tree-sitter-javascript": "^0.21.0",
+    "tree-sitter-lua": "^0.21.0",
+    "tree-sitter-python": "^0.21.0",
+    "tree-sitter-rust": "^0.21.0",
+    "tree-sitter-typescript": "^0.21.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
