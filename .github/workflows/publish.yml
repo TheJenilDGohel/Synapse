@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    name: Build & Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run checks and tests
+        run: npm run quality
+
+      - name: Determine npm tag
+        id: determine_tag
+        run: |
+          if [[ "${{ github.ref_name }}" == *"-beta"* ]]; then
+            echo "npm_tag=beta" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref_name }}" == *"-alpha"* ]]; then
+            echo "npm_tag=alpha" >> $GITHUB_OUTPUT
+          else
+            echo "npm_tag=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to npm
+        run: npm publish --access public --tag ${{ steps.determine_tag.outputs.npm_tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+      - name: Extract Release Notes
+        id: release_notes
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk "/## \[$VERSION\]/{p=1;print;next} p&&/## \[/{p=0} p" CHANGELOG.md > release-notes.md || true
+          if [ ! -s release-notes.md ]; then
+            echo "Release notes for version $VERSION." > release-notes.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          prerelease: ${{ contains(github.ref_name, '-beta') || contains(github.ref_name, '-alpha') }}
+          generate_release_notes: true
