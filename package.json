@@ -62,7 +62,7 @@
     "test:coverage": "node --import tsx/esm --test --experimental-test-coverage",
     "lint": "eslint . --max-warnings=0",
     "quality:cycles": "madge --circular --extensions js,mjs,ts src",
-    "quality:deps": "depcheck --json --ignores=publint,@huggingface/transformers,tree-sitter-*",
+    "quality:deps": "depcheck --json --ignores=publint,@huggingface/transformers,tree-sitter-*,ripgrep-bin",
     "quality:package": "node scripts/quality/quality-package.mjs",
     "quality:audit": "node scripts/quality/quality-audit.mjs",
     "quality": "npm run check && npm run lint && npm run test:coverage && npm run quality:cycles && npm run quality:deps && npm run quality:package && npm run quality:audit",

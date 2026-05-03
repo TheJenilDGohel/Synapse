@@ -187,28 +187,6 @@ jobs:
           echo "::error::Regenerate at https://www.npmjs.com/settings/~/tokens/new/automation and update Settings → Environments → npm-publish → NODE_AUTH_TOKEN."
           exit 1
 
-      - name: Create GitHub Release
-        if: steps.changed.outputs.should_release == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: v${{ steps.local.outputs.version }}
-          BRANCH: ${{ github.ref_name }}
-          PRERELEASE: ${{ steps.tag.outputs.prerelease }}
-        run: |
-          if gh release view "$TAG" &>/dev/null; then
-            echo "Release $TAG already exists — skipping GitHub release creation"
-            exit 0
-          fi
-          PRERELEASE_FLAG=""
-          if [ "$PRERELEASE" = "true" ]; then
-            PRERELEASE_FLAG="--prerelease"
-          fi
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --target "$BRANCH" \
-            $PRERELEASE_FLAG \
-            --generate-notes
-
       - name: Summary
         if: steps.changed.outputs.should_release == 'true'
         run: |
@@ -219,6 +197,5 @@ jobs:
             echo "- **Version:** ${{ steps.local.outputs.version }}"
             echo "- **Previous:** ${{ steps.previous.outputs.version }}"
             echo "- **npm tag:** @${{ steps.tag.outputs.tag }}"
-            echo "- **GitHub release:** v${{ steps.local.outputs.version }}"
             echo "- **Provenance:** enabled"
           } >> "$GITHUB_STEP_SUMMARY"

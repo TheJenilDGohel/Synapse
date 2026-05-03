@@ -27,13 +27,16 @@ jobs:
         id: changelog
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          # Find the section for this version in CHANGELOG.md
-          # It starts with ## [VERSION] and ends with the next ## [ or EOF
-          sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | sed '$d' > release-notes.md
+          # Fix line endings to ensure sed works correctly on Ubuntu
+          tr -d '\r' < CHANGELOG.md > CHANGELOG_UNIX.md
+          
+          # Extract section between ## [VERSION] and the next ## [
+          # We use a more robust awk script instead of sed
+          awk "/## \[$VERSION\]/{p=1;print;next} p&&/## \[/{p=0} p" CHANGELOG_UNIX.md > release-notes.md
           
           if [ ! -s release-notes.md ]; then
             echo "No changelog entry found for $VERSION"
-            echo "Initial release" > release-notes.md
+            echo "Initial release for synapse-cortex" > release-notes.md
           fi
 
       - name: Create Release
