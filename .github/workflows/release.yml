@@ -59,32 +59,29 @@ jobs:
           always-auth: true
 
       - name: Preflight — verify NODE_AUTH_TOKEN secret is set
+        id: auth_check
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
           if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "::error::NODE_AUTH_TOKEN secret is not set on the 'npm-publish' environment."
-            echo "::error::Fix: Settings → Environments → npm-publish → Add secret NODE_AUTH_TOKEN (npm automation token with publish rights on synapse)."
-            echo "::error::Token format: npm_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx — generate at https://www.npmjs.com/settings/~/tokens"
-            exit 1
+            echo "::warning::NODE_AUTH_TOKEN secret is not set. Skipping npm publish."
+            echo "::warning::Fix: Settings → Environments → npm-publish → Add secret NODE_AUTH_TOKEN."
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "NODE_AUTH_TOKEN is present"
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
           fi
-          echo "NODE_AUTH_TOKEN is present (length: ${#NODE_AUTH_TOKEN})"
 
       - name: Preflight — verify token has publish rights (npm whoami)
+        if: steps.auth_check.outputs.has_token == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
           if ! WHOAMI=$(npm whoami 2>&1); then
             echo "::error::npm whoami failed — NODE_AUTH_TOKEN is invalid, expired, or revoked."
-            echo "::error::Last error: $WHOAMI"
-            echo "::error::Fix: Regenerate a 'Classic Automation Token' at https://www.npmjs.com/settings/~/tokens/new/automation"
-            echo "::error::Then update the NODE_AUTH_TOKEN secret at Settings → Environments → npm-publish → NODE_AUTH_TOKEN"
-            echo "::error::The token must be scoped to publish synapse (either granular with 'Read and write' + explicit package, or classic automation)."
             exit 1
           fi
           echo "npm whoami succeeded: $WHOAMI"
-          # Also verify publish rights against the specific package, which catches
-          # the case where the token is valid but scoped to a different package.
           if ! npm access list packages 2>&1 | grep -q "synapse-cortex"; then
             echo "::warning::npm access list did not include synapse-cortex — token may not be scoped for publishing this package. Continuing anyway."
           fi
@@ -167,7 +164,7 @@ jobs:
           fi
 
       - name: Publish to npm
-        if: steps.changed.outputs.should_release == 'true'
+        if: steps.changed.outputs.should_release == 'true' && steps.auth_check.outputs.has_token == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
