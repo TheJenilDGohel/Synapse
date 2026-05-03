@@ -31,3 +31,9 @@ This audit confirms the completion of all five major milestones for Synapse. The
 3. **Docs**: Built in `docs/dist`, ready for Firebase deployment via GitHub Actions.
 
 **Final Verdict**: Ready for npm publish.
+
+## Post-Audit Regression Fixes (2026-05-03)
+- **Restored Core Services**: Fixed accidental file-emptying of `ner-service.ts` and `classifier-service.ts` caused by legacy renaming.
+- **Hook Path Resolution**: Corrected `PKG_ROOT` resolution in `synapse hooks` command to accurately locate `scripts/hooks/` from the nested CLI directory.
+- **Hook Refresh**: Updated `install-hooks.cjs` to detect and update stale script paths in `~/.claude/settings.json`, ensuring legacy `localnest` paths are migrated to `synapse`.
+- **Cleanup**: Removed unwanted utility scripts (`fetch-issues.js`) and empty data files from the `scripts/` directory.

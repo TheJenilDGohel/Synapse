@@ -37,10 +37,19 @@ function writeSettings(filePath, settings) {
   fs.writeFileSync(filePath, JSON.stringify(settings, null, 2) + '\n', 'utf8');
 }
 
-function hasSynapseHook(hookArray, scriptName) {
+function hasSynapseHook(hookArray, scriptName, exactPath) {
   if (!Array.isArray(hookArray)) return false;
   return hookArray.some(entry =>
-    entry.hooks?.some(h => h.command?.includes(scriptName))
+    entry.hooks?.some(h => {
+      const isMatch = h.command?.includes(scriptName);
+      if (!isMatch) return false;
+      // If we have an exactPath, ensure it matches too.
+      // This allows updating stale paths from previous installations.
+      if (exactPath) {
+        return h.command?.includes(exactPath);
+      }
+      return true;
+    })
   );
 }
 
@@ -59,7 +68,19 @@ function installToSettings(settingsPath) {
   // Matcher includes mcp__synapse__.* so the hook can observe agent_prime
   // calls and clear the "session not primed" reminder.
   if (!settings.hooks.PreToolUse) settings.hooks.PreToolUse = [];
-  if (!hasSynapseHook(settings.hooks.PreToolUse, 'synapse-pre-tool')) {
+  
+  // Clean up stale synapse hooks first if they point to different paths
+  const otherPathPre = settings.hooks.PreToolUse.filter(e => 
+    e.hooks?.some(h => h.command?.includes('synapse-pre-tool') && !h.command?.includes(PRE_HOOK))
+  );
+  if (otherPathPre.length > 0) {
+    settings.hooks.PreToolUse = settings.hooks.PreToolUse.filter(e => 
+      !e.hooks?.some(h => h.command?.includes('synapse-pre-tool'))
+    );
+    changed = true;
+  }
+
+  if (!hasSynapseHook(settings.hooks.PreToolUse, 'synapse-pre-tool', PRE_HOOK)) {
     settings.hooks.PreToolUse.push({
       matcher: 'Edit|Write|Bash|MultiEdit|mcp__synapse__.*',
       hooks: [{
@@ -73,7 +94,19 @@ function installToSettings(settingsPath) {
 
   // Post-tool hook (outcome capture)
   if (!settings.hooks.PostToolUse) settings.hooks.PostToolUse = [];
-  if (!hasSynapseHook(settings.hooks.PostToolUse, 'synapse-post-tool')) {
+
+  // Clean up stale synapse hooks first if they point to different paths
+  const otherPathPost = settings.hooks.PostToolUse.filter(e => 
+    e.hooks?.some(h => h.command?.includes('synapse-post-tool') && !h.command?.includes(POST_HOOK))
+  );
+  if (otherPathPost.length > 0) {
+    settings.hooks.PostToolUse = settings.hooks.PostToolUse.filter(e => 
+      !e.hooks?.some(h => h.command?.includes('synapse-post-tool'))
+    );
+    changed = true;
+  }
+
+  if (!hasSynapseHook(settings.hooks.PostToolUse, 'synapse-post-tool', POST_HOOK)) {
     settings.hooks.PostToolUse.push({
       matcher: 'Bash|Edit|Write|MultiEdit',
       hooks: [{

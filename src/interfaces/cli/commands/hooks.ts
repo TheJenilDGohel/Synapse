@@ -9,8 +9,8 @@ import { startSpinner } from '../spinner.js';
 import type { GlobalOptions } from '../options.js';
 
 const __dirname: string = path.dirname(fileURLToPath(import.meta.url));
-// CLI lives at <root>/src/cli/commands/ — hooks at <root>/scripts/hooks/
-const PKG_ROOT: string = path.resolve(__dirname, '..', '..', '..');
+// CLI lives at <root>/src/interfaces/cli/commands/ — hooks at <root>/scripts/hooks/
+const PKG_ROOT: string = path.resolve(__dirname, '..', '..', '..', '..');
 const HOOKS_DIR: string = path.join(PKG_ROOT, 'scripts', 'hooks');
 
 type Handler = (args: string[], opts: GlobalOptions) => Promise<void>;
