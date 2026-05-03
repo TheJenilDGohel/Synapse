@@ -82,7 +82,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "ora": "^9.3.0",
-    "ripgrep-bin": "^14.1.1",
+    "ripgrep-bin": "^13.0.0",
     "sqlite-vec": "^0.1.9",
     "tsx": "^4.21.0",
     "zod": "^4.3.6"
