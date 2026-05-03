@@ -19,7 +19,6 @@ synapse.config.json
 
 # Build artifacts
 docs/build/
-docs/.docusaurus/
 *AUDIT-REPORT*.md
 *ACTION-PLAN*.md
 

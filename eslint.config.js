@@ -12,12 +12,10 @@ export default [
       '.claude-flow/**',
       'coverage/**',
       'build/**',
-      '.docusaurus/**',
       'docs/dist/**',
       'docs/.astro/**',
       'docs/node_modules/**',
-      'synapse-docs/build/**',
-      'synapse-docs/.docusaurus/**'
+      'synapse-docs/build/**'
     ]
   },
   js.configs.recommended,
