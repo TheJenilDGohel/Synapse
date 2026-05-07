@@ -1,6 +1,6 @@
 import 'package:jaspr/dom.dart';
 
-// Pro Max Color Palette with Theme Support
+// Color palette with theme support.
 // We use CSS variables that are updated by the ThemeToggle component.
 
 const primaryColor = Color('var(--primary-color, #38bdf8)');

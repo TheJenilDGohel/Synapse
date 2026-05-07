@@ -5,91 +5,56 @@ description: Hybrid BM25 + vector search, AST-aware chunking, and precise symbol
 
 # Code Intelligence
 
-Synapse gives your AI agent **elite code understanding** — not just keyword matching, but structural comprehension of your codebase. It combines two retrieval strategies, AST-aware parsing, and symbol-level indexing to surface the most relevant context with surgical precision.
+Synapse gives your AI agent **elite code understanding**—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with AST-aware parsing, Synapse surfaces the most relevant context with surgical precision.
+
+:::tip Precision Retrieval
+Most code search tools force a choice between exact text matching *or* semantic similarity. Synapse does both, fusing the results to ensure your AI gets the right code every time.
+:::
 
 ## The Hybrid Search Engine
 
-Most code search tools make you choose: exact text match *or* semantic similarity. Synapse runs both simultaneously and fuses the scores.
+Synapse runs a **Hybrid Rank Fusion** algorithm that combines the strengths of lexical and semantic retrieval in a single query via `search_hybrid`.
 
-### BM25 (Lexical Retrieval)
-Precise keyword matching — ideal for finding:
-- Exact function names (`getUserById`)
-- Specific variable identifiers
-- Error message strings
-- Import paths
+| Strategy | Engine | Best For... |
+| :--- | :--- | :--- |
+| **Lexical** | BM25 | Exact function names, identifiers, error messages, and unique strings. |
+| **Semantic** | Vector | Conceptual search, finding similar logic, and "plain English" descriptions. |
 
-### Vector (Semantic Retrieval)
-Embedding-based similarity — ideal for finding:
-- Code that *does* something, even with different naming
-- Conceptually related functions across the codebase
-- Implementations of a pattern you describe in plain English
-
-### Hybrid Fusion
-`search_hybrid` runs both in parallel and merges results using a weighted rank fusion algorithm. You get the precision of BM25 *and* the recall of vector search in a single query.
-
-```
-search_hybrid({ query: "validate user permissions before updating a resource" })
-→ Returns: middleware functions, guard decorators, and permission checks
-   across the entire codebase — even if none of them use those exact words
+```dart
+// Example Query: "Find logic that handles user permission validation"
+search_hybrid({ query: "validate user permissions" })
+// Returns exact symbols like `validatePermissions()` AND semantically 
+// relevant code like `checkUserRole()` or `hasAccess()`.
 ```
 
 ## AST-Aware Chunking
 
-Traditional chunking splits code at arbitrary line limits, often cutting functions in half. Synapse uses **Abstract Syntax Tree (AST)** parsing via `tree-sitter` to index code at its natural boundaries.
+Traditional tools split code at arbitrary line limits, often severing functions. Synapse uses **Abstract Syntax Tree (AST)** parsing via `tree-sitter` to index code at its natural boundaries.
 
 Every chunk is:
-- **Atomic** — a complete function, class, or method. Never a fragment.
-- **Enriched** — bundled with its parent class, imports, and type signatures.
-- **Context-preserved** — when a function is retrieved, its surrounding context is included automatically.
+- **Atomic**: A complete function, class, or method. Never a fragment.
+- **Enriched**: Bundled with its parent class, imports, and type signatures.
+- **Context-Preserved**: When retrieved, a function includes its surrounding context automatically.
 
-## Symbol Resolution
+## Symbol Resolution Suite
 
-Synapse builds a full symbol index for your workspace. No more guessing where something is defined.
+Synapse builds a comprehensive symbol index for your workspace, allowing agents to navigate code like an IDE.
 
-| Tool | What it does |
-|:---|:---|
-| `find_definition` | Jump to where a symbol is defined |
-| `find_usages` | Find everywhere a symbol is used |
-| `find_callers` | Find all functions that call a specific function |
-| `find_implementations` | Find all implementations of an interface or abstract class |
-| `get_symbol` | Get full metadata for a symbol (type, location, exports) |
-| `rename_preview` | Preview all the places affected by renaming a symbol |
+| Tool | Capability | Use Case |
+| :--- | :--- | :--- |
+| `find_definition` | Definition Lookup | Jump to the source of a specific function. |
+| `find_usages` | Reference Finding | See everywhere a symbol is used before refactoring. |
+| `find_callers` | Call Stack Analysis | Identify every function that invokes a critical API. |
+| `get_symbol` | Meta-Discovery | Get full metadata including exports and visibility. |
+| `summarize_project` | Architectural Map | Get a high-level overview of the project structure. |
 
-## Multi-Language Support
+## Why it Matters for AI Agents
 
-Synapse's intelligence layer is polyglot by design. Deep structural support for:
-
-- **TypeScript / JavaScript**
-- **Python**
-- **Rust**
-- **Go**
-- **Dart**
-- **And more...**
-
-## All Code Intelligence Tools
-
-| Tool | Purpose |
-|:---|:---|
-| `search_hybrid` | Primary entry point — fused BM25 + vector retrieval |
-| `search_code` | Code-specific semantic search with syntax filtering |
-| `search_files` | Find files by name, path pattern, or content |
-| `find` | Low-level text/regex search across the workspace |
-| `find_definition` | Symbol definition lookup |
-| `find_usages` | All references to a symbol |
-| `find_callers` | All callers of a function |
-| `find_implementations` | Implementations of interfaces/abstract classes |
-| `get_symbol` | Symbol metadata and export info |
-| `rename_preview` | Impact preview for symbol renames |
-| `summarize_project` | High-level architectural map of the project |
-| `project_tree` | Directory structure with context awareness |
-| `read_file` | Optimized file reading for large codebases |
-
-## Real-World Example
-
-> *"Find all places where we're directly accessing the database without going through a repository."*
-
-Synapse calls `search_hybrid` with a semantic query, finds all direct ORM/DB calls, cross-references with `find_usages` on repository interfaces, and surfaces the specific files and lines where the pattern is violated — without you writing a single regex.
+Standard RAG (Retrieval-Augmented Generation) often fails because it misses the structural relationships in code. Synapse's **Code Intelligence** layer ensures that when an agent asks for context, it receives:
+1. The **correct logic** (via Hybrid Search).
+2. The **complete structure** (via AST-Aware Chunking).
+3. The **related symbols** (via Symbol Resolution).
 
 ---
 
-**Next:** Learn how code-level facts are connected to architectural history in the **[Knowledge Graph](/pillars/temporal)**.
+**Next:** Learn how code-level facts are connected to architectural history in the **[Knowledge Graph](temporal)**.

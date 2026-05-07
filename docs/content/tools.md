@@ -1,15 +1,16 @@
 ---
 title: Tools Overview
-description: All 74 MCP tools provided by Synapse — organized by functional suite.
+description: MCP tools provided by Synapse, organized by functional suite.
 ---
 
 # Tools Overview
 
-Synapse exposes **74 specialized MCP tools** via the Model Context Protocol. Every tool runs locally — no cloud, no external APIs.
+Synapse exposes focused MCP tools via the Model Context Protocol. Every tool runs locally: no cloud service, no hosted index, and no external API requirement.
 
 ## Tool Suites
 
 ### 1. Workspace & Discovery
+
 File navigation, project summaries, and scoped reads.
 
 | Tool | Description |
@@ -22,22 +23,24 @@ File navigation, project summaries, and scoped reads.
 | `summarize_project` | Generate a high-level architectural map |
 
 ### 2. Search & Code Intelligence
+
 Hybrid search, symbol resolution, and AST-aware queries.
 
 | Tool | Description |
 |:---|:---|
-| `search_hybrid` | Fused BM25 + vector retrieval (primary search) |
+| `search_hybrid` | Fused BM25 + vector retrieval |
 | `search_code` | Code-specific semantic search |
 | `search_files` | Find files by name or path pattern |
-| `find` | Low-level text/regex search |
+| `find` | Low-level text and regex search |
 | `find_definition` | Symbol definition lookup |
 | `find_usages` | All references to a symbol |
 | `find_callers` | All callers of a specific function |
-| `find_implementations` | Implementations of interfaces/abstract classes |
+| `find_implementations` | Implementations of interfaces or abstract classes |
 | `get_symbol` | Symbol metadata and export info |
 | `rename_preview` | Impact analysis for symbol renames |
 
 ### 3. Persistent Memory
+
 Cross-session recall with semantic deduplication and relationship tracking.
 
 | Tool | Description |
@@ -57,9 +60,10 @@ Cross-session recall with semantic deduplication and relationship tracking.
 | `memory_store_batch` | Batch-store multiple memories |
 | `memory_delete_batch` | Batch-delete memories |
 | `memory_status` | Memory health and storage stats |
-| `memory_suggest_relations` | AI-suggested links between memories |
+| `memory_suggest_relations` | Suggest links between memories |
 
 ### 4. Knowledge Graph
+
 Temporal triples, time-travel queries, and multi-hop traversal.
 
 | Tool | Description |
@@ -77,13 +81,14 @@ Temporal triples, time-travel queries, and multi-hop traversal.
 | `kg_add_triples_batch` | Batch-record multiple relationships |
 | `kg_backfill_links` | Link entities found in memory to the graph |
 
-### 5. Agent Context
-Priming, teaching, and outcome capture for autonomous agents.
+### 5. Context Operations
+
+Task context, teaching, and outcome capture helpers for MCP clients.
 
 | Tool | Description |
 |:---|:---|
 | `agent_prime` | Surface relevant memories before a task |
-| `teach` | Batch-teach the agent project conventions |
+| `teach` | Batch-store project conventions and operating notes |
 | `capture_outcome` | Log the result of a completed task |
 | `task_context` | Initialize task-scoped memory isolation |
 | `whats_new` | Surface recent changes and updates |
@@ -95,5 +100,5 @@ Below is the live list of tools currently active in your Synapse instance:
 <tools-list />
 
 :::tip
-For deep-dives on specific tool parameters and usage patterns, see the individual pillar pages: **[Code Intelligence](/pillars/intel)**, **[Knowledge Graph](/pillars/temporal)**, and **[Persistent Memory](/pillars/memory)**.
+For deep-dives on specific tool parameters and usage patterns, see the individual pillar pages: **[Code Intelligence](pillars/intel)**, **[Knowledge Graph](pillars/temporal)**, and **[Persistent Memory](pillars/memory)**.
 :::

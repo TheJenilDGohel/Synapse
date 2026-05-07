@@ -3,6 +3,7 @@ import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
 import '../constants/theme.dart';
+import '../constants/site.dart';
 
 @client
 class Search extends StatefulComponent {
@@ -92,15 +93,16 @@ class _SearchState extends State<Search> {
   String _query = '';
 
   final List<({String title, String path, String description})> _pages = [
-    (title: 'Introduction', path: '/intro', description: 'Welcome to Synapse, the agentic layer.'),
-    (title: 'Installation', path: '/install', description: 'Get Synapse up and running.'),
-    (title: 'Quick Start', path: '/quickstart', description: 'Start using Synapse in 2 minutes.'),
-    (title: 'Temporal Graph', path: '/pillars/temporal', description: 'Deep dive into persistent memory.'),
-    (title: 'Code Intelligence', path: '/pillars/intel', description: 'Advanced code retrieval.'),
-    (title: 'GSD Workflow', path: '/pillars/gsd', description: 'Autonomous task execution.'),
-    (title: 'Tools Overview', path: '/tools', description: 'Explore the 70+ MCP tools.'),
-    (title: 'Contributing', path: '/contributing', description: 'Learn how to contribute.'),
-    (title: 'Community', path: '/community', description: 'Connect with other developers.'),
+    (title: 'Introduction', path: '/intro', description: 'Welcome to Synapse: the local-first context layer for AI agents.'),
+    (title: 'Installation', path: '/install', description: 'Step-by-step guide to installing Synapse and its dependencies.'),
+    (title: 'Quick Start', path: '/quickstart', description: 'Connect your AI client and run your first semantic query in minutes.'),
+    (title: 'Persistent Memory', path: '/pillars/memory', description: 'Long-term semantic recall and cross-session AI memory.'),
+    (title: 'Temporal Knowledge Graph', path: '/pillars/temporal', description: 'Track architectural facts and decisions over time with triple storage.'),
+    (title: 'Code Intelligence', path: '/pillars/intel', description: 'AST-aware semantic code search and hybrid retrieval.'),
+    (title: 'Architecture', path: '/pillars/architecture', description: 'Deep dive into the Synapse local runtime and storage layout.'),
+    (title: 'Tools Overview', path: '/tools', description: 'Reference guide for the 74 specialized MCP tools available in Synapse.'),
+    (title: 'Contributing', path: '/contributing', description: 'Join the community and help build the future of AI context.'),
+    (title: 'Community', path: '/community', description: 'Connect with other developers and share Synapse patterns.'),
   ];
 
   void _toggle() {
@@ -155,14 +157,14 @@ class _SearchState extends State<Search> {
               else
                 for (var page in filteredPages)
                   a(
-                    href: page.path,
+                    href: publicPath(page.path),
                     classes: 'search-item',
                     events: {
                       'click': (e) {
                         (e as dynamic).preventDefault();
                         Router.of(context).push(page.path);
                         _toggle();
-                      }
+                       }
                     },
                     [
                       div([

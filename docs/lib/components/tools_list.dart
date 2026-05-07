@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/tool.dart';
 import '../constants/theme.dart';
+import '../constants/site.dart';
 
 @client
 class ToolsList extends StatefulComponent {
@@ -104,7 +105,7 @@ class _ToolsListState extends State<ToolsList> {
   Future<void> _loadTools() async {
     try {
       // In a real static app, this would be a relative path to the asset
-      final response = await http.get(Uri.parse('/assets/data/tools.json'));
+      final response = await http.get(Uri.parse(publicPath('/assets/data/tools.json')));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         if (!mounted) return;

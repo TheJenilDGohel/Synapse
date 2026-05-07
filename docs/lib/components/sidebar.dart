@@ -3,6 +3,7 @@ import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
 import '../constants/theme.dart';
+import 'docs_link.dart';
 
 class Sidebar extends StatelessComponent {
   const Sidebar({super.key});
@@ -21,7 +22,7 @@ class Sidebar extends StatelessComponent {
         _buildNavGroup(context, 'Pillars', [
           (label: 'Temporal Graph', path: '/pillars/temporal'),
           (label: 'Code Intelligence', path: '/pillars/intel'),
-          (label: 'GSD Workflow', path: '/pillars/gsd'),
+          (label: 'Architecture', path: '/pillars/architecture'),
         ], activePath),
         _buildNavGroup(context, 'Resources', [
           (label: 'Tools Overview', path: '/tools'),
@@ -39,7 +40,7 @@ class Sidebar extends StatelessComponent {
         for (var item in items)
           li([
             label(htmlFor: 'sidebar-toggle', [
-              Link(
+              DocsLink(
                 to: item.path,
                 classes: activePath == item.path ? 'active' : '',
                 child: Component.text(item.label),

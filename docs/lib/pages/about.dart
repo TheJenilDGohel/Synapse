@@ -1,6 +1,8 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../constants/site.dart';
+
 class About extends StatelessComponent {
   const About({super.key});
 
@@ -25,8 +27,8 @@ class About extends StatelessComponent {
         ),
         _buildSupportCard(
           'Contributing',
-          'Help us build the future of agentic coding by contributing to the codebase.',
-          '/intro', // Placeholder for contributing guide
+          'Help improve Synapse by contributing code, docs, tests, or issue reports.',
+          '/contributing',
           '🤝',
         ),
       ]),
@@ -38,7 +40,7 @@ class About extends StatelessComponent {
       span(classes: 'card-icon', [text(icon)]),
       h3([text(title)]),
       p([text(description)]),
-      a(href: url, target: url.startsWith('http') ? Target.blank : Target.self, [text('Learn more →')]),
+      a(href: url.startsWith('http') ? url : publicPath(url), target: url.startsWith('http') ? Target.blank : Target.self, [text('Learn more →')]),
     ]);
   }
 

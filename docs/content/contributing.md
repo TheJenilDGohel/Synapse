@@ -2,62 +2,57 @@
 title: Contributing
 description: Guide for contributing to the Synapse core and documentation.
 ---
-<!-- generated-by: gsd-doc-writer -->
 
 # Contributing to Synapse
 
-We are building the foundational context layer for the next generation of AI agents. Whether you're a systems engineer, an AI researcher, or a documentation expert, your contributions are vital to the evolution of Synapse.
+We are building a local-first MCP context server for code intelligence, persistent memory, and knowledge graph search. Whether you work on systems code, documentation, tests, or client integrations, contributions are welcome.
 
 ## Development Environment Setup
 
 Synapse requires **Node.js >= 22.6.0** and **TypeScript 6.0+**.
 
 ```bash
-# Clone the repository
 git clone https://github.com/TheJenilDGohel/synapse.git
 cd synapse
-
-# Install dependencies
 npm install
-
-# Initialize local environment
 npm run setup
-
-# Run the health check
 npm run doctor
 ```
 
-## Quality Assurance & Standards
+## Quality Checks
 
-To maintain high architectural integrity, all contributions must pass our rigorous quality suite:
+Before opening a pull request, run the project quality checks:
 
 ```bash
-# Run all tests, linting, and dependency audits
 npm run quality
 ```
 
-### Key Commands:
-*   **`npm test`**: Executes the full test suite using the native Node.js test runner.
-*   **`npm run lint`**: Enforces strict stylistic consistency via ESLint.
-*   **`npm run check`**: Performs static type analysis and syntax validation.
+Key commands:
 
-## Architectural Integrity
+- **`npm test`**: Executes the test suite using the native Node.js test runner.
+- **`npm run lint`**: Enforces ESLint rules.
+- **`npm run check`**: Performs static type analysis and syntax validation.
 
-Before proposing significant changes, please review our **[Architecture Overview](/pillars/architecture)**. We strictly enforce downward-only dependencies:
-1.  `interfaces` → `services`
-2.  `services` → `core`
-3.  `core` → (no internal dependencies)
+## Architecture Rules
+
+Before proposing significant changes, review the **[Architecture Overview](pillars/architecture)**. The codebase follows downward-only dependencies:
+
+1. `interfaces` depends on `core` and application assembly code.
+2. `core` owns runtime, engine, memory, retrieval, and update logic.
+3. MCP tools should stay thin and delegate behavior to core services.
 
 ## How to Contribute
 
-### 1. Bug Reports & Feature Requests
-Submit issues via the [GitHub Issue Tracker](https://github.com/TheJenilDGohel/synapse/issues). Use the provided templates to ensure our engineering team has the context needed to triage effectively.
+### Bug Reports & Feature Requests
 
-### 2. Pull Requests
-*   **Atomic Scope**: Keep PRs focused on a single logical change.
-*   **Documentation**: If you're adding a new tool or modifying a service, update the relevant `docs/content/` files and the project's `SKILL.md`.
-*   **Tests**: Every new feature or bug fix must include corresponding tests.
+Submit issues via the [GitHub issue tracker](https://github.com/TheJenilDGohel/synapse/issues). Include reproduction steps, expected behavior, actual behavior, and environment details.
+
+### Pull Requests
+
+- **Atomic scope**: Keep PRs focused on one logical change.
+- **Documentation**: Update `docs/content/` when adding or changing user-facing behavior.
+- **Tests**: Include focused tests for new features and bug fixes.
 
 ## Code of Conduct
 
-All contributors are expected to follow our **[Code of Conduct](https://github.com/TheJenilDGohel/synapse/blob/main/CODE_OF_CONDUCT.md)** to ensure a collaborative and respectful environment.
+All contributors are expected to follow the [Code of Conduct](https://github.com/TheJenilDGohel/synapse/blob/main/CODE_OF_CONDUCT.md).

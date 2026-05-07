@@ -74,7 +74,7 @@
     "release:beta": "npm publish --tag beta",
     "release:latest": "npm publish",
     "docs:dev": "cd docs && jaspr serve",
-    "docs:build": "cd docs && jaspr build",
+    "docs:build": "cd docs && jaspr build --dart-define=SITE_BASE_PATH=/Synapse",
     "docs:preview": "cd docs && jaspr serve --release",
     "docs:deploy": "npm run docs:build && firebase deploy --only hosting",
     "bump:beta": "npm version prerelease --preid=beta --no-git-tag-version"

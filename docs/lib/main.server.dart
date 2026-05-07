@@ -15,6 +15,7 @@ import 'package:jaspr_content/jaspr_content.dart';
 import 'components/code_block.dart';
 import 'components/callout.dart';
 import 'components/tools_list.dart';
+import 'constants/site.dart';
 import 'layouts/docs_layout.dart' as local_layout;
 
 // This file is generated automatically by Jaspr, do not remove or edit.
@@ -33,6 +34,7 @@ void main() {
   runApp(Document(
     title: 'Synapse | Documentation',
     head: [
+      if (siteBasePath.isNotEmpty) Component.element(tag: 'base', attributes: {'href': siteBaseHref}),
       link(rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'),
       script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js'),
       script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js'),

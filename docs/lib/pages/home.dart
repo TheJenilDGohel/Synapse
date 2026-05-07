@@ -1,10 +1,10 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
-import 'package:jaspr_router/jaspr_router.dart';
 
 import '../constants/theme.dart';
 import '../components/header.dart';
 import '../components/card.dart';
+import '../components/docs_link.dart';
 
 class Home extends StatelessComponent {
   const Home({super.key});
@@ -17,33 +17,33 @@ class Home extends StatelessComponent {
         section(classes: 'hero', [
           div(classes: 'hero-glow', []),
           h1([
-            text('The Agentic Layer for '),
-            span(classes: 'gradient-text', [text('Advanced Coding')])
+            text('Local Context for '),
+            span(classes: 'gradient-text', [text('MCP Clients')])
           ]),
           p(classes: 'hero-subtitle', [
-            text('Build, optimize, and scale with a persistent temporal knowledge graph designed for autonomous AI agents.')
+            text('Synapse combines semantic code search, persistent memory, and a temporal knowledge graph in one local MCP server.')
           ]),
           div(classes: 'hero-actions', [
-            Link(to: '/intro', classes: 'btn btn-primary', child: text('Get Started')),
+            DocsLink(to: '/intro', classes: 'btn btn-primary', child: text('Get Started')),
             a(href: 'https://github.com/TheJenilDGohel/synapse', classes: 'btn btn-outline', [text('View on GitHub')]),
           ]),
         ]),
         
         section(classes: 'features-grid', [
           const Card(
-            title: 'Temporal Memory',
-            description: 'Synapse remembers every decision, every refactor, and every lesson learned across your project\'s history.',
+            title: 'Persistent Memory',
+            description: 'Persist project facts, decisions, and lessons in a local SQLite store that survives across sessions.',
             icon: '🧠',
             onTap: null, // Just a card for now
           ),
           const Card(
-            title: 'Agentic GSD',
-            description: 'Built-in workflow for autonomous task execution, from discussion to planning to atomic commits.',
+            title: 'Code Intelligence',
+            description: 'Search code with hybrid lexical and semantic retrieval, AST-aware chunking, and symbol lookup.',
             icon: '🤖',
           ),
           const Card(
-            title: 'Pro Max Design',
-            description: 'First-class UI/UX that makes your project look as powerful as it performs.',
+            title: 'Knowledge Graph',
+            description: 'Track entities and relationships over time so clients can query how architecture changes.',
             icon: '🎨',
           ),
         ]),
