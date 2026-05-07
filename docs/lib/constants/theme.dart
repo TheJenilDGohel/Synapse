@@ -1,0 +1,90 @@
+import 'package:jaspr/dom.dart';
+
+// Pro Max Color Palette with Theme Support
+// We use CSS variables that are updated by the ThemeToggle component.
+
+const primaryColor = Color('var(--primary-color, #38bdf8)');
+const secondaryColor = Color('var(--secondary-color, #818cf8)');
+const backgroundColor = Color('var(--background-color, #020617)');
+const surfaceColor = Color('var(--surface-color, #0f172a)');
+const borderColor = Color('var(--border-color, #1e293b)');
+const textColor = Color('var(--text-color, #f8fafc)');
+const textMutedColor = Color('var(--text-muted-color, #94a3b8)');
+
+@css
+List<StyleRule> get styles => [
+  css(':root', [
+    css('&').styles(
+      raw: {
+        '--primary-color': '#38bdf8',
+        '--secondary-color': '#818cf8',
+        '--background-color': '#020617',
+        '--surface-color': '#0f172a',
+        '--border-color': '#1e293b',
+        '--text-color': '#f8fafc',
+        '--text-muted-color': '#94a3b8',
+      },
+    ),
+  ]),
+  
+  css('[data-theme=\"light\"]', [
+    css('&').styles(
+      raw: {
+        '--primary-color': '#0ea5e9',
+        '--secondary-color': '#6366f1',
+        '--background-color': '#ffffff',
+        '--surface-color': '#f8fafc',
+        '--border-color': '#e2e8f0',
+        '--text-color': '#0f172a',
+        '--text-muted-color': '#64748b',
+      },
+    ),
+  ]),
+
+  css('html, body').styles(
+    margin: .zero,
+    padding: .zero,
+    fontFamily: const .list([FontFamily('Inter'), FontFamily('system-ui'), FontFamily('sans-serif')]),
+    backgroundColor: backgroundColor,
+    color: textColor,
+    fontSize: 16.px,
+    lineHeight: Unit.expression('1.5'),
+  ),
+
+  css('h1, h2, h3, h4').styles(
+    color: textColor,
+    fontWeight: .w700,
+    margin: .only(top: 2.rem, bottom: 1.rem),
+  ),
+
+  css('a').styles(
+    color: primaryColor,
+    textDecoration: TextDecoration.none,
+  ),
+
+  css('p').styles(
+    margin: .only(bottom: 1.25.rem),
+    color: const Color('color-mix(in srgb, var(--text-color) 90%, transparent)'),
+  ),
+
+  css('pre').styles(
+    backgroundColor: const Color('#1e293b'), // Always dark for code
+    padding: .all(1.25.rem),
+    radius: .circular(12.px),
+    overflow: Overflow.auto,
+    border: Border.all(style: BorderStyle.solid, color: const Color('#334155'), width: 1.px),
+    margin: .symmetric(vertical: 1.5.rem),
+  ),
+  
+  css('code').styles(
+    fontFamily: const .list([FontFamily('Fira Code'), FontFamily('monospace')]),
+    fontSize: 0.9.em,
+  ),
+  
+  css('p code').styles(
+    backgroundColor: surfaceColor,
+    padding: .symmetric(horizontal: 0.4.rem, vertical: 0.1.rem),
+    radius: .circular(4.px),
+    color: primaryColor,
+  ),
+];

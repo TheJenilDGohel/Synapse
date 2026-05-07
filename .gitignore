@@ -8,6 +8,8 @@ dist/
 .mcp.json
 synapse.config.json
 /CLAUDE.md
+/.clauderules
+/.cursorrules
 /.claude/
 /.codex/
 /.opencode/
@@ -16,9 +18,18 @@ synapse.config.json
 # Tool artifacts — never belong in source tree
 .claude-flow/
 **/.claude-flow/
+/home_page.png
+/homepage_check.png
+/intro_page.png
+/landing*.png
+/mobile_view.png
+/rendering_check.png
+/search_modal*.png
+/tools*.png
 
 # Build artifacts
 docs/build/
+docs/.dart_tool/
 *AUDIT-REPORT*.md
 *ACTION-PLAN*.md
 
@@ -45,6 +56,10 @@ debug-chunk.ts
 debug-grammar.ts
 init_context.json
 reports/
+**/build_err.txt
+**/build_log.txt
+**/build_output.txt
+**/serve_log*.txt
 *.db
 *.db-wal
 *.db-shm

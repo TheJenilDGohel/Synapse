@@ -2,52 +2,45 @@
 
 ## Project Reference
 **Core Value**: Unified context layer (Code, KG, Memory) for AI agents.
-**Current Focus**: Finalization & Release.
+**Current Focus**: Milestone 6 Completed (Jaspr Documentation Site).
 
 ## Current Position
-**Phase**: Complete
-**Plan**: All Milestone Phases Executed
-**Status**: Ready for Release
+**Phase**: Milestone Complete
+**Status**: RESOLVED
+**Confidence**: HIGH
 
-```mermaid
-graph TD
-    M1[Milestone 1: Scaling] --> M2[Milestone 2: React Docs]
-    M2 --> M3[Milestone 3: Stabilization]
-    M3 --> M4[Milestone 4: Astro Docs]
-    M4 --> M5[Milestone 5: UI Redesign]
-    M5 --> FIN[Finalization]
-    style FIN fill:#10b981,stroke:#333,stroke-width:4px
-```
+## Active Objectives
+- [x] Port core documentation to Jaspr Content pipeline (M006-Phase3)
+- [x] Fix build system and Jaspr 0.23.0 compatibility (M006-Phase3)
+- [x] Implement site-wide search functionality (M006-Phase4)
+- [x] Add dark/light mode toggle (M006-Phase4)
+- [x] Set up GitHub Actions deployment (M006-Phase5)
 
-## Performance Metrics
-- **76/76** MCP tools active.
-- **0.0.1-beta** current version (consistent with release target).
-- **0** pending critical issues.
+## Milestone Progress
+- [x] Milestone 1: Core Framework Stabilization
+- [x] Milestone 2: Temporal Graph & KG
+- [x] Milestone 3: Semantic Search & Retrieval
+- [x] Milestone 4: GSD Workflow Engine
+- [x] Milestone 5: Version 0.0.1-BETA Release
+- [x] Milestone 6: Jaspr Documentation Site (Completed)
 
-## Accumulated Context
-### Decisions
-- [2026-05-03] Scrapped complex failing CI/CD workflows and completely rewrote them into two simplified, robust workflows: `ci.yml` for testing and `publish.yml` for automated GitHub releases and graceful npm publishing.
-- [2026-05-03] Stabilized CI/CD: decoupled GitHub releases from npm publishing to ensure distribution resilience, synchronized skill metadata versions, and fixed quality pipeline blockers.
-- [2026-05-03] Renamed npm package to `synapse-cortex` to resolve naming conflict while maintaining core 'Synapse' identity.
-- [2026-05-03] Consolidated project truth into `README.md`, removed external documentation links, and polished community files (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`) for professional open-source readiness.
-- [2026-05-03] Enhanced installation robustness: bundled `ripgrep-bin`, implemented fallback path resolution for `rg` in `platform.ts`, and updated setup preflight checks for zero-friction global installs.
-- [2026-05-01] Reverted version to `0.0.1-beta` for release consistency across all artifacts.
-- [2026-05-01] Completed interactive UI Redesign (Milestone 5) with Aceternity components.
-- [2026-05-01] Refactored `index.mdx` to use encapsulated `NeuralEngine` component, resolving React hydration build errors.
-- [2026-04-30] Removed Docusaurus site and replaced with Astro Starlight to align with original NEW_DOCS_PLAN.md.
-
-### Todos
-- [x] Fix global `synapse` command shims (M003-01)
-- [x] Repair installed-runtime MCP sweep (M003-02)
-- [x] Correct Windows doctor npm/npx detection (M003-03)
-- [x] Fix CLI help behavior for doctor/selftest (M003-04)
-- [x] Update stress script for new architecture (M003-05)
-- [x] Standardize release script execution (M003-06)
-- [x] Pass final release exit criteria (M003-07)
-- [x] Audit and Cleanup (M005-Final)
-- [x] Verify Zero-Friction Installation (M005-PostAudit)
-- [x] Consolidate Truth into README (M005-DocsPolish)
+## Roadmap Status
+- [x] Foundation & Layout
+- [x] UI/UX & Design System
+- [x] Content Pipeline & Porting
+- [x] Advanced Features & Polish
+- [x] Deployment & Verification
 
 ## Session Continuity
-**Last Action**: Completed Milestone 5 and version consistency audit.
-**Next Step**: Project handover / final cleanup.
+**Last Action**: Completed quick task 260507: repository hygiene cleanup.
+**Next Step**: Prepare for next version or feature set.
+
+## Technical Context
+- **Tech Stack**: TypeScript (Core), Node.js, Jaspr (Docs), Firebase (Hosting)
+- **Status**: Stable, fully documented, ready for broad testing.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260507 | Repository hygiene cleanup | 2026-05-07 | pending | [260507-repository-hygiene-cleanup](./quick/260507-repository-hygiene-cleanup/) |

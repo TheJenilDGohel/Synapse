@@ -1,57 +1,32 @@
-# Requirements
+# Milestone v0.1.0 Requirements: Jaspr Documentation Site
 
-## v1: Performance & Expansion
+## [DOCS-SETUP] Project Setup & Architecture
+- [ ] **DOCS-01**: Initialize Jaspr project in `static` mode for GitHub Pages compatibility.
+- [ ] **DOCS-02**: Configure `jaspr_router` for multi-page documentation navigation.
+- [ ] **DOCS-03**: Set up `jaspr_content` (if available) or a custom Markdown-to-Component pipeline for documentation pages.
+- [ ] **DOCS-04**: Implement a shared Layout component with responsive Sidebar and Header.
 
-### Stability & Performance
-- **STAB-01**: Ensure cross-platform binary compatibility for `sqlite-vec` (Windows/macOS/Linux). (COMPLETED)
-- **PERF-01**: Optimize vector indexing and search performance for repositories with >10M vectors. (COMPLETED)
-- **PERF-02**: Prototype transition to advanced semantic backends (e.g., `vec1`, `LanceDB`) for better scaling. (COMPLETED - using sqlite-vec v0.1.0+)
+## [DOCS-UI] Modern UI/UX Design
+- [ ] **DOCS-05**: Implement a "Pro Max" design system (Typography: Outfit/Inter, Sleek Dark Mode, Glassmorphism).
+- [ ] **DOCS-06**: Build a responsive Sidebar with collapsible categories and active-link highlighting.
+- [ ] **DOCS-07**: Create a premium landing page (Home) with a visual hero section and key feature cards.
+- [ ] **DOCS-08**: Implement high-fidelity code blocks with syntax highlighting and "Copy to Clipboard" functionality.
+- [ ] **DOCS-09**: Add a search bar UI (client-side or fuzzy search across documentation).
 
-### Metadata Enrichment
-- **ENR-01**: Integrate local, privacy-preserving LLMs (e.g., Qwen2.5-Coder-1.5B) for background indexing. (COMPLETED)
-- **ENR-02**: Generate and store enriched metadata for code chunks to improve retrieval quality. (COMPLETED)
+## [DOCS-CONTENT] Documentation Content
+- [ ] **DOCS-10**: Port core README content to organized documentation pages (Introduction, Installation, Usage).
+- [ ] **DOCS-11**: Create a dedicated section for "Temporal Knowledge Graph" and "Code Intelligence" pillars.
+- [ ] **DOCS-12**: Document all 70+ MCP tools provided by Synapse.
+- [ ] **DOCS-13**: Add a "Community" section (Contributing, Security, Code of Conduct).
 
-### Multi-Language Support
-- **LANG-01**: Broaden Tree-sitter AST support to include Python, Go, and Rust. (COMPLETED)
+## [DOCS-DEPLOY] Deployment & Hosting
+- [ ] **DOCS-14**: Configure GitHub Actions workflow to build and deploy the Jaspr site to `gh-pages` branch.
+- [ ] **DOCS-15**: Verify zero-friction hosting on GitHub Pages (Base URL handling, 404 handling for SPAs).
 
-### Retrieval UX
-- **UX-01**: Refine Unified Find reranking logic to better fuse results from Lexical, Semantic, and KG sources. (COMPLETED)
+## Future Requirements (Deferred)
+- [ ] **DOCS-16**: Interactive Playground for MCP tools.
+- [ ] **DOCS-17**: Real-time project status dashboard integrated into the docs.
 
-## v2: Documentation Ecosystem
-- **RE-01**: React-based Documentation Site (Docusaurus). (COMPLETED)
-- **RE-02**: Interactive Components & MDX. (COMPLETED)
-- **RE-03**: Build Automation & Quality. (COMPLETED)
-
-## v3: Stabilization & Release (M003)
-- **M003-01**: Repair global `synapse` command shims and junction targets.
-- **M003-02**: Fix installed-runtime MCP release sweep initialization failure.
-- **M003-03**: Fix Windows-specific `synapse doctor` npm/npx detection (shell: true).
-- **M003-04**: Fix `doctor --help` and `selftest --help` command execution bug.
-- **M003-05**: Update `stress-synapse.mjs` to work with refactored engine architecture.
-- **M003-06**: Standardize release script execution (npm scripts / tsx).
-- **M003-07**: Unblock release gate and verify final exit criteria.
-
-## Traceability
-
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| STAB-01 | Phase 1 | Completed |
-| PERF-01 | Phase 1 | Completed |
-| PERF-02 | Phase 1 | Completed |
-| ENR-01 | Phase 2 | Completed |
-| ENR-02 | Phase 2 | Completed |
-| LANG-01 | Phase 3 | Completed |
-| UX-01 | Phase 2 | Completed |
-| RE-01 | M2 Phase 1 | Completed |
-| RE-02 | M2 Phase 2 | Completed |
-| RE-03 | M2 Phase 3 | Completed |
-| M003-01 | M003 Phase 1 | Completed |
-| M003-02 | M003 Phase 1 | Completed |
-| M003-03 | M003 Phase 1 | Completed |
-| M003-04 | M003 Phase 2 | Completed |
-| M003-05 | M003 Phase 2 | Completed |
-| M003-06 | M003 Phase 2 | Completed |
-| M003-07 | M003 Phase 3 | Completed |
-| RE-01 | M4 Phase 1 | Completed |
-| RE-02 | M4 Phase 2 | Completed |
-| RE-03 | M4 Phase 3 | Completed |
+## Out of Scope
+- Server-side rendering (SSR) or complex backends (Must be 100% static).
+- Multi-language support (English only for now).

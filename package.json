@@ -73,9 +73,9 @@
     "prepublishOnly": "npm run check",
     "release:beta": "npm publish --tag beta",
     "release:latest": "npm publish",
-    "docs:dev": "npm run dev --prefix docs",
-    "docs:build": "npm run build --prefix docs",
-    "docs:preview": "npm run preview --prefix docs",
+    "docs:dev": "cd docs && jaspr serve",
+    "docs:build": "cd docs && jaspr build",
+    "docs:preview": "cd docs && jaspr serve --release",
     "docs:deploy": "npm run docs:build && firebase deploy --only hosting",
     "bump:beta": "npm version prerelease --preid=beta --no-git-tag-version"
   },
