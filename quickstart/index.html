@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,25 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1364,7 +1365,7 @@
         <main class="layout-content">
           <section class="content">
             <h1 id="quick-start">Quick Start</h1>
-            <p>Get Synapse running and connected to your AI agent in minutes.</p>
+            <p>Get Synapse running and connected to an MCP-compatible client in minutes.</p>
             <h2 id="1-install">1. Install</h2>
             <pre><code class="language-bash">npm install -g synapse-cortex
 </code></pre>
@@ -1380,10 +1381,10 @@ synapse doctor
 </code></pre>
             <p>
               <code>setup</code> creates the local SQLite database and installs native dependencies. <code>doctor</code>
-               confirms everything is healthy.
+               confirms the runtime is healthy.
             </p>
-            <h2 id="3-connect-your-ai-agent">3. Connect Your AI Agent</h2>
-            <p>Add Synapse as an MCP server in your AI client configuration:</p>
+            <h2 id="3-connect-your-mcp-client">3. Connect Your MCP Client</h2>
+            <p>Add Synapse as an MCP server in your client configuration:</p>
             <pre><code class="language-json">{
   "mcpServers": {
     "synapse": {
@@ -1399,40 +1400,43 @@ synapse doctor
   }
 }
 </code></pre>
-            <p>This works with Claude Desktop, Claude Code, Cursor, Windsurf, Cline, Continue, and Gemini CLI.</p>
-            <h2 id="4-prime-your-agent">4. Prime Your Agent</h2>
-            <p>Once connected, your agent has 74 tools available. Start with an architecture overview:</p>
+            <p>
+              This works with Claude Desktop, Claude Code, Cursor, Windsurf, Cline, Continue, Gemini CLI, and other MCP-compatible clients.
+            </p>
+            <h2 id="4-query-your-project">4. Query Your Project</h2>
+            <p>
+              Once connected, your client can call Synapse tools for code search, memory, and graph queries. Start with an architecture overview:
+            </p>
             <blockquote>
               <p>
                 <em>"Using Synapse, analyze the project structure and identify the core services and their relationships."</em>
               </p>
             </blockquote>
             <p>
-              The agent will call <code>summarize_project</code>, <code>search_hybrid</code>, and <code>project_tree</code>
-               to give you a deep, semantically-accurate map of your codebase.
+              Synapse can use <code>summarize_project</code>, <code>search_hybrid</code>, and <code>project_tree</code>
+               to produce a semantically accurate map of your codebase.
             </p>
-            <h2 id="5-teach-the-agent-something">5. Teach the Agent Something</h2>
-            <p>Store a project-level fact that persists across all future sessions:</p>
+            <h2 id="5-store-project-knowledge">5. Store Project Knowledge</h2>
+            <p>Store a project-level fact that persists across future sessions:</p>
             <blockquote>
               <p>
                 <em>"Remember that the authentication module uses JWT with 15-minute expiry. Store this in memory."</em>
               </p>
             </blockquote>
             <p>
-              The agent will call <code>memory_store</code>, and this fact will be available in every future conversation via 
-              <code>memory_recall</code>.
+              Synapse stores this with <code>memory_store</code>, and the fact can be retrieved later with <code>memory_recall</code>.
             </p>
             <hr/>
             <p><strong>What's Next?</strong></p>
             <ul>
               <li>
-                Understand <strong><a href="/pillars/intel">Code Intelligence</a></strong> — semantic search, symbol finding, and AST-aware retrieval.
+                Understand <strong><a href="pillars/intel">Code Intelligence</a></strong>: semantic search, symbol finding, and AST-aware retrieval.
               </li>
               <li>
-                Explore the <strong><a href="/pillars/temporal">Knowledge Graph</a></strong> — temporal triples and architectural decision tracking.
+                Explore the <strong><a href="pillars/temporal">Knowledge Graph</a></strong>: temporal triples and architectural decision tracking.
               </li>
               <li>
-                Learn about <strong><a href="/pillars/memory">Persistent Memory</a></strong> — cross-session recall and agent-scoped isolation.
+                Learn about <strong><a href="pillars/memory">Persistent Memory</a></strong>: cross-session recall and scoped isolation.
               </li>
             </ul>
           </section>

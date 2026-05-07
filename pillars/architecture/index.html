@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,27 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li>
+                <label for="sidebar-toggle"><a class="active" href="/Synapse/pillars/architecture">Architecture</a></label>
+              </li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1363,76 +1366,52 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <!-- generated-by: gsd-doc-writer -->
             <h1 id="architecture-overview">Architecture Overview</h1>
             <p>
-              Synapse follows a strictly decoupled, Domain-Driven architectural approach. This ensures that core system fundamentals remain isolated from business logic and external interface boundaries.
+              Synapse is a local MCP server with a layered TypeScript architecture. The design keeps runtime primitives, storage, retrieval, and protocol interfaces separated so the project can evolve without coupling every feature to the MCP surface.
             </p>
-            <h2 id="the-three-immutable-domains">The Three Immutable Domains</h2>
-            <p>The codebase is organized into three distinct layers, with a strict downward-only dependency rule.</p>
-            <h3 id="1-core-srccore">1. Core (<code>src/core/</code>)</h3>
+            <h2 id="core-layers">Core Layers</h2>
+            <h3 id="1-core-runtime-srccoreruntime">1. Core Runtime (<code>src/core/runtime/</code>)</h3>
             <p>
-              The foundation of the system. Core manages configurations, database primitives, early lifecycle events, and universal data types.
+              Runtime modules handle configuration, platform behavior, diagnostics, version metadata, and SQLite extension loading.
             </p>
+            <h3 id="2-core-engine-srccoreengine">2. Core Engine (<code>src/core/engine/</code>)</h3>
+            <p>The engine contains the product behavior:</p>
             <ul>
-              <li>
-                  <strong>Isolation</strong>: Core should never depend on <code>services</code> or <code>interfaces</code>.
-              </li>
-              <li>
-                  <strong>Engine</strong>: Orchestrates high-level SQLite primitives and extensions (like <code>sqlite-vec</code>).
-              </li>
-              <li>  <strong>Runtime</strong>: Handles environment constraints and feature toggles.</li>
-            </ul>
-            <h3 id="2-services-srcservices">2. Services (<code>src/services/</code>)</h3>
-            <p>
-              The bounded business logic contexts. Each service represents a specific domain of the AI brain's logic.
-            </p>
-            <ul>
-              <li>
-                  <strong>Dependency</strong>: Services depend on <code>core</code> but never on <code>interfaces</code>.
-              </li>
-              <li>
-                  <strong>Memory Service</strong>: Manages the persistent knowledge graph, including temporal tracking and auditing.
-              </li>
-              <li>
-                  <strong>Retrieval Service</strong>: Handles AST-aware code search, text embeddings, and vector similarity.
-              </li>
-              <li>
-                  <strong>Unified Find</strong>: A high-level synthesizer that coordinates searches across both memory and retrieval layers.
-              </li>
+              <li><strong>Memory</strong>: Persistent semantic memory, event capture, and knowledge graph integration.</li>
+              <li><strong>Retrieval</strong>: Hybrid search, AST chunking, symbol extraction, and vector indexing.</li>
+              <li><strong>Workspace</strong>: Project root discovery and workspace-level metadata.</li>
+              <li><strong>Update</strong>: Upgrade assistant and release support.</li>
             </ul>
             <h3 id="3-interfaces-srcinterfaces">3. Interfaces (<code>src/interfaces/</code>)</h3>
-            <p>The external boundaries where humans or AI agents interact with Synapse.</p>
+            <p>Interfaces expose the engine through stable entry points:</p>
             <ul>
-              <li>  <strong>CLI</strong>: Human-in-the-loop interaction layer (ANSI output, spinners, arg parsing).</li>
-              <li>
-                  <strong>MCP / App</strong>: Exposes Synapse as a Model Context Protocol (MCP) server for Claude/Cursor. Holds tool registrations and lifecycle routing.
-              </li>
+              <li><strong>CLI</strong>: Setup, doctor, backup, memory, ingest, and operational commands.</li>
+              <li><strong>MCP</strong>: Tool registration, request normalization, and protocol response shaping.</li>
+              <li><strong>App assembly</strong>: Runtime composition for the MCP server.</li>
             </ul>
             <h2 id="development-principles">Development Principles</h2>
             <ul>
+              <li><strong>Local first</strong>: SQLite and local filesystem data are the source of truth.</li>
+              <li><strong>Thin interfaces</strong>: CLI and MCP code should delegate to core engine services.</li>
+              <li><strong>Stable tool contracts</strong>: MCP tool inputs and outputs should remain predictable.</li>
               <li>
-                  <strong>Downwards Isolation</strong>: The system is designed to be highly modular. By ensuring that 
-                <code>interfaces</code> consume <code>services</code> which in turn consume <code>core</code>, we prevent circular dependencies and "spaghetti code."
-              </li>
-              <li>
-                  <strong>Flat Feature Structure</strong>: Features are kept structurally flat inside their specific domains. Barrel files (index files) are used to expose clean, stable APIs for external consumption while hiding implementation complexity.
-              </li>
-              <li>
-                  <strong>Local-First Priority</strong>: Every architectural decision favors local execution over cloud dependencies. SQLite is the primary source of truth for all metadata and memory.
+                <strong>Focused modules</strong>: Features should live near their domain rather than in broad utility buckets.
               </li>
             </ul>
-            <h2 id="dependency-graph">Dependency Graph</h2>
+            <h2 id="dependency-shape">Dependency Shape</h2>
             <pre><code class="language-mermaid">graph TD
-    Interfaces[src/interfaces/cli &amp; app] --&gt; Services
-    Services[src/services/memory &amp; retrieval] --&gt; Core
-    Core[src/core/engine &amp; runtime] --&gt; SQLite[(Local SQLite)]
+    CLI[src/interfaces/cli] --&gt; App[src/interfaces/app]
+    MCP[src/interfaces/mcp] --&gt; App
+    App --&gt; Engine[src/core/engine]
+    Engine --&gt; Runtime[src/core/runtime]
+    Engine --&gt; SQLite[(Local SQLite)]
 </code></pre>
             <hr/>
             <p><strong>Learn More:</strong></p>
             <ul>
-              <li>  Explore the <strong><a href="/pillars/intel">Code Intelligence</a></strong> layer.</li>
-              <li>  Understand the <strong><a href="/pillars/temporal">Temporal Graph</a></strong> implementation.</li>
+              <li>Explore the <strong><a href="intel">Code Intelligence</a></strong> layer.</li>
+              <li>Understand the <strong><a href="temporal">Temporal Graph</a></strong> implementation.</li>
             </ul>
           </section>
         </main>

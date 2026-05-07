@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,25 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a class="active" href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1365,7 +1366,7 @@
           <section class="content">
             <h1 id="tools-overview">Tools Overview</h1>
             <p>
-              Synapse exposes <strong>74 specialized MCP tools</strong> via the Model Context Protocol. Every tool runs locally — no cloud, no external APIs.
+              Synapse exposes focused MCP tools via the Model Context Protocol. Every tool runs locally: no cloud service, no hosted index, and no external API requirement.
             </p>
             <h2 id="tool-suites">Tool Suites</h2>
             <h3 id="1-workspace--discovery">1. Workspace &amp; Discovery</h3>
@@ -1401,16 +1402,13 @@
             <table>
               <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
               <tbody>
-                <tr>
-                  <td align="left"><code>search_hybrid</code></td>
-                  <td align="left">Fused BM25 + vector retrieval (primary search)</td>
-                </tr>
+                <tr><td align="left"><code>search_hybrid</code></td><td align="left">Fused BM25 + vector retrieval</td></tr>
                 <tr><td align="left"><code>search_code</code></td><td align="left">Code-specific semantic search</td></tr>
                 <tr>
                   <td align="left"><code>search_files</code></td>
                   <td align="left">Find files by name or path pattern</td>
                 </tr>
-                <tr><td align="left"><code>find</code></td><td align="left">Low-level text/regex search</td></tr>
+                <tr><td align="left"><code>find</code></td><td align="left">Low-level text and regex search</td></tr>
                 <tr><td align="left"><code>find_definition</code></td><td align="left">Symbol definition lookup</td></tr>
                 <tr><td align="left"><code>find_usages</code></td><td align="left">All references to a symbol</td></tr>
                 <tr>
@@ -1419,7 +1417,7 @@
                 </tr>
                 <tr>
                   <td align="left"><code>find_implementations</code></td>
-                  <td align="left">Implementations of interfaces/abstract classes</td>
+                  <td align="left">Implementations of interfaces or abstract classes</td>
                 </tr>
                 <tr><td align="left"><code>get_symbol</code></td><td align="left">Symbol metadata and export info</td></tr>
                 <tr>
@@ -1480,7 +1478,7 @@
                 </tr>
                 <tr>
                   <td align="left"><code>memory_suggest_relations</code></td>
-                  <td align="left">AI-suggested links between memories</td>
+                  <td align="left">Suggest links between memories</td>
                 </tr>
               </tbody>
             </table>
@@ -1527,8 +1525,8 @@
                 </tr>
               </tbody>
             </table>
-            <h3 id="5-agent-context">5. Agent Context</h3>
-            <p>Priming, teaching, and outcome capture for autonomous agents.</p>
+            <h3 id="5-context-operations">5. Context Operations</h3>
+            <p>Task context, teaching, and outcome capture helpers for MCP clients.</p>
             <table>
               <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
               <tbody>
@@ -1538,7 +1536,7 @@
                 </tr>
                 <tr>
                   <td align="left"><code>teach</code></td>
-                  <td align="left">Batch-teach the agent project conventions</td>
+                  <td align="left">Batch-store project conventions and operating notes</td>
                 </tr>
                 <tr>
                   <td align="left"><code>capture_outcome</code></td>
@@ -1559,8 +1557,8 @@
             <p>
               :::tip
               For deep-dives on specific tool parameters and usage patterns, see the individual pillar pages: 
-              <strong><a href="/pillars/intel">Code Intelligence</a></strong>, <strong><a href="/pillars/temporal">Knowledge Graph</a></strong>, and 
-              <strong><a href="/pillars/memory">Persistent Memory</a></strong>.
+              <strong><a href="pillars/intel">Code Intelligence</a></strong>, <strong><a href="pillars/temporal">Knowledge Graph</a></strong>, and 
+              <strong><a href="pillars/memory">Persistent Memory</a></strong>.
               :::
             </p>
           </section>

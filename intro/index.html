@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,25 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a class="active" href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1364,52 +1365,85 @@
         <main class="layout-content">
           <section class="content">
             <h1 id="introduction">Introduction</h1>
-            <p><strong>Synapse</strong> is the transmission layer for AI agents.</p>
+            <p><strong>Synapse</strong> is a local context server for MCP-compatible clients.</p>
             <p>
-              In biology, a synapse is the specialized gap between neurons where signals pass. Without it, information cannot flow. In the AI ecosystem, Synapse fills that same role — ensuring your agent has the precise, persistent, and semantically-aware context it needs to actually 
-              <strong>do the job</strong>.
+              It gives coding assistants and automation tools a reliable way to search code, remember project facts, and query architectural relationships without sending your data to a hosted service.
             </p>
             <p>
               :::tip
-              Synapse isn't an AI. It's the infrastructure that makes your AI smarter.
+              Synapse is not a model. It is local infrastructure for retrieval, memory, and project context.
               :::
             </p>
             <h2 id="the-problem-synapse-solves">The Problem Synapse Solves</h2>
             <p>
-              Every AI coding agent suffers from the same failure mode: <strong>signal loss</strong>. The agent doesn't know the architectural history, the recent breaking changes, or the specific lessons learned from past attempts. It reads files but doesn't 
-              <em>understand</em> the project.
+              Modern coding assistants often lose project signal between sessions. They may not know the architectural history, recent breaking changes, or lessons learned from past work. They can read files, but they need structured context to reason about a project consistently.
             </p>
-            <p>Current solutions force you to choose:</p>
-            <ul>
-              <li><strong>Memory-only servers</strong> (like Mem0) — great recall, zero code understanding.</li>
-              <li><strong>Code intelligence servers</strong> — great search, zero cross-session memory.</li>
-            </ul>
-            <p><strong>Synapse is the first to combine all three pillars in a single local server.</strong></p>
+            <h3 id="how-synapse-compares">How Synapse Compares</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th align="left">Feature</th>
+                  <th align="center">Synapse</th>
+                  <th align="center">Basic Memory</th>
+                  <th align="center">Code Search</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td align="left"><strong>Local-First</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">✅</td>
+                  <td align="center">✅</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Code Intelligence</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                  <td align="center">✅</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Persistent Memory</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Temporal Graph</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                  <td align="center">❌</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Time-Travel Queries</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                  <td align="center">❌</td>
+                </tr>
+              </tbody>
+            </table>
             <h2 id="the-three-pillars">The Three Pillars</h2>
             <p>
-              Synapse is built on three tightly integrated pillars that give your agent a complete picture of your codebase:
+              Synapse is built on three tightly integrated pillars that give MCP clients a complete picture of your codebase:
             </p>
             <ol>
               <li>
-                <p><strong><a href="/pillars/intel">Code Intelligence</a></strong> — Hybrid BM25 + vector search, AST-aware chunking, and symbol resolution (<code>find_definition</code>, 
-                  <code>find_usages</code>, <code>find_callers</code>). Your agent understands code structure, not just text.</p>
+                <p><strong><a href="pillars/intel">Code Intelligence</a></strong>: Hybrid BM25 + vector search, AST-aware chunking, and symbol resolution (<code>find_definition</code>, 
+                  <code>find_usages</code>, <code>find_callers</code>).</p>
               </li>
               <li>
-                <p><strong><a href="/pillars/temporal">Knowledge Graph</a></strong> — A temporal entity-triple store with multi-hop graph traversal and 
-                  <code>as_of</code> time-travel queries. Architectural decisions, module relationships, and facts — all versioned over time.</p>
+                <p><strong><a href="pillars/temporal">Knowledge Graph</a></strong>: A temporal entity-triple store with multi-hop graph traversal and 
+                  <code>as_of</code> time-travel queries.</p>
               </li>
               <li>
-                <p><strong><a href="/pillars/memory">Persistent Memory</a></strong> — Cross-session semantic recall with automatic deduplication and agent-scoped isolation. Your agent remembers what you taught it — permanently.</p>
+                <p><strong><a href="pillars/memory">Persistent Memory</a></strong>: Cross-session semantic recall with automatic deduplication and scoped isolation.</p>
               </li>
             </ol>
             <h2 id="zero-cloud-pure-local">Zero Cloud. Pure Local.</h2>
             <p>
-              Everything runs on your machine. Your codebase, your memories, and your knowledge graph are stored in a high-performance local SQLite database using the 
-              <code>sqlite-vec</code> extension. No telemetry, no external APIs, no cloud.
+              Everything runs on your machine. Your codebase, memories, and knowledge graph are stored in a local SQLite database using the 
+              <code>sqlite-vec</code> extension. No telemetry, no hosted index, no external API requirement.
             </p>
-            <p>
-              Ready to connect your agent? Head to the <strong><a href="/quickstart">Quick Start</a></strong> guide.
-            </p>
+            <p>Ready to connect a client? Head to the <strong><a href="quickstart">Quick Start</a></strong> guide.</p>
           </section>
         </main>
       </div>

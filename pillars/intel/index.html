@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,27 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li>
+                <label for="sidebar-toggle"><a class="active" href="/Synapse/pillars/intel">Code Intelligence</a></label>
+              </li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1365,146 +1368,98 @@
           <section class="content">
             <h1 id="code-intelligence">Code Intelligence</h1>
             <p>
-              Synapse gives your AI agent <strong>elite code understanding</strong> — not just keyword matching, but structural comprehension of your codebase. It combines two retrieval strategies, AST-aware parsing, and symbol-level indexing to surface the most relevant context with surgical precision.
+              Synapse gives your AI agent <strong>elite code understanding</strong>—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with AST-aware parsing, Synapse surfaces the most relevant context with surgical precision.
+            </p>
+            <p>
+              :::tip Precision Retrieval
+              Most code search tools force a choice between exact text matching <em>or</em> semantic similarity. Synapse does both, fusing the results to ensure your AI gets the right code every time.
+              :::
             </p>
             <h2 id="the-hybrid-search-engine">The Hybrid Search Engine</h2>
             <p>
-              Most code search tools make you choose: exact text match <em>or</em> semantic similarity. Synapse runs both simultaneously and fuses the scores.
+              Synapse runs a <strong>Hybrid Rank Fusion</strong> algorithm that combines the strengths of lexical and semantic retrieval in a single query via 
+              <code>search_hybrid</code>.
             </p>
-            <h3 id="bm25-lexical-retrieval">BM25 (Lexical Retrieval)</h3>
-            <p>Precise keyword matching — ideal for finding:</p>
-            <ul>
-              <li>Exact function names (<code>getUserById</code>)</li>
-              <li>Specific variable identifiers</li>
-              <li>Error message strings</li>
-              <li>Import paths</li>
-            </ul>
-            <h3 id="vector-semantic-retrieval">Vector (Semantic Retrieval)</h3>
-            <p>Embedding-based similarity — ideal for finding:</p>
-            <ul>
-              <li>Code that <em>does</em> something, even with different naming</li>
-              <li>Conceptually related functions across the codebase</li>
-              <li>Implementations of a pattern you describe in plain English</li>
-            </ul>
-            <h3 id="hybrid-fusion">Hybrid Fusion</h3>
-            <p>
-              <code>search_hybrid</code> runs both in parallel and merges results using a weighted rank fusion algorithm. You get the precision of BM25 
-              <em>and</em> the recall of vector search in a single query.
-            </p>
-            <pre><code>search_hybrid({ query: "validate user permissions before updating a resource" })
-→ Returns: middleware functions, guard decorators, and permission checks
-   across the entire codebase — even if none of them use those exact words
+            <table>
+              <thead><tr><th align="left">Strategy</th><th align="left">Engine</th><th align="left">Best For...</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td align="left"><strong>Lexical</strong></td>
+                  <td align="left">BM25</td>
+                  <td align="left">Exact function names, identifiers, error messages, and unique strings.</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Semantic</strong></td>
+                  <td align="left">Vector</td>
+                  <td align="left">Conceptual search, finding similar logic, and "plain English" descriptions.</td>
+                </tr>
+              </tbody>
+            </table>
+            <pre><code class="language-dart">// Example Query: "Find logic that handles user permission validation"
+search_hybrid({ query: "validate user permissions" })
+// Returns exact symbols like `validatePermissions()` AND semantically 
+// relevant code like `checkUserRole()` or `hasAccess()`.
 </code></pre>
             <h2 id="ast-aware-chunking">AST-Aware Chunking</h2>
             <p>
-              Traditional chunking splits code at arbitrary line limits, often cutting functions in half. Synapse uses 
-              <strong>Abstract Syntax Tree (AST)</strong> parsing via <code>tree-sitter</code> to index code at its natural boundaries.
+              Traditional tools split code at arbitrary line limits, often severing functions. Synapse uses <strong>Abstract Syntax Tree (AST)</strong>
+               parsing via <code>tree-sitter</code> to index code at its natural boundaries.
             </p>
             <p>Every chunk is:</p>
             <ul>
-              <li><strong>Atomic</strong> — a complete function, class, or method. Never a fragment.</li>
-              <li><strong>Enriched</strong> — bundled with its parent class, imports, and type signatures.</li>
+              <li><strong>Atomic</strong>: A complete function, class, or method. Never a fragment.</li>
+              <li><strong>Enriched</strong>: Bundled with its parent class, imports, and type signatures.</li>
               <li>
-                <strong>Context-preserved</strong> — when a function is retrieved, its surrounding context is included automatically.
+                <strong>Context-Preserved</strong>: When retrieved, a function includes its surrounding context automatically.
               </li>
             </ul>
-            <h2 id="symbol-resolution">Symbol Resolution</h2>
-            <p>Synapse builds a full symbol index for your workspace. No more guessing where something is defined.</p>
+            <h2 id="symbol-resolution-suite">Symbol Resolution Suite</h2>
+            <p>
+              Synapse builds a comprehensive symbol index for your workspace, allowing agents to navigate code like an IDE.
+            </p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">What it does</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th><th align="left">Use Case</th></tr></thead>
               <tbody>
                 <tr>
                   <td align="left"><code>find_definition</code></td>
-                  <td align="left">Jump to where a symbol is defined</td>
+                  <td align="left">Definition Lookup</td>
+                  <td align="left">Jump to the source of a specific function.</td>
                 </tr>
-                <tr><td align="left"><code>find_usages</code></td><td align="left">Find everywhere a symbol is used</td></tr>
+                <tr>
+                  <td align="left"><code>find_usages</code></td>
+                  <td align="left">Reference Finding</td>
+                  <td align="left">See everywhere a symbol is used before refactoring.</td>
+                </tr>
                 <tr>
                   <td align="left"><code>find_callers</code></td>
-                  <td align="left">Find all functions that call a specific function</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>find_implementations</code></td>
-                  <td align="left">Find all implementations of an interface or abstract class</td>
+                  <td align="left">Call Stack Analysis</td>
+                  <td align="left">Identify every function that invokes a critical API.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>get_symbol</code></td>
-                  <td align="left">Get full metadata for a symbol (type, location, exports)</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>rename_preview</code></td>
-                  <td align="left">Preview all the places affected by renaming a symbol</td>
-                </tr>
-              </tbody>
-            </table>
-            <h2 id="multi-language-support">Multi-Language Support</h2>
-            <p>Synapse's intelligence layer is polyglot by design. Deep structural support for:</p>
-            <ul>
-              <li><strong>TypeScript / JavaScript</strong></li>
-              <li><strong>Python</strong></li>
-              <li><strong>Rust</strong></li>
-              <li><strong>Go</strong></li>
-              <li><strong>Dart</strong></li>
-              <li><strong>And more...</strong></li>
-            </ul>
-            <h2 id="all-code-intelligence-tools">All Code Intelligence Tools</h2>
-            <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Purpose</th></tr></thead>
-              <tbody>
-                <tr>
-                  <td align="left"><code>search_hybrid</code></td>
-                  <td align="left">Primary entry point — fused BM25 + vector retrieval</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>search_code</code></td>
-                  <td align="left">Code-specific semantic search with syntax filtering</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>search_files</code></td>
-                  <td align="left">Find files by name, path pattern, or content</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>find</code></td>
-                  <td align="left">Low-level text/regex search across the workspace</td>
-                </tr>
-                <tr><td align="left"><code>find_definition</code></td><td align="left">Symbol definition lookup</td></tr>
-                <tr><td align="left"><code>find_usages</code></td><td align="left">All references to a symbol</td></tr>
-                <tr><td align="left"><code>find_callers</code></td><td align="left">All callers of a function</td></tr>
-                <tr>
-                  <td align="left"><code>find_implementations</code></td>
-                  <td align="left">Implementations of interfaces/abstract classes</td>
-                </tr>
-                <tr><td align="left"><code>get_symbol</code></td><td align="left">Symbol metadata and export info</td></tr>
-                <tr>
-                  <td align="left"><code>rename_preview</code></td>
-                  <td align="left">Impact preview for symbol renames</td>
+                  <td align="left">Meta-Discovery</td>
+                  <td align="left">Get full metadata including exports and visibility.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>summarize_project</code></td>
-                  <td align="left">High-level architectural map of the project</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>project_tree</code></td>
-                  <td align="left">Directory structure with context awareness</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>read_file</code></td>
-                  <td align="left">Optimized file reading for large codebases</td>
+                  <td align="left">Architectural Map</td>
+                  <td align="left">Get a high-level overview of the project structure.</td>
                 </tr>
               </tbody>
             </table>
-            <h2 id="real-world-example">Real-World Example</h2>
-            <blockquote>
-              <p>
-                <em>"Find all places where we're directly accessing the database without going through a repository."</em>
-              </p>
-            </blockquote>
+            <h2 id="why-it-matters-for-ai-agents">Why it Matters for AI Agents</h2>
             <p>
-              Synapse calls <code>search_hybrid</code> with a semantic query, finds all direct ORM/DB calls, cross-references with 
-              <code>find_usages</code> on repository interfaces, and surfaces the specific files and lines where the pattern is violated — without you writing a single regex.
+              Standard RAG (Retrieval-Augmented Generation) often fails because it misses the structural relationships in code. Synapse's 
+              <strong>Code Intelligence</strong> layer ensures that when an agent asks for context, it receives:
             </p>
+            <ol>
+              <li>The <strong>correct logic</strong> (via Hybrid Search).</li>
+              <li>The <strong>complete structure</strong> (via AST-Aware Chunking).</li>
+              <li>The <strong>related symbols</strong> (via Symbol Resolution).</li>
+            </ol>
             <hr/>
             <p>
-              <strong>Next:</strong> Learn how code-level facts are connected to architectural history in the <strong><a href="/pillars/temporal">Knowledge Graph</a></strong>.
+              <strong>Next:</strong> Learn how code-level facts are connected to architectural history in the <strong><a href="temporal">Knowledge Graph</a></strong>.
             </p>
           </section>
         </main>

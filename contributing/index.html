@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,25 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1363,66 +1364,55 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <!-- generated-by: gsd-doc-writer -->
             <h1 id="contributing-to-synapse">Contributing to Synapse</h1>
             <p>
-              We are building the foundational context layer for the next generation of AI agents. Whether you're a systems engineer, an AI researcher, or a documentation expert, your contributions are vital to the evolution of Synapse.
+              We are building a local-first MCP context server for code intelligence, persistent memory, and knowledge graph search. Whether you work on systems code, documentation, tests, or client integrations, contributions are welcome.
             </p>
             <h2 id="development-environment-setup">Development Environment Setup</h2>
             <p>Synapse requires <strong>Node.js &gt;= 22.6.0</strong> and <strong>TypeScript 6.0+</strong>.</p>
-            <pre><code class="language-bash"># Clone the repository
-git clone https://github.com/TheJenilDGohel/synapse.git
+            <pre><code class="language-bash">git clone https://github.com/TheJenilDGohel/synapse.git
 cd synapse
-
-# Install dependencies
 npm install
-
-# Initialize local environment
 npm run setup
-
-# Run the health check
 npm run doctor
 </code></pre>
-            <h2 id="quality-assurance--standards">Quality Assurance &amp; Standards</h2>
-            <p>To maintain high architectural integrity, all contributions must pass our rigorous quality suite:</p>
-            <pre><code class="language-bash"># Run all tests, linting, and dependency audits
-npm run quality
+            <h2 id="quality-checks">Quality Checks</h2>
+            <p>Before opening a pull request, run the project quality checks:</p>
+            <pre><code class="language-bash">npm run quality
 </code></pre>
-            <h3 id="key-commands">Key Commands:</h3>
+            <p>Key commands:</p>
             <ul>
               <li>
-                  <strong><code>npm test</code></strong>: Executes the full test suite using the native Node.js test runner.
+                <strong><code>npm test</code></strong>: Executes the test suite using the native Node.js test runner.
               </li>
-              <li>  <strong><code>npm run lint</code></strong>: Enforces strict stylistic consistency via ESLint.</li>
-              <li>  <strong><code>npm run check</code></strong>: Performs static type analysis and syntax validation.</li>
+              <li><strong><code>npm run lint</code></strong>: Enforces ESLint rules.</li>
+              <li><strong><code>npm run check</code></strong>: Performs static type analysis and syntax validation.</li>
             </ul>
-            <h2 id="architectural-integrity">Architectural Integrity</h2>
+            <h2 id="architecture-rules">Architecture Rules</h2>
             <p>
-              Before proposing significant changes, please review our <strong><a href="/pillars/architecture">Architecture Overview</a></strong>. We strictly enforce downward-only dependencies:
+              Before proposing significant changes, review the <strong><a href="pillars/architecture">Architecture Overview</a></strong>. The codebase follows downward-only dependencies:
             </p>
             <ol>
-              <li> <code>interfaces</code> → <code>services</code></li>
-              <li> <code>services</code> → <code>core</code></li>
-              <li> <code>core</code> → (no internal dependencies)</li>
+              <li><code>interfaces</code> depends on <code>core</code> and application assembly code.</li>
+              <li><code>core</code> owns runtime, engine, memory, retrieval, and update logic.</li>
+              <li>MCP tools should stay thin and delegate behavior to core services.</li>
             </ol>
             <h2 id="how-to-contribute">How to Contribute</h2>
-            <h3 id="1-bug-reports--feature-requests">1. Bug Reports &amp; Feature Requests</h3>
+            <h3 id="bug-reports--feature-requests">Bug Reports &amp; Feature Requests</h3>
             <p>
-              Submit issues via the <a href="https://github.com/TheJenilDGohel/synapse/issues">GitHub Issue Tracker</a>. Use the provided templates to ensure our engineering team has the context needed to triage effectively.
+              Submit issues via the <a href="https://github.com/TheJenilDGohel/synapse/issues">GitHub issue tracker</a>. Include reproduction steps, expected behavior, actual behavior, and environment details.
             </p>
-            <h3 id="2-pull-requests">2. Pull Requests</h3>
+            <h3 id="pull-requests">Pull Requests</h3>
             <ul>
-              <li>  <strong>Atomic Scope</strong>: Keep PRs focused on a single logical change.</li>
+              <li><strong>Atomic scope</strong>: Keep PRs focused on one logical change.</li>
               <li>
-                  <strong>Documentation</strong>: If you're adding a new tool or modifying a service, update the relevant 
-                <code>docs/content/</code> files and the project's <code>SKILL.md</code>.
+                <strong>Documentation</strong>: Update <code>docs/content/</code> when adding or changing user-facing behavior.
               </li>
-              <li>  <strong>Tests</strong>: Every new feature or bug fix must include corresponding tests.</li>
+              <li><strong>Tests</strong>: Include focused tests for new features and bug fixes.</li>
             </ul>
             <h2 id="code-of-conduct">Code of Conduct</h2>
             <p>
-              All contributors are expected to follow our <strong><a href="https://github.com/TheJenilDGohel/synapse/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a></strong>
-               to ensure a collaborative and respectful environment.
+              All contributors are expected to follow the <a href="https://github.com/TheJenilDGohel/synapse/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a>.
             </p>
           </section>
         </main>

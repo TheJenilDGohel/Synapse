@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,27 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a class="active" href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li>
+                <label for="sidebar-toggle"><a class="active" href="/Synapse/pillars/temporal">Temporal Graph</a></label>
+              </li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1363,128 +1366,95 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <h1 id="knowledge-graph">Knowledge Graph</h1>
+            <h1 id="temporal-knowledge-graph">Temporal Knowledge Graph</h1>
             <p>
-              The Synapse Knowledge Graph is a <strong>temporal entity-triple store</strong> built on local SQLite. It lets your AI agent record, query, and reason about architectural facts, module relationships, and decisions — not just as they are 
-              <em>now</em>, but as they were <em>at any point in time</em>.
+              The Synapse Knowledge Graph is a <strong>temporal entity-triple store</strong> built on local SQLite. It allows AI agents to record, query, and reason about architectural facts, module relationships, and decisions—not just as they are 
+              <em>now</em>, but as they were <em>at any point in history</em>.
             </p>
-            <h2 id="beyond-simple-memory">Beyond Simple Memory</h2>
             <p>
-              While <strong><a href="/pillars/memory">Persistent Memory</a></strong> stores facts as semantic blobs, the Knowledge Graph stores 
-              <strong>structured relationships</strong> between entities. The difference:
-            </p>
-            <ul>
-              <li><strong>Memory</strong>: <em>"We use JWT with 15-minute expiry."</em></li>
-              <li>
-                <strong>Knowledge Graph</strong>: <code>AuthService</code> → <code>uses</code> → <code>JWT</code> (with expiry metadata, recorded on a specific date)
-              </li>
-            </ul>
-            <p>
-              This structure enables multi-hop reasoning: <em>"What services depend on AuthService, and when were those dependencies established?"</em>
+              :::tip Knowledge is More Than Memory
+              While <strong><a href="memory">Persistent Memory</a></strong> stores facts as semantic blobs (vectors), the Knowledge Graph stores 
+              <strong>structured relationships</strong> (triples). This enables complex multi-hop reasoning that vector search alone cannot achieve.
+              :::
             </p>
             <h2 id="the-triple-model">The Triple Model</h2>
             <p>
-              Every fact in the graph is stored as a <strong>Subject → Predicate → Object</strong> triple with a timestamp:
+              Every fact in the graph is stored as a <strong>Subject → Predicate → Object</strong> triple, complete with a timestamp and validity period:
             </p>
-            <pre><code>kg_add_triple({
-  subject: "AuthService",
-  predicate: "depends_on",
-  object: "UserRepository",
-  valid_at: "2024-03-01"
-})
-</code></pre>
+            <ul>
+              <li><strong>Subject</strong>: The source entity (e.g., <code>AuthService</code>).</li>
+              <li><strong>Predicate</strong>: The relationship (e.g., <code>depends_on</code>).</li>
+              <li><strong>Object</strong>: The target entity (e.g., <code>PostgreSQL</code>).</li>
+            </ul>
             <p>
-              Triples are immutable. When a relationship changes, you don't edit — you add a new triple and invalidate the old one. This gives you a complete history of how your architecture evolved.
+              Triples in Synapse are <strong>immutable</strong>. When a relationship changes (e.g., migrating a database), we don't delete the old record; we invalidate it and add a new one. This preserves the "ancestry" of your codebase.
             </p>
-            <h2 id="time-travel-queries">Time-Travel Queries</h2>
-            <p>The <code>kg_as_of</code> tool lets you query the graph as it existed at any point in the past:</p>
-            <pre><code>kg_as_of({
-  subject: "PaymentService",
-  as_of: "2024-01-15"
-})
-→ Returns the full relationship map of PaymentService as of January 15th, 2024
-</code></pre>
+            <h2 id="key-capabilities">Key Capabilities</h2>
+            <h3 id="1-time-travel-queries-as_of">1. Time-Travel Queries (<code>as_of</code>)</h3>
             <p>
-              This is invaluable for debugging: <em>"What did the system look like before the outage?"</em> or <em>"What changed in the auth flow between v1.2 and v1.4?"</em>
+              Query the graph as it existed at any point in the past. This is critical for understanding why a bug occurred in a previous version or tracking how a design decision has drifted over time.
             </p>
-            <h2 id="multi-hop-graph-traversal">Multi-Hop Graph Traversal</h2>
-            <p>Use <code>graph_traverse</code> to walk the dependency graph across multiple hops:</p>
-            <blockquote><p><em>"Which services are indirectly affected if I change the database connection pool?"</em></p></blockquote>
+            <h3 id="2-blast-radius-analysis">2. Blast Radius Analysis</h3>
+            <p>Use <code>graph_traverse</code> to calculate the recursive impact of a change.</p>
+            <blockquote><p><em>"If I modify the User schema, which 3rd-level downstream services will be affected?"</em></p></blockquote>
+            <h3 id="3-structural-reasoning">3. Structural Reasoning</h3>
             <p>
-              Synapse traverses the graph recursively, identifying the full blast radius of a proposed change — before a single line of code is written.
+              Find bridges and bottlenecks in your architecture with <code>graph_bridges</code>. Identify which modules are single points of failure before they cause production issues.
             </p>
-            <h2 id="core-knowledge-graph-tools">Core Knowledge Graph Tools</h2>
+            <h2 id="graph-tool-suite">Graph Tool Suite</h2>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">What it does</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th><th align="left">Use Case</th></tr></thead>
               <tbody>
                 <tr>
-                  <td align="left"><code>kg_add_entity</code></td>
-                  <td align="left">Register a new entity (module, service, decision, person)</td>
-                </tr>
-                <tr>
                   <td align="left"><code>kg_add_triple</code></td>
-                  <td align="left">Record a relationship between two entities</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_query</code></td>
-                  <td align="left">Search the graph with optional temporal filters</td>
+                  <td align="left">Fact Recording</td>
+                  <td align="left">Link <code>UserService</code> to <code>Redis</code> cache.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>kg_as_of</code></td>
-                  <td align="left">Time-travel query — see the graph at a past date</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_timeline</code></td>
-                  <td align="left">View the full history of changes to an entity</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_invalidate</code></td>
-                  <td align="left">Mark a relationship as no longer true</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_stats</code></td>
-                  <td align="left">View graph health and coverage metrics</td>
+                  <td align="left">Temporal Recall</td>
+                  <td align="left">View the architecture as of <code>2024-01-01</code>.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>graph_traverse</code></td>
-                  <td align="left">Multi-hop relationship traversal</td>
+                  <td align="left">Multi-hop Path</td>
+                  <td align="left">Trace dependencies across 5+ services.</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>kg_timeline</code></td>
+                  <td align="left">Entity History</td>
+                  <td align="left">See every decision that affected <code>AuthModule</code>.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>graph_bridges</code></td>
-                  <td align="left">Find critical bridge nodes in the dependency graph</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_add_entities_batch</code></td>
-                  <td align="left">Batch-register multiple entities at once</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_add_triples_batch</code></td>
-                  <td align="left">Batch-record multiple relationships</td>
+                  <td align="left">Network Analysis</td>
+                  <td align="left">Find critical dependencies in the graph.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>kg_backfill_links</code></td>
-                  <td align="left">Retroactively link entities found in memory to the graph</td>
+                  <td align="left">Auto-Linking</td>
+                  <td align="left">Convert memory blobs into structured triples.</td>
                 </tr>
               </tbody>
             </table>
-            <h2 id="real-world-example-tracking-an-architectural-decision">Real-World Example: Tracking an Architectural Decision</h2>
-            <pre><code>1. Record the decision entity:
-   kg_add_entity({ name: "ADR-007", type: "Decision",
-     description: "Migrate from MongoDB to PostgreSQL" })
-
-2. Record relationships:
-   kg_add_triple({ subject: "ADR-007", predicate: "affects", object: "UserService" })
-   kg_add_triple({ subject: "ADR-007", predicate: "affects", object: "OrderService" })
-   kg_add_triple({ subject: "ADR-007", predicate: "decided_by", object: "Jenil" })
-
-3. Query six months later:
-   kg_query({ subject: "ADR-007" })
-   → Returns all affected services, the decision maker, and the full timeline
-</code></pre>
-            <p>No more lost context. Every architectural decision is permanently traceable.</p>
+            <h2 id="real-world-workflow-tracking-an-adr">Real-World Workflow: Tracking an ADR</h2>
+            <p>When making an Architectural Decision (ADR), Synapse turns it into a living part of the graph:</p>
+            <ol>
+              <li><strong>Register the Decision</strong>: <code>kg_add_entity</code> for <code>ADR-007</code>.</li>
+              <li>
+                <strong>Link the Impact</strong>: <code>kg_add_triple</code> between <code>ADR-007</code> and every affected module.
+              </li>
+              <li>
+                <strong>Link the Owner</strong>: <code>kg_add_triple</code> between <code>ADR-007</code> and the developer.
+              </li>
+            </ol>
+            <p>
+              Six months later, an AI agent working on one of those modules will automatically pull <code>ADR-007</code>
+               into its context, ensuring the original design constraints are respected.
+            </p>
             <hr/>
             <p>
-              <strong>Next:</strong> See how the graph integrates with code-level context in <strong><a href="/pillars/intel">Code Intelligence</a></strong>.
+              <strong>Next:</strong> See how the graph integrates with code-level context in <strong><a href="intel">Code Intelligence</a></strong>.
             </p>
           </section>
         </main>

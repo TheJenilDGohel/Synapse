@@ -3,6 +3,7 @@
   <head>
     <base href="/"/>
     <meta charset="utf-8"/>
+    <base href="/Synapse/"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
@@ -1316,25 +1317,25 @@
           <div class="nav-group">
             <h3>Getting Started</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/intro">Introduction</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Pillars</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/pillars/temporal">Temporal Graph</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/intel">Code Intelligence</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/pillars/gsd">GSD Workflow</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/temporal">Temporal Graph</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/intel">Code Intelligence</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/pillars/architecture">Architecture</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
             <h3>Resources</h3>
             <ul>
-              <li><label for="sidebar-toggle"><a href="/tools">Tools Overview</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/contributing">Contributing</a></label></li>
-              <li><label for="sidebar-toggle"><a href="/community">Community</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/tools">Tools Overview</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/contributing">Contributing</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/community">Community</a></label></li>
             </ul>
           </div>
         </div>
@@ -1365,113 +1366,83 @@
           <section class="content">
             <h1 id="persistent-memory">Persistent Memory</h1>
             <p>
-              Synapse gives your AI agent a <strong>permanent memory</strong> that survives across sessions, projects, and conversations. Unlike context windows that evaporate when a chat ends, Synapse memory persists in a local SQLite database — and gets smarter every time you use it.
+              Synapse provides <strong>persistent project memory</strong> that survives across sessions, projects, and conversations. Unlike context windows that disappear when a chat ends, Synapse memory persists in a local SQLite database.
             </p>
-            <h2 id="the-problem-with-stateless-agents">The Problem With Stateless Agents</h2>
             <p>
-              Every time you start a new conversation with an AI agent, it starts from zero. You re-explain the architecture. You re-teach the naming conventions. You re-describe why that module was built that way. This isn't a model limitation — it's a missing infrastructure layer.
+              :::important Why Persistent Memory?
+              Modern AI models have massive context windows, but they are still <strong>stateless</strong>. Every new chat is a "blank slate." Persistent memory allows agents to build a cumulative understanding of your project, learning from every interaction.
+              :::
             </p>
-            <p>Synapse provides that layer.</p>
             <h2 id="how-memory-works">How Memory Works</h2>
             <p>
-              When you instruct your agent to remember something, it calls <code>memory_store</code>. The content is embedded as a semantic vector and stored in the local database with:
+              When you store something with <code>memory_store</code>, the content is embedded as a semantic vector and saved in the local database with:
             </p>
             <ul>
               <li>
-                <strong>Semantic deduplication</strong> — if a similar fact already exists, Synapse merges or flags the conflict rather than creating noise.
+                <strong>Semantic Deduplication</strong>: Synapse uses cosine similarity to detect if a near-identical fact already exists, preventing "context bloat."
               </li>
               <li>
-                <strong>Agent-scoped isolation</strong> — memories can be tagged to specific tasks, projects, or agents to prevent context bleed.
+                <strong>Scoped Isolation</strong>: Memories can be tagged to specific tasks, projects, or "Nests" (isolated memory spaces) to prevent context bleed between unrelated work.
               </li>
               <li>
-                <strong>Relationship tracking</strong> — memories can be linked to each other (<code>memory_add_relation</code>) for structured recall.
+                <strong>Relationship Tracking</strong>: Memories can be linked to entities in the <a href="temporal">Knowledge Graph</a>
+                 for structured multi-hop recall.
               </li>
             </ul>
-            <h2 id="core-memory-tools">Core Memory Tools</h2>
+            <h2 id="memory-tool-suite">Memory Tool Suite</h2>
+            <p>Synapse exposes a high-performance suite of tools for managing AI recall:</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">What it does</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th><th align="left">Use Case</th></tr></thead>
               <tbody>
                 <tr>
                   <td align="left"><code>memory_store</code></td>
-                  <td align="left">Persist a fact, decision, or lesson learned</td>
+                  <td align="left">Semantic Persistence</td>
+                  <td align="left">Save a design decision or lesson learned.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_recall</code></td>
-                  <td align="left">Semantic search across all stored memories</td>
-                </tr>
-                <tr><td align="left"><code>memory_get</code></td><td align="left">Fetch a specific memory by ID</td></tr>
-                <tr>
-                  <td align="left"><code>memory_update</code></td>
-                  <td align="left">Update or correct an existing memory</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_delete</code></td>
-                  <td align="left">Remove a stale or incorrect memory</td>
+                  <td align="left">Vector Search</td>
+                  <td align="left">Ask "What did we decide about the API?"</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_related</code></td>
-                  <td align="left">Find memories semantically related to a query</td>
+                  <td align="left">Similarity Discovery</td>
+                  <td align="left">Find all notes related to "authentication."</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_add_relation</code></td>
-                  <td align="left">Link two memories together</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_check_duplicate</code></td>
-                  <td align="left">Detect if a near-identical memory already exists</td>
+                  <td align="left">Graph Linking</td>
+                  <td align="left">Explicitly link a memory to a code symbol.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_capture_event</code></td>
-                  <td align="left">Log a timestamped event (e.g., a deployment, a decision)</td>
+                  <td align="left">Temporal Logging</td>
+                  <td align="left">Record a deployment or a manual fix.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>memory_events</code></td>
-                  <td align="left">Retrieve the full event log for an entity</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_store_batch</code></td>
-                  <td align="left">Store multiple memories in one call</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_status</code></td>
-                  <td align="left">View memory health and storage stats</td>
+                  <td align="left"><code>teach</code></td>
+                  <td align="left">Rule Ingestion</td>
+                  <td align="left">Record team-wide coding conventions.</td>
                 </tr>
               </tbody>
             </table>
-            <h2 id="teaching-your-agent">Teaching Your Agent</h2>
+            <h2 id="best-practices">Best Practices</h2>
+            <p>To get the most out of Synapse memory, follow these conventions:</p>
+            <h3 id="1-store-the-why-not-just-the-what">1. Store the "Why," not just the "What"</h3>
             <p>
-              The <code>teach</code> tool is a higher-level wrapper designed for onboarding an agent to a codebase. Use it to batch-teach architectural conventions, team norms, and important historical context:
+              Don't just store "Added a login button." Store "Added a login button using OAuth2 because it reduces credential management overhead."
             </p>
-            <blockquote>
-              <p>
-                <em>"Teach the agent that all database queries must use the repository pattern and never access ORM models 
-                  directly from controllers."</em>
-              </p>
-            </blockquote>
+            <h3 id="2-use-explicit-relations">2. Use Explicit Relations</h3>
             <p>
-              The agent stores this as a persistent memory that influences every future code review, refactor, and generation task.
+              When an AI agent makes a decision about a specific file, use <code>memory_add_relation</code> to link that memory to the file entity. This ensures that the next time the agent edits that file, the memory is surfaced automatically.
             </p>
-            <h2 id="agent-priming">Agent Priming</h2>
+            <h3 id="3-isolated-nests-for-security">3. Isolated Nests for Security</h3>
             <p>
-              Before starting a complex task, use <code>agent_prime</code> to automatically surface the most relevant memories for the current context:
-            </p>
-            <blockquote><p><em>"Prime the agent for working on the authentication module."</em></p></blockquote>
-            <p>
-              Synapse will query all memories related to authentication, security decisions, and past lessons — injecting them directly into the agent's working context.
-            </p>
-            <h2 id="cross-session-recall">Cross-Session Recall</h2>
-            <pre><code>User: "What was the reason we moved from REST to GraphQL for the user service?"
-
-Agent calls: memory_recall("REST to GraphQL user service migration reason")
-→ Returns: "Migrated on 2024-03-15. REST endpoint fan-out was causing N+1 query issues
-   under load. GraphQL batching with DataLoader solved the problem."
-</code></pre>
-            <p>
-              This recall happens instantly, regardless of whether the original conversation was last week or six months ago.
+              Use different <code>nest_id</code>s when working on separate client projects to ensure that private context from one project never leaks into another.
             </p>
             <hr/>
             <p>
-              <strong>Next:</strong> Explore how memories connect to architectural decisions in the <strong><a href="/pillars/temporal">Knowledge Graph</a></strong>.
+              <strong>Next:</strong> Explore how memories connect to architectural decisions in the <strong><a href="temporal">Knowledge Graph</a></strong>.
             </p>
           </section>
         </main>
