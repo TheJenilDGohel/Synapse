@@ -8,11 +8,11 @@ import { fileURLToPath } from 'node:url';
 import { stdin as input, stdout as output } from 'node:process';
 import { migrateSynapseHomeLayout, resolveSynapseHome } from '../../src/core/runtime/index.ts';
 import { SERVER_VERSION } from '../../src/core/runtime/version.ts';
-import { normalizeInstallTarget, normalizeUpdateChannel } from '../../src/services/update/helpers.ts';
+import { normalizeInstallTarget, normalizeUpdateChannel } from '../../src/core/engine/update/helpers.ts';
 import {
   findMissingRequiredSetupFields,
   normalizeUpgradeConfig
-} from '../../src/services/update/index.ts';
+} from '../../src/core/engine/update/index.ts';
 import ora from 'ora';
 import { c, symbol, rule, box } from '../../src/interfaces/cli/ansi.ts';
 import { NPM_BIN, SYNAPSE_BIN, isWindows } from '../../src/core/runtime/platform.ts';

@@ -18,6 +18,11 @@ if (!(Get-Command node -ErrorAction SilentlyContinue)) {
 $nodeVersion = node --version
 Write-Host " OK ($nodeVersion)" -ForegroundColor Green
 
+$majorVersion = [int]($nodeVersion -replace 'v', '' -split '\.')[0]
+if ($majorVersion -lt 22) {
+    Write-Host " Note: Node.js 22+ is recommended for full feature support (local memory & vector search)." -ForegroundColor Gray
+}
+
 # 2. Install Synapse
 Write-Host "[2/3] Installing Synapse via NPM..."
 npm install -g synapse-cortex

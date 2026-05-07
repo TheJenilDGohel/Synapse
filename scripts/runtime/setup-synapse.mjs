@@ -473,7 +473,7 @@ function installClientConfigs(packageRef, indexConfig) {
 }
 
 async function warmupModels(indexConfig) {
-  const { EmbeddingService, RerankerService } = await import('../../src/services/retrieval/index.js');
+  const { EmbeddingService, RerankerService } = await import('../../src/core/engine/retrieval.ts');
 
   if (indexConfig?.embedding?.provider && indexConfig.embedding.provider !== 'none') {
     const embedSpinner = ora('Warming up embedding model (first run downloads ~90MB)…').start();

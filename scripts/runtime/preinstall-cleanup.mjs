@@ -17,7 +17,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 
-const PKG_NAME = 'synapse';
+const PKG_NAME = 'synapse-cortex';
 const isWindows = process.platform === 'win32';
 const NPM_BIN = isWindows ? 'npm.cmd' : 'npm';
 

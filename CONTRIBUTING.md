@@ -48,12 +48,8 @@ npm run install:skill
 
 Synapse follows a strictly decoupled, layered architecture:
 
-- **Core (`src/core/`)**: System fundamentals, runtime constraints, database adapters, and migration logic.
-- **Services (`src/services/`)**: Bounded business logic contexts.
-  - `/memory`: Intelligent persistent knowledge graph and AI memory logic.
-  - `/retrieval`: Code search, text embeddings, and vector similarity querying.
-  - `/workspace`: Directory lifecycle and project boundary management.
-- **Interfaces (`src/interfaces/`)**: External boundaries (CLI, MCP, App) that orchestrate services.
+- **Core (`src/core/`)**: System fundamentals, engine logic (Memory, Retrieval, Update), infrastructure, and setup.
+- **Interfaces (`src/interfaces/`)**: External boundaries (CLI, MCP, App) that orchestrate core domains.
 
 For a detailed breakdown, see the [Architecture Overview](./ARCHITECTURE.md).
 

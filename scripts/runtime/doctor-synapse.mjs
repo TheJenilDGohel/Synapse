@@ -340,7 +340,7 @@ function checkGlobalInstallStaleTempDirs() {
   }
 
   const entries = fs.readdirSync(nodeModulesDir);
-  const stalePrefix = '.synapse-';
+  const stalePrefix = '.synapse-cortex-';
   const stale = entries.filter((e) => e.startsWith(stalePrefix));
 
   if (stale.length === 0) {

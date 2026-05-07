@@ -328,9 +328,10 @@ export function safeReadText(workspace: WorkspaceLike, filePath: string): string
 }
 
 export function isUnderRoots(workspace: WorkspaceLike, targetPath: string): boolean {
-  const resolved = path.resolve(targetPath);
+  const resolved = canonicalizePath(targetPath);
   return workspace.roots.some((root) => {
-    const rel = path.relative(root.path, resolved);
+    const rootCanonical = canonicalizePath(root.path);
+    const rel = path.relative(rootCanonical, resolved);
     return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
   });
 }

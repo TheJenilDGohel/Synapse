@@ -151,9 +151,8 @@ Synapse exposes **74 specialized MCP tools**, organized into focused suites:
 
 Synapse follows a strictly decoupled, layered architecture to ensure performance and reliability:
 
-- **Core (`src/core/`)**: System fundamentals, runtime constraints, and SQLite storage layout.
-- **Services (`src/services/`)**: Bounded business logic contexts (Memory, Retrieval, Workspace).
-- **Interfaces (`src/interfaces/`)**: Entrypoints (CLI, MCP, App) that orchestrate services.
+- **Core (`src/core/`)**: System fundamentals, engine logic (Memory, Retrieval, Update), and infrastructure.
+- **Interfaces (`src/interfaces/`)**: Entrypoints (CLI, MCP, App) that orchestrate core domains.
 
 For deeper technical details, see the [Architecture Overview](./ARCHITECTURE.md).
 

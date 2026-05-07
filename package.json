@@ -1,6 +1,6 @@
 {
   "name": "synapse-cortex",
-  "version": "0.0.1-beta.2",
+  "version": "0.0.1-beta.3",
   "license": "MIT",
   "author": "Jenil",
   "keywords": [
@@ -46,7 +46,7 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=22.6.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "postinstall": "node -e \"try{require('child_process').execSync('node scripts/runtime/install-synapse-skill.mjs --quiet',{stdio:'ignore'})}catch(e){}\"",

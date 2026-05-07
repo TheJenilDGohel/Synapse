@@ -22,12 +22,22 @@ if ! command -v node &> /dev/null; then
     echo -e " Error: Node.js is not installed. Please install it from https://nodejs.org/"
     exit 1
 fi
-node_version=$(node --version)
-echo -e " ${GREEN}OK ($node_version)${NC}"
+node_version=$(node -v | cut -d 'v' -f 2)
+major_version=$(echo $node_version | cut -d '.' -f 1)
+echo -e " ${GREEN}OK (v$node_version)${NC}"
+
+if [ "$major_version" -lt 22 ]; then
+    echo -e " ${GRAY}Note: Node.js 22+ is recommended for full feature support (local memory & vector search).${NC}"
+fi
 
 # 2. Install Synapse
 echo -e "[2/3] Installing Synapse via NPM..."
-sudo npm install -g synapse-cortex
+if npm install -g synapse-cortex 2>/dev/null; then
+    echo -e " ${GREEN}Installation successful.${NC}"
+else
+    echo -e " ${GRAY}Standard install failed, trying with sudo...${NC}"
+    sudo npm install -g synapse-cortex
+fi
 
 # 3. Trigger Onboarding
 echo -e "[3/3] Launching neural link..."

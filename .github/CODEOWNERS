@@ -9,8 +9,8 @@
 /.github/ @TheJenilDGohel
 
 # Core memory + KG services
-/src/services/memory/ @TheJenilDGohel
-/src/services/retrieval/ @TheJenilDGohel
+/src/core/engine/memory/ @TheJenilDGohel
+/src/core/engine/retrieval/ @TheJenilDGohel
 
 # MCP layer
 /src/mcp/ @TheJenilDGohel
