@@ -81,11 +81,17 @@ export function summarizeImports(text: string, languageId: string): string {
   return imports.join(' | ');
 }
 
-export function getNodeName(node: TreeSitterNode | null): string {
+export function getNodeName(node: TreeSitterNode | null, cache?: WeakMap<TreeSitterNode, string>): string {
   if (!node) return '';
+  if (cache?.has(node)) return cache.get(node)!;
+
   try {
     const named = typeof node.childForFieldName === 'function' ? node.childForFieldName('name') : null;
-    if (named && typeof named.text === 'string' && named.text.trim()) return named.text.trim();
+    if (named && typeof named.text === 'string' && named.text.trim()) {
+      const name = named.text.trim();
+      cache?.set(node, name);
+      return name;
+    }
   } catch {
     // no-op
   }
@@ -95,7 +101,9 @@ export function getNodeName(node: TreeSitterNode | null): string {
     const cur = stack.pop();
     if (!cur) continue;
     if (cur.type === 'identifier' && typeof cur.text === 'string' && cur.text.trim()) {
-      return cur.text.trim();
+      const name = cur.text.trim();
+      cache?.set(node, name);
+      return name;
     }
     if (Array.isArray(cur.namedChildren)) {
       for (let i = cur.namedChildren.length - 1; i >= 0; i -= 1) {
@@ -106,18 +114,53 @@ export function getNodeName(node: TreeSitterNode | null): string {
   return '';
 }
 
-export function buildScopePath(node: TreeSitterNode, languageId: string): string {
+export function buildScopePath(node: TreeSitterNode, languageId: string, cache?: WeakMap<TreeSitterNode, string>): string {
   const declTypes = DECL_TYPES_BY_LANG[languageId] || new Set<string>();
   const parts: string[] = [];
   let cur: TreeSitterNode | null | undefined = node;
   while (cur) {
     if (declTypes.has(cur.type)) {
-      const name = getNodeName(cur);
+      const name = getNodeName(cur, cache);
       if (name) parts.push(name);
     }
     cur = cur.parent || null;
   }
   return parts.reverse().join(' > ');
+}
+
+/**
+ * Optimized AST context for rendering and chunking.
+ * Uses a WeakMap to cache node names during a single pass traversal.
+ */
+export interface ASTRenderContext {
+  nameMap: WeakMap<TreeSitterNode, string>;
+}
+
+/**
+ * Builds an AST render context in a single pass.
+ */
+export function buildASTRenderContext(root: TreeSitterNode, languageId?: string): ASTRenderContext {
+  const nameMap = new WeakMap<TreeSitterNode, string>();
+  const declTypes = languageId ? (DECL_TYPES_BY_LANG[languageId] || new Set<string>()) : null;
+
+  // Single pass to pre-populate nameMap for all nodes
+  const stack: TreeSitterNode[] = [root];
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    
+    // Heuristic: only pre-populate for known declaration types if languageId is provided
+    // Otherwise, we let getNodeName handle it on demand and cache it.
+    if (!declTypes || declTypes.has(node.type)) {
+      getNodeName(node, nameMap);
+    }
+    
+    if (Array.isArray(node.namedChildren)) {
+      for (let i = node.namedChildren.length - 1; i >= 0; i -= 1) {
+        stack.push(node.namedChildren[i]);
+      }
+    }
+  }
+  return { nameMap };
 }
 
 export function makeLineSlices(lines: string[], chunkLines: number, chunkOverlap: number): ChunkSlice[] {
