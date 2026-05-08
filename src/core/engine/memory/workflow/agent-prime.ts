@@ -255,15 +255,19 @@ async function gatherEntities(
 
   // Strategy A: Search entities by task terms
   const terms = splitTerms(task);
-  for (const term of terms.slice(0, 5)) {
-    if (entityMap.size >= maxEntities) break;
+  const slicedTerms = terms.slice(0, 5);
+
+  if (slicedTerms.length > 0) {
+    const whereClause = slicedTerms.map(() => 'name LIKE ? COLLATE NOCASE').join(' OR ');
+    const queryParams = slicedTerms.map(term => `%${term}%`);
     const rows = await adapter.all<{ id: string; name: string; entity_type: string }>(
       `SELECT id, name, entity_type FROM kg_entities
-       WHERE name LIKE ? COLLATE NOCASE
+       WHERE ${whereClause}
        LIMIT ?`,
-      [`%${term}%`, maxEntities - entityMap.size]
+      [...queryParams, maxEntities]
     );
     for (const row of rows) {
+      if (entityMap.size >= maxEntities) break;
       if (!entityMap.has(row.id)) {
         entityMap.set(row.id, {
           id: row.id,
