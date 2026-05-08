@@ -204,24 +204,55 @@ export async function recall(adapter: Adapter, {
   const KG_ENRICH_LIMIT = 5;
   const MAX_FACTS_PER_ITEM = 10;
 
+  // Pre-fetch all entity IDs to avoid N+1 query problem
+  const validEntities = new Set<string>();
+  const entityMap = new Map<number, { id: string, name: string }[]>();
+
+  try {
+    const allEntityIds = new Set<string>();
+    for (let i = 0; i < Math.min(ranked.length, KG_ENRICH_LIMIT); i++) {
+      const item = ranked[i];
+      const extracted = extractEntities(
+        `${item.entry.title} ${item.entry.summary} ${item.entry.content}`
+      );
+
+      const itemEntities: { id: string, name: string }[] = [];
+      for (const entity of extracted.slice(0, 5)) {
+        const entityId = normalizeEntityId(entity.name);
+        if (entityId) {
+          allEntityIds.add(entityId);
+          itemEntities.push({ id: entityId, name: entity.name });
+        }
+      }
+      entityMap.set(i, itemEntities);
+    }
+
+    if (allEntityIds.size > 0) {
+      const ids = Array.from(allEntityIds);
+      const placeholders = ids.map(() => '?').join(', ');
+      const rows = await adapter.all<{ id: string }>(
+        `SELECT id FROM kg_entities WHERE id IN (${placeholders})`,
+        ids
+      );
+      for (const row of rows) {
+        validEntities.add(row.id);
+      }
+    }
+  } catch {
+    // Non-blocking: failure to pre-fetch doesn't break recall
+  }
+
   for (let i = 0; i < Math.min(ranked.length, KG_ENRICH_LIMIT); i++) {
     try {
       const item = ranked[i];
-      const entities = extractEntities(
-        `${item.entry.title} ${item.entry.summary} ${item.entry.content}`
-      );
+      const itemEntities = entityMap.get(i) || [];
       const facts: RelatedFact[] = [];
       const seenTriples = new Set<string>();
 
-      for (const entity of entities.slice(0, 5)) {
-        const entityId = normalizeEntityId(entity.name);
-        if (!entityId) continue;
+      for (const entity of itemEntities) {
+        const entityId = entity.id;
 
-        const exists = await adapter.get<{ id: string }>(
-          'SELECT id FROM kg_entities WHERE id = ?',
-          [entityId]
-        );
-        if (!exists) continue;
+        if (!validEntities.has(entityId)) continue;
 
         const triples = await adapter.all<{
           id: string; subject_id: string; predicate: string; object_id: string;
