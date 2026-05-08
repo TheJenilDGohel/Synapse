@@ -57,23 +57,14 @@ export const DECL_TYPES_BY_LANG: Record<string, Set<string>> = {
 export type LanguageLoader = () => Promise<unknown>;
 
 export const LANGUAGE_LOADERS: Record<string, LanguageLoader> = {
-  // @ts-ignore: optional dependency
   javascript: async () => { const mod = await import('tree-sitter-javascript'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
   python: async () => { const mod = await import('tree-sitter-python'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
   go: async () => { const mod = await import('tree-sitter-go'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
   bash: async () => { const mod = await import('tree-sitter-bash'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
   lua: async () => { const mod = await import('tree-sitter-lua'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
   dart: async () => { const mod = await import('tree-sitter-dart'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
   typescript: async () => { const mod = await import('tree-sitter-typescript'); return (mod.default || mod).typescript; },
-  // @ts-ignore: optional dependency
   tsx: async () => { const mod = await import('tree-sitter-typescript'); return (mod.default || mod).tsx; },
-  // @ts-ignore: optional dependency
   rust: async () => { const mod = await import('tree-sitter-rust'); return mod.default || mod; }
 };
 
