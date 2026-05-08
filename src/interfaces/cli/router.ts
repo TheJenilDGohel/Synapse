@@ -7,7 +7,7 @@
  * @module src/cli/router
  */
 
-// @ts-expect-error — bin/_shared.js is outside rootDir but required for CLI routing
+// bin/_shared.js is outside rootDir but required for CLI routing
 import { buildForwardArgv, importRelative } from '../../../bin/_shared.js';
 import type { GlobalOptions } from './options.js';
 
