@@ -1,16 +1,6 @@
 import { z } from 'zod';
-import {
-  normalizeDeleteResult,
-  normalizeMemoryEventsResult,
-  normalizeMemoryEntryPayload,
-  normalizeMemoryRecallResult,
-  normalizeMemorySuggestionResult,
-  normalizeRelatedMemoriesResult,
-  normalizeRelationRemovalResult,
-  normalizeRelationResult
-} from '../common/response-normalizers.js';
-import { applyReadFormatToItems, toMinimalWriteResponse } from '../common/terse-utils.js';
-import type { ReadResponseFormat } from '../common/terse-utils.js';
+import { normalizeMemoryEventsResult, normalizeMemoryEntryPayload, normalizeMemoryRecallResult, normalizeMemorySuggestionResult, normalizeRelatedMemoriesResult, normalizeRelationRemovalResult, normalizeRelationResult, normalizeDeleteResult } from '../common/response-normalizers.js';
+import { McpResponseMapper } from '../utils/response-mapper.js';
 import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,
@@ -94,7 +84,7 @@ export function registerMemoryStoreTools({
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ kind, status, project_path, topic, nest, branch, actor_id, tags, limit, offset, item_format }: Record<string, unknown>) => applyReadFormatToItems(
+    async ({ kind, status, project_path, topic, nest, branch, actor_id, tags, limit, offset, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
       normalizeMemoryRecallResult(
         await memory.listEntries({
           kind,
@@ -109,7 +99,7 @@ export function registerMemoryStoreTools({
           offset
         })
       ),
-      (item_format as ReadResponseFormat | undefined) ?? 'verbose'
+      { item_format: item_format as string }
     )
   );
 
@@ -170,7 +160,7 @@ export function registerMemoryStoreTools({
           duplicate: Boolean(r?.duplicate)
         }
       );
-      const response = toMinimalWriteResponse(normalized, terse as string);
+      const response = McpResponseMapper.standardizeResponse(normalized, { terse: terse as string });
       // FUSE-03: Attach auto-link results when present
       if (r?.auto_linked_entities) {
         (response as Record<string, unknown>).auto_linked_entities = r.auto_linked_entities;
@@ -209,7 +199,7 @@ export function registerMemoryStoreTools({
     },
     async ({ id, terse, ...patch }: Record<string, unknown>) => {
       const result = await memory.updateEntry(id as string, patch);
-      return toMinimalWriteResponse(normalizeMemoryEntryPayload(result, { updated: true }), terse as string);
+      return McpResponseMapper.standardizeResponse(normalizeMemoryEntryPayload(result, { updated: true }), { terse: terse as string });
     }
   );
 
@@ -225,7 +215,7 @@ export function registerMemoryStoreTools({
       annotations: DESTRUCTIVE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
     },
-    async ({ id, terse }: Record<string, unknown>) => toMinimalWriteResponse(normalizeDeleteResult(await memory.deleteEntry(id as string), { id: id as string }), terse as string)
+    async ({ id, terse }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(normalizeDeleteResult(await memory.deleteEntry(id as string), { id: id as string }), { terse: terse as string })
   );
 
   registerJsonTool(
@@ -271,7 +261,7 @@ export function registerMemoryStoreTools({
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
     },
-    async ({ terse, ...args }: Record<string, unknown>) => toMinimalWriteResponse(await memory.captureEvent(args), terse as string)
+    async ({ terse, ...args }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(await memory.captureEvent(args), { terse: terse as string })
   );
 
   registerJsonTool(
@@ -334,7 +324,7 @@ export function registerMemoryStoreTools({
     },
     async ({ source_id, target_id, relation_type, terse }: Record<string, unknown>) => {
       const result = await memory.addRelation(source_id as string, target_id as string, relation_type as string);
-      return toMinimalWriteResponse(normalizeRelationResult(result, { source_id: source_id as string, target_id: target_id as string, relation_type: relation_type as string }), terse as string);
+      return McpResponseMapper.standardizeResponse(normalizeRelationResult(result, { source_id: source_id as string, target_id: target_id as string, relation_type: relation_type as string }), { terse: terse as string });
     }
   );
 
