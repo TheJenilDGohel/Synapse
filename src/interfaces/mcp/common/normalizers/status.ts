@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export interface NormalizedEmbedStatus {
   backend: string;
   ready: boolean;
@@ -15,25 +13,25 @@ export interface NormalizedEmbedStatus {
   embedding: Record<string, unknown>;
 }
 
-export function normalizeEmbedStatus(status: any): NormalizedEmbedStatus {
-  const embedding = status?.embedding || {};
-  const provider = embedding.provider || 'none';
-  const model = embedding.model || null;
+export function normalizeEmbedStatus(status: Record<string, unknown>): NormalizedEmbedStatus {
+  const embedding = (status?.embedding as Record<string, unknown>) || {};
+  const provider = (embedding.provider as string) || 'none';
+  const model = (embedding.model as string) || null;
   const enabled = Boolean(embedding.enabled);
-  const available = embedding.available ?? false;
+  const available = (embedding.available as boolean) ?? false;
 
   return {
-    backend: status?.backend || 'json',
+    backend: (status?.backend as string) || 'json',
     ready: enabled ? Boolean(available) : true,
     provider,
     model,
     enabled,
     available,
-    dimensions: embedding.dimensions ?? null,
-    error: embedding.error || null,
-    sqlite_vec_loaded: status?.sqlite_vec_loaded ?? status?.sqlite_vec_extension?.loaded ?? null,
-    sqlite_vec_extension: status?.sqlite_vec_extension || null,
-    sqlite_vec_table_ready: status?.sqlite_vec_table_ready ?? null,
+    dimensions: (embedding.dimensions as number) ?? null,
+    error: (embedding.error as string) || null,
+    sqlite_vec_loaded: (status?.sqlite_vec_loaded as boolean) ?? ((status?.sqlite_vec_extension as Record<string, unknown>)?.loaded as boolean) ?? null,
+    sqlite_vec_extension: (status?.sqlite_vec_extension as Record<string, unknown>) || null,
+    sqlite_vec_table_ready: (status?.sqlite_vec_table_ready as boolean) ?? null,
     embedding
   };
 }
@@ -47,14 +45,14 @@ export interface NormalizedIndexStatus {
   [key: string]: unknown;
 }
 
-export function normalizeIndexStatus(status: any): NormalizedIndexStatus {
+export function normalizeIndexStatus(status: Record<string, unknown>): NormalizedIndexStatus {
   return {
     ...status,
-    backend: status?.backend || 'json',
-    total_files: Number.isFinite(status?.total_files) ? status.total_files : 0,
-    total_chunks: Number.isFinite(status?.total_chunks) ? status.total_chunks : 0,
+    backend: (status?.backend as string) || 'json',
+    total_files: Number.isFinite(status?.total_files) ? (status.total_files as number) : 0,
+    total_chunks: Number.isFinite(status?.total_chunks) ? (status.total_chunks as number) : 0,
     upgrade_recommended: Boolean(status?.upgrade_recommended),
-    upgrade_reason: status?.upgrade_reason || null
+    upgrade_reason: (status?.upgrade_reason as string) || null
   };
 }
 
@@ -72,19 +70,19 @@ export interface NormalizedIndexProjectResult {
   [key: string]: unknown;
 }
 
-export function normalizeIndexProjectResult(result: any, maxFiles: number): NormalizedIndexProjectResult {
-  const failedFiles = Array.isArray(result?.failed_files) ? result.failed_files : [];
+export function normalizeIndexProjectResult(result: Record<string, unknown>, maxFiles: number): NormalizedIndexProjectResult {
+  const failedFiles = Array.isArray(result?.failed_files) ? (result.failed_files as Array<Record<string, unknown>>) : [];
   return {
     ...result,
-    scanned_files: Number.isFinite(result?.scanned_files) ? result.scanned_files : 0,
-    indexed_files: Number.isFinite(result?.indexed_files) ? result.indexed_files : 0,
-    skipped_files: Number.isFinite(result?.skipped_files) ? result.skipped_files : 0,
-    removed_files: Number.isFinite(result?.removed_files) ? result.removed_files : 0,
+    scanned_files: Number.isFinite(result?.scanned_files) ? (result.scanned_files as number) : 0,
+    indexed_files: Number.isFinite(result?.indexed_files) ? (result.indexed_files as number) : 0,
+    skipped_files: Number.isFinite(result?.skipped_files) ? (result.skipped_files as number) : 0,
+    removed_files: Number.isFinite(result?.removed_files) ? (result.removed_files as number) : 0,
     failed_files: failedFiles,
     failed_file_count: failedFiles.length,
     failed_file_samples: failedFiles.slice(0, 3),
-    total_files: Number.isFinite(result?.total_files) ? result.total_files : 0,
-    total_chunks: Number.isFinite(result?.total_chunks) ? result.total_chunks : 0,
+    total_files: Number.isFinite(result?.total_files) ? (result.total_files as number) : 0,
+    total_chunks: Number.isFinite(result?.total_chunks) ? (result.total_chunks as number) : 0,
     max_files_requested: maxFiles
   };
 }
@@ -113,31 +111,31 @@ export interface NormalizedMemoryStatus {
   [key: string]: unknown;
 }
 
-export function normalizeMemoryStatus(status: any): NormalizedMemoryStatus {
-  const backend = status?.backend || {};
-  const store = status?.store || {};
+export function normalizeMemoryStatus(status: Record<string, unknown>): NormalizedMemoryStatus {
+  const backend = (status?.backend as Record<string, unknown>) || {};
+  const store = (status?.store as Record<string, unknown>) || {};
 
   return {
     ...status,
     enabled: Boolean(status?.enabled),
     auto_capture: Boolean(status?.auto_capture),
     consent_done: Boolean(status?.consent_done),
-    requested_backend: status?.requested_backend ?? backend.requested ?? null,
-    db_path: status?.db_path || null,
+    requested_backend: (status?.requested_backend as string) ?? (backend.requested as string) ?? null,
+    db_path: (status?.db_path as string) || null,
     db_exists: Boolean(status?.db_exists),
-    db_dir: status?.db_dir || null,
-    synapse_home: status?.synapse_home || null,
+    db_dir: (status?.db_dir as string) || null,
+    synapse_home: (status?.synapse_home as string) || null,
     backend: {
-      requested: backend.requested ?? status?.requested_backend ?? null,
-      selected: backend.selected ?? null,
+      requested: (backend.requested as string) ?? (status?.requested_backend as string) ?? null,
+      selected: (backend.selected as string) ?? null,
       available: Boolean(backend.available),
-      reason: backend.reason || null
+      reason: (backend.reason as string) || null
     },
     store: {
       initialized: Boolean(store.initialized),
-      total_entries: Number.isFinite(store.total_entries) ? store.total_entries : 0,
-      total_events: Number.isFinite(store.total_events) ? store.total_events : 0,
-      error: store.error || null
+      total_entries: Number.isFinite(store.total_entries) ? (store.total_entries as number) : 0,
+      total_events: Number.isFinite(store.total_events) ? (store.total_events as number) : 0,
+      error: (store.error as string) || null
     }
   };
 }
@@ -171,19 +169,19 @@ export interface NormalizedTaskContextResult {
   guidance: string[];
 }
 
-export function normalizeTaskContextResult(result: any, input: any = {}): NormalizedTaskContextResult {
-  const memory = result?.memory || {};
-  const recall = result?.recall || {};
-  const scope = result?.scope || {};
+export function normalizeTaskContextResult(result: Record<string, unknown>, input: Record<string, unknown> = {}): NormalizedTaskContextResult {
+  const memory = (result?.memory as Record<string, unknown>) || {};
+  const recall = (result?.recall as Record<string, unknown>) || {};
+  const scope = (result?.scope as Record<string, unknown>) || {};
 
   return {
-    query: result?.query || input.query || input.task || '',
+    query: (result?.query as string) || (input.query as string) || (input.task as string) || '',
     scope: {
-      root_path: scope.root_path || input.root_path || '',
-      project_path: scope.project_path || input.project_path || '',
-      branch_name: scope.branch_name || input.branch_name || '',
-      topic: scope.topic || input.topic || '',
-      feature: scope.feature || input.feature || ''
+      root_path: (scope.root_path as string) || (input.root_path as string) || '',
+      project_path: (scope.project_path as string) || (input.project_path as string) || '',
+      branch_name: (scope.branch_name as string) || (input.branch_name as string) || '',
+      topic: (scope.topic as string) || (input.topic as string) || '',
+      feature: (scope.feature as string) || (input.feature as string) || ''
     },
     runtime: result?.runtime || null,
     memory: {
@@ -191,18 +189,18 @@ export function normalizeTaskContextResult(result: any, input: any = {}): Normal
       auto_capture: Boolean(memory.auto_capture),
       consent_done: Boolean(memory.consent_done),
       backend_available: Boolean(memory.backend_available),
-      requested_backend: memory.requested_backend || null,
-      selected_backend: memory.selected_backend || null,
-      total_entries: Number.isFinite(memory.total_entries) ? memory.total_entries : 0,
-      total_events: Number.isFinite(memory.total_events) ? memory.total_events : 0
+      requested_backend: (memory.requested_backend as string) || null,
+      selected_backend: (memory.selected_backend as string) || null,
+      total_entries: Number.isFinite(memory.total_entries) ? (memory.total_entries as number) : 0,
+      total_events: Number.isFinite(memory.total_events) ? (memory.total_events as number) : 0
     },
     recall: {
       attempted: Boolean(recall.attempted),
-      skipped_reason: recall.skipped_reason || '',
-      count: Number.isFinite(recall.count) ? recall.count : 0,
-      items: Array.isArray(recall.items) ? recall.items : []
+      skipped_reason: (recall.skipped_reason as string) || '',
+      count: Number.isFinite(recall.count) ? (recall.count as number) : 0,
+      items: Array.isArray(recall.items) ? (recall.items as unknown[]) : []
     },
-    guidance: Array.isArray(result?.guidance) ? result.guidance : []
+    guidance: Array.isArray(result?.guidance) ? (result.guidance as string[]) : []
   };
 }
 
@@ -215,14 +213,13 @@ export interface NormalizedCaptureOutcomeResult {
   result: unknown;
 }
 
-export function normalizeCaptureOutcomeResult(result: any): NormalizedCaptureOutcomeResult {
+export function normalizeCaptureOutcomeResult(result: Record<string, unknown>): NormalizedCaptureOutcomeResult {
   return {
     captured: Boolean(result?.captured),
-    skipped_reason: result?.skipped_reason || '',
+    skipped_reason: (result?.skipped_reason as string) || '',
     runtime: result?.runtime || null,
-    memory: normalizeMemoryStatus(result?.memory || {}),
+    memory: normalizeMemoryStatus((result?.memory as Record<string, unknown>) || {}),
     event: result?.event || null,
     result: result?.result || null
   };
 }
-
