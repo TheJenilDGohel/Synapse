@@ -11,9 +11,9 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/synapse-cortex"><img src="https://img.shields.io/npm/v/synapse-cortex?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/synapse?color=2dd4bf&style=flat-square" alt="license"></a>
-  <a href="https://github.com/TheJenilDGohel/synapse/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/synapse/quality.yml?branch=main&label=quality&style=flat-square" alt="quality status"></a>
-  <a href="https://github.com/TheJenilDGohel/synapse/security/advisories"><img src="https://img.shields.io/badge/security-monitored-2dd4bf?style=flat-square" alt="security monitored"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/Synapse?color=2dd4bf&style=flat-square" alt="license"></a>
+  <a href="https://github.com/TheJenilDGohel/Synapse/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/Synapse/ci.yml?branch=main&label=quality&style=flat-square" alt="quality status"></a>
+  <a href="https://github.com/TheJenilDGohel/Synapse/security/advisories"><img src="https://img.shields.io/badge/security-monitored-2dd4bf?style=flat-square" alt="security monitored"></a>
 </p>
 
 ---
