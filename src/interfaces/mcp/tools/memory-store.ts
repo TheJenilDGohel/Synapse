@@ -343,7 +343,10 @@ export function registerMemoryStoreTools({
     },
     async ({ source_id, target_id, terse }: Record<string, unknown>) => {
       const result = await memory.removeRelation(source_id as string, target_id as string);
-      return toMinimalWriteResponse(normalizeRelationRemovalResult(result, { source_id: source_id as string, target_id: target_id as string }), terse as string);
+      return McpResponseMapper.standardizeResponse(
+        normalizeRelationRemovalResult(result, { source_id: source_id as string, target_id: target_id as string }),
+        { terse: terse as any }
+      );
     }
   );
 
