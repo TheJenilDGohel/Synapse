@@ -11,7 +11,7 @@ import { execSync } from 'node:child_process';
 import { splitTerms } from '../utils/index.js';
 import { extractEntities } from '../ingest/ingest.js';
 import { normalizeEntityId } from '../knowledge-graph/kg.js';
-import type { Adapter, RecallInput, RecallResultItem } from '../types/index.js';
+import type { Adapter, RecallInput, RecallResult, RecallResultItem } from '../types/index.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -62,13 +62,12 @@ export interface AgentPrimeResult {
 // Dependency interfaces (injected)
 // ---------------------------------------------------------------------------
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface AgentPrimeDeps {
   memory: {
-    recall(opts: RecallInput): Promise<any>;
+    recall(opts: RecallInput): Promise<RecallResult | { cancelled: boolean; reason: string | undefined }>;
     store: {
       adapter: Adapter | null;
-      init(): Promise<any>;
+      init(): Promise<Record<string, unknown>>;
     };
   };
   search?: { searchHybrid(opts: Record<string, unknown>): Promise<unknown> } | null;
@@ -169,15 +168,17 @@ export async function agentPrime(
       branch: input.branch,
       limit: maxMemories
     });
-    recalledItems = (recallResult as { items?: RecallResultItem[] })?.items || [];
-    memories = recalledItems.map((item) => ({
-      id: item.memory.id,
-      title: truncate(item.memory.title, 80),
-      summary: truncate(item.memory.summary, MAX_SUMMARY_LEN),
-      kind: item.memory.kind || 'note',
-      score: Number(item.score.toFixed(3)),
-      actor_id: item.memory.actor_id || ''
-    }));
+    if (!('cancelled' in recallResult)) {
+      recalledItems = recallResult?.items || [];
+      memories = recalledItems.map((item) => ({
+        id: item.memory.id,
+        title: truncate(item.memory.title, 80),
+        summary: truncate(item.memory.summary, MAX_SUMMARY_LEN),
+        kind: item.memory.kind || 'note',
+        score: Number(item.score.toFixed(3)),
+        actor_id: item.memory.actor_id || ''
+      }));
+    }
   } catch {
     // Non-blocking
   }
