@@ -331,17 +331,46 @@ async function gatherEntities(
   }
 
   // Enrich entities with their active predicates
-  for (const entity of entityMap.values()) {
-    try {
-      const preds = await adapter.all<{ predicate: string }>(
-        `SELECT DISTINCT predicate FROM kg_triples
-         WHERE (subject_id = ? OR object_id = ?) AND valid_to IS NULL
-         LIMIT ?`,
-        [entity.id, entity.id, MAX_PREDICATES_PER_ENTITY]
-      );
-      entity.predicates = preds.map((p: { predicate: string }) => p.predicate);
-    } catch {
-      // Non-blocking
+  if (entityMap.size > 0) {
+    // Ensure all predicates are initialized to an empty array (overwriting any previous value)
+    for (const entity of entityMap.values()) {
+      entity.predicates = [];
+    }
+
+    const allEntityIds = Array.from(entityMap.keys());
+    const CHUNK_SIZE = 250;
+
+    for (let i = 0; i < allEntityIds.length; i += CHUNK_SIZE) {
+      try {
+        const chunkIds = allEntityIds.slice(i, i + CHUNK_SIZE);
+        const placeholders = chunkIds.map(() => '?').join(',');
+
+        const q = `
+          WITH CTE AS (
+            SELECT subject_id AS entity_id, predicate FROM kg_triples WHERE subject_id IN (${placeholders}) AND valid_to IS NULL
+            UNION ALL
+            SELECT object_id AS entity_id, predicate FROM kg_triples WHERE object_id IN (${placeholders}) AND valid_to IS NULL
+          ),
+          DistinctPreds AS (
+            SELECT entity_id, predicate, ROW_NUMBER() OVER(PARTITION BY entity_id ORDER BY predicate) as rn
+            FROM CTE
+            GROUP BY entity_id, predicate
+          )
+          SELECT entity_id, predicate FROM DistinctPreds WHERE rn <= ?
+        `;
+
+        const params = [...chunkIds, ...chunkIds, MAX_PREDICATES_PER_ENTITY];
+        const results = await adapter.all<{ entity_id: string, predicate: string }>(q, params);
+
+        for (const row of results) {
+          const ent = entityMap.get(row.entity_id);
+          if (ent) {
+            ent.predicates.push(row.predicate);
+          }
+        }
+      } catch {
+        // Non-blocking
+      }
     }
   }
 
