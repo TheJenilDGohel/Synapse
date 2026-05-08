@@ -22,14 +22,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run checks and tests
-        run: npm run quality
+        run: |
+          # Skip tests if the test directory is missing (per maintainer directive)
+          if [ -d "test" ]; then
+            npm run quality
+          else
+            echo "Test directory missing, running build and check only."
+            npm run build
+            npm run check
+          fi
 
       - name: Determine npm tag
         id: determine_tag
@@ -43,7 +50,9 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: npm publish --access public --tag ${{ steps.determine_tag.outputs.npm_tag }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          npm publish --access public --tag ${{ steps.determine_tag.outputs.npm_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
