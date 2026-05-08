@@ -38,7 +38,9 @@ class CodeBlock extends StatelessComponent {
           alignItems: .center,
           padding: .symmetric(horizontal: 1.rem, vertical: 0.5.rem),
           backgroundColor: backgroundColor.withOpacity(0.2),
-          border: Border.only(bottom: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px)),
+          border: Border.only(
+            bottom: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px),
+          ),
         ),
         css('.code-block-lang').styles(
           fontSize: 0.75.rem,

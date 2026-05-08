@@ -1,7 +1,6 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
-
 import 'header.dart';
 import 'sidebar.dart';
 
@@ -39,7 +38,9 @@ class DocsLayout extends StatefulComponent {
         ),
         // Mobile padding
         css.media(MediaQuery.screen(maxWidth: 768.px), [
-          css('&').styles(padding: .symmetric(horizontal: 1.5.rem, vertical: 2.rem)),
+          css('&').styles(
+            padding: .symmetric(horizontal: 1.5.rem, vertical: 2.rem),
+          ),
         ]),
       ]),
       css('.sidebar-overlay', [
@@ -78,9 +79,7 @@ class _DocsLayoutState extends State<DocsLayout> {
         ]),
       ]),
       // Overlay for mobile
-      if (_isSidebarOpen)
-        div(classes: 'sidebar-overlay', events: {'click': (e) => _toggleSidebar()}, []),
+      if (_isSidebarOpen) div(classes: 'sidebar-overlay', events: {'click': (e) => _toggleSidebar()}, []),
     ]);
   }
 }
-

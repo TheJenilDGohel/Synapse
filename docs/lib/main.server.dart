@@ -31,17 +31,23 @@ void main() {
   //
   // [Document] renders the root document structure (<html>, <head> and <body>)
   // with the provided parameters and components.
-  runApp(Document(
-    title: 'Synapse | Documentation',
-    head: [
-      if (siteBasePath.isNotEmpty) Component.element(tag: 'base', attributes: {'href': siteBaseHref}),
-      link(rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'),
-      script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js'),
-      script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js'),
-      script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js'),
-      script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js'),
-      Component.element(tag: 'script', children: [
-        RawText('''
+  runApp(
+    Document(
+      title: 'Synapse | Documentation',
+      head: [
+        if (siteBasePath.isNotEmpty) Component.element(tag: 'base', attributes: {'href': siteBaseHref}),
+        link(
+          rel: 'stylesheet',
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css',
+        ),
+        script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js'),
+        script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js'),
+        script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js'),
+        script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js'),
+        Component.element(
+          tag: 'script',
+          children: [
+            RawText('''
           window.addEventListener('keydown', (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
               e.preventDefault();
@@ -49,37 +55,39 @@ void main() {
               if (trigger) trigger.click();
             }
           });
-        ''')
-      ]),
-    ],
-    body: ContentApp.custom(
-      loaders: [FilesystemLoader('content')],
-      configResolver: PageConfig.all(
-        parsers: [MarkdownParser()],
-        layouts: [local_layout.DocsLayout()],
-        components: [
-          CustomComponent(
-            pattern: 'code-block',
-            builder: (context, attrs, content) => CodeBlock(
-              sourceCode: attrs['code'] ?? '',
-              language: attrs['lang'] ?? 'dart',
+        '''),
+          ],
+        ),
+      ],
+      body: ContentApp.custom(
+        loaders: [FilesystemLoader('content')],
+        configResolver: PageConfig.all(
+          parsers: [MarkdownParser()],
+          layouts: [local_layout.DocsLayout()],
+          components: [
+            CustomComponent(
+              pattern: 'code-block',
+              builder: (context, attrs, content) => CodeBlock(
+                sourceCode: attrs['code'] ?? '',
+                language: attrs['lang'] ?? 'dart',
+              ),
             ),
-          ),
-          CustomComponent(
-            pattern: 'callout',
-            builder: (context, attrs, content) => Callout(
-              type: CalloutType.values.firstWhere((e) => e.name == attrs['type'], orElse: () => CalloutType.info),
-              title: attrs['title'],
-              child: content,
+            CustomComponent(
+              pattern: 'callout',
+              builder: (context, attrs, content) => Callout(
+                type: CalloutType.values.firstWhere((e) => e.name == attrs['type'], orElse: () => CalloutType.info),
+                title: attrs['title'],
+                child: content,
+              ),
             ),
-          ),
-          CustomComponent(
-            pattern: 'tools-list',
-            builder: (context, attrs, content) => const ToolsList(),
-          ),
-        ],
+            CustomComponent(
+              pattern: 'tools-list',
+              builder: (context, attrs, content) => const ToolsList(),
+            ),
+          ],
+        ),
+        routerBuilder: (routes) => App(contentRoutes: routes),
       ),
-      routerBuilder: (routes) => App(contentRoutes: routes),
     ),
-  ));
+  );
 }
