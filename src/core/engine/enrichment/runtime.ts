@@ -31,8 +31,8 @@ export class EnrichmentRuntime {
     
     // Enable WebGPU if requested
     if (this.options.device === 'webgpu') {
-      // @ts-ignore - WebGPU support in v4
-      env.backends.onnx.wasm.proxy = true;
+      const onnxWasm = env.backends.onnx.wasm as any;
+      if (onnxWasm) onnxWasm.proxy = true;
     }
   }
 
