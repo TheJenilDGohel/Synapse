@@ -21,19 +21,10 @@ import type {
   MemoryEventType,
   MemoryEventStatus
 } from '../common/schemas.js';
-
-interface MemoryService {
-  getStatus(): Promise<unknown>;
-  recall(opts: Record<string, unknown>): Promise<unknown>;
-  whatsNew(args: Record<string, unknown>): Promise<unknown>;
-}
-
-interface MemoryWorkflowService {
-  getTaskContext(args: Record<string, unknown>): Promise<unknown>;
-  captureOutcome(args: Record<string, unknown>): Promise<unknown>;
-  agentPrime(args: Record<string, unknown>): Promise<unknown>;
-  teach(args: Record<string, unknown>): Promise<unknown>;
-}
+import type {
+  IMemoryService,
+  IMemoryWorkflowService
+} from '../../../core/interfaces/services.ts';
 
 type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
 interface SharedSchemas {
@@ -55,8 +46,8 @@ interface SharedSchemas {
 export interface RegisterMemoryWorkflowToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   schemas: SharedSchemas;
-  memory: MemoryService;
-  memoryWorkflow: MemoryWorkflowService;
+  memory: IMemoryService;
+  memoryWorkflow: IMemoryWorkflowService;
 }
 
 export function registerMemoryWorkflowTools({

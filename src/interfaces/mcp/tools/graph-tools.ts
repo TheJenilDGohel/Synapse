@@ -28,18 +28,6 @@ interface SharedSchemas {
 
 import { IMemoryService } from '../../../core/interfaces/services.js';
 
-type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
-interface SharedSchemas {
-  OUTPUT_SEARCH_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_TRIPLE_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_STATUS_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_BATCH_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_MEMORY_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_ACK_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_BUNDLE_RESULT_SCHEMA: OutputArchetype;
-  OUTPUT_FREEFORM_RESULT_SCHEMA: OutputArchetype;
-}
-
 export interface RegisterGraphToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   memory: IMemoryService;

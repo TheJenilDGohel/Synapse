@@ -117,6 +117,9 @@ export interface IEmbeddingService {
 export interface ISearchService {
   searchHybrid(opts: Record<string, unknown>): Promise<any>;
   searchCode(opts: Record<string, unknown>): any[];
+  searchFiles(opts: Record<string, unknown>): any[];
+  getSymbol(opts: Record<string, unknown>): any;
+  findUsages(opts: Record<string, unknown>): any;
 }
 
 /**
@@ -125,6 +128,29 @@ export interface ISearchService {
 export interface ISymbolSearchService {
   searchSymbols(opts: Record<string, unknown>): Promise<any>;
   getSymbolInfo(opts: Record<string, unknown>): Promise<any>;
+  findCallersSymbol(opts: {
+    symbol: string;
+    projectPath?: string;
+    language?: string;
+    maxResults?: number;
+  }): any;
+  findDefinitionSymbol(opts: {
+    symbol: string;
+    projectPath?: string;
+    language?: string;
+  }): any;
+  findImplementationsSymbol(opts: {
+    interfaceName: string;
+    projectPath?: string;
+    language?: string;
+    maxResults?: number;
+  }): any;
+  renamePreviewSymbol(opts: {
+    oldName: string;
+    newName: string;
+    projectPath?: string;
+    maxResults?: number;
+  }): any;
 }
 
 /**
@@ -136,6 +162,7 @@ export interface IWorkspaceService {
   projectTree(projectPath: string, maxDepth: number, maxEntries: number, compact?: boolean): any;
   readFileChunk(filePath: string, startLine: number, endLine: number, maxWidth: number, mode?: 'lines' | 'signatures'): Promise<any>;
   summarizeProject(projectPath: string, maxFiles: number): any;
+  resolveSearchBases(projectPath: string | undefined, allRoots: boolean | undefined): string[];
   listWorkspaces?(): Promise<any>;
   getWorkspaceInfo?(name: string): Promise<any>;
   setWorkspaceContext?(name: string): Promise<any>;
@@ -147,6 +174,8 @@ export interface IWorkspaceService {
 export interface IVectorIndexService {
   getVectorStats(): Promise<any>;
   rebuildIndex(): Promise<any>;
+  getStatus(): any;
+  indexProject(opts: Record<string, unknown>): Promise<any>;
 }
 
 /**

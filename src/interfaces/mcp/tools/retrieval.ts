@@ -15,59 +15,28 @@ import {
   SEARCH_RESULT_SCHEMA,
   STATUS_RESULT_SCHEMA
 } from '../common/schemas.js';
-import type { RootEntry } from '../../../core/runtime/config.js';
 import { registerWorkspaceTools } from './retrieval-workspace.js';
-
-interface WorkspaceService {
-  listRoots(): RootEntry[];
-  listProjects(rootPath: string | undefined, max: number): unknown[];
-  projectTree(projectPath: string, maxDepth: number, maxEntries: number): unknown;
-  readFileChunk(filePath: string, startLine: number, endLine: number, maxWidth: number): Promise<unknown>;
-  summarizeProject(projectPath: string, maxFiles: number): unknown;
-  resolveSearchBases(projectPath: string | undefined, allRoots: boolean | undefined): string[];
-}
-
-interface VectorIndexService {
-  getStatus(): unknown;
-  indexProject(opts: Record<string, unknown>): Promise<unknown>;
-}
-
-interface SearchService {
-  searchFiles(opts: Record<string, unknown>): unknown[];
-  searchCode(opts: Record<string, unknown>): unknown[];
-  searchHybrid(opts: Record<string, unknown>): Promise<unknown>;
-  getSymbol(opts: Record<string, unknown>): unknown;
-  findUsages(opts: Record<string, unknown>): unknown;
-}
+import type {
+  IWorkspaceService,
+  IVectorIndexService,
+  ISearchService,
+  IMemoryService
+} from '../../../core/interfaces/services.ts';
 
 interface McpExtra {
   _meta?: { progressToken?: unknown };
   sendNotification?(notification: { method: string; params: Record<string, unknown> }): Promise<void>;
 }
 
-interface MemoryServiceForHints {
-  getFileMemoryHints(filePath: string, suggestUpdate?: boolean): Promise<{
-    file_path: string;
-    hints: Array<{
-      memory_id: string;
-      title: string;
-      importance: number;
-      kind: string;
-      summary_excerpt: string;
-      suggest_update: boolean;
-    }>;
-  }>;
-}
-
 export interface RegisterRetrievalToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   paginateItems: <T>(items: T[], limit: number | undefined, offset: number | undefined) => PaginatedResult<T>;
-  workspace: WorkspaceService;
-  vectorIndex: VectorIndexService;
-  search: SearchService;
+  workspace: IWorkspaceService;
+  vectorIndex: IVectorIndexService;
+  search: ISearchService;
   defaultMaxReadLines: number;
   defaultMaxResults: number;
-  memory?: MemoryServiceForHints | null;
+  memory?: IMemoryService | null;
 }
 
 export function registerRetrievalTools({

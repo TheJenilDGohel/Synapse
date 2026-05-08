@@ -8,36 +8,11 @@ import {
   normalizeRenamePreviewResult
 } from '../common/response-normalizers.js';
 import { SEARCH_RESULT_SCHEMA } from '../common/schemas.js';
-
-interface SymbolSearchService {
-  findCallersSymbol(opts: {
-    symbol: string;
-    projectPath?: string;
-    language?: string;
-    maxResults?: number;
-  }): unknown;
-  findDefinitionSymbol(opts: {
-    symbol: string;
-    projectPath?: string;
-    language?: string;
-  }): unknown;
-  findImplementationsSymbol(opts: {
-    interfaceName: string;
-    projectPath?: string;
-    language?: string;
-    maxResults?: number;
-  }): unknown;
-  renamePreviewSymbol(opts: {
-    oldName: string;
-    newName: string;
-    projectPath?: string;
-    maxResults?: number;
-  }): unknown;
-}
+import type { ISymbolSearchService } from '../../../core/interfaces/services.ts';
 
 export interface RegisterSymbolToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
-  search: SymbolSearchService;
+  search: ISymbolSearchService;
 }
 
 export function registerSymbolTools({

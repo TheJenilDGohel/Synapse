@@ -13,35 +13,17 @@ import {
 } from '../common/schemas.js';
 import type { RootEntry } from '../../../core/runtime/config.js';
 import type { ResourceLink } from '../common/mime.js';
-
-interface WorkspaceService {
-  listRoots(): RootEntry[];
-  listProjects(rootPath: string | undefined, max: number): unknown[];
-  projectTree(projectPath: string, maxDepth: number, maxEntries: number, compact?: boolean): unknown;
-  readFileChunk(filePath: string, startLine: number, endLine: number, maxWidth: number, mode?: 'lines' | 'signatures'): Promise<unknown>;
-  summarizeProject(projectPath: string, maxFiles: number): unknown;
-}
-
-interface MemoryServiceForHints {
-  getFileMemoryHints(filePath: string, suggestUpdate?: boolean): Promise<{
-    file_path: string;
-    hints: Array<{
-      memory_id: string;
-      title: string;
-      importance: number;
-      kind: string;
-      summary_excerpt: string;
-      suggest_update: boolean;
-    }>;
-  }>;
-}
+import type {
+  IWorkspaceService,
+  IMemoryService
+} from '../../../core/interfaces/services.ts';
 
 export interface RegisterWorkspaceToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   paginateItems: <T>(items: T[], limit: number | undefined, offset: number | undefined) => PaginatedResult<T>;
-  workspace: WorkspaceService;
+  workspace: IWorkspaceService;
   defaultMaxReadLines: number;
-  memory?: MemoryServiceForHints | null;
+  memory?: IMemoryService | null;
 }
 
 export function registerWorkspaceTools({
