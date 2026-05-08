@@ -7,9 +7,6 @@
  * @module src/cli/router
  */
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore — bin/_shared.js is outside rootDir but required for CLI routing
-import { buildForwardArgv, importRelative } from '../../../bin/_shared.js';
 import type { GlobalOptions } from './options.js';
 
 /* ------------------------------------------------------------------ */
@@ -57,6 +54,7 @@ export async function routeCommand(
   // 1. Noun-verb subcommands
   const nounModule = NOUN_MODULES.get(command);
   if (nounModule) {
+    const { importRelative } = await import('../../../bin/_shared.js');
     const mod = await importRelative(nounModule, binMetaUrl) as { run: (args: string[], opts: GlobalOptions) => Promise<void> };
     await mod.run(rest, globalOpts);
     return true;
@@ -65,6 +63,7 @@ export async function routeCommand(
   // 2. Legacy flat commands
   const legacyModule = LEGACY_MODULES.get(command);
   if (legacyModule) {
+    const { buildForwardArgv, importRelative } = await import('../../../bin/_shared.js');
     process.argv = buildForwardArgv(rest, process.argv);
     await importRelative(legacyModule, binMetaUrl);
     return true;
