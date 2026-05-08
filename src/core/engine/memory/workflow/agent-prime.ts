@@ -11,7 +11,7 @@ import { execSync } from 'node:child_process';
 import { splitTerms } from '../utils/index.js';
 import { extractEntities } from '../ingest/ingest.js';
 import { normalizeEntityId } from '../knowledge-graph/kg.js';
-import type { Adapter, RecallInput, RecallResultItem } from '../types/index.js';
+import type { Adapter, RecallInput, RecallResult, RecallResultItem } from '../types/index.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -62,13 +62,12 @@ export interface AgentPrimeResult {
 // Dependency interfaces (injected)
 // ---------------------------------------------------------------------------
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface AgentPrimeDeps {
   memory: {
-    recall(opts: RecallInput): Promise<any>;
+    recall(opts: RecallInput): Promise<RecallResult | { cancelled: boolean; reason?: string }>;
     store: {
       adapter: Adapter | null;
-      init(): Promise<any>;
+      init(): Promise<Record<string, unknown>>;
     };
   };
   search?: { searchHybrid(opts: Record<string, unknown>): Promise<unknown> } | null;
