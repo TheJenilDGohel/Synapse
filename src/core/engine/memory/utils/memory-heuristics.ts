@@ -54,19 +54,19 @@ export function inferGitBranch(): string {
 }
 
 const TOPIC_RULES: Array<[RegExp, string]> = [
-  [/\b(bug|fix|error|crash|exception|broken|failing|issue)\b/i, 'bugfix'],
-  [/\b(decid|decision|chose|pick|prefer|select|went with)\b/i, 'decision'],
-  [/\b(review|audit|check|inspect|feedback|finding)\b/i, 'review'],
-  [/\b(learn|pattern|convention|always|never|must|should|rule)\b/i, 'knowledge'],
-  [/\b(config|setup|install|deploy|ci|cd|pipeline)\b/i, 'configuration'],
-  [/\b(refactor|clean|extract|split|rename|restructure)\b/i, 'refactoring'],
-  [/\b(test|spec|assert|expect|coverage|unit|e2e)\b/i, 'testing'],
+  [/\b(bug|fix|error|crash|exception|broken|failing|issue)\b/ui, 'bugfix'],
+  [/\b(decid|decision|chose|pick|prefer|select|went with)\b/ui, 'decision'],
+  [/\b(review|audit|check|inspect|feedback|finding)\b/ui, 'review'],
+  [/\b(learn|pattern|convention|always|never|must|should|rule)\b/ui, 'knowledge'],
+  [/\b(config|setup|install|deploy|ci|cd|pipeline)\b/ui, 'configuration'],
+  [/\b(refactor|clean|extract|split|rename|restructure)\b/ui, 'refactoring'],
+  [/\b(test|spec|assert|expect|coverage|unit|e2e)\b/ui, 'testing'],
 ];
 
 /** Classify content into a topic using keyword rules. */
 export function inferTopic(content: string): string {
   if (!content) return 'general';
-  const text = content.slice(0, 1000).toLowerCase();
+  const text = content.slice(0, 1000);
   for (const [pattern, topic] of TOPIC_RULES) {
     if (pattern.test(text)) return topic;
   }
@@ -84,17 +84,18 @@ const TAG_STOP_WORDS = new Set([
 
 /** Extract candidate tags from title + content using identifier patterns. */
 export function inferTags(title: string, content: string): string[] {
-  const text = `${title || ''} ${(content || '').slice(0, 300)}`.toLowerCase();
+  const text = `${title || ''} ${(content || '').slice(0, 300)}`;
   const identifiers = new Set<string>();
 
-  // camelCase and PascalCase words (split on case boundaries)
-  for (const m of text.matchAll(/[a-z][a-zA-Z0-9]{2,30}/g)) {
+  // Unicode-aware identifier extraction (supporting p{L} for letters in any language)
+  // CamelCase and PascalCase words
+  for (const m of text.matchAll(/\p{L}[\p{L}\p{N}]{2,30}/gu)) {
     const word = m[0].toLowerCase();
     if (!TAG_STOP_WORDS.has(word) && word.length >= 3) identifiers.add(word);
   }
 
-  // snake_case and hyphenated terms
-  for (const m of text.matchAll(/[a-z][a-z0-9]*[-_][a-z0-9_-]{1,30}/g)) {
+  // snake_case, kebab-case and hyphenated terms
+  for (const m of text.matchAll(/\p{L}[\p{L}\p{N}]*[-_][\p{L}\p{N}\-_]{1,30}/gu)) {
     const word = m[0].toLowerCase();
     if (word.length >= 4) identifiers.add(word);
   }

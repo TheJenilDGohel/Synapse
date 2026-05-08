@@ -520,25 +520,48 @@ export async function deleteEntity(adapter: Adapter, entityId: string): Promise<
   const id = cleanString(entityId, 400);
   if (!id) throw new Error('entityId is required');
 
-  return adapter.transaction(async (ad) => {
-    const tripleResult = await ad.run(
-      'DELETE FROM kg_triples WHERE subject_id = ? OR object_id = ?',
-      [id, id]
-    );
-    const triplesRemoved = tripleResult?.changes ?? 0;
+  // Senior Audit Fix: HUB-01. For entities with massive triple counts, 
+  // deleting in one transaction stalls the DB. We batch it.
+  const TRIPLE_BATCH_SIZE = 500;
+  let triplesRemovedTotal = 0;
 
-    const entityResult = await ad.run(
-      'DELETE FROM kg_entities WHERE id = ?',
-      [id]
-    );
-    const deleted = (entityResult?.changes ?? 0) > 0;
+  while (true) {
+    const batchRemoved = await adapter.transaction(async (ad) => {
+      // Find a batch of triples to delete
+      const batch = await ad.all<{ id: string }>(
+        'SELECT id FROM kg_triples WHERE subject_id = ? OR object_id = ? LIMIT ?',
+        [id, id, TRIPLE_BATCH_SIZE]
+      );
+      
+      if (batch.length === 0) return 0;
 
-    return {
-      deleted,
-      entity_id: id,
-      triples_removed: triplesRemoved
-    };
-  });
+      const ids = batch.map(b => b.id);
+      const placeholders = ids.map(() => '?').join(',');
+      const result = await ad.run(
+        `DELETE FROM kg_triples WHERE id IN (${placeholders})`,
+        ids
+      );
+      return result?.changes ?? 0;
+    });
+
+    if (batchRemoved === 0) break;
+    triplesRemovedTotal += batchRemoved;
+    
+    // Yield the event loop to allow other DB operations
+    await new Promise(resolve => setImmediate(resolve));
+  }
+
+  const entityResult = await adapter.run(
+    'DELETE FROM kg_entities WHERE id = ?',
+    [id]
+  );
+  const deleted = (entityResult?.changes ?? 0) > 0;
+
+  return {
+    deleted,
+    entity_id: id,
+    triples_removed: triplesRemovedTotal
+  };
 }
 
 export { toSlug as normalizeEntityId };

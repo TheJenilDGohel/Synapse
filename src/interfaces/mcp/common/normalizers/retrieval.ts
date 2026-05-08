@@ -109,22 +109,30 @@ export function normalizeSymbolResult(result: any, symbol: string, options: { in
 export interface NormalizedUsageResult {
   symbol: string;
   count: number;
-  usages: unknown[];
+  usages?: unknown[];
   [key: string]: unknown;
 }
 
-export function normalizeUsageResult(result: any, symbol: string): NormalizedUsageResult {
+export function normalizeUsageResult(result: any, symbol: string, options: { includeLegacyArrays?: boolean } = {}): NormalizedUsageResult {
   const usages = Array.isArray(result?.usages) ? result.usages : [];
+  const base = { ...(result || {}) };
+  delete base.usages;
+  delete base.items;
+
   // quick 260415-n69: alias `usages` as `items` + PaginatedResult wrap.
   const paginated = ensurePaginatedShape(usages, { total: usages.length });
-  return {
-    ...result,
+  const normalized: NormalizedUsageResult = {
+    ...base,
     ...paginated,
     symbol: result?.symbol || symbol,
     count: paginated.count,
-    usages,
     items: paginated.items
   };
+
+  if (options.includeLegacyArrays) {
+    normalized.usages = usages;
+  }
+  return normalized;
 }
 
 export interface NormalizedReadFileChunkResult {
@@ -191,45 +199,85 @@ export function normalizeAgentPrimeResult(result: any): NormalizedAgentPrimeResu
 // names (callers, definitions, implementations, changes) are preserved
 // alongside the new `items` alias for backwards compat via passthrough().
 
-export function normalizeCallersResult(result: any, symbol: string) {
+export function normalizeCallersResult(result: any, symbol: string, options: { includeLegacyArrays?: boolean } = {}) {
   const callers = Array.isArray(result?.callers) ? result.callers : [];
+  const base = { ...(result || {}) };
+  delete base.callers;
+  delete base.items;
+
   const paginated = ensurePaginatedShape(callers, { total: callers.length });
-  return {
+  const normalized: any = {
+    ...base,
     ...paginated,
     symbol: result?.symbol || symbol,
-    callers
+    items: paginated.items
   };
+
+  if (options.includeLegacyArrays) {
+    normalized.callers = callers;
+  }
+  return normalized;
 }
 
-export function normalizeDefinitionResult(result: any, symbol: string) {
+export function normalizeDefinitionResult(result: any, symbol: string, options: { includeLegacyArrays?: boolean } = {}) {
   const definitions = Array.isArray(result?.definitions) ? result.definitions : [];
+  const base = { ...(result || {}) };
+  delete base.definitions;
+  delete base.items;
+
   const paginated = ensurePaginatedShape(definitions, { total: definitions.length });
-  return {
+  const normalized: any = {
+    ...base,
     ...paginated,
     symbol: result?.symbol || symbol,
-    definitions
+    items: paginated.items
   };
+
+  if (options.includeLegacyArrays) {
+    normalized.definitions = definitions;
+  }
+  return normalized;
 }
 
-export function normalizeImplementationsResult(result: any, interfaceName: string) {
+export function normalizeImplementationsResult(result: any, interfaceName: string, options: { includeLegacyArrays?: boolean } = {}) {
   const implementations = Array.isArray(result?.implementations) ? result.implementations : [];
+  const base = { ...(result || {}) };
+  delete base.implementations;
+  delete base.items;
+
   const paginated = ensurePaginatedShape(implementations, { total: implementations.length });
-  return {
+  const normalized: any = {
+    ...base,
     ...paginated,
     symbol: result?.symbol || interfaceName,
-    implementations
+    items: paginated.items
   };
+
+  if (options.includeLegacyArrays) {
+    normalized.implementations = implementations;
+  }
+  return normalized;
 }
 
-export function normalizeRenamePreviewResult(result: any, oldName: string, newName: string) {
+export function normalizeRenamePreviewResult(result: any, oldName: string, newName: string, options: { includeLegacyArrays?: boolean } = {}) {
   const changes = Array.isArray(result?.changes) ? result.changes : [];
+  const base = { ...(result || {}) };
+  delete base.changes;
+  delete base.items;
+
   const paginated = ensurePaginatedShape(changes, { total: changes.length });
-  return {
+  const normalized: any = {
+    ...base,
     ...paginated,
     old_name: result?.old_name || oldName,
     new_name: result?.new_name || newName,
     total_changes: Number.isFinite(result?.total_changes) ? result.total_changes : changes.length,
     files_affected: Number.isFinite(result?.files_affected) ? result.files_affected : 0,
-    changes
+    items: paginated.items
   };
+
+  if (options.includeLegacyArrays) {
+    normalized.changes = changes;
+  }
+  return normalized;
 }

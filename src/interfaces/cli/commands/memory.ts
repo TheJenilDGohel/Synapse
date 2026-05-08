@@ -15,10 +15,7 @@ import { createInterface } from 'node:readline';
 import { printSubcommandHelp } from '../help.js';
 import type { VerbDef } from '../help.js';
 import { writeError as sharedWriteError } from '../output.js';
-import {
-  MemoryService,
-  MemoryWorkflowService
-} from '../../../core/engine/index.js';
+import { services } from '../../../core/runtime/registry.js';
 import { c, B, symbol } from '../ansi.js';
 import type { GlobalOptions } from '../options.js';
 
@@ -32,38 +29,6 @@ const VERBS: VerbDef[] = [
   { name: 'context', desc: 'Synthesize task-relevant context for agents' },
   { name: 'outcome', desc: 'Capture task outcome as a persistent memory' },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  Service bootstrap                                                  */
-/* ------------------------------------------------------------------ */
-
-async function createMemoryService(): Promise<MemoryService> {
-  const { buildRuntimeConfig } = await import('../../../core/runtime/config.js');
-  const { EmbeddingService } = await import('../../../core/engine/index.js');
-  
-  const runtime = buildRuntimeConfig();
-  const embeddingService = new EmbeddingService({
-    provider: runtime.embeddingProvider,
-    model: runtime.embeddingModel,
-    cacheDir: runtime.embeddingCacheDir,
-  });
-  return new MemoryService({
-    synapseHome: runtime.synapseHome,
-    enabled: runtime.memoryEnabled,
-    backend: runtime.memoryBackend,
-    dbPath: runtime.memoryDbPath,
-    autoCapture: runtime.memoryAutoCapture,
-    consentDone: runtime.memoryConsentDone,
-    embeddingService: embeddingService as any,
-  });
-}
-
-async function createWorkflowService(): Promise<MemoryWorkflowService> {
-  const svc = await createMemoryService();
-  return new MemoryWorkflowService({
-    memory: svc,
-  });
-}
 
 /* ------------------------------------------------------------------ */
 /*  Output helpers                                                     */
@@ -125,7 +90,7 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
     return;
   }
 
-  const svc = await createMemoryService();
+  const svc = services.getMemory();
   const result: any = await svc.storeEntry({
     content,
     kind: (flags.type as string) || 'knowledge',
@@ -168,7 +133,7 @@ async function handleSearch(args: string[], opts: GlobalOptions): Promise<void> 
     return;
   }
 
-  const svc = await createMemoryService();
+  const svc = services.getMemory();
   const result: any = await svc.recall({
     query,
     limit: (flags.limit as number) || 10,
@@ -207,7 +172,7 @@ async function handleList(args: string[], opts: GlobalOptions): Promise<void> {
 
   const useJson = opts.json || Boolean(flags.json);
 
-  const svc = await createMemoryService();
+  const svc = services.getMemory();
   const result: any = await svc.listEntries({
     limit: (flags.limit as number) || 20,
     kind: (flags.kind as string) || undefined,
@@ -261,7 +226,7 @@ async function handleShow(args: string[], opts: GlobalOptions): Promise<void> {
     return;
   }
 
-  const svc = await createMemoryService();
+  const svc = services.getMemory();
   const entry: any = await svc.getEntry(id);
 
   if (!entry) {
@@ -315,7 +280,7 @@ async function handleDelete(args: string[], opts: GlobalOptions): Promise<void> 
     return;
   }
 
-  const svc = await createMemoryService();
+  const svc = services.getMemory();
   const result: any = await svc.deleteEntry(id);
 
   if (opts.json) {
@@ -342,7 +307,11 @@ async function handlePrime(args: string[], opts: GlobalOptions): Promise<void> {
     return;
   }
 
-  const workflow = await createWorkflowService();
+  // Still need workflow service for complex operations, 
+  // but we can refactor this later to be part of the memory service or a separate workflow service in the registry.
+  const { MemoryWorkflowService } = await import('../../../core/engine/index.js');
+  const workflow = new MemoryWorkflowService({ memory: services.getMemory() as any });
+  
   const result = await workflow.agentPrime({
     task,
     project_path: (flags.project as string) || process.cwd(),
@@ -397,7 +366,9 @@ async function handleContext(args: string[], opts: GlobalOptions): Promise<void>
     kind: { type: 'string' },
   });
 
-  const workflow = await createWorkflowService();
+  const { MemoryWorkflowService } = await import('../../../core/engine/index.js');
+  const workflow = new MemoryWorkflowService({ memory: services.getMemory() as any });
+  
   const result = await workflow.getTaskContext({
     task: (flags.task as string),
     query: (flags.query as string),
@@ -431,7 +402,9 @@ async function handleOutcome(args: string[], opts: GlobalOptions): Promise<void>
     return;
   }
 
-  const workflow = await createWorkflowService();
+  const { MemoryWorkflowService } = await import('../../../core/engine/index.js');
+  const workflow = new MemoryWorkflowService({ memory: services.getMemory() as any });
+  
   const result = await workflow.captureOutcome({
     task: (flags.task as string),
     summary: (flags.summary as string),

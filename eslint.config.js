@@ -12,9 +12,8 @@ export default [
       '.claude-flow/**',
       'coverage/**',
       'build/**',
-      'docs/dist/**',
-      'docs/.astro/**',
-      'docs/node_modules/**',
+      'docs/**',
+      '**/.dart_tool/**',
       'synapse-docs/build/**'
     ]
   },

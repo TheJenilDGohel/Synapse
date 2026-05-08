@@ -171,10 +171,10 @@ export interface StoreEntryInput {
 }
 
 export interface StoreEntryResult {
-  created: boolean;
-  duplicate: boolean;
+  created?: boolean;
+  duplicate?: boolean;
   semantic_match?: DuplicateMatch;
-  memory: MemoryEntryWithRevisions | null;
+  memory?: MemoryEntryWithRevisions | null;
   cancelled?: boolean;
   reason?: string;
   auto_linked_entities?: AutoLinkedEntity[];

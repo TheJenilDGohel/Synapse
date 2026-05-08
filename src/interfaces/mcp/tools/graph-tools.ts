@@ -3,7 +3,8 @@ import { MemoryHooks } from '../../../core/engine/index.js';
 import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,
-  IDEMPOTENT_WRITE_ANNOTATIONS
+  IDEMPOTENT_WRITE_ANNOTATIONS,
+  DESTRUCTIVE_ANNOTATIONS
 } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import {
@@ -48,6 +49,9 @@ interface MemoryService {
   ingestJson(opts: Record<string, unknown>): Promise<unknown>;
   checkDuplicate(content: string, opts: Record<string, unknown>): Promise<unknown>;
   backfillMemoryKgLinks(opts: Record<string, unknown>): Promise<unknown>;
+  deleteEntity(entityId: string): Promise<unknown>;
+  deleteEntityBatch(args: { entity_ids: string[] }): Promise<unknown>;
+  deleteTripleBatch(args: { triple_ids: string[] }): Promise<unknown>;
   store: {
     hooks: MemoryHooks;
   };
@@ -64,473 +68,313 @@ export function registerGraphTools({
   memory,
   schemas
 }: RegisterGraphToolsOptions): void {
-  // --- KG Tools (synapse_kg_*) ---
-
+  // --- KG Manage Controller (synapse_kg_manage) ---
   registerJsonTool(
-    ['synapse_kg_add_entity'],
+    ['synapse_kg_manage'],
     {
-      title: 'KG Add Entity',
-      description: 'Create or update a KG entity. IDs are auto-generated as normalized slugs.',
-      inputSchema: {
-        name: z.string().min(1).max(400),
-        type: z.string().max(100).default('concept'),
-        properties: z.record(z.string(), z.any()).default({}),
-        memory_id: z.string().optional(),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
-    },
-    async ({ name, type, properties, memory_id, terse }: Record<string, unknown>) =>
-      toMinimalWriteResponse(await memory.addEntity({ name, type, properties, memoryId: memory_id }), terse as string)
-  );
-
-  registerJsonTool(
-    ['synapse_kg_add_triple'],
-    {
-      title: 'KG Add Triple',
-      description: 'Add a subject-predicate-object triple. Entities are auto-created. Detects contradictions.',
-      inputSchema: {
-        subject_name: z.string().min(1).max(400),
-        predicate: z.string().min(1).max(400),
-        object_name: z.string().min(1).max(400),
-        subject_id: z.string().max(400).optional(),
-        object_id: z.string().max(400).optional(),
-        valid_from: z.string().nullable().optional(),
-        valid_to: z.string().nullable().optional(),
-        confidence: z.number().min(0).max(1).default(1.0),
-        source_memory_id: z.string().nullable().optional(),
-        source_type: z.string().max(100).default('manual'),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
+      title: 'KG Manage',
+      description: 'Unified controller for all knowledge graph mutations (add, delete, ingest, branch management, diary write).',
+      inputSchema: z.discriminatedUnion('action', [
+        z.object({
+          action: z.literal('add_entity'),
+          name: z.string().min(1).max(400),
+          type: z.string().max(100).default('concept'),
+          properties: z.record(z.string(), z.any()).default({}),
+          memory_id: z.string().optional(),
+          terse: z.enum(['minimal', 'verbose']).default('verbose')
+        }),
+        z.object({
+          action: z.literal('add_triple'),
+          subject_name: z.string().min(1).max(400),
+          predicate: z.string().min(1).max(400),
+          object_name: z.string().min(1).max(400),
+          subject_id: z.string().max(400).optional(),
+          object_id: z.string().max(400).optional(),
+          valid_from: z.string().nullable().optional(),
+          valid_to: z.string().nullable().optional(),
+          confidence: z.number().min(0).max(1).default(1.0),
+          source_memory_id: z.string().nullable().optional(),
+          source_type: z.string().max(100).default('manual'),
+          terse: z.enum(['minimal', 'verbose']).default('verbose')
+        }),
+        z.object({
+          action: z.literal('add_entities_batch'),
+          entities: z.array(z.object({
+            name: z.string().min(1).max(400), type: z.string().max(100).default('concept'),
+            properties: z.record(z.string(), z.any()).default({}), memory_id: z.string().optional()
+          })).min(1).max(500),
+          response_format: z.enum(['minimal', 'verbose']).default('minimal')
+        }),
+        z.object({
+          action: z.literal('add_triples_batch'),
+          triples: z.array(z.object({
+            subject_name: z.string().min(1).max(400), predicate: z.string().min(1).max(400),
+            object_name: z.string().min(1).max(400), subject_id: z.string().max(400).optional(),
+            object_id: z.string().max(400).optional(), valid_from: z.string().nullable().optional(),
+            valid_to: z.string().nullable().optional(), confidence: z.number().min(0).max(1).default(1.0),
+            source_memory_id: z.string().nullable().optional(), source_type: z.string().max(100).default('manual')
+          })).min(1).max(500),
+          response_format: z.enum(['minimal', 'verbose']).default('minimal')
+        }),
+        z.object({
+          action: z.literal('invalidate'),
+          triple_id: z.string().min(1),
+          valid_to: z.string().nullable().optional(),
+          terse: z.enum(['minimal', 'verbose']).default('verbose')
+        }),
+        z.object({
+          action: z.literal('delete_entity'),
+          entity_id: z.string().min(1)
+        }),
+        z.object({
+          action: z.literal('delete_entities_batch'),
+          entity_ids: z.array(z.string().min(1)).min(1).max(100)
+        }),
+        z.object({
+          action: z.literal('delete_triples_batch'),
+          triple_ids: z.array(z.string().min(1)).min(1).max(100)
+        }),
+        z.object({
+          action: z.literal('manage_branches'),
+          action_type: z.enum(['merge', 'rename', 'delete', 'list_stale']),
+          nest: z.string().min(1).max(200),
+          from_branch: z.string().max(200).optional(),
+          to_branch: z.string().max(200).optional(),
+          branch: z.string().max(200).optional(),
+          older_than_days: z.number().int().min(1).max(3650).default(30)
+        }),
+        z.object({
+          action: z.literal('ingest_markdown'),
+          content: z.string().min(1).max(500000),
+          source_label: z.string().max(1000).optional(),
+          nest: z.string().max(200).default(''),
+          branch: z.string().max(200).default(''),
+          agent_id: z.string().max(200).default(''),
+          terse: z.enum(['minimal', 'verbose']).default('verbose')
+        }),
+        z.object({
+          action: z.literal('ingest_json'),
+          content: z.string().min(1).max(500000),
+          source_label: z.string().max(1000).optional(),
+          nest: z.string().max(200).default(''),
+          branch: z.string().max(200).default(''),
+          agent_id: z.string().max(200).default(''),
+          terse: z.enum(['minimal', 'verbose']).default('verbose')
+        }),
+        z.object({
+          action: z.literal('backfill_links'),
+          limit: z.number().int().min(1).max(500).default(200),
+          offset: z.number().int().min(0).default(0),
+          nest: z.string().max(200).optional(),
+          branch: z.string().max(200).optional()
+        }),
+        z.object({
+          action: z.literal('write_diary'),
+          agent_id: z.string().min(1).max(200),
+          content: z.string().min(1).max(20000),
+          topic: z.string().max(200).optional(),
+          terse: z.enum(['minimal', 'verbose']).default('verbose')
+        })
+      ]),
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_TRIPLE_RESULT_SCHEMA
-    },
-    async ({ subject_name, predicate, object_name, subject_id, object_id, valid_from, valid_to, confidence, source_memory_id, source_type, terse }: Record<string, unknown>) =>
-      toMinimalWriteResponse(await memory.addTriple({
-        subjectName: subject_name, subjectId: subject_id, predicate,
-        objectName: object_name, objectId: object_id,
-        validFrom: valid_from, validTo: valid_to, confidence,
-        sourceMemoryId: source_memory_id, sourceType: source_type
-      }), terse as string)
-  );
-
-  registerJsonTool(
-    ['synapse_kg_add_entities_batch'],
-    {
-      title: 'KG Add Entities Batch',
-      description: 'Create up to 500 entities in a single transactional batch. Returns created/duplicate counts and per-row errors. Use response_format "verbose" to get back an ids[] array.',
-      inputSchema: {
-        entities: z.array(z.object({
-          name: z.string().min(1).max(400), type: z.string().max(100).default('concept'),
-          properties: z.record(z.string(), z.any()).default({}), memory_id: z.string().optional()
-        })).min(1).max(500),
-        response_format: z.enum(['minimal', 'verbose']).default('minimal')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
     },
-    async ({ entities, response_format }: Record<string, unknown>) =>
-      memory.addEntityBatch({
-        entities: (entities as Array<Record<string, unknown>>).map(e => ({
-          name: e.name, type: e.type, properties: e.properties, memoryId: e.memory_id
-        })),
-        response_format
-      })
+    async (input: any) => {
+      const { action, ...args } = input;
+      switch (action) {
+        case 'add_entity':
+          return toMinimalWriteResponse(await memory.addEntity({ name: args.name, type: args.type, properties: args.properties, memoryId: args.memory_id }), args.terse);
+        case 'add_triple':
+          return toMinimalWriteResponse(await memory.addTriple({
+            subjectName: args.subject_name, subjectId: args.subject_id, predicate: args.predicate,
+            objectName: args.object_name, objectId: args.object_id,
+            validFrom: args.valid_from, validTo: args.valid_to, confidence: args.confidence,
+            sourceMemoryId: args.source_memory_id, sourceType: args.source_type
+          }), args.terse);
+        case 'add_entities_batch':
+          return memory.addEntityBatch({
+            entities: args.entities.map((e: any) => ({
+              name: e.name, type: e.type, properties: e.properties, memoryId: e.memory_id
+            })),
+            response_format: args.response_format
+          });
+        case 'add_triples_batch':
+          return memory.addTripleBatch({
+            triples: args.triples.map((t: any) => ({
+              subjectName: t.subject_name, subjectId: t.subject_id, predicate: t.predicate,
+              objectName: t.object_name, objectId: t.object_id, validFrom: t.valid_from,
+              validTo: t.valid_to, confidence: t.confidence,
+              sourceMemoryId: t.source_memory_id, sourceType: t.source_type
+            })),
+            response_format: args.response_format
+          });
+        case 'invalidate':
+          return toMinimalWriteResponse(await memory.invalidateTriple(args.triple_id, args.valid_to), args.terse);
+        case 'delete_entity':
+          return memory.deleteEntity(args.entity_id);
+        case 'delete_entities_batch':
+          return memory.deleteEntityBatch({ entity_ids: args.entity_ids });
+        case 'delete_triples_batch':
+          return memory.deleteTripleBatch({ triple_ids: args.triple_ids });
+        case 'manage_branches':
+          return memory.manageBranches({
+            action: args.action_type,
+            nest: args.nest,
+            fromBranch: args.from_branch,
+            toBranch: args.to_branch,
+            branch: args.branch,
+            olderThanDays: args.older_than_days
+          });
+        case 'ingest_markdown':
+          return toMinimalWriteResponse(await memory.ingestMarkdown({ content: args.content, filePath: args.source_label || '', nest: args.nest, branch: args.branch, agentId: args.agent_id }), args.terse);
+        case 'ingest_json':
+          return toMinimalWriteResponse(await memory.ingestJson({ content: args.content, filePath: args.source_label || '', nest: args.nest, branch: args.branch, agentId: args.agent_id }), args.terse);
+        case 'backfill_links':
+          return memory.backfillMemoryKgLinks({ limit: args.limit, offset: args.offset, nest: args.nest, branch: args.branch });
+        case 'write_diary':
+          return toMinimalWriteResponse(await memory.writeDiaryEntry({ agentId: args.agent_id, content: args.content, topic: args.topic }), args.terse);
+        default:
+          throw new Error(`Unknown action: ${action}`);
+      }
+    }
   );
 
-  registerJsonTool(
-    ['synapse_kg_add_triples_batch'],
-    {
-      title: 'KG Add Triples Batch',
-      description: 'Transactional batch add of triples (up to 500). Entities auto-created.',
-      inputSchema: {
-        triples: z.array(z.object({
-          subject_name: z.string().min(1).max(400), predicate: z.string().min(1).max(400),
-          object_name: z.string().min(1).max(400), subject_id: z.string().max(400).optional(),
-          object_id: z.string().max(400).optional(), valid_from: z.string().nullable().optional(),
-          valid_to: z.string().nullable().optional(), confidence: z.number().min(0).max(1).default(1.0),
-          source_memory_id: z.string().nullable().optional(), source_type: z.string().max(100).default('manual')
-        })).min(1).max(500),
-        response_format: z.enum(['minimal', 'verbose']).default('minimal')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
-    },
-    async ({ triples, response_format }: Record<string, unknown>) =>
-      memory.addTripleBatch({
-        triples: (triples as Array<Record<string, unknown>>).map(t => ({
-          subjectName: t.subject_name, subjectId: t.subject_id, predicate: t.predicate,
-          objectName: t.object_name, objectId: t.object_id, validFrom: t.valid_from,
-          validTo: t.valid_to, confidence: t.confidence,
-          sourceMemoryId: t.source_memory_id, sourceType: t.source_type
-        })),
-        response_format
-      })
-  );
-
-  registerJsonTool(
-    ['synapse_kg_list_entities'],
-    {
-      title: 'KG List Entities',
-      description: 'List knowledge-graph entities with optional type and fuzzy-name filters so callers can discover valid entity IDs before querying relationships.',
-      inputSchema: {
-        type: z.string().max(100).optional(),
-        name_contains: z.string().max(200).optional(),
-        limit: z.number().int().min(1).max(200).default(20),
-        offset: z.number().int().min(0).default(0),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
-    },
-    async ({ type, name_contains, limit, offset, item_format }: Record<string, unknown>) =>
-      applyReadFormatToItems(
-        await memory.listEntities({ type, nameContains: name_contains, limit, offset }),
-        (item_format as ReadResponseFormat | undefined) ?? 'verbose'
-      )
-  );
-
+  // --- KG Query Controller (synapse_kg_query) ---
   registerJsonTool(
     ['synapse_kg_query'],
     {
-      title: 'KG Query Entity',
-      description: 'Query all relationships for an entity in the knowledge graph with optional direction filtering (outgoing, incoming, or both).',
-      inputSchema: {
-        entity_id: z.string().min(1).max(400),
-        direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
-        include_invalid: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async (args: Record<string, unknown>) =>
-      applyReadFormatToBundle(
-        await memory.queryEntityRelationships(args.entity_id as string, {
-          direction: args.direction as any,
-          includeInvalid: args.include_invalid as boolean
+      title: 'KG Query',
+      description: 'Unified controller for all knowledge graph queries and state introspection.',
+      inputSchema: z.discriminatedUnion('action', [
+        z.object({
+          action: z.literal('list_entities'),
+          type: z.string().max(100).optional(),
+          name_contains: z.string().max(200).optional(),
+          limit: z.number().int().min(1).max(200).default(20),
+          offset: z.number().int().min(0).default(0),
+          item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
         }),
-        (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
-      )
-  );
-
-  registerJsonTool(
-    ['synapse_kg_invalidate'],
-    {
-      title: 'KG Invalidate Triple',
-      description: 'Set valid_to on a triple to mark it as no longer current. The triple remains in history but is excluded from current-state queries.',
-      inputSchema: {
-        triple_id: z.string().min(1),
-        valid_to: z.string().nullable().optional(),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
-    },
-    async ({ triple_id, valid_to, terse }: Record<string, unknown>) =>
-      toMinimalWriteResponse(await memory.invalidateTriple(triple_id as string, valid_to as string | null | undefined), terse as string)
-  );
-
-  registerJsonTool(
-    ['synapse_kg_as_of'],
-    {
-      title: 'KG As-Of Query',
-      description: 'Query triples for an entity at a specific point in time. mode="event" (default) returns facts whose valid_from/valid_to bracket the date (event-time axis). mode="transaction" returns every triple Synapse knew at that time via recorded_at, regardless of valid_to (transaction-time axis).',
-      inputSchema: {
-        entity_id: z.string().min(1).max(400),
-        as_of_date: z.string().min(1),
-        mode: z.enum(['event', 'transaction']).default('event')
-      },
+        z.object({
+          action: z.literal('query_relationships'),
+          entity_id: z.string().min(1).max(400),
+          direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
+          include_invalid: z.boolean().default(false),
+          item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
+        }),
+        z.object({
+          action: z.literal('as_of'),
+          entity_id: z.string().min(1).max(400),
+          as_of_date: z.string().min(1),
+          mode: z.enum(['event', 'transaction']).default('event')
+        }),
+        z.object({
+          action: z.literal('timeline'),
+          entity_id: z.string().min(1).max(400)
+        }),
+        z.object({
+          action: z.literal('stats')
+        }),
+        z.object({
+          action: z.literal('nest_list')
+        }),
+        z.object({
+          action: z.literal('nest_branches'),
+          nest: z.string().min(1).max(200)
+        }),
+        z.object({
+          action: z.literal('nest_tree')
+        }),
+        z.object({
+          action: z.literal('traverse'),
+          start_entity_id: z.string().min(1).max(400),
+          max_hops: z.number().int().min(1).max(5).default(2),
+          direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
+          limit: z.number().int().min(1).max(200).default(20),
+          entity_type: z.string().max(100).optional(),
+          predicates: z.array(z.string().max(200)).max(20).optional(),
+          max_per_depth: z.number().int().min(1).max(100).optional()
+        }),
+        z.object({
+          action: z.literal('bridges'),
+          nest: z.string().max(200).optional(),
+          mode: z.enum(['cross-nest', 'cross-branch']).default('cross-nest')
+        }),
+        z.object({
+          action: z.literal('diary_read'),
+          agent_id: z.string().min(1).max(200),
+          topic: z.string().max(200).optional(),
+          limit: z.number().int().min(1).max(100).default(20),
+          offset: z.number().int().min(0).default(0)
+        }),
+        z.object({
+          action: z.literal('check_duplicate'),
+          content: z.string().min(1).max(20000),
+          threshold: z.number().min(0).max(1).default(0.92),
+          nest: z.string().max(200).optional(),
+          branch: z.string().max(200).optional(),
+          project_path: z.string().max(1000).optional()
+        }),
+        z.object({
+          action: z.literal('hooks_stats')
+        }),
+        z.object({
+          action: z.literal('hooks_list_events')
+        })
+      ]),
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
     },
-    async ({ entity_id, as_of_date, mode }: Record<string, unknown>) =>
-      memory.queryTriplesAsOf(entity_id as string, as_of_date as string, mode as 'event' | 'transaction' | undefined)
-  );
-
-  registerJsonTool(
-    ['synapse_kg_timeline'],
-    {
-      title: 'KG Entity Timeline',
-      description: 'Get a chronological timeline of all triples for an entity, including invalidated facts. Ordered by valid_from date ascending.',
-      inputSchema: {
-        entity_id: z.string().min(1).max(400)
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async ({ entity_id }: Record<string, unknown>) =>
-      memory.getEntityTimeline(entity_id as string)
-  );
-
-  registerJsonTool(
-    ['synapse_kg_stats'],
-    {
-      title: 'KG Statistics',
-      description: 'Get knowledge graph statistics: total entity count, total triple count, active triple count, and breakdown by predicate type.',
-      inputSchema: {},
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_STATUS_RESULT_SCHEMA
-    },
-    async () => memory.getKgStats()
-  );
-
-  registerJsonTool(
-    ['synapse_kg_backfill_links'],
-    {
-      title: 'KG Backfill Memory Links',
-      description: 'Retroactively scan existing memories and create KG triples linking them to matching entities. Processes memories in batches. Use limit/offset for pagination.',
-      inputSchema: {
-        limit: z.number().int().min(1).max(500).default(200),
-        offset: z.number().int().min(0).default(0),
-        nest: z.string().max(200).optional(),
-        branch: z.string().max(200).optional()
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
-    },
-    async ({ limit, offset, nest, branch }: Record<string, unknown>) =>
-      memory.backfillMemoryKgLinks({ limit, offset, nest, branch })
-  );
-
-  // --- Nest/Branch Tools (synapse_nest_*) ---
-
-  registerJsonTool(
-    ['synapse_nest_list'],
-    {
-      title: 'Nest List',
-      description: 'List all nests (top-level memory domains) with their memory entry counts.',
-      inputSchema: {},
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async () => memory.listNests()
-  );
-
-  registerJsonTool(
-    ['synapse_nest_branches'],
-    {
-      title: 'Nest Branches',
-      description: 'List all branches (topics) within a specific nest with their memory entry counts.',
-      inputSchema: {
-        nest: z.string().min(1).max(200)
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async ({ nest }: Record<string, unknown>) => memory.listBranches(nest as string)
-  );
-
-  registerJsonTool(
-    ['synapse_nest_tree'],
-    {
-      title: 'Nest Taxonomy Tree',
-      description: 'Get the full taxonomy tree: all nests, their branches, and memory counts at each level.',
-      inputSchema: {},
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async () => memory.getTaxonomyTree()
-  );
-
-  registerJsonTool(
-    ['synapse_nest_manage'],
-    {
-      title: 'Nest Branch Cleanup',
-      description: 'Manage branch sprawl within a nest. `merge` moves all memories from from_branch into to_branch. `rename` renames a branch in place. `delete` clears the branch from matching memories without deleting those memories. `list_stale` lists branches whose latest activity is older than older_than_days.',
-      inputSchema: {
-        action: z.enum(['merge', 'rename', 'delete', 'list_stale']),
-        nest: z.string().min(1).max(200),
-        from_branch: z.string().max(200).optional(),
-        to_branch: z.string().max(200).optional(),
-        branch: z.string().max(200).optional(),
-        older_than_days: z.number().int().min(1).max(3650).default(30)
-      },
-      annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async ({ action, nest, from_branch, to_branch, branch, older_than_days }: Record<string, unknown>) =>
-      memory.manageBranches({
-        action,
-        nest,
-        fromBranch: from_branch,
-        toBranch: to_branch,
-        branch,
-        olderThanDays: older_than_days
-      })
-  );
-
-  // --- Graph Traversal Tools (synapse_graph_*) ---
-
-  registerJsonTool(
-    ['synapse_graph_traverse'],
-    {
-      title: 'Graph Traverse',
-      description: 'Traverse the knowledge graph from a starting entity with configurable max hops (default 2). Uses recursive CTEs with cycle prevention. Returns discovered entities with path information.',
-      inputSchema: {
-        start_entity_id: z.string().min(1).max(400),
-        max_hops: z.number().int().min(1).max(5).default(2),
-        direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
-        limit: z.number().int().min(1).max(200).default(20),
-        entity_type: z.string().max(100).optional(),
-        predicates: z.array(z.string().max(200)).max(20).optional(),
-        max_per_depth: z.number().int().min(1).max(100).optional()
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async ({ start_entity_id, max_hops, direction, limit, entity_type, predicates, max_per_depth }: Record<string, unknown>) =>
-      memory.traverseGraph({
-        startEntityId: start_entity_id,
-        maxHops: max_hops,
-        direction,
-        limit,
-        entityType: entity_type,
-        predicates: predicates as string[] | undefined,
-        maxPerDepth: max_per_depth
-      })
-  );
-
-  registerJsonTool(
-    ['synapse_graph_bridges'],
-    {
-      title: 'Graph Bridges',
-      description: 'Discover cross-nest bridges (default) or cross-branch bridges within a nest. Use mode="cross-branch" with a nest to find entities that span different branches within that nest.',
-      inputSchema: {
-        nest: z.string().max(200).optional(),
-        mode: z.enum(['cross-nest', 'cross-branch']).default('cross-nest')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async ({ nest, mode }: Record<string, unknown>) => memory.discoverBridges({ nest, mode: mode as 'cross-nest' | 'cross-branch' | undefined })
-  );
-
-  // --- Diary Tools (synapse_diary_*) ---
-
-  registerJsonTool(
-    ['synapse_diary_write'],
-    {
-      title: 'Diary Write',
-      description: 'Write a private diary entry for an agent. Diary entries are isolated and only visible to the owning agent.',
-      inputSchema: {
-        agent_id: z.string().min(1).max(200),
-        content: z.string().min(1).max(20000),
-        topic: z.string().max(200).optional(),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
-    },
-    async ({ agent_id, content, topic, terse }: Record<string, unknown>) =>
-      toMinimalWriteResponse(await memory.writeDiaryEntry({ agentId: agent_id, content, topic }), terse as string)
-  );
-
-  registerJsonTool(
-    ['synapse_diary_read'],
-    {
-      title: 'Diary Read',
-      description: 'Read recent diary entries for a specific agent. Only returns entries belonging to the requesting agent.',
-      inputSchema: {
-        agent_id: z.string().min(1).max(200),
-        topic: z.string().max(200).optional(),
-        limit: z.number().int().min(1).max(100).default(20),
-        offset: z.number().int().min(0).default(0)
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_FREEFORM_RESULT_SCHEMA
-    },
-    async ({ agent_id, topic, limit, offset }: Record<string, unknown>) =>
-      memory.readDiaryEntries({ agentId: agent_id, topic, limit, offset })
-  );
-
-  // --- Ingest Tools (synapse_ingest_*) ---
-
-  registerJsonTool(
-    ['synapse_ingest_markdown'],
-    {
-      title: 'Ingest Markdown Conversation',
-      description: 'Ingest a Markdown conversation export into memory entries and knowledge graph triples. Pass the full text content directly — file reading is handled by the CLI, not MCP tools.',
-      inputSchema: {
-        content: z.string().min(1).max(500000).describe('Full markdown text content to ingest'),
-        source_label: z.string().max(1000).optional().describe('Optional label for re-ingestion tracking (e.g. filename)'),
-        nest: z.string().max(200).default(''),
-        branch: z.string().max(200).default(''),
-        agent_id: z.string().max(200).default(''),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
-    },
-    async ({ content, source_label, nest, branch, agent_id, terse }: Record<string, unknown>) =>
-      toMinimalWriteResponse(await memory.ingestMarkdown({ content, filePath: source_label || '', nest, branch, agentId: agent_id }), terse as string)
-  );
-
-  registerJsonTool(
-    ['synapse_ingest_json'],
-    {
-      title: 'Ingest JSON Conversation',
-      description: 'Ingest a JSON conversation export (array of {role, content, timestamp?} objects) into memory entries and knowledge graph triples. Pass the full JSON text directly.',
-      inputSchema: {
-        content: z.string().min(1).max(500000).describe('Full JSON text content to ingest'),
-        source_label: z.string().max(1000).optional().describe('Optional label for re-ingestion tracking'),
-        nest: z.string().max(200).default(''),
-        branch: z.string().max(200).default(''),
-        agent_id: z.string().max(200).default(''),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
-    },
-    async ({ content, source_label, nest, branch, agent_id, terse }: Record<string, unknown>) =>
-      toMinimalWriteResponse(await memory.ingestJson({ content, filePath: source_label || '', nest, branch, agentId: agent_id }), terse as string)
-  );
-
-  // --- Dedup Tool (synapse_memory_check_duplicate) ---
-
-  registerJsonTool(
-    ['synapse_memory_check_duplicate'],
-    {
-      title: 'Memory Check Duplicate',
-      description: 'Check whether content is a semantic duplicate of an existing memory entry. Uses embedding cosine similarity with configurable threshold (default 0.92). Returns the matching entry when a duplicate is found.',
-      inputSchema: {
-        content: z.string().min(1).max(20000),
-        threshold: z.number().min(0).max(1).default(0.92),
-        nest: z.string().max(200).optional(),
-        branch: z.string().max(200).optional(),
-        project_path: z.string().max(1000).optional()
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
-    },
-    async ({ content, threshold, nest, branch, project_path }: Record<string, unknown>) =>
-      memory.checkDuplicate(content as string, { threshold, nest, branch, projectPath: project_path })
-  );
-
-  // --- Hook Introspection Tools (synapse_hooks_*) ---
-
-  registerJsonTool(
-    ['synapse_hooks_stats'],
-    {
-      title: 'Hooks Stats',
-      description: 'Returns hook system statistics: whether hooks are enabled, total registered listener count, and a breakdown of listener counts per event type.',
-      inputSchema: {},
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_STATUS_RESULT_SCHEMA
-    },
-    async () => memory.store.hooks.getStats()
-  );
-
-  registerJsonTool(
-    ['synapse_hooks_list_events'],
-    {
-      title: 'Hooks List Events',
-      description: 'Returns all valid hook event names that listeners can subscribe to. Covers memory lifecycle (store, update, delete, recall), knowledge graph operations (addEntity, addTriple, invalidate), graph traversal, diary, ingestion, dedup, taxonomy, and catch-all wildcards.',
-      inputSchema: {},
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_STATUS_RESULT_SCHEMA
-    },
-    async () => ({ events: MemoryHooks.validEvents() })
+    async (input: any) => {
+      const { action, ...args } = input;
+      switch (action) {
+        case 'list_entities':
+          return applyReadFormatToItems(
+            await memory.listEntities({ type: args.type, nameContains: args.name_contains, limit: args.limit, offset: args.offset }),
+            (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+          );
+        case 'query_relationships':
+          return applyReadFormatToBundle(
+            await memory.queryEntityRelationships(args.entity_id, {
+              direction: args.direction,
+              includeInvalid: args.include_invalid
+            }),
+            (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+          );
+        case 'as_of':
+          return memory.queryTriplesAsOf(args.entity_id, args.as_of_date, args.mode);
+        case 'timeline':
+          return memory.getEntityTimeline(args.entity_id);
+        case 'stats':
+          return memory.getKgStats();
+        case 'nest_list':
+          return memory.listNests();
+        case 'nest_branches':
+          return memory.listBranches(args.nest);
+        case 'nest_tree':
+          return memory.getTaxonomyTree();
+        case 'traverse':
+          return memory.traverseGraph({
+            startEntityId: args.start_entity_id,
+            maxHops: args.max_hops,
+            direction: args.direction,
+            limit: args.limit,
+            entityType: args.entity_type,
+            predicates: args.predicates,
+            maxPerDepth: args.max_per_depth
+          });
+        case 'bridges':
+          return memory.discoverBridges({ nest: args.nest, mode: args.mode });
+        case 'diary_read':
+          return memory.readDiaryEntries({ agentId: args.agent_id, topic: args.topic, limit: args.limit, offset: args.offset });
+        case 'check_duplicate':
+          return memory.checkDuplicate(args.content, { threshold: args.threshold, nest: args.nest, branch: args.branch, projectPath: args.project_path });
+        case 'hooks_stats':
+          return memory.store.hooks.getStats();
+        case 'hooks_list_events':
+          return { events: MemoryHooks.validEvents() };
+        default:
+          throw new Error(`Unknown action: ${action}`);
+      }
+    }
   );
 }

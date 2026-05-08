@@ -162,20 +162,28 @@ export function normalizeRelationRemovalResult(result: any, fallback: { source_i
 export interface NormalizedRelatedMemoriesResult {
   id: string;
   count: number;
-  related: unknown[];
+  related?: unknown[];
   [key: string]: unknown;
 }
 
-export function normalizeRelatedMemoriesResult(result: any, id: string): NormalizedRelatedMemoriesResult {
+export function normalizeRelatedMemoriesResult(result: any, id: string, options: { includeLegacyArrays?: boolean } = {}): NormalizedRelatedMemoriesResult {
   const related = Array.isArray(result?.related) ? result.related : [];
+  const base = { ...(result || {}) };
+  delete base.related;
+  delete base.items;
+
   // quick 260415-n69: alias `related` as `items` + PaginatedResult wrap.
   const paginated = ensurePaginatedShape(related, { total: related.length });
-  return {
-    ...result,
+  const normalized: NormalizedRelatedMemoriesResult = {
+    ...base,
     ...paginated,
     id: result?.id ?? id,
     count: paginated.count,
-    related,
     items: paginated.items
   };
+
+  if (options.includeLegacyArrays) {
+    normalized.related = related;
+  }
+  return normalized;
 }

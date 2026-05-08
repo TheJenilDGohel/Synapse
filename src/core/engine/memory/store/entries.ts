@@ -7,6 +7,7 @@ import {
 } from '../utils/index.js';
 import { checkDuplicate } from './dedup.js';
 import { extractAndLink } from '../knowledge-graph/auto-link.js';
+import { ValidationError, NotFoundError } from '../../../types/errors.js';
 import type {
   Adapter, EmbeddingService, MemoryEntry, MemoryEntryRow, MemoryRevisionRow,
   MemoryEntryWithRevisions, MemoryRevision, StoreEntryInput, StoreEntryResult,
@@ -201,14 +202,12 @@ export async function storeEntry(store: MemoryStoreLike, input: StoreEntryInput)
   const sourceType = cleanString(input.source_type || input.sourceType || 'manual', 60) || 'manual';
   const sourceRef = cleanString(input.source_ref || input.sourceRef, 1000);
   const importance = clampInt(input.importance, 50, 0, 100);
-  const confidenceRaw = Number(input.confidence);
-  const confidence = Number.isFinite(confidenceRaw)
-    ? Math.max(0, Math.min(1, confidenceRaw))
+  const confidence = Number.isFinite(input.confidence)
+    ? Math.max(0, Math.min(1, input.confidence as number))
     : 0.7;
 
-  if (!title) throw new Error('title is required');
-  if (!content) throw new Error('content is required');
-
+  if (!title) throw new ValidationError('title is required');
+  if (!content) throw new ValidationError('content is required');
   const fingerprint = makeFingerprint({ kind, title, summary, content, scope, tags });
   const searchTerms = buildSearchTerms({ title, summary, content, scope, tags, links, sourceRef });
   const existing = await store.adapter.get<{ id: string }>(
@@ -295,7 +294,7 @@ export async function storeEntry(store: MemoryStoreLike, input: StoreEntryInput)
 export async function updateEntry(store: MemoryStoreLike, id: string, patch: UpdateEntryPatch = {}): Promise<MemoryEntryWithRevisions | null> {
   await store.init();
   const existing = await getEntry(store, id);
-  if (!existing) throw new Error(`memory not found: ${id}`);
+  if (!existing) throw new NotFoundError(`memory not found: ${id}`);
 
   const scope = normalizeScope({
     root_path: patch.scope?.root_path ?? existing.scope_root_path,

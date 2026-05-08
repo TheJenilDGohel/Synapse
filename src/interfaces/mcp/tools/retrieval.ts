@@ -334,14 +334,16 @@ export function registerRetrievalTools({
         glob: z.string().default('*'),
         max_results: z.number().int().min(1).max(1000).default(defaultMaxResults),
         case_sensitive: z.boolean().default(false),
-        context_lines: z.number().int().min(0).max(10).default(0)
+        context_lines: z.number().int().min(0).max(10).default(0),
+        include_legacy_arrays: z.boolean().default(false)
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ symbol, project_path, all_roots, glob, max_results, case_sensitive, context_lines }: Record<string, unknown>) => normalizeUsageResult(
+    async ({ symbol, project_path, all_roots, glob, max_results, case_sensitive, context_lines, include_legacy_arrays }: Record<string, unknown>) => normalizeUsageResult(
       search.findUsages({ symbol, projectPath: project_path, allRoots: all_roots, glob, maxResults: max_results, caseSensitive: case_sensitive, contextLines: context_lines }),
-      symbol as string
+      symbol as string,
+      { includeLegacyArrays: Boolean(include_legacy_arrays) }
     )
   );
 }

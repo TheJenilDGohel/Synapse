@@ -33,6 +33,7 @@ export interface WorkspaceServiceOptions {
   autoProjectSplit: boolean;
   maxAutoProjects: number;
   forceSplitChildren: boolean;
+  astChunker?: any;
 }
 
 export class WorkspaceService {
@@ -46,6 +47,7 @@ export class WorkspaceService {
   autoProjectSplit: boolean;
   maxAutoProjects: number;
   forceSplitChildren: boolean;
+  astChunker: any;
 
   constructor({
     roots,
@@ -57,7 +59,8 @@ export class WorkspaceService {
     maxFileBytes,
     autoProjectSplit,
     maxAutoProjects,
-    forceSplitChildren
+    forceSplitChildren,
+    astChunker
   }: WorkspaceServiceOptions) {
     this.roots = roots;
     this.ignoreDirs = ignoreDirs;
@@ -69,6 +72,7 @@ export class WorkspaceService {
     this.autoProjectSplit = autoProjectSplit;
     this.maxAutoProjects = maxAutoProjects;
     this.forceSplitChildren = forceSplitChildren;
+    this.astChunker = astChunker;
   }
 
   listRoots(): WorkspaceRoot[] {
@@ -87,16 +91,16 @@ export class WorkspaceService {
     return listProjectsFn(this, rootPath, maxEntries);
   }
 
-  projectTree(projectPath: string, maxDepth: number, maxEntries: number): string[] {
-    return projectTreeFn(this, projectPath, maxDepth, maxEntries);
+  projectTree(projectPath: string, maxDepth: number, maxEntries: number, compact?: boolean): string[] {
+    return projectTreeFn(this, projectPath, maxDepth, maxEntries, compact);
   }
 
   summarizeProject(projectPath: string, maxFiles: number): ProjectSummary {
     return summarizeProjectFn(this, projectPath, maxFiles);
   }
 
-  async readFileChunk(requestedPath: string, startLine: number, endLine: number, maxSpan: number): Promise<FileChunkResult> {
-    return readFileChunkFn(this, requestedPath, startLine, endLine, maxSpan);
+  async readFileChunk(requestedPath: string, startLine: number, endLine: number, maxSpan: number, mode?: 'lines' | 'signatures'): Promise<FileChunkResult> {
+    return readFileChunkFn(this, requestedPath, startLine, endLine, maxSpan, mode);
   }
 
   async readLinesWindowStream(filePath: string, from: number, to: number): Promise<{ lines: string[]; totalLines: number }> {

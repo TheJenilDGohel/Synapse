@@ -124,7 +124,8 @@ export class SearchService {
   reranker: RerankerLike | null;
   rerankerMinCandidates: number;
   rerankerTopN: number;
-  autoIndexedScopes: Set<string>;
+  autoIndexedScopes: Map<string, number>; // scope key -> timestamp
+  maxAutoIndexedScopes: number;
   defaultAutoIndexMaxFiles: number;
   symbolIndex: SymbolIndexLike | null;
 
@@ -149,9 +150,25 @@ export class SearchService {
     this.reranker = reranker || null;
     this.rerankerMinCandidates = Math.max(1, rerankerMinCandidates);
     this.rerankerTopN = Math.max(1, rerankerTopN);
-    this.autoIndexedScopes = new Set();
+    this.autoIndexedScopes = new Map();
+    this.maxAutoIndexedScopes = 100;
     this.defaultAutoIndexMaxFiles = 20000;
     this.symbolIndex = symbolIndex;
+  }
+
+  private markScopeIndexed(scopeKey: string): void {
+    this.autoIndexedScopes.set(scopeKey, Date.now());
+    if (this.autoIndexedScopes.size > this.maxAutoIndexedScopes) {
+      let oldestKey: string | null = null;
+      let oldestTime = Infinity;
+      for (const [key, time] of this.autoIndexedScopes.entries()) {
+        if (time < oldestTime) {
+          oldestTime = time;
+          oldestKey = key;
+        }
+      }
+      if (oldestKey) this.autoIndexedScopes.delete(oldestKey);
+    }
   }
 
   searchCode({ query, projectPath, allRoots, glob, maxResults, caseSensitive, contextLines = 0, useRegex = false }: {
@@ -391,11 +408,12 @@ export class SearchService {
       caseSensitive
     });
 
+    const scopeKey = this.buildScopeKey(projectPath, allRoots);
     const bootstrapped = await maybeBootstrapSemanticIndex({
       vectorIndex: this.vectorIndex,
       autoIndex,
-      autoIndexedScopes: this.autoIndexedScopes,
-      getScopeKey: () => this.buildScopeKey(projectPath, allRoots),
+      autoIndexedScopes: new Set(this.autoIndexedScopes.keys()),
+      getScopeKey: () => scopeKey,
       projectPath,
       allRoots,
       query,
@@ -403,6 +421,11 @@ export class SearchService {
       minSemanticScore,
       defaultAutoIndexMaxFiles: this.defaultAutoIndexMaxFiles
     });
+
+    if (bootstrapped.autoIndexMeta?.success) {
+      this.markScopeIndexed(scopeKey);
+    }
+
     const semantic = bootstrapped.semantic;
     const autoIndexMeta = bootstrapped.autoIndexMeta;
 

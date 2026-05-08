@@ -18,7 +18,7 @@ import {
   UpdateService
 } from '../../core/engine/index.js';
 
-function createWorkspace(runtime: any): WorkspaceService {
+function createWorkspace(runtime: any, astChunker: AstChunker): WorkspaceService {
   return new WorkspaceService({
     roots: runtime.roots,
     ignoreDirs: IGNORE_DIRS,
@@ -29,7 +29,8 @@ function createWorkspace(runtime: any): WorkspaceService {
     maxFileBytes: DEFAULT_MAX_FILE_BYTES,
     autoProjectSplit: runtime.autoProjectSplit,
     maxAutoProjects: runtime.maxAutoProjects,
-    forceSplitChildren: runtime.forceSplitChildren
+    forceSplitChildren: runtime.forceSplitChildren,
+    astChunker
   });
 }
 
@@ -37,10 +38,9 @@ async function createVectorIndex(
   runtime: any,
   workspace: WorkspaceService,
   embeddingService: any,
+  astChunker: AstChunker,
   setActiveBackend: (backend: string) => void,
 ): Promise<VectorIndexService> {
-  const astChunker: any = new AstChunker();
-
   if (runtime.indexBackend === 'sqlite-vec') {
     try {
       const { SqliteVecIndexService } = await import('../../core/engine/retrieval/sqlite-vec/service.js');
@@ -89,7 +89,8 @@ export interface AppServices {
 }
 
 export async function createServices(runtime: any): Promise<AppServices> {
-  const workspace = createWorkspace(runtime);
+  const astChunker = new AstChunker();
+  const workspace = createWorkspace(runtime, astChunker);
   const embeddingService: any = new EmbeddingService({
     provider: runtime.embeddingProvider,
     model: runtime.embeddingModel,
@@ -107,7 +108,7 @@ export async function createServices(runtime: any): Promise<AppServices> {
   }
 
   let activeIndexBackend: string = runtime.indexBackend;
-  const vectorIndex = await createVectorIndex(runtime, workspace, embeddingService, (nextBackend: string) => {
+  const vectorIndex = await createVectorIndex(runtime, workspace, embeddingService, astChunker, (nextBackend: string) => {
     activeIndexBackend = nextBackend;
   });
 
@@ -115,7 +116,7 @@ export async function createServices(runtime: any): Promise<AppServices> {
   if (enrichmentService && (vectorIndex as any).enrichmentService === null) {
     (vectorIndex as any).enrichmentService = enrichmentService;
   }
-  const symbolIndex = new SymbolIndexService(runtime.sqliteDbPath, new AstChunker());
+  const symbolIndex = new SymbolIndexService(runtime.sqliteDbPath, astChunker);
   const search = new SearchService({
     workspace,
     ignoreDirs: IGNORE_DIRS,

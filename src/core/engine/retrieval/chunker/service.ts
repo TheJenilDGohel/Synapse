@@ -45,6 +45,7 @@ export interface AstChunkerStatus {
   fallback_languages: string[];
   ast_chunks: number;
   fallback_chunks: number;
+  [key: string]: any;
 }
 
 export class AstChunker {

@@ -377,12 +377,17 @@ export function registerMemoryStoreTools({
       title: 'Memory Related',
       description: 'Return all memory entries linked to a given memory ID, traversing the knowledge graph one hop in both directions.',
       inputSchema: {
-        id: z.string().min(1)
+        id: z.string().min(1),
+        include_legacy_arrays: z.boolean().default(false)
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ id }: Record<string, unknown>) => normalizeRelatedMemoriesResult(await memory.getRelated(id as string), id as string)
+    async ({ id, include_legacy_arrays }: Record<string, unknown>) => normalizeRelatedMemoriesResult(
+      await memory.getRelated(id as string),
+      id as string,
+      { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    )
   );
 
   registerJsonTool(

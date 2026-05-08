@@ -66,21 +66,34 @@ export class NodeSqliteAdapter implements Adapter {
         this.db.exec(`RELEASE "${sp}"`);
         return result;
       } catch (err) {
-        this.db.exec(`ROLLBACK TO "${sp}"`);
+        try {
+          this.db.exec(`ROLLBACK TO "${sp}"`);
+        } catch (rollbackErr) {
+          // If rollback to savepoint fails, we might still be in a broken state,
+          // but we can't safely reset _inTransaction here because the outer
+          // transaction might still be valid or might also fail.
+        }
         throw err;
       }
     }
+
     this._inTransaction = true;
-    this.db.exec('BEGIN');
     try {
+      this.db.exec('BEGIN');
       const result = await fn(this);
       this.db.exec('COMMIT');
+      this._inTransaction = false;
       return result;
     } catch (err) {
-      try { this.db.exec('ROLLBACK'); } catch { /* already rolled back */ }
-      throw err;
-    } finally {
+      try {
+        this.db.exec('ROLLBACK');
+      } catch (rollbackErr) {
+        // Critical failure: ROLLBACK failed. 
+        // We must reset _inTransaction anyway to allow future attempts,
+        // although the underlying connection might be unstable.
+      }
       this._inTransaction = false;
+      throw err;
     }
   }
 }

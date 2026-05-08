@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { FREEFORM_RESULT_SCHEMA } from './schemas.js';
 import type { ResourceLink } from './mime.js';
+import { collapseRepetitiveLines, teeLargeOutput } from './context-compression.js';
 
 export const RESPONSE_SCHEMA_VERSION = '1.0';
 
@@ -160,22 +161,37 @@ export function toolResult(
   result: unknown,
   responseFormat: string = 'json',
   markdownTitle: string = 'Result',
-  resourceLinks?: ResourceLink[]
+  resourceLinks?: ResourceLink[],
+  synapseHome?: string
 ): ToolResult {
   const normalized = normalizeToolResponsePayload(result);
   const { data, meta, note } = normalized;
   // Resource links from the explicit 4th param take precedence; fall back to
   // any links that were threaded through createToolResponse/payload channel.
   const effectiveLinks = (resourceLinks && resourceLinks.length > 0)
-    ? resourceLinks
-    : normalized.resourceLinks;
+    ? [...resourceLinks]
+    : [...normalized.resourceLinks];
   const mergedMeta: Record<string, unknown> = {
     schema_version: RESPONSE_SCHEMA_VERSION,
     ...(meta || {})
   };
-  const text = responseFormat === 'markdown'
+
+  let text = responseFormat === 'markdown'
     ? `${note ? `${note}\n\n` : ''}${renderMarkdown(data, markdownTitle)}`
     : `${note ? `${note}\n\n` : ''}${JSON.stringify(data, null, 2)}`;
+
+  // Phase 41-B4: repetition collapsing
+  text = collapseRepetitiveLines(text);
+
+  // Phase 41-B4: tee large output
+  if (synapseHome) {
+    const teed = teeLargeOutput(text, { synapseHome });
+    text = teed.content;
+    if (teed.resourceLink) {
+      effectiveLinks.push(teed.resourceLink);
+    }
+  }
+
   const content: Array<{ type: 'text'; text: string } | ResourceLink> = [
     { type: 'text', text }
   ];
@@ -238,7 +254,7 @@ type ToolHandler = (args: Record<string, unknown>, extra: unknown) => Promise<un
 interface ToolDefinition {
   title: string;
   description: string;
-  inputSchema: Record<string, z.ZodTypeAny>;
+  inputSchema: Record<string, z.ZodTypeAny> | z.ZodTypeAny;
   annotations?: Record<string, unknown>;
   markdownTitle?: string;
   outputSchema?: { data: z.ZodTypeAny; meta: z.ZodTypeAny };
@@ -250,7 +266,7 @@ interface McpServer {
     options: {
       title: string;
       description: string;
-      inputSchema: Record<string, z.ZodTypeAny>;
+      inputSchema: Record<string, z.ZodTypeAny> | z.ZodTypeAny;
       outputSchema: { data: z.ZodTypeAny; meta: z.ZodTypeAny };
       annotations?: Record<string, unknown>;
     },
@@ -264,17 +280,33 @@ export type RegisterJsonToolFn = (
   handler: ToolHandler
 ) => void;
 
-export function createJsonToolRegistrar(server: McpServer, responseFormatSchema: z.ZodTypeAny): RegisterJsonToolFn {
+export function createJsonToolRegistrar(server: McpServer, responseFormatSchema: z.ZodTypeAny, synapseHome?: string): RegisterJsonToolFn {
   return function registerJsonTool(
     names: string | string[],
     { title, description, inputSchema, annotations, markdownTitle, outputSchema }: ToolDefinition,
     handler: ToolHandler
   ): void {
     const canonical = Array.isArray(names) ? names[0] : names;
-    const schema = {
-      ...inputSchema,
-      response_format: responseFormatSchema
-    };
+    let schema: any;
+
+    if (inputSchema instanceof z.ZodType) {
+      if (inputSchema.constructor.name === 'ZodDiscriminatedUnion') {
+        const du = inputSchema as any;
+        schema = z.discriminatedUnion(
+          du._def.discriminator,
+          du._def.options.map((opt: any) => (opt instanceof z.ZodObject ? opt.extend({ response_format: responseFormatSchema }) : opt)) as any
+        );
+      } else if (inputSchema instanceof z.ZodObject) {
+        schema = inputSchema.extend({ response_format: responseFormatSchema });
+      } else {
+        schema = inputSchema;
+      }
+    } else {
+      schema = {
+        ...inputSchema,
+        response_format: responseFormatSchema
+      };
+    }
 
     server.registerTool(
       canonical,
@@ -294,7 +326,7 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
         const toolArgs = { ...incoming };
         delete toolArgs.response_format;
         const data = await handler(toolArgs, extra);
-        return toolResult(data, responseFormat, markdownTitle || title);
+        return toolResult(data, responseFormat, markdownTitle || title, undefined, synapseHome);
       }
     );
   };

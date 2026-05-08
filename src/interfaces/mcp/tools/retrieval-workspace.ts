@@ -17,8 +17,8 @@ import type { ResourceLink } from '../common/mime.js';
 interface WorkspaceService {
   listRoots(): RootEntry[];
   listProjects(rootPath: string | undefined, max: number): unknown[];
-  projectTree(projectPath: string, maxDepth: number, maxEntries: number): unknown;
-  readFileChunk(filePath: string, startLine: number, endLine: number, maxWidth: number): Promise<unknown>;
+  projectTree(projectPath: string, maxDepth: number, maxEntries: number, compact?: boolean): unknown;
+  readFileChunk(filePath: string, startLine: number, endLine: number, maxWidth: number, mode?: 'lines' | 'signatures'): Promise<unknown>;
   summarizeProject(projectPath: string, maxFiles: number): unknown;
 }
 
@@ -99,13 +99,14 @@ export function registerWorkspaceTools({
       inputSchema: {
         project_path: z.string(),
         max_depth: z.number().int().min(1).max(8).default(3),
-        max_entries: z.number().int().min(1).max(10000).default(1500)
+        max_entries: z.number().int().min(1).max(10000).default(1500),
+        compact: z.boolean().default(false)
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: BUNDLE_RESULT_SCHEMA
     },
-    async ({ project_path, max_depth, max_entries }: Record<string, unknown>) => normalizeProjectTreeResult(
-      workspace.projectTree(project_path as string, max_depth as number, max_entries as number),
+    async ({ project_path, max_depth, max_entries, compact }: Record<string, unknown>) => normalizeProjectTreeResult(
+      workspace.projectTree(project_path as string, max_depth as number, max_entries as number, compact as boolean),
       project_path as string
     )
   );
@@ -118,14 +119,15 @@ export function registerWorkspaceTools({
       inputSchema: {
         path: z.string(),
         start_line: z.number().int().min(1).default(1),
-        end_line: z.number().int().min(1).default(defaultMaxReadLines)
+        end_line: z.number().int().min(1).default(defaultMaxReadLines),
+        mode: z.enum(['lines', 'signatures']).default('lines')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: BUNDLE_RESULT_SCHEMA
     },
-    async ({ path: filePath, start_line, end_line }: Record<string, unknown>) => {
+    async ({ path: filePath, start_line, end_line, mode }: Record<string, unknown>) => {
       const result = normalizeReadFileChunkResult(
-        await workspace.readFileChunk(filePath as string, start_line as number, end_line as number, 800),
+        await workspace.readFileChunk(filePath as string, start_line as number, end_line as number, 800, mode as 'lines' | 'signatures'),
         filePath as string,
         start_line as number,
         end_line as number

@@ -31,7 +31,6 @@ import {
   registerMemoryStoreTools,
   registerRetrievalTools,
   registerGraphTools,
-  registerKgDeleteTools,
   registerBackfillTools,
   registerFindTools,
   registerAuditTools,
@@ -42,7 +41,7 @@ import { MemoryWorkflowService } from '../../core/engine/index.js';
 import type { AppServices } from './create-services.js';
 
 export function registerAppTools(server: any, runtime: any, services: any): void {
-  const registerJsonTool = createJsonToolRegistrar(server, RESPONSE_FORMAT_SCHEMA);
+  const registerJsonTool = createJsonToolRegistrar(server, RESPONSE_FORMAT_SCHEMA, runtime.synapseHome);
   const buildServerStatus = createServerStatusBuilder({
     serverName: SERVER_NAME,
     serverVersion: SERVER_VERSION,
@@ -112,11 +111,6 @@ export function registerAppTools(server: any, runtime: any, services: any): void
   registerGraphTools({
     registerJsonTool,
     schemas: sharedSchemas,
-    memory: services.memory
-  });
-
-  registerKgDeleteTools({
-    registerJsonTool,
     memory: services.memory
   });
 

@@ -3,6 +3,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { expandHome } from '../../runtime/config.js';
 import { canonicalizePath } from '../../runtime/platform.js';
+import { extractSymbolsFromFile } from '../retrieval/symbols/extractor.js';
 
 export interface WorkspaceRoot {
   path: string;
@@ -19,6 +20,7 @@ export interface WorkspaceLike {
   autoProjectSplit: boolean;
   maxAutoProjects: number;
   forceSplitChildren: boolean;
+  astChunker?: any;
 }
 
 export interface WalkEntry {
@@ -112,7 +114,13 @@ export function listProjects(workspace: WorkspaceLike, rootPath: string | undefi
   return result;
 }
 
-export function projectTree(workspace: WorkspaceLike, projectPath: string, maxDepth: number, maxEntries: number): string[] {
+export function projectTree(
+  workspace: WorkspaceLike,
+  projectPath: string,
+  maxDepth: number,
+  maxEntries: number,
+  compact?: boolean
+): string[] {
   const root = normalizeTarget(workspace, projectPath);
   const st = fs.statSync(root);
   if (!st.isDirectory()) {
@@ -131,10 +139,32 @@ export function projectTree(workspace: WorkspaceLike, projectPath: string, maxDe
       lines.push(`${indent}${path.basename(current)}/`);
     }
 
-    for (const filePath of files.sort((a, b) => a.localeCompare(b))) {
-      lines.push(`${indent}  ${path.basename(filePath)}`);
-      if (lines.length >= maxEntries) {
-        return lines.slice(0, maxEntries);
+    const sortedFiles = files.sort((a, b) => a.localeCompare(b));
+
+    if (compact && sortedFiles.length > 10) {
+      const byExt = new Map<string, string[]>();
+      for (const f of sortedFiles) {
+        const ext = path.extname(f).toLowerCase() || '<none>';
+        if (!byExt.has(ext)) byExt.set(ext, []);
+        byExt.get(ext)!.push(f);
+      }
+
+      for (const [ext, group] of Array.from(byExt.entries()).sort((a, b) => a[0].localeCompare(b[0]))) {
+        if (group.length > 5) {
+          lines.push(`${indent}  [${group.length} files: ${ext}]`);
+        } else {
+          for (const f of group) {
+            lines.push(`${indent}  ${path.basename(f)}`);
+          }
+        }
+        if (lines.length >= maxEntries) return lines.slice(0, maxEntries);
+      }
+    } else {
+      for (const filePath of sortedFiles) {
+        lines.push(`${indent}  ${path.basename(filePath)}`);
+        if (lines.length >= maxEntries) {
+          return lines.slice(0, maxEntries);
+        }
       }
     }
 
@@ -192,13 +222,14 @@ export async function readFileChunk(
   requestedPath: string,
   startLine: number,
   endLine: number,
-  maxSpan: number
+  maxSpan: number,
+  mode?: 'lines' | 'signatures'
 ): Promise<FileChunkResult> {
   let from = startLine;
   let to = endLine;
 
   if (to < from) to = from;
-  if (to - from + 1 > maxSpan) {
+  if (to - from + 1 > maxSpan && mode !== 'signatures') {
     to = from + maxSpan - 1;
   }
 
@@ -225,6 +256,37 @@ export async function readFileChunk(
 
   if (!st.isFile()) {
     throw new Error(`path is not a file: ${target}`);
+  }
+
+  if (mode === 'signatures') {
+    const content = safeReadText(workspace, target);
+    const symbols = await extractSymbolsFromFile(target, content, workspace.astChunker);
+    const lines = content.split(/\r?\n/);
+
+    const signatures = symbols
+      .filter((s) => s.is_definition === 1)
+      .filter((s) => s.line_start >= from && s.line_start <= to)
+      .sort((a, b) => a.line_start - b.line_start);
+
+    if (signatures.length === 0) {
+      return {
+        path: target,
+        start_line: from,
+        end_line: to,
+        total_lines: lines.length,
+        content: '// No signatures found in this range.',
+        warning: 'Signatures mode: No definitions detected.'
+      };
+    }
+
+    const formatted = signatures.map((s) => `${s.line_start}: ${s.context_text}`).join('\n');
+    return {
+      path: target,
+      start_line: from,
+      end_line: to,
+      total_lines: lines.length,
+      content: formatted
+    };
   }
 
   if (st.size > workspace.maxFileBytes) {

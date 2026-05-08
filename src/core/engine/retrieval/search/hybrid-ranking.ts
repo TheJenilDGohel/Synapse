@@ -48,10 +48,71 @@ interface RerankerLike {
 function buildFusedBase({ lexical, semantic }: { lexical: LexicalMatch[]; semantic: SemanticResult[] }): FusedResult[] {
   const k = 60;
   const scored = new Map<string, FusedResult>();
-  const lexicalLineKey = new Map<string, string>();
-
+  
+  // 1. Build a quick lookup for lexical hits by file and line
+  const lexicalLookup = new Map<string, { item: LexicalMatch, rank: number }>();
   lexical.forEach((item, idx) => {
+    lexicalLookup.set(`${item.file}:${item.line}`, { item, rank: idx + 1 });
+  });
+
+  // 2. Process semantic hits and merge with lexical if they overlap
+  const usedLexicalKeys = new Set<string>();
+
+  semantic.forEach((item, idx) => {
+    let mergedLexical: { item: LexicalMatch, rank: number } | null = null;
+    
+    // Check if any line in the semantic chunk has a lexical hit
+    for (let line = item.start_line; line <= item.end_line; line++) {
+      const lexicalHit = lexicalLookup.get(`${item.file}:${line}`);
+      if (lexicalHit) {
+        mergedLexical = lexicalHit;
+        usedLexicalKeys.add(`${item.file}:${line}`);
+        break;
+      }
+    }
+
+    const key = mergedLexical 
+      ? `${mergedLexical.item.file}:${mergedLexical.item.line}:${mergedLexical.item.line}`
+      : `${item.file}:${item.start_line}:${item.end_line}`;
+
+    const existing = scored.get(key);
+    if (existing) {
+      existing.type = 'hybrid';
+      existing.semantic_rank = idx + 1;
+      existing.semantic_score = 1 / (k + idx + 1);
+      existing.semantic_score_raw = item.semantic_score;
+      if (item.enrichment) existing.enrichment = item.enrichment;
+      return;
+    }
+
+    scored.set(key, {
+      type: mergedLexical ? 'hybrid' : 'semantic',
+      file: item.file,
+      line: mergedLexical?.item.line,
+      start_line: mergedLexical ? mergedLexical.item.line : item.start_line,
+      end_line: mergedLexical ? mergedLexical.item.line : item.end_line,
+      text: mergedLexical?.item.text,
+      snippet: item.snippet,
+      lexical_rank: mergedLexical ? mergedLexical.rank : null,
+      lexical_score: mergedLexical ? (1 / (k + mergedLexical.rank)) : 0,
+      semantic_rank: idx + 1,
+      semantic_score: 1 / (k + idx + 1),
+      semantic_score_raw: item.semantic_score,
+      metadata_score: 0,
+      enrichment: item.enrichment,
+      rrf_score: 0,
+      final_score: 0,
+      reranker_score: null
+    });
+  });
+
+  // 3. Add remaining lexical hits that didn't overlap with any semantic hit
+  lexical.forEach((item, idx) => {
+    if (usedLexicalKeys.has(`${item.file}:${item.line}`)) return;
+    
     const key = `${item.file}:${item.line}:${item.line}`;
+    if (scored.has(key)) return;
+
     scored.set(key, {
       type: 'lexical',
       file: item.file,
@@ -65,49 +126,6 @@ function buildFusedBase({ lexical, semantic }: { lexical: LexicalMatch[]; semant
       semantic_score: 0,
       semantic_score_raw: null,
       metadata_score: 0,
-      rrf_score: 0,
-      final_score: 0,
-      reranker_score: null
-    });
-    lexicalLineKey.set(`${item.file}:${item.line}`, key);
-  });
-
-  semantic.forEach((item, idx) => {
-    let mergedKey: string | null = null;
-    for (let line = item.start_line; line <= item.end_line; line += 1) {
-      const byLine = lexicalLineKey.get(`${item.file}:${line}`);
-      if (byLine) {
-        mergedKey = byLine;
-        break;
-      }
-    }
-    const key = mergedKey || `${item.file}:${item.start_line}:${item.end_line}`;
-    const existing = scored.get(key);
-    if (existing) {
-      existing.type = 'hybrid';
-      existing.start_line = Math.min(existing.start_line || item.start_line, item.start_line);
-      existing.end_line = Math.max(existing.end_line || item.end_line, item.end_line);
-      if (!existing.snippet) existing.snippet = item.snippet;
-      existing.semantic_rank = idx + 1;
-      existing.semantic_score = 1 / (k + idx + 1);
-      existing.semantic_score_raw = item.semantic_score;
-      if (item.enrichment) existing.enrichment = item.enrichment;
-      return;
-    }
-
-    scored.set(key, {
-      type: 'semantic',
-      file: item.file,
-      start_line: item.start_line,
-      end_line: item.end_line,
-      snippet: item.snippet,
-      lexical_rank: null,
-      lexical_score: 0,
-      semantic_rank: idx + 1,
-      semantic_score: 1 / (k + idx + 1),
-      semantic_score_raw: item.semantic_score,
-      metadata_score: 0,
-      enrichment: item.enrichment,
       rrf_score: 0,
       final_score: 0,
       reranker_score: null
