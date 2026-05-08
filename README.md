@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/TheJenilDGohel/Synapse/releases"><img src="https://img.shields.io/github/v/release/TheJenilDGohel/Synapse?color=2dd4bf&label=release&style=flat-square" alt="latest release"></a>
   <a href="https://www.npmjs.com/package/synapse-cortex"><img src="https://img.shields.io/npm/v/synapse-cortex?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/Synapse?color=2dd4bf&style=flat-square" alt="license"></a>
   <a href="https://github.com/TheJenilDGohel/Synapse/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/Synapse/ci.yml?branch=main&label=quality&style=flat-square" alt="quality status"></a>
