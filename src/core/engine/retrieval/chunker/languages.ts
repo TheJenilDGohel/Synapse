@@ -56,27 +56,6 @@ export const DECL_TYPES_BY_LANG: Record<string, Set<string>> = {
 
 export type LanguageLoader = () => Promise<unknown>;
 
-export const LANGUAGE_LOADERS: Record<string, LanguageLoader> = {
-  // @ts-ignore: optional dependency
-  javascript: async () => { const mod = await import('tree-sitter-javascript'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
-  python: async () => { const mod = await import('tree-sitter-python'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
-  go: async () => { const mod = await import('tree-sitter-go'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
-  bash: async () => { const mod = await import('tree-sitter-bash'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
-  lua: async () => { const mod = await import('tree-sitter-lua'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
-  dart: async () => { const mod = await import('tree-sitter-dart'); return mod.default || mod; },
-  // @ts-ignore: optional dependency
-  typescript: async () => { const mod = await import('tree-sitter-typescript'); return (mod.default || mod).typescript; },
-  // @ts-ignore: optional dependency
-  tsx: async () => { const mod = await import('tree-sitter-typescript'); return (mod.default || mod).tsx; },
-  // @ts-ignore: optional dependency
-  rust: async () => { const mod = await import('tree-sitter-rust'); return mod.default || mod; }
-};
-
 export const TREE_SITTER_PACKAGE = 'tree-sitter';
 
 export const LANGUAGE_PACKAGES: Record<string, string> = {
@@ -89,6 +68,18 @@ export const LANGUAGE_PACKAGES: Record<string, string> = {
   typescript: 'tree-sitter-typescript',
   tsx: 'tree-sitter-typescript',
   rust: 'tree-sitter-rust'
+};
+
+export const LANGUAGE_LOADERS: Record<string, LanguageLoader> = {
+  javascript: async () => { const mod = await import(LANGUAGE_PACKAGES.javascript); return mod.default || mod; },
+  python: async () => { const mod = await import(LANGUAGE_PACKAGES.python); return mod.default || mod; },
+  go: async () => { const mod = await import(LANGUAGE_PACKAGES.go); return mod.default || mod; },
+  bash: async () => { const mod = await import(LANGUAGE_PACKAGES.bash); return mod.default || mod; },
+  lua: async () => { const mod = await import(LANGUAGE_PACKAGES.lua); return mod.default || mod; },
+  dart: async () => { const mod = await import(LANGUAGE_PACKAGES.dart); return mod.default || mod; },
+  typescript: async () => { const mod = await import(LANGUAGE_PACKAGES.typescript); return (mod.default || mod).typescript; },
+  tsx: async () => { const mod = await import(LANGUAGE_PACKAGES.tsx); return (mod.default || mod).tsx; },
+  rust: async () => { const mod = await import(LANGUAGE_PACKAGES.rust); return mod.default || mod; }
 };
 
 export function getExt(filePath: string): string {
