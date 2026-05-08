@@ -7,10 +7,15 @@
  * @module src/cli/router
  */
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore — bin/_shared.js is outside rootDir but required for CLI routing
-import { buildForwardArgv, importRelative } from '../../../bin/_shared.js';
 import type { GlobalOptions } from './options.js';
+
+function buildForwardArgv(rest: string[], argv: string[] = process.argv): string[] {
+  return [argv[0] as string, argv[1] as string, ...rest];
+}
+
+async function importRelative(modulePath: string, metaUrl: string): Promise<any> {
+  return import(new URL(modulePath, metaUrl).href);
+}
 
 /* ------------------------------------------------------------------ */
 /*  Noun -> handler module map                                         */
