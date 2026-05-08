@@ -13,15 +13,7 @@ import {
   ACK_RESULT_SCHEMA
 } from '../common/schemas.js';
 
-interface UpdateService {
-  getStatus(opts: { force: boolean; channel?: string }): Promise<unknown>;
-  selfUpdate(opts: {
-    approvedByUser: boolean;
-    dryRun: boolean;
-    version: string;
-    reinstallSkill: boolean;
-  }): Promise<unknown>;
-}
+import { IUpdateService } from '../../../core/interfaces/services.js';
 
 interface HealthReport {
   checked_at: string;
@@ -35,7 +27,7 @@ export interface RegisterCoreToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   buildServerStatus: () => Promise<ServerStatus>;
   buildUsageGuide: () => unknown;
-  updates: UpdateService;
+  updates: IUpdateService;
   getLastHealthReport: (() => HealthReport | null) | null;
 }
 

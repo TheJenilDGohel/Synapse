@@ -2,13 +2,11 @@ import { READ_ONLY_ANNOTATIONS } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import { BUNDLE_RESULT_SCHEMA } from '../common/schemas.js';
 
-interface MemoryService {
-  audit(): Promise<unknown>;
-}
+import { IMemoryService } from '../../../core/interfaces/services.js';
 
 export interface RegisterAuditToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
-  memory: MemoryService;
+  memory: IMemoryService;
 }
 
 export function registerAuditTools({

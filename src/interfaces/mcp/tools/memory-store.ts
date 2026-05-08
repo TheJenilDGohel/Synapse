@@ -27,21 +27,7 @@ import type {
   MemoryEventStatus
 } from '../common/schemas.js';
 
-interface MemoryService {
-  listEntries(opts: Record<string, unknown>): Promise<unknown>;
-  getEntry(id: string): Promise<unknown>;
-  storeEntry(args: Record<string, unknown>): Promise<{ memory?: unknown; created?: boolean; duplicate?: boolean } | null>;
-  storeEntryBatch(args: { memories: Array<Record<string, unknown>>; response_format?: 'minimal' | 'verbose' }): Promise<{ created: number; duplicates: number; errors: Array<{ index: number; message: string }>; ids?: (string | null)[] }>;
-  updateEntry(id: string, patch: Record<string, unknown>): Promise<unknown>;
-  deleteEntry(id: string): Promise<unknown>;
-  deleteEntryBatch(args: { ids: string[] }): Promise<{ deleted: number; errors: Array<{ index: number; message: string }> }>;
-  captureEvent(args: Record<string, unknown>): Promise<unknown>;
-  listEvents(opts: Record<string, unknown>): Promise<unknown>;
-  suggestRelations(id: string, opts: { threshold: number; maxResults: number }): Promise<unknown>;
-  addRelation(sourceId: string, targetId: string, relationType: string): Promise<unknown>;
-  removeRelation(sourceId: string, targetId: string): Promise<unknown>;
-  getRelated(id: string): Promise<unknown>;
-}
+import { IMemoryService } from '../../../core/interfaces/services.js';
 
 type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
 interface SharedSchemas {
@@ -64,7 +50,7 @@ interface SharedSchemas {
 export interface RegisterMemoryStoreToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   schemas: SharedSchemas;
-  memory: MemoryService;
+  memory: IMemoryService;
 }
 
 export function registerMemoryStoreTools({

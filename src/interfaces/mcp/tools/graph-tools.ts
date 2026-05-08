@@ -26,40 +26,23 @@ interface SharedSchemas {
   OUTPUT_FREEFORM_RESULT_SCHEMA: OutputArchetype;
 }
 
-interface MemoryService {
-  addEntity(opts: Record<string, unknown>): Promise<unknown>;
-  addTriple(opts: Record<string, unknown>): Promise<unknown>;
-  addEntityBatch(opts: Record<string, unknown>): Promise<unknown>;
-  addTripleBatch(opts: Record<string, unknown>): Promise<unknown>;
-  listEntities(opts: Record<string, unknown>): Promise<unknown>;
-  queryEntityRelationships(entityId: string, opts: Record<string, unknown>): Promise<unknown>;
-  invalidateTriple(tripleId: string, validTo?: string | null): Promise<unknown>;
-  queryTriplesAsOf(entityId: string, asOfDate: string, mode?: 'event' | 'transaction'): Promise<unknown>;
-  getEntityTimeline(entityId: string): Promise<unknown>;
-  getKgStats(): Promise<unknown>;
-  listNests(): Promise<unknown>;
-  listBranches(nest: string): Promise<unknown>;
-  getTaxonomyTree(): Promise<unknown>;
-  manageBranches(opts: Record<string, unknown>): Promise<unknown>;
-  traverseGraph(opts: Record<string, unknown>): Promise<unknown>;
-  discoverBridges(opts: Record<string, unknown>): Promise<unknown>;
-  writeDiaryEntry(opts: Record<string, unknown>): Promise<unknown>;
-  readDiaryEntries(opts: Record<string, unknown>): Promise<unknown>;
-  ingestMarkdown(opts: Record<string, unknown>): Promise<unknown>;
-  ingestJson(opts: Record<string, unknown>): Promise<unknown>;
-  checkDuplicate(content: string, opts: Record<string, unknown>): Promise<unknown>;
-  backfillMemoryKgLinks(opts: Record<string, unknown>): Promise<unknown>;
-  deleteEntity(entityId: string): Promise<unknown>;
-  deleteEntityBatch(args: { entity_ids: string[] }): Promise<unknown>;
-  deleteTripleBatch(args: { triple_ids: string[] }): Promise<unknown>;
-  store: {
-    hooks: MemoryHooks;
-  };
+import { IMemoryService } from '../../../core/interfaces/services.js';
+
+type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
+interface SharedSchemas {
+  OUTPUT_SEARCH_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_TRIPLE_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_STATUS_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_BATCH_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_MEMORY_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_ACK_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_BUNDLE_RESULT_SCHEMA: OutputArchetype;
+  OUTPUT_FREEFORM_RESULT_SCHEMA: OutputArchetype;
 }
 
 export interface RegisterGraphToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
-  memory: MemoryService;
+  memory: IMemoryService;
   schemas: SharedSchemas;
 }
 

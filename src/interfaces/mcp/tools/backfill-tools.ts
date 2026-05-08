@@ -3,13 +3,11 @@ import { IDEMPOTENT_WRITE_ANNOTATIONS } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import { BATCH_RESULT_SCHEMA } from '../common/schemas.js';
 
-interface MemoryService {
-  scanAndBackfillProjects(opts: Record<string, unknown>): Promise<unknown>;
-}
+import { IMemoryService } from '../../../core/interfaces/services.js';
 
 export interface RegisterBackfillToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
-  memory: MemoryService;
+  memory: IMemoryService;
 }
 
 export function registerBackfillTools({
