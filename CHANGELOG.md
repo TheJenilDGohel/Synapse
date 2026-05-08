@@ -4,6 +4,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.1-beta.3] - 2026-05-08
+
+### 🛡️ Hardened Foundations
+- **Dependency Inversion (DIP)**: Centralized all core service interfaces in `src/core/interfaces/services.ts`. All external entrypoints (CLI, MCP) now depend on abstractions rather than concrete implementations.
+- **Service Registry Refactor**: Stabilized the `CoreServiceRegistry` for centralized dependency management, eliminating "God Object" patterns and circular imports.
+- **DSA Performance**: Implemented `WeakMap`-based memoization for AST node lookups. Reduced AST scope resolution complexity from **O(N²)** to **O(N)** amortized.
+
+### 📉 Context Optimization
+- **High-Density Bundling**: Consolidated 27+ Knowledge Graph tools into high-density `synapse_kg_manage` and `synapse_kg_query` controllers using discriminated unions.
+- **Output Standardization**: Standardized all search/retrieval tools onto a single `items[]` array, reducing token overhead by **~40%**.
+- **Efficiency Tiers**: Introduced `compact` and `lite` format modes for memory and KG queries, enabling up to **85% token savings** for large result sets.
+
+### 🛠️ Core & Engine
+- **Bug Fixes**: Resolved 9 critical build blockers, including invalid regex ranges in heuristics and stale property access in the search service.
+- **Enhanced Normalization**: Introduced the `McpResponseMapper` to unify and optimize tool output across the platform.
+- **Clean Slate**: Removed redundant test files and legacy tool definitions to streamline the codebase.
+
 ## [0.0.1-beta.2] - 2026-05-03
 
 ### 🛠️ Hotfixes

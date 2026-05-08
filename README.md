@@ -74,7 +74,9 @@ No other MCP server covers all three pillars. Here's how the landscape breaks do
 | Temporal time-travel queries | **Yes** | No | No | No | No |
 | Conversation ingestion | **Yes** | No | No | No | No |
 | Local-first / no cloud | **Yes** | Yes | Partial | Yes | Yes |
-| MCP tools | **74** | 16 | ~5 | 14 | ~10 |
+| MCP tools (v0.0.1-beta.3) | **52** | 16 | ~5 | 14 | ~10 |
+
+> **Context Efficiency Update:** As of v0.0.1-beta.3, Synapse has compressed its tool payload by **~65%**, providing you with more effective context for actual reasoning.
 
 ---
 
@@ -118,11 +120,11 @@ Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, **Continue**, *
 
 ## 🛠️ Tool Suites
 
-Synapse exposes **74 specialized MCP tools**, organized into focused suites:
+Synapse exposes **52 high-density MCP tools**, optimized for maximum context efficiency:
 
 <details>
 <summary><b>Workspace & Discovery</b> — file navigation, project summaries, scoped reads</summary>
-<p><code>project_tree</code>, <code>read_file</code>, <code>file_changed</code>, <code>list_projects</code>, <code>list_roots</code>, <code>summarize_project</code></p>
+<p><code>project_tree</code> (with <code>compact</code> mode), <code>read_file</code> (with <code>signatures</code> mode), <code>file_changed</code>, <code>list_projects</code>, <code>list_roots</code>, <code>summarize_project</code></p>
 </details>
 
 <details>
@@ -132,12 +134,12 @@ Synapse exposes **74 specialized MCP tools**, organized into focused suites:
 
 <details>
 <summary><b>Memory & Recall</b> — persistent cross-session memory with semantic dedup</summary>
-<p><code>memory_store</code>, <code>memory_recall</code>, <code>memory_get</code>, <code>memory_update</code>, <code>memory_delete</code>, <code>memory_list</code>, <code>memory_store_batch</code>, <code>memory_delete_batch</code>, <code>memory_related</code>, <code>memory_suggest_relations</code>, <code>memory_add_relation</code>, <code>memory_remove_relation</code>, <code>memory_capture_event</code>, <code>memory_events</code>, <code>memory_status</code>, <code>memory_check_duplicate</code></p>
+<p><code>memory_store</code>, <code>memory_get</code>, <code>memory_update</code>, <code>memory_delete</code>, <code>memory_list</code> (with <code>compact</code>/<code>lite</code> modes), <code>memory_store_batch</code>, <code>memory_delete_batch</code>, <code>memory_related</code>, <code>memory_suggest_relations</code>, <code>memory_add_relation</code>, <code>memory_remove_relation</code>, <code>memory_capture_event</code>, <code>memory_events</code>, <code>memory_status</code>, <code>memory_check_duplicate</code></p>
 </details>
 
 <details>
 <summary><b>Knowledge Graph</b> — temporal triples, time-travel, multi-hop traversal</summary>
-<p><code>kg_add_entity</code>, <code>kg_add_triple</code>, <code>kg_query</code>, <code>kg_invalidate</code>, <code>kg_as_of</code>, <code>kg_timeline</code>, <code>kg_stats</code>, <code>kg_add_entities_batch</code>, <code>kg_add_triples_batch</code>, <code>kg_backfill_links</code>, <code>graph_traverse</code>, <code>graph_bridges</code></p>
+<p><code>synapse_kg_manage</code> (Unified mutation controller), <code>synapse_kg_query</code> (Unified read/traversal controller), <code>kg_backfill_links</code></p>
 </details>
 
 <details>
@@ -153,6 +155,7 @@ Synapse follows a strictly decoupled, layered architecture to ensure performance
 
 - **Core (`src/core/`)**: System fundamentals, engine logic (Memory, Retrieval, Update), and infrastructure.
 - **Interfaces (`src/interfaces/`)**: Entrypoints (CLI, MCP, App) that orchestrate core domains.
+- **Hardened Foundation (v0.0.1-beta.3)**: Centralized Dependency Injection (DI) and O(N) AST parsing for ultra-fast indexing.
 
 For deeper technical details, see the [Architecture Overview](./ARCHITECTURE.md).
 
