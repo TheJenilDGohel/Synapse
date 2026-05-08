@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Sync versions across README and docs
+        run: node scripts/release/sync-versions.mjs
+
       - name: Run checks and tests
         run: |
           # Skip tests if the test directory is missing (per maintainer directive)
@@ -50,9 +53,7 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          npm publish --access public --tag ${{ steps.determine_tag.outputs.npm_tag }}
+        run: npm publish --access public --tag ${{ steps.determine_tag.outputs.npm_tag }} --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
