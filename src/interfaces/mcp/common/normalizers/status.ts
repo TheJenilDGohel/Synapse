@@ -1,4 +1,111 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+export type EmbedStatusLike = {
+  backend?: string;
+  embedding?: {
+    provider?: string;
+    model?: string;
+    enabled?: boolean;
+    available?: boolean;
+    dimensions?: number;
+    error?: string;
+    [key: string]: unknown;
+  };
+  sqlite_vec_loaded?: boolean;
+  sqlite_vec_extension?: {
+    loaded?: boolean;
+    [key: string]: unknown;
+  };
+  sqlite_vec_table_ready?: boolean;
+  [key: string]: unknown;
+} | null | undefined;
+
+export type IndexStatusLike = {
+  backend?: string;
+  total_files?: number;
+  total_chunks?: number;
+  upgrade_recommended?: boolean;
+  upgrade_reason?: string | null;
+  [key: string]: unknown;
+} | null | undefined;
+
+export type IndexProjectResultLike = {
+  scanned_files?: number;
+  indexed_files?: number;
+  skipped_files?: number;
+  removed_files?: number;
+  failed_files?: unknown[];
+  total_files?: number;
+  total_chunks?: number;
+  [key: string]: unknown;
+} | null | undefined;
+
+export type MemoryStatusLike = {
+  enabled?: boolean;
+  auto_capture?: boolean;
+  consent_done?: boolean;
+  requested_backend?: string | null;
+  db_path?: string | null;
+  db_exists?: boolean;
+  db_dir?: string | null;
+  synapse_home?: string | null;
+  backend?: {
+    requested?: string | null;
+    selected?: string | null;
+    available?: boolean;
+    reason?: string | null;
+    [key: string]: unknown;
+  };
+  store?: {
+    initialized?: boolean;
+    total_entries?: number;
+    total_events?: number;
+    error?: string | null;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+} | null | undefined;
+
+export type TaskContextResultLike = {
+  memory?: {
+    enabled?: boolean;
+    auto_capture?: boolean;
+    consent_done?: boolean;
+    backend_available?: boolean;
+    requested_backend?: string | null;
+    selected_backend?: string | null;
+    total_entries?: number;
+    total_events?: number;
+    [key: string]: unknown;
+  };
+  recall?: {
+    attempted?: boolean;
+    skipped_reason?: string;
+    count?: number;
+    items?: unknown[];
+    [key: string]: unknown;
+  };
+  scope?: {
+    root_path?: string;
+    project_path?: string;
+    branch_name?: string;
+    topic?: string;
+    feature?: string;
+    [key: string]: unknown;
+  };
+  query?: string;
+  runtime?: unknown;
+  guidance?: string[];
+  [key: string]: unknown;
+} | null | undefined;
+
+export type CaptureOutcomeResultLike = {
+  captured?: boolean;
+  skipped_reason?: string;
+  runtime?: unknown;
+  memory?: MemoryStatusLike;
+  event?: unknown;
+  result?: unknown;
+  [key: string]: unknown;
+} | null | undefined;
 
 export interface NormalizedEmbedStatus {
   backend: string;
@@ -15,7 +122,7 @@ export interface NormalizedEmbedStatus {
   embedding: Record<string, unknown>;
 }
 
-export function normalizeEmbedStatus(status: any): NormalizedEmbedStatus {
+export function normalizeEmbedStatus(status: EmbedStatusLike): NormalizedEmbedStatus {
   const embedding = status?.embedding || {};
   const provider = embedding.provider || 'none';
   const model = embedding.model || null;
@@ -32,9 +139,9 @@ export function normalizeEmbedStatus(status: any): NormalizedEmbedStatus {
     dimensions: embedding.dimensions ?? null,
     error: embedding.error || null,
     sqlite_vec_loaded: status?.sqlite_vec_loaded ?? status?.sqlite_vec_extension?.loaded ?? null,
-    sqlite_vec_extension: status?.sqlite_vec_extension || null,
+    sqlite_vec_extension: (status?.sqlite_vec_extension as Record<string, unknown>) || null,
     sqlite_vec_table_ready: status?.sqlite_vec_table_ready ?? null,
-    embedding
+    embedding: embedding as Record<string, unknown>
   };
 }
 
@@ -47,12 +154,12 @@ export interface NormalizedIndexStatus {
   [key: string]: unknown;
 }
 
-export function normalizeIndexStatus(status: any): NormalizedIndexStatus {
+export function normalizeIndexStatus(status: IndexStatusLike): NormalizedIndexStatus {
   return {
     ...status,
     backend: status?.backend || 'json',
-    total_files: Number.isFinite(status?.total_files) ? status.total_files : 0,
-    total_chunks: Number.isFinite(status?.total_chunks) ? status.total_chunks : 0,
+    total_files: Number.isFinite(status?.total_files) ? Number(status?.total_files) : 0,
+    total_chunks: Number.isFinite(status?.total_chunks) ? Number(status?.total_chunks) : 0,
     upgrade_recommended: Boolean(status?.upgrade_recommended),
     upgrade_reason: status?.upgrade_reason || null
   };
@@ -72,19 +179,19 @@ export interface NormalizedIndexProjectResult {
   [key: string]: unknown;
 }
 
-export function normalizeIndexProjectResult(result: any, maxFiles: number): NormalizedIndexProjectResult {
-  const failedFiles = Array.isArray(result?.failed_files) ? result.failed_files : [];
+export function normalizeIndexProjectResult(result: IndexProjectResultLike, maxFiles: number): NormalizedIndexProjectResult {
+  const failedFiles = Array.isArray(result?.failed_files) ? result!.failed_files as Array<Record<string, unknown>> : [];
   return {
     ...result,
-    scanned_files: Number.isFinite(result?.scanned_files) ? result.scanned_files : 0,
-    indexed_files: Number.isFinite(result?.indexed_files) ? result.indexed_files : 0,
-    skipped_files: Number.isFinite(result?.skipped_files) ? result.skipped_files : 0,
-    removed_files: Number.isFinite(result?.removed_files) ? result.removed_files : 0,
+    scanned_files: Number.isFinite(result?.scanned_files) ? Number(result?.scanned_files) : 0,
+    indexed_files: Number.isFinite(result?.indexed_files) ? Number(result?.indexed_files) : 0,
+    skipped_files: Number.isFinite(result?.skipped_files) ? Number(result?.skipped_files) : 0,
+    removed_files: Number.isFinite(result?.removed_files) ? Number(result?.removed_files) : 0,
     failed_files: failedFiles,
     failed_file_count: failedFiles.length,
     failed_file_samples: failedFiles.slice(0, 3),
-    total_files: Number.isFinite(result?.total_files) ? result.total_files : 0,
-    total_chunks: Number.isFinite(result?.total_chunks) ? result.total_chunks : 0,
+    total_files: Number.isFinite(result?.total_files) ? Number(result?.total_files) : 0,
+    total_chunks: Number.isFinite(result?.total_chunks) ? Number(result?.total_chunks) : 0,
     max_files_requested: maxFiles
   };
 }
@@ -113,7 +220,7 @@ export interface NormalizedMemoryStatus {
   [key: string]: unknown;
 }
 
-export function normalizeMemoryStatus(status: any): NormalizedMemoryStatus {
+export function normalizeMemoryStatus(status: MemoryStatusLike): NormalizedMemoryStatus {
   const backend = status?.backend || {};
   const store = status?.store || {};
 
@@ -135,8 +242,8 @@ export function normalizeMemoryStatus(status: any): NormalizedMemoryStatus {
     },
     store: {
       initialized: Boolean(store.initialized),
-      total_entries: Number.isFinite(store.total_entries) ? store.total_entries : 0,
-      total_events: Number.isFinite(store.total_events) ? store.total_events : 0,
+      total_entries: Number.isFinite(store.total_entries) ? Number(store.total_entries) : 0,
+      total_events: Number.isFinite(store.total_events) ? Number(store.total_events) : 0,
       error: store.error || null
     }
   };
@@ -171,19 +278,19 @@ export interface NormalizedTaskContextResult {
   guidance: string[];
 }
 
-export function normalizeTaskContextResult(result: any, input: any = {}): NormalizedTaskContextResult {
+export function normalizeTaskContextResult(result: TaskContextResultLike, input: Record<string, unknown> = {}): NormalizedTaskContextResult {
   const memory = result?.memory || {};
   const recall = result?.recall || {};
   const scope = result?.scope || {};
 
   return {
-    query: result?.query || input.query || input.task || '',
+    query: result?.query || (input.query as string) || (input.task as string) || '',
     scope: {
-      root_path: scope.root_path || input.root_path || '',
-      project_path: scope.project_path || input.project_path || '',
-      branch_name: scope.branch_name || input.branch_name || '',
-      topic: scope.topic || input.topic || '',
-      feature: scope.feature || input.feature || ''
+      root_path: scope.root_path || (input.root_path as string) || '',
+      project_path: scope.project_path || (input.project_path as string) || '',
+      branch_name: scope.branch_name || (input.branch_name as string) || '',
+      topic: scope.topic || (input.topic as string) || '',
+      feature: scope.feature || (input.feature as string) || ''
     },
     runtime: result?.runtime || null,
     memory: {
@@ -193,16 +300,16 @@ export function normalizeTaskContextResult(result: any, input: any = {}): Normal
       backend_available: Boolean(memory.backend_available),
       requested_backend: memory.requested_backend || null,
       selected_backend: memory.selected_backend || null,
-      total_entries: Number.isFinite(memory.total_entries) ? memory.total_entries : 0,
-      total_events: Number.isFinite(memory.total_events) ? memory.total_events : 0
+      total_entries: Number.isFinite(memory.total_entries) ? Number(memory.total_entries) : 0,
+      total_events: Number.isFinite(memory.total_events) ? Number(memory.total_events) : 0
     },
     recall: {
       attempted: Boolean(recall.attempted),
       skipped_reason: recall.skipped_reason || '',
-      count: Number.isFinite(recall.count) ? recall.count : 0,
+      count: Number.isFinite(recall.count) ? Number(recall.count) : 0,
       items: Array.isArray(recall.items) ? recall.items : []
     },
-    guidance: Array.isArray(result?.guidance) ? result.guidance : []
+    guidance: Array.isArray(result?.guidance) ? result!.guidance : []
   };
 }
 
@@ -215,7 +322,7 @@ export interface NormalizedCaptureOutcomeResult {
   result: unknown;
 }
 
-export function normalizeCaptureOutcomeResult(result: any): NormalizedCaptureOutcomeResult {
+export function normalizeCaptureOutcomeResult(result: CaptureOutcomeResultLike): NormalizedCaptureOutcomeResult {
   return {
     captured: Boolean(result?.captured),
     skipped_reason: result?.skipped_reason || '',
@@ -225,4 +332,3 @@ export function normalizeCaptureOutcomeResult(result: any): NormalizedCaptureOut
     result: result?.result || null
   };
 }
-
