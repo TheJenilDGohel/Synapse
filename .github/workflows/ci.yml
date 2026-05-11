@@ -54,5 +54,11 @@ jobs:
         run: npm run postinstall --if-present
         continue-on-error: true
 
-      - name: Run Tests
+      - name: Run Unit Tests
         run: npm test
+
+      - name: Run Installation Integration Test
+        run: npm run test:install
+
+      - name: Run Live Usage E2E Test
+        run: npm run test:e2e

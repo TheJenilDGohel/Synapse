@@ -59,6 +59,8 @@
     "start": "tsx src/interfaces/app/mcp-server.ts",
     "stress:synapse": "node scripts/quality/stress-synapse.mjs",
     "test": "tsx --test",
+    "test:install": "node scripts/quality/test-install.mjs",
+    "test:e2e": "tsx --test src/e2e/live-usage.test.ts",
     "test:coverage": "node --import tsx/esm --test --experimental-test-coverage",
     "lint": "eslint . --max-warnings=0",
     "quality:cycles": "madge --circular --extensions js,mjs,ts src",
