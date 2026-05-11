@@ -26,7 +26,7 @@ List<StyleRule> get styles => [
       },
     ),
   ]),
-  
+
   css('[data-theme=\"light\"]', [
     css('&').styles(
       raw: {
@@ -75,12 +75,12 @@ List<StyleRule> get styles => [
     border: Border.all(style: BorderStyle.solid, color: const Color('#334155'), width: 1.px),
     margin: .symmetric(vertical: 1.5.rem),
   ),
-  
+
   css('code').styles(
     fontFamily: const .list([FontFamily('Fira Code'), FontFamily('monospace')]),
     fontSize: 0.9.em,
   ),
-  
+
   css('p code').styles(
     backgroundColor: surfaceColor,
     padding: .symmetric(horizontal: 0.4.rem, vertical: 0.1.rem),

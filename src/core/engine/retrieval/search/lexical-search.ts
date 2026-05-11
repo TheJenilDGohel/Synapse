@@ -156,7 +156,6 @@ export function fastSearchWithRipgrep({
     args.push('--json', '-C', String(ctxN));
   }
 
-  // Use '--' to signify the end of options and prevent command injection via flags like --pre
   args.push('--', query, base);
 
   const run = spawnSync(RG_BIN, args, {
@@ -348,7 +347,7 @@ export function searchFiles({
         for (const ignored of ignoreDirs) {
           args.push('--glob', `!**/${ignored}/**`);
         }
-        args.push(base);
+        args.push('--', base);
 
         const run = spawnSync(RG_BIN, args, {
           encoding: 'utf8',
