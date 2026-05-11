@@ -127,7 +127,7 @@ export async function ingestMarkdown(
 
   if (!rawContent && filePath) {
     try {
-      rawContent = fs.readFileSync(filePath, 'utf8');
+      rawContent = await fs.promises.readFile(filePath, 'utf8');
     } catch (err) {
       throw new Error(`Cannot read file: ${filePath} — ${(err as Error).message}`, { cause: err });
     }
@@ -181,7 +181,7 @@ export async function ingestJson(
 
   if (!rawContent && filePath) {
     try {
-      rawContent = fs.readFileSync(filePath, 'utf8');
+      rawContent = await fs.promises.readFile(filePath, 'utf8');
     } catch (err) {
       throw new Error(`Cannot read file: ${filePath} — ${(err as Error).message}`, { cause: err });
     }

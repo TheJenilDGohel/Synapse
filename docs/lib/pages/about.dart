@@ -10,8 +10,12 @@ class About extends StatelessComponent {
   Component build(BuildContext context) {
     return section([
       h1([text('Community & Support')]),
-      p([text('Synapse is an open-source project built by and for the developer community. Here is how you can get involved and get help.')]),
-      
+      p([
+        text(
+          'Synapse is an open-source project built by and for the developer community. Here is how you can get involved and get help.',
+        ),
+      ]),
+
       div(classes: 'support-grid', [
         _buildSupportCard(
           'GitHub Discussions',
@@ -40,7 +44,11 @@ class About extends StatelessComponent {
       span(classes: 'card-icon', [text(icon)]),
       h3([text(title)]),
       p([text(description)]),
-      a(href: url.startsWith('http') ? url : publicPath(url), target: url.startsWith('http') ? Target.blank : Target.self, [text('Learn more →')]),
+      a(
+        href: url.startsWith('http') ? url : publicPath(url),
+        target: url.startsWith('http') ? Target.blank : Target.self,
+        [text('Learn more →')],
+      ),
     ]);
   }
 
@@ -74,5 +82,4 @@ class About extends StatelessComponent {
       lineHeight: Unit.expression('1.5'),
     ),
   ];
-
 }

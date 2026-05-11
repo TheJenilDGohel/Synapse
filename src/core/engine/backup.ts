@@ -47,9 +47,8 @@ export async function backupDatabase(adapter: Adapter, destPath: string): Promis
     fs.unlinkSync(resolvedDest);
   }
 
-  // Escape single quotes to prevent SQL injection in the path literal.
-  const safeDest = resolvedDest.replace(/'/g, "''");
-  await adapter.exec(`VACUUM INTO '${safeDest}';`);
+  // Use parameterized query to prevent SQL injection in the path literal.
+  await adapter.run('VACUUM INTO ?', [resolvedDest]);
 
   // Verify the backup with a temporary connection.
   const probe = new DatabaseSync(resolvedDest);

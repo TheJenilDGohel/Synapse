@@ -87,7 +87,6 @@ class ToolsList extends StatefulComponent {
       ),
     ]),
   ];
-
 }
 
 class _ToolsListState extends State<ToolsList> {
@@ -135,7 +134,7 @@ class _ToolsListState extends State<ToolsList> {
     if (_tools == null) {
       return div(classes: 'tools-container loading-container', [
         div(classes: 'spinner', []),
-        text(' Discovering tools...')
+        text(' Discovering tools...'),
       ]);
     }
 
@@ -159,13 +158,11 @@ class _ToolsListState extends State<ToolsList> {
                 if (tool.parameters.isNotEmpty)
                   div(classes: 'tool-params', [
                     span([text('Parameters: ')]),
-                    for (var param in tool.parameters)
-                      span(classes: 'param-badge', [text(param)]),
+                    for (var param in tool.parameters) span(classes: 'param-badge', [text(param)]),
                   ]),
               ]),
           ]),
         ]),
     ]);
   }
-
 }
