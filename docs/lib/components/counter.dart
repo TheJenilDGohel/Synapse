@@ -15,18 +15,20 @@ class Counter extends StatefulComponent {
       css('&').styles(
         display: .flex,
         padding: .symmetric(vertical: 10.px),
-        border: .symmetric(vertical: .solid(color: primaryColor, width: 2.px)),
+        border: .symmetric(
+          vertical: .solid(color: primaryColor, width: 2.px),
+        ),
         alignItems: .center,
       ),
       css('button', [
         css('&').styles(
           display: .flex,
           width: 2.em,
-          height: 2.em, 
-          border: .unset, 
+          height: 2.em,
+          border: .unset,
           radius: .all(.circular(2.em)),
           cursor: .pointer,
-          justifyContent: .center, 
+          justifyContent: .center,
           alignItems: .center,
           fontSize: 2.rem,
           backgroundColor: Colors.transparent,
@@ -38,8 +40,8 @@ class Counter extends StatefulComponent {
       css('span').styles(
         minWidth: 2.5.em,
         padding: .symmetric(horizontal: 2.rem),
-        boxSizing: .borderBox, 
-        color: primaryColor, 
+        boxSizing: .borderBox,
+        color: primaryColor,
         textAlign: .center,
         fontSize: 4.rem,
       ),
@@ -58,7 +60,7 @@ class CounterState extends State<Counter> {
           events: {
             'click': (e) {
               setState(() => count--);
-            }
+            },
           },
           [Component.text('-')],
         ),
@@ -67,7 +69,7 @@ class CounterState extends State<Counter> {
           events: {
             'click': (e) {
               setState(() => count++);
-            }
+            },
           },
           [Component.text('+')],
         ),

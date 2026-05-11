@@ -40,7 +40,9 @@ class Search extends StatefulComponent {
         ),
         css('.search-input-container').styles(
           padding: .all(1.rem),
-          border: Border.only(bottom: BorderSide(color: borderColor, width: 1.px, style: BorderStyle.solid)),
+          border: Border.only(
+            bottom: BorderSide(color: borderColor, width: 1.px, style: BorderStyle.solid),
+          ),
         ),
         css('.search-input').styles(
           width: 100.percent,
@@ -93,15 +95,51 @@ class _SearchState extends State<Search> {
   String _query = '';
 
   final List<({String title, String path, String description})> _pages = [
-    (title: 'Introduction', path: '/intro', description: 'Welcome to Synapse: the local-first context layer for AI agents.'),
-    (title: 'Installation', path: '/install', description: 'Step-by-step guide to installing Synapse and its dependencies.'),
-    (title: 'Quick Start', path: '/quickstart', description: 'Connect your AI client and run your first semantic query in minutes.'),
-    (title: 'Persistent Memory', path: '/pillars/memory', description: 'Long-term semantic recall and cross-session AI memory.'),
-    (title: 'Temporal Knowledge Graph', path: '/pillars/temporal', description: 'Track architectural facts and decisions over time with triple storage.'),
-    (title: 'Code Intelligence', path: '/pillars/intel', description: 'AST-aware semantic code search and hybrid retrieval.'),
-    (title: 'Architecture', path: '/pillars/architecture', description: 'Deep dive into the Synapse local runtime and storage layout.'),
-    (title: 'Tools Overview', path: '/tools', description: 'Reference guide for the 74 specialized MCP tools available in Synapse.'),
-    (title: 'Contributing', path: '/contributing', description: 'Join the community and help build the future of AI context.'),
+    (
+      title: 'Introduction',
+      path: '/intro',
+      description: 'Welcome to Synapse: the local-first context layer for AI agents.',
+    ),
+    (
+      title: 'Installation',
+      path: '/install',
+      description: 'Step-by-step guide to installing Synapse and its dependencies.',
+    ),
+    (
+      title: 'Quick Start',
+      path: '/quickstart',
+      description: 'Connect your AI client and run your first semantic query in minutes.',
+    ),
+    (
+      title: 'Persistent Memory',
+      path: '/pillars/memory',
+      description: 'Long-term semantic recall and cross-session AI memory.',
+    ),
+    (
+      title: 'Temporal Knowledge Graph',
+      path: '/pillars/temporal',
+      description: 'Track architectural facts and decisions over time with triple storage.',
+    ),
+    (
+      title: 'Code Intelligence',
+      path: '/pillars/intel',
+      description: 'AST-aware semantic code search and hybrid retrieval.',
+    ),
+    (
+      title: 'Architecture',
+      path: '/pillars/architecture',
+      description: 'Deep dive into the Synapse local runtime and storage layout.',
+    ),
+    (
+      title: 'Tools Overview',
+      path: '/tools',
+      description: 'Reference guide for the 74 specialized MCP tools available in Synapse.',
+    ),
+    (
+      title: 'Contributing',
+      path: '/contributing',
+      description: 'Join the community and help build the future of AI context.',
+    ),
     (title: 'Community', path: '/community', description: 'Connect with other developers and share Synapse patterns.'),
   ];
 
@@ -119,64 +157,88 @@ class _SearchState extends State<Search> {
 
   @override
   Component build(BuildContext context) {
-    var filteredPages = _pages.where((p) => 
-      p.title.toLowerCase().contains(_query.toLowerCase()) || 
-      p.description.toLowerCase().contains(_query.toLowerCase())
-    ).toList();
+    var filteredPages = _pages
+        .where(
+          (p) =>
+              p.title.toLowerCase().contains(_query.toLowerCase()) ||
+              p.description.toLowerCase().contains(_query.toLowerCase()),
+        )
+        .toList();
 
     return div([
-      div(classes: 'search-trigger', events: {'click': (e) => _toggle()}, [
-        i(classes: 'search-icon', []),
-        span([text('Search documentation...')]),
-        Component.element(tag: 'kbd', children: [text('⌘K')]),
-      ]),
+      div(
+        classes: 'search-trigger',
+        attributes: {'role': 'button', 'tabindex': '0', 'aria-label': 'Open search'},
+        events: {
+          'click': (e) => _toggle(),
+          'keydown': (e) {
+            final event = e as dynamic;
+            if (event.key == 'Enter' || event.key == ' ') {
+              event.preventDefault();
+              _toggle();
+            }
+          },
+        },
+        [
+          i(classes: 'search-icon', []),
+          span([text('Search documentation...')]),
+          Component.element(tag: 'kbd', children: [text('⌘K')]),
+        ],
+      ),
 
       if (_isOpen)
-        div(classes: 'search-modal-overlay', events: {'click': (e) => _toggle()}, [
-          div(classes: 'search-modal', events: {
-            'click': (e) {
-              // Prevent closing when clicking inside
-              (e as dynamic).stopPropagation();
-            }
-          }, [
-            div(classes: 'search-input-container', [
-              input(
-                type: InputType.text,
-                classes: 'search-input',
-                attributes: {'placeholder': 'Type to search...', 'autofocus': ''},
-                events: {
-                  'input': (e) {
-                    setState(() => _query = (e.target as dynamic).value);
-                  }
+        div(
+          classes: 'search-modal-overlay',
+          events: {'click': (e) => _toggle()},
+          [
+            div(
+              classes: 'search-modal',
+              events: {
+                'click': (e) {
+                  // Prevent closing when clicking inside
+                  (e as dynamic).stopPropagation();
                 },
-              ),
-            ]),
-            div(classes: 'search-results', [
-              if (filteredPages.isEmpty)
-                div(classes: 'no-results', [text('No results found for "$_query"')])
-              else
-                for (var page in filteredPages)
-                  a(
-                    href: publicPath(page.path),
-                    classes: 'search-item',
+              },
+              [
+                div(classes: 'search-input-container', [
+                  input(
+                    type: InputType.text,
+                    classes: 'search-input',
+                    attributes: {'placeholder': 'Type to search...', 'autofocus': ''},
                     events: {
-                      'click': (e) {
-                        (e as dynamic).preventDefault();
-                        Router.of(context).push(page.path);
-                        _toggle();
-                       }
+                      'input': (e) {
+                        setState(() => _query = (e.target as dynamic).value);
+                      },
                     },
-                    [
-                      div([
-                        div(classes: 'item-title', [text(page.title)]),
-                        div(classes: 'item-desc', [text(page.description)]),
-                      ]),
-                    ],
                   ),
-            ]),
-          ]),
-        ]),
+                ]),
+                div(classes: 'search-results', [
+                  if (filteredPages.isEmpty)
+                    div(classes: 'no-results', [text('No results found for "$_query"')])
+                  else
+                    for (var page in filteredPages)
+                      a(
+                        href: publicPath(page.path),
+                        classes: 'search-item',
+                        events: {
+                          'click': (e) {
+                            (e as dynamic).preventDefault();
+                            Router.of(context).push(page.path);
+                            _toggle();
+                          },
+                        },
+                        [
+                          div([
+                            div(classes: 'item-title', [text(page.title)]),
+                            div(classes: 'item-desc', [text(page.description)]),
+                          ]),
+                        ],
+                      ),
+                ]),
+              ],
+            ),
+          ],
+        ),
     ]);
   }
-
 }

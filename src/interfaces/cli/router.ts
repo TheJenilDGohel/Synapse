@@ -7,8 +7,6 @@
  * @module src/cli/router
  */
 
-
-
 import { buildForwardArgv, importRelative } from '../../../bin/_shared.js';
 import type { GlobalOptions } from './options.js';
 
