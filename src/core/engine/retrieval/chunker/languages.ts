@@ -57,23 +57,14 @@ export const DECL_TYPES_BY_LANG: Record<string, Set<string>> = {
 export type LanguageLoader = () => Promise<unknown>;
 
 export const LANGUAGE_LOADERS: Record<string, LanguageLoader> = {
-
   javascript: async () => { const mod = await import('tree-sitter-javascript'); return mod.default || mod; },
-
   python: async () => { const mod = await import('tree-sitter-python'); return mod.default || mod; },
-
   go: async () => { const mod = await import('tree-sitter-go'); return mod.default || mod; },
-
   bash: async () => { const mod = await import('tree-sitter-bash'); return mod.default || mod; },
-
   lua: async () => { const mod = await import('tree-sitter-lua'); return mod.default || mod; },
-
   dart: async () => { const mod = await import('tree-sitter-dart'); return mod.default || mod; },
-
   typescript: async () => { const mod = await import('tree-sitter-typescript'); return (mod.default || mod).typescript; },
-
   tsx: async () => { const mod = await import('tree-sitter-typescript'); return (mod.default || mod).tsx; },
-
   rust: async () => { const mod = await import('tree-sitter-rust'); return mod.default || mod; }
 };
 

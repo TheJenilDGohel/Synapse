@@ -129,10 +129,10 @@ export class DiagnosticService {
 
   public async checkSdkImport(): Promise<DoctorCheckResult> {
     try {
-      // @ts-ignore
-      await import('@modelcontextprotocol/sdk/server/mcp.js');
-      // @ts-ignore
-      await import('@modelcontextprotocol/sdk/server/stdio.js');
+      const mcpPath: string = '@modelcontextprotocol/sdk/server/mcp.js';
+      const stdioPath: string = '@modelcontextprotocol/sdk/server/stdio.js';
+      await import(mcpPath);
+      await import(stdioPath);
       return { id: 'sdk_import', ok: true, detail: 'MCP SDK imports resolved' };
     } catch (error: any) {
       return {

@@ -18,27 +18,31 @@ class Home extends StatelessComponent {
           div(classes: 'hero-glow', []),
           h1([
             text('Local Context for '),
-            span(classes: 'gradient-text', [text('MCP Clients')])
+            span(classes: 'gradient-text', [text('MCP Clients')]),
           ]),
           p(classes: 'hero-subtitle', [
-            text('Synapse combines semantic code search, persistent memory, and a temporal knowledge graph in one local MCP server.')
+            text(
+              'Synapse combines semantic code search, persistent memory, and a temporal knowledge graph in one local MCP server.',
+            ),
           ]),
           div(classes: 'hero-actions', [
             DocsLink(to: '/intro', classes: 'btn btn-primary', child: text('Get Started')),
             a(href: 'https://github.com/TheJenilDGohel/synapse', classes: 'btn btn-outline', [text('View on GitHub')]),
           ]),
         ]),
-        
+
         section(classes: 'features-grid', [
           const Card(
             title: 'Persistent Memory',
-            description: 'Persist project facts, decisions, and lessons in a local SQLite store that survives across sessions.',
+            description:
+                'Persist project facts, decisions, and lessons in a local SQLite store that survives across sessions.',
             icon: '🧠',
             onTap: null, // Just a card for now
           ),
           const Card(
             title: 'Code Intelligence',
-            description: 'Search code with hybrid lexical and semantic retrieval, AST-aware chunking, and symbol lookup.',
+            description:
+                'Search code with hybrid lexical and semantic retrieval, AST-aware chunking, and symbol lookup.',
             icon: '🤖',
           ),
           const Card(
@@ -68,7 +72,9 @@ class Home extends StatelessComponent {
           margin: .symmetric(horizontal: .auto),
         ),
         css.media(MediaQuery.screen(maxWidth: 768.px), [
-          css('&').styles(padding: .symmetric(vertical: 4.rem, horizontal: 1.5.rem)),
+          css('&').styles(
+            padding: .symmetric(vertical: 4.rem, horizontal: 1.5.rem),
+          ),
         ]),
       ]),
       css('.hero-glow').styles(
@@ -76,7 +82,8 @@ class Home extends StatelessComponent {
         width: 600.px,
         height: 400.px,
         raw: {
-          'background': 'radial-gradient(circle, color-mix(in srgb, var(--primary-color) 15%, transparent) 0%, transparent 70%)',
+          'background':
+              'radial-gradient(circle, color-mix(in srgb, var(--primary-color) 15%, transparent) 0%, transparent 70%)',
           'transform': 'translate(-50%, -50%)',
           'filter': 'blur(60px)',
           'z-index': '-1',
@@ -113,7 +120,10 @@ class Home extends StatelessComponent {
           raw: {'animation': 'fadeUp 0.8s ease-out 0.1s both'},
         ),
         css.media(MediaQuery.screen(maxWidth: 768.px), [
-          css('&').styles(fontSize: 1.125.rem, margin: .symmetric(vertical: 1.5.rem)),
+          css('&').styles(
+            fontSize: 1.125.rem,
+            margin: .symmetric(vertical: 1.5.rem),
+          ),
         ]),
       ]),
       css('.hero-actions', [
@@ -143,7 +153,12 @@ class Home extends StatelessComponent {
         raw: {
           'transform': 'translateY(-2px)',
         },
-        shadow: BoxShadow(offsetX: 0.px, offsetY: 10.px, blur: 20.px, color: const Color('color-mix(in srgb, var(--primary-color) 40%, transparent)')),
+        shadow: BoxShadow(
+          offsetX: 0.px,
+          offsetY: 10.px,
+          blur: 20.px,
+          color: const Color('color-mix(in srgb, var(--primary-color) 40%, transparent)'),
+        ),
       ),
       css('.btn-outline').styles(
         backgroundColor: Colors.transparent,
@@ -169,13 +184,13 @@ class Home extends StatelessComponent {
         ),
         css.media(MediaQuery.screen(maxWidth: 1024.px), [
           css('&').styles(
-          display: .grid,
-          raw: {'grid-template-columns': '1fr'},
-          padding: .symmetric(horizontal: 2.rem),
+            display: .grid,
+            raw: {'grid-template-columns': '1fr'},
+            padding: .symmetric(horizontal: 2.rem),
           ),
         ]),
       ]),
-      
+
       css('@keyframes fadeUp', [
         css('from').styles(raw: {'opacity': '0', 'transform': 'translateY(20px)'}),
         css('to').styles(raw: {'opacity': '1', 'transform': 'translateY(0)'}),
