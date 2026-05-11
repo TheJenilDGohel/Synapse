@@ -168,7 +168,9 @@ export async function agentPrime(
       branch: input.branch,
       limit: maxMemories
     });
-    recalledItems = (recallResult as { items?: RecallResultItem[] })?.items || [];
+    if ('items' in recallResult) {
+      recalledItems = recallResult.items || [];
+    }
     memories = recalledItems.map((item) => ({
       id: item.memory.id,
       title: truncate(item.memory.title, 80),
