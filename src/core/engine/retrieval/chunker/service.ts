@@ -148,11 +148,16 @@ export class AstChunker {
     if (this.queryCache.has(languageId)) return this.queryCache.get(languageId);
     try {
       const queryPath = path.join(process.cwd(), 'src/core/engine/retrieval/chunker/queries', `${languageId}.scm`);
-      if (!fs.existsSync(queryPath)) {
-        this.queryCache.set(languageId, null);
-        return null;
+      let source: string;
+      try {
+        source = await fs.promises.readFile(queryPath, 'utf8');
+      } catch (err: any) {
+        if (err.code === 'ENOENT') {
+          this.queryCache.set(languageId, null);
+          return null;
+        }
+        throw err;
       }
-      const source = fs.readFileSync(queryPath, 'utf8');
       const TreeSitter = await import('tree-sitter');
       const Query = (TreeSitter as any).Query || (TreeSitter as any).default?.Query;
       const q = new Query(language, source);

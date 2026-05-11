@@ -379,7 +379,6 @@ export class SqliteVecIndexService {
     const stmtSelectChunkTermsByFile = dbRef.prepare('SELECT id, terms_json FROM chunks WHERE file_path = ?');
     const stmtDeleteTermIndexByFile = dbRef.prepare('DELETE FROM term_index WHERE chunk_id IN (SELECT id FROM chunks WHERE file_path = ?)');
     const stmtDeleteChunks = dbRef.prepare('DELETE FROM chunks WHERE file_path = ?');
-    const stmtDeleteFile = dbRef.prepare('DELETE FROM files WHERE path = ?');
     const stmtUpsertFile = dbRef.prepare('INSERT OR REPLACE INTO files(path, signature, updated_at) VALUES (?, ?, ?)');
     const stmtInsertChunk = dbRef.prepare(
       'INSERT OR REPLACE INTO chunks(id, file_path, start_line, end_line, preview, terms_json, term_count, embedding_json, enrichment_json, norm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -392,22 +391,34 @@ export class SqliteVecIndexService {
     let deltaTotalChunks = 0;
 
     // Phase 1: remove deleted/out-of-scope files
-    this.runInTransaction(() => {
-      for (const row of existingRows) {
-        if (!isUnderBase(row.path, bases)) continue;
-        if (!fileSet.has(row.path)) {
-          const oldRows = stmtSelectChunkTermsByFile.all(row.path) as { terms_json: string }[];
+    const toRemove: string[] = [];
+    for (const row of existingRows) {
+      if (isUnderBase(row.path, bases) && !fileSet.has(row.path)) {
+        toRemove.push(row.path);
+      }
+    }
+
+    if (toRemove.length > 0) {
+      const BATCH_SIZE = 100;
+      this.runInTransaction(() => {
+        for (let i = 0; i < toRemove.length; i += BATCH_SIZE) {
+          const batch = toRemove.slice(i, i + BATCH_SIZE);
+          const placeholders = batch.map(() => '?').join(',');
+
+          const oldRows = dbRef.prepare(`SELECT terms_json FROM chunks WHERE file_path IN (${placeholders})`).all(...batch) as { terms_json: string }[];
           for (const oldRow of oldRows) {
             applyDfDeltaFromTermsJson(oldRow.terms_json, -1, deltaDf);
           }
           deltaTotalChunks -= oldRows.length;
-          stmtDeleteTermIndexByFile.run(row.path);
-          stmtDeleteChunks.run(row.path);
-          stmtDeleteFile.run(row.path);
-          removed += 1;
+
+          dbRef.prepare(`DELETE FROM term_index WHERE chunk_id IN (SELECT id FROM chunks WHERE file_path IN (${placeholders}))`).run(...batch);
+          dbRef.prepare(`DELETE FROM chunks WHERE file_path IN (${placeholders})`).run(...batch);
+          dbRef.prepare(`DELETE FROM files WHERE path IN (${placeholders})`).run(...batch);
+
+          removed += batch.length;
         }
-      }
-    });
+      });
+    }
 
     // Phase 2: process each file independently
     for (const filePath of files) {
