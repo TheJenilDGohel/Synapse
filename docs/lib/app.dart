@@ -10,13 +10,15 @@ class App extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return Router(routes: [
-      Route(
-        path: '/',
-        title: 'Synapse | Home',
-        builder: (context, state) => const Home(),
-      ),
-      for (var routes in contentRoutes) ...routes,
-    ]);
+    return Router(
+      routes: [
+        Route(
+          path: '/',
+          title: 'Synapse | Home',
+          builder: (context, state) => const Home(),
+        ),
+        for (var routes in contentRoutes) ...routes,
+      ],
+    );
   }
 }

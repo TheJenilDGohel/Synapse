@@ -33,7 +33,12 @@ class Sidebar extends StatelessComponent {
     ]);
   }
 
-  Component _buildNavGroup(BuildContext context, String title, List<({String label, String path})> items, String activePath) {
+  Component _buildNavGroup(
+    BuildContext context,
+    String title,
+    List<({String label, String path})> items,
+    String activePath,
+  ) {
     return div(classes: 'nav-group', [
       h3([Component.text(title)]),
       ul([
@@ -58,7 +63,9 @@ class Sidebar extends StatelessComponent {
         width: 280.px,
         height: 100.vh,
         backgroundColor: surfaceColor,
-        border: Border.only(right: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px)),
+        border: Border.only(
+          right: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px),
+        ),
         padding: .all(2.rem),
         overflow: Overflow.auto,
         position: .sticky(top: 0.px),
