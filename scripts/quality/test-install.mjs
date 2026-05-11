@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { mkdtempSync, rmSync, readdirSync, renameSync } from 'fs';
+import { mkdtempSync, rmSync, renameSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
