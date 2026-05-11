@@ -7,7 +7,6 @@
  * @module src/cli/router
  */
 
-// bin/_shared.js is outside rootDir but required for CLI routing
 import { buildForwardArgv, importRelative } from '../../../bin/_shared.js';
 import type { GlobalOptions } from './options.js';
 
