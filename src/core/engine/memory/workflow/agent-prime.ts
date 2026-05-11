@@ -64,7 +64,7 @@ export interface AgentPrimeResult {
 
 export interface AgentPrimeDeps {
   memory: {
-    recall(opts: RecallInput): Promise<RecallResult | { cancelled: boolean; reason: string | undefined; }>;
+    recall(opts: RecallInput): Promise<RecallResult | { cancelled: boolean; reason?: string }>;
     store: {
       adapter: Adapter | null;
       init(): Promise<Record<string, unknown>>;
@@ -257,15 +257,19 @@ async function gatherEntities(
 
   // Strategy A: Search entities by task terms
   const terms = splitTerms(task);
-  for (const term of terms.slice(0, 5)) {
-    if (entityMap.size >= maxEntities) break;
+  const slicedTerms = terms.slice(0, 5);
+
+  if (slicedTerms.length > 0) {
+    const whereClause = slicedTerms.map(() => 'name LIKE ? COLLATE NOCASE').join(' OR ');
+    const queryParams = slicedTerms.map(term => `%${term}%`);
     const rows = await adapter.all<{ id: string; name: string; entity_type: string }>(
       `SELECT id, name, entity_type FROM kg_entities
-       WHERE name LIKE ? COLLATE NOCASE
+       WHERE ${whereClause}
        LIMIT ?`,
-      [`%${term}%`, maxEntities - entityMap.size]
+      [...queryParams, maxEntities]
     );
     for (const row of rows) {
+      if (entityMap.size >= maxEntities) break;
       if (!entityMap.has(row.id)) {
         entityMap.set(row.id, {
           id: row.id,
@@ -331,18 +335,50 @@ async function gatherEntities(
     }
   }
 
-  // Enrich entities with their active predicates
-  for (const entity of entityMap.values()) {
-    try {
-      const preds = await adapter.all<{ predicate: string }>(
-        `SELECT DISTINCT predicate FROM kg_triples
-         WHERE (subject_id = ? OR object_id = ?) AND valid_to IS NULL
-         LIMIT ?`,
-        [entity.id, entity.id, MAX_PREDICATES_PER_ENTITY]
-      );
-      entity.predicates = preds.map((p: { predicate: string }) => p.predicate);
-    } catch {
-      // Non-blocking
+  // Enrich entities with their active predicates (batched)
+  const allIds = Array.from(entityMap.keys());
+  if (allIds.length > 0) {
+    const BATCH_SIZE = 400; // max ~999 params in older SQLite, we use 2 params per id
+    for (let i = 0; i < allIds.length; i += BATCH_SIZE) {
+      const batchIds = allIds.slice(i, i + BATCH_SIZE);
+      const placeholders = batchIds.map(() => '?').join(',');
+
+      const query = `
+        SELECT subject_id as id, predicate FROM kg_triples
+        WHERE subject_id IN (${placeholders}) AND valid_to IS NULL
+        UNION
+        SELECT object_id as id, predicate FROM kg_triples
+        WHERE object_id IN (${placeholders}) AND valid_to IS NULL
+      `;
+      const params = [...batchIds, ...batchIds];
+
+      try {
+        const rows = await adapter.all<{id: string, predicate: string}>(query, params);
+
+        // Group by entity id, limiting to MAX_PREDICATES_PER_ENTITY
+        const predsById = new Map<string, Set<string>>();
+        for (const row of rows) {
+          let preds = predsById.get(row.id);
+          if (!preds) {
+            preds = new Set();
+            predsById.set(row.id, preds);
+          }
+          if (preds.size < MAX_PREDICATES_PER_ENTITY) {
+            preds.add(row.predicate);
+          }
+        }
+
+        // Assign back to entities
+        for (const id of batchIds) {
+          const entity = entityMap.get(id);
+          if (entity) {
+            const preds = predsById.get(id);
+            entity.predicates = preds ? Array.from(preds) : [];
+          }
+        }
+      } catch {
+        // Non-blocking
+      }
     }
   }
 

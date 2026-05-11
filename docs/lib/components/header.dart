@@ -14,9 +14,26 @@ class Header extends StatelessComponent {
   Component build(BuildContext context) {
     return header(classes: 'docs-header', [
       div(classes: 'header-left', [
-        label(classes: 'menu-btn', htmlFor: 'sidebar-toggle', [
-          span(classes: 'hamburger', []),
-        ]),
+        label(
+          classes: 'menu-btn',
+          htmlFor: 'sidebar-toggle',
+          attributes: {'aria-label': 'Toggle sidebar menu', 'role': 'button', 'tabindex': '0'},
+          events: {
+            'keydown': (e) {
+              final event = e as dynamic;
+              if (event.key == 'Enter' || event.key == ' ') {
+                event.preventDefault();
+                final target = event.target;
+                if (target != null) {
+                  target.click();
+                }
+              }
+            },
+          },
+          [
+            span(classes: 'hamburger', []),
+          ],
+        ),
         h2([text('Synapse')]),
         span(classes: 'version-badge', [text('v0.1.0-beta')]),
       ]),
@@ -41,12 +58,18 @@ class Header extends StatelessComponent {
         justifyContent: .spaceBetween,
         backgroundColor: const Color('color-mix(in srgb, var(--background-color) 70%, transparent)'),
         backdropFilter: Filter.blur(12.px),
-        border: Border.only(bottom: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px)),
+        border: Border.only(
+          bottom: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px),
+        ),
         position: .sticky(top: 0.px),
         raw: {'z-index': '100'},
       ),
       css('.header-left', [
-        css('&').styles(display: .flex, alignItems: .center, gap: Gap(column: 1.rem)),
+        css('&').styles(
+          display: .flex,
+          alignItems: .center,
+          gap: Gap(column: 1.rem),
+        ),
         css('h2').styles(
           fontSize: 1.25.rem,
           fontWeight: .w700,
@@ -85,8 +108,12 @@ class Header extends StatelessComponent {
               backgroundColor: textColor,
               position: Position.absolute(left: 0.px),
             ),
-            css('&::before').styles(position: Position.absolute(top: (-6).px, left: 0.px)),
-            css('&::after').styles(position: Position.absolute(top: 6.px, left: 0.px)),
+            css('&::before').styles(
+              position: Position.absolute(top: (-6).px, left: 0.px),
+            ),
+            css('&::after').styles(
+              position: Position.absolute(top: 6.px, left: 0.px),
+            ),
           ]),
           css.media(MediaQuery.screen(maxWidth: 768.px), [
             css('&').styles(display: .block),
@@ -94,7 +121,11 @@ class Header extends StatelessComponent {
         ]),
       ]),
       css('.header-right', [
-        css('&').styles(display: .flex, alignItems: .center, gap: Gap(column: 1.5.rem)),
+        css('&').styles(
+          display: .flex,
+          alignItems: .center,
+          gap: Gap(column: 1.5.rem),
+        ),
         css.media(MediaQuery.screen(maxWidth: 768.px), [
           css('.search-trigger').styles(display: .none),
         ]),
@@ -130,5 +161,4 @@ class Header extends StatelessComponent {
       css('.github-link:hover').styles(opacity: 1),
     ]),
   ];
-
 }

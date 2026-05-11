@@ -156,7 +156,7 @@ export function fastSearchWithRipgrep({
     args.push('--json', '-C', String(ctxN));
   }
 
-  args.push(query, base);
+  args.push('--', query, base);
 
   const run = spawnSync(RG_BIN, args, {
     encoding: 'utf8',
@@ -347,7 +347,7 @@ export function searchFiles({
         for (const ignored of ignoreDirs) {
           args.push('--glob', `!**/${ignored}/**`);
         }
-        args.push(base);
+        args.push('--', base);
 
         const run = spawnSync(RG_BIN, args, {
           encoding: 'utf8',

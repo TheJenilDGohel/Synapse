@@ -4,6 +4,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.1-beta.4] - Unreleased
+
+### 🛡️ Hardening & Security
+- **SQL Injection Fix**: Secured `Backup` service against SQL injection in `VACUUM INTO` operations.
+- **Type Safety**: Removed 20+ `@ts-ignore` and `any` types across the codebase, replacing them with proper type declarations and `ts-expect-error` where necessary.
+- **Dependency Audit**: Merged 10+ dependency updates for core libraries and GitHub Actions.
+
+### ⚡ Performance Optimization
+- **N+1 Query Resolution**: Optimized entity recall and entry batch deduplication to eliminate N+1 query patterns.
+- **Async I/O**: Refactored chunker and ingestion pipelines to use asynchronous file system operations, improving throughput for large workspaces.
+- **Batch Operations**: Implemented batch file removals in SQLite VEC service.
+
 ## [0.0.1-beta.3] - 2026-05-08
 
 ### 🛡️ Hardened Foundations

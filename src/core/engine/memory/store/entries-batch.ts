@@ -254,18 +254,42 @@ export async function storeEntryBatch(
   // Pass 2: run the entire write workload inside a single transaction so any
   // unexpected DB error rolls back all inserts.
   await store.adapter.transaction(async (ad) => {
+    // Pre-load existing fingerprints to avoid N+1 queries
+    const fingerprintsByProject = new Map<string, Set<string>>();
+    for (const row of prepared) {
+      if (row.skip) continue;
+      let fps = fingerprintsByProject.get(row.scope.project_path);
+      if (!fps) {
+        fps = new Set();
+        fingerprintsByProject.set(row.scope.project_path, fps);
+      }
+      fps.add(row.fingerprint);
+    }
+
+    const existingMap = new Map<string, string>(); // projectPath|fingerprint -> id
+    if (fingerprintsByProject.size > 0) {
+      for (const [projectPath, fps] of fingerprintsByProject.entries()) {
+        const fpArray = Array.from(fps);
+        const placeholders = fpArray.map(() => '?').join(', ');
+        const query = `SELECT id, fingerprint FROM memory_entries WHERE scope_project_path = ? AND fingerprint IN (${placeholders})`;
+        const rows = await ad.all<{ id: string; fingerprint: string }>(query, [projectPath, ...fpArray]);
+        for (const r of rows) {
+          existingMap.set(`${projectPath}|${r.fingerprint}`, r.id);
+        }
+      }
+    }
+
     for (const row of prepared) {
       if (row.skip) continue;
 
       // Fingerprint dedup — catches exact duplicates against existing rows
       // AND within-batch duplicates (transaction reads its own writes).
-      const existing = await ad.get<{ id: string }>(
-        `SELECT id FROM memory_entries WHERE fingerprint = ? AND scope_project_path = ? LIMIT 1`,
-        [row.fingerprint, row.scope.project_path]
-      );
-      if (existing) {
+      const mapKey = `${row.scope.project_path}|${row.fingerprint}`;
+      const existingId = existingMap.get(mapKey);
+
+      if (existingId) {
         summary.duplicates += 1;
-        ids[row.index] = existing.id;
+        ids[row.index] = existingId;
         continue;
       }
 
@@ -311,6 +335,10 @@ export async function storeEntryBatch(
 
       summary.created += 1;
       ids[row.index] = row.id;
+      // Add newly inserted row to existingMap so within-batch duplicates
+      // reference this new ID instead of attempting to re-insert.
+      existingMap.set(mapKey, row.id);
+
       createdRows.push({
         id: row.id,
         title: row.title,

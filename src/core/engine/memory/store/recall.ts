@@ -213,15 +213,28 @@ export async function recall(adapter: Adapter, {
       const facts: RelatedFact[] = [];
       const seenTriples = new Set<string>();
 
+      const candidateIds = Array.from(
+        new Set(
+          entities
+            .slice(0, 5)
+            .map((e) => normalizeEntityId(e.name))
+            .filter((id): id is string => id !== null)
+        )
+      );
+
+      let existingIds = new Set<string>();
+      if (candidateIds.length > 0) {
+        const placeholders = candidateIds.map(() => '?').join(', ');
+        const existingEntities = await adapter.all<{ id: string }>(
+          `SELECT id FROM kg_entities WHERE id IN (${placeholders})`,
+          candidateIds
+        );
+        existingIds = new Set(existingEntities.map((e) => e.id));
+      }
+
       for (const entity of entities.slice(0, 5)) {
         const entityId = normalizeEntityId(entity.name);
-        if (!entityId) continue;
-
-        const exists = await adapter.get<{ id: string }>(
-          'SELECT id FROM kg_entities WHERE id = ?',
-          [entityId]
-        );
-        if (!exists) continue;
+        if (!entityId || !existingIds.has(entityId)) continue;
 
         const triples = await adapter.all<{
           id: string; subject_id: string; predicate: string; object_id: string;
