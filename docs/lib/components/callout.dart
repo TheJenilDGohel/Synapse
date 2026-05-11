@@ -6,7 +6,8 @@ enum CalloutType {
   info(Color('#38bdf8'), 'ℹ️', 'Note'),
   tip(Color('#10b981'), '💡', 'Tip'),
   warning(Color('#f59e0b'), '⚠️', 'Warning'),
-  danger(Color('#ef4444'), '🚨', 'Danger');
+  danger(Color('#ef4444'), '🚨', 'Danger')
+  ;
 
   final Color color;
   final String icon;
@@ -27,7 +28,9 @@ class Callout extends StatelessComponent {
     return div(
       classes: 'callout callout-${type.name}',
       styles: Styles(
-        border: Border.only(left: BorderSide(style: BorderStyle.solid, color: type.color, width: 4.px)),
+        border: Border.only(
+          left: BorderSide(style: BorderStyle.solid, color: type.color, width: 4.px),
+        ),
       ),
       [
         div(classes: 'callout-header', [
@@ -70,7 +73,7 @@ class Callout extends StatelessComponent {
         color: textColor.withOpacity(0.8),
         lineHeight: Unit.expression('1.6'),
       ),
-      
+
       // Type specific overrides if needed
       css('.callout-info .callout-title').styles(color: CalloutType.info.color),
       css('.callout-tip .callout-title').styles(color: CalloutType.tip.color),

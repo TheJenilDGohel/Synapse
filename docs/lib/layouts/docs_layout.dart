@@ -61,7 +61,9 @@ class DocsLayoutWrapper extends StatelessComponent {
           flex: Flex(grow: 1),
         ),
         css.media(MediaQuery.screen(maxWidth: 768.px), [
-          css('&').styles(padding: .symmetric(horizontal: 1.5.rem, vertical: 2.rem)),
+          css('&').styles(
+            padding: .symmetric(horizontal: 1.5.rem, vertical: 2.rem),
+          ),
         ]),
       ]),
       css('.sidebar-toggle-input', [
