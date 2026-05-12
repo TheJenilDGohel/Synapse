@@ -47,3 +47,13 @@ Stabilize the core engine, optimize tool context usage, and harden the architect
   - [x] Perform full sandbox installation check.
   - [x] Report issues to GitHub if found (Found & Reported: #95, #96).
   - [x] Final release audit.
+
+## 🩹 Phase 07: Stability Patch
+- **Goal**: Resolve high-priority bugs discovered during final stabilization.
+- **Status**: ⏳ In Progress
+- **Plans**: 2 plans
+- **Tasks**:
+  - [ ] Resolve Windows ESM path error in Skill CLI (Issue 1).
+  - [ ] Ensure MemoryStore sub-services are initialized before use (Issue 2).
+  - [ ] Fix tree-sitter language loading logic (Issue 3).
+  - [ ] Audit and fix core dependency categorization (Issue 4).
