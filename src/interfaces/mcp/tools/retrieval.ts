@@ -9,19 +9,22 @@ import {
   normalizeIndexProjectResult,
   normalizeSearchHybridResult,
   normalizeSymbolResult,
-  normalizeUsageResult
+  normalizeUsageResult,
+  normalizeSearchFileResult,
+  normalizeSearchCodeResult
 } from '../common/response-normalizers.js';
 import {
   SEARCH_RESULT_SCHEMA,
   STATUS_RESULT_SCHEMA
 } from '../common/schemas.js';
 import { registerWorkspaceTools } from './retrieval-workspace.js';
+import { McpResponseMapper } from '../utils/response-mapper.js';
 import type {
   IWorkspaceService,
   IVectorIndexService,
   ISearchService,
   IMemoryService
-} from '../../../core/interfaces/services.ts';
+} from '../../../core/interfaces/services.js';
 
 interface McpExtra {
   _meta?: { progressToken?: unknown };
@@ -154,31 +157,36 @@ export function registerRetrievalTools({
         project_path: z.string().optional(),
         all_roots: z.boolean().default(false),
         max_results: z.number().int().min(1).max(1000).default(defaultMaxResults),
-        case_sensitive: z.boolean().default(false)
+        case_sensitive: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ query, project_path, all_roots, max_results, case_sensitive }: Record<string, unknown>) => {
+    async ({ query, project_path, all_roots, max_results, case_sensitive, item_format }: Record<string, unknown>) => {
       const results = search.searchFiles({
         query, projectPath: project_path, allRoots: all_roots,
         maxResults: max_results, caseSensitive: case_sensitive
       });
-      if (results.length > 0) {
+      const normalized = normalizeSearchFileResult(results, query as string);
+      
+      const response = McpResponseMapper.standardizeResponse(normalized, { item_format: item_format as string });
+      
+      if (normalized.items.length > 0) {
         const seen = new Set<string>();
         const resourceLinks: ResourceLink[] = [];
-        for (const item of results as Array<{ file?: string; relative_path?: string; name?: string }>) {
+        for (const item of normalized.items as Array<{ file?: string; relative_path?: string; name?: string }>) {
           const absPath = typeof item?.file === 'string' ? item.file : '';
           if (!absPath || seen.has(absPath)) continue;
           seen.add(absPath);
           const fragment = item.relative_path || item.name || absPath;
           resourceLinks.push(buildResourceLink(absPath, `path match: ${fragment}`));
         }
-        return createToolResponse(results, { resourceLinks });
+        return createToolResponse(response, { resourceLinks });
       }
 
       return withSearchMissResponse(
-        results,
+        response,
         buildSearchMeta({ tool: 'synapse_search_files', query: query as string, project_path, all_roots, max_results: max_results as number, case_sensitive }),
         'No file-path matches found.',
         ['Verify project_path or broaden the query to a path fragment.', 'Try synonyms or module names instead of full phrases.'],
@@ -200,20 +208,25 @@ export function registerRetrievalTools({
         max_results: z.number().int().min(1).max(1000).default(defaultMaxResults),
         case_sensitive: z.boolean().default(false),
         context_lines: z.number().int().min(0).max(10).default(0),
-        use_regex: z.boolean().default(false)
+        use_regex: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ query, project_path, all_roots, glob, max_results, case_sensitive, context_lines, use_regex }: Record<string, unknown>) => {
+    async ({ query, project_path, all_roots, glob, max_results, case_sensitive, context_lines, use_regex, item_format }: Record<string, unknown>) => {
       const results = search.searchCode({
         query, projectPath: project_path, allRoots: all_roots, glob,
         maxResults: max_results, caseSensitive: case_sensitive,
         contextLines: context_lines, useRegex: use_regex
       });
-      if (results.length > 0) {
+      const normalized = normalizeSearchCodeResult(results, query as string);
+      
+      const response = McpResponseMapper.standardizeResponse(normalized, { item_format: item_format as string });
+
+      if (normalized.items.length > 0) {
         const counts = new Map<string, number>();
-        for (const item of results as Array<{ file?: string }>) {
+        for (const item of normalized.items as Array<{ file?: string }>) {
           const absPath = typeof item?.file === 'string' ? item.file : '';
           if (!absPath) continue;
           counts.set(absPath, (counts.get(absPath) || 0) + 1);
@@ -223,11 +236,11 @@ export function registerRetrievalTools({
           const noun = count === 1 ? 'match' : 'matches';
           resourceLinks.push(buildResourceLink(absPath, `${count} ${noun} for ${query as string}`));
         }
-        return createToolResponse(results, { resourceLinks });
+        return createToolResponse(response, { resourceLinks });
       }
 
       return withSearchMissResponse(
-        results,
+        response,
         buildSearchMeta({ tool: 'synapse_search_code', query: query as string, project_path, all_roots, glob: glob as string, max_results: max_results as number, case_sensitive, context_lines: context_lines as number, use_regex: use_regex as boolean }),
         'No code matches found in the current scope.',
         ['Verify the scope and try a broader query or synonyms.', 'If you need pattern matching, retry with use_regex=true.'],
@@ -251,19 +264,23 @@ export function registerRetrievalTools({
         min_semantic_score: z.number().min(0).max(1).default(0.05),
         auto_index: z.boolean().default(true),
         use_reranker: z.boolean().default(false),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ query, project_path, all_roots, glob, max_results, case_sensitive, min_semantic_score, auto_index, use_reranker, include_legacy_arrays }: Record<string, unknown>) => normalizeSearchHybridResult(
-      await search.searchHybrid({
-        query, projectPath: project_path, allRoots: all_roots, glob,
-        maxResults: max_results, caseSensitive: case_sensitive,
-        minSemanticScore: min_semantic_score, autoIndex: auto_index, useReranker: use_reranker
-      }),
-      query as string,
-      { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ query, project_path, all_roots, glob, max_results, case_sensitive, min_semantic_score, auto_index, use_reranker, include_legacy_arrays, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      normalizeSearchHybridResult(
+        await search.searchHybrid({
+          query, projectPath: project_path, allRoots: all_roots, glob,
+          maxResults: max_results, caseSensitive: case_sensitive,
+          minSemanticScore: min_semantic_score, autoIndex: auto_index, useReranker: use_reranker
+        }),
+        query as string,
+        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+      ),
+      { item_format: item_format as string }
     )
   );
 
@@ -279,15 +296,19 @@ export function registerRetrievalTools({
         glob: z.string().default('*'),
         max_results: z.number().int().min(1).max(1000).default(defaultMaxResults),
         case_sensitive: z.boolean().default(false),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ symbol, project_path, all_roots, glob, max_results, case_sensitive, include_legacy_arrays }: Record<string, unknown>) => normalizeSymbolResult(
-      search.getSymbol({ symbol, projectPath: project_path, allRoots: all_roots, glob, maxResults: max_results, caseSensitive: case_sensitive }),
-      symbol as string,
-      { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ symbol, project_path, all_roots, glob, max_results, case_sensitive, include_legacy_arrays, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      normalizeSymbolResult(
+        search.getSymbol({ symbol, projectPath: project_path, allRoots: all_roots, glob, maxResults: max_results, caseSensitive: case_sensitive }),
+        symbol as string,
+        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+      ),
+      { item_format: item_format as string }
     )
   );
 
@@ -304,15 +325,19 @@ export function registerRetrievalTools({
         max_results: z.number().int().min(1).max(1000).default(defaultMaxResults),
         case_sensitive: z.boolean().default(false),
         context_lines: z.number().int().min(0).max(10).default(0),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ symbol, project_path, all_roots, glob, max_results, case_sensitive, context_lines, include_legacy_arrays }: Record<string, unknown>) => normalizeUsageResult(
-      search.findUsages({ symbol, projectPath: project_path, allRoots: all_roots, glob, maxResults: max_results, caseSensitive: case_sensitive, contextLines: context_lines }),
-      symbol as string,
-      { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ symbol, project_path, all_roots, glob, max_results, case_sensitive, context_lines, include_legacy_arrays, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      normalizeUsageResult(
+        search.findUsages({ symbol, projectPath: project_path, allRoots: all_roots, glob, maxResults: max_results, caseSensitive: case_sensitive, contextLines: context_lines }),
+        symbol as string,
+        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+      ),
+      { item_format: item_format as string }
     )
   );
 }

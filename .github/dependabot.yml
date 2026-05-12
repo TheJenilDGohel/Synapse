@@ -11,6 +11,14 @@ updates:
     labels:
       - dependencies
       - security
+    groups:
+      tree-sitter:
+        patterns:
+          - "tree-sitter-*"
+      linting:
+        patterns:
+          - "eslint*"
+          - "prettier*"
 
   - package-ecosystem: github-actions
     directory: /

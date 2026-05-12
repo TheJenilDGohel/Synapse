@@ -1,0 +1,49 @@
+# Synapse Milestone Roadmap: v1.0.0 Stable Release
+
+## 🎯 Milestone Goal
+Stabilize the core engine, optimize tool context usage, and harden the architecture for final stable release.
+
+## 🏁 Phase 02: Code Review & Implementation
+- **Goal**: Address security and quality findings from Phase 02 review.
+- **Status**: ✅ Completed
+- **Tasks**:
+  - [x] Implement strict validation for `sqliteVecModule` in `runtime.ts` (IN-01).
+  - [x] Verify SQL parameterization across all remaining core services.
+
+## 🚀 Phase 03: Tool Optimization
+- **Goal**: Consolidate KG tools and standardize outputs to save tokens.
+- **Status**: ✅ Completed
+- **Plan**: `.planning/phases/03-tool-optimization/03-02-PLAN.md`
+- **Tasks**:
+  - [x] Create Knowledge Graph Controllers (`synapse_kg_manage`, `synapse_kg_query`).
+  - [x] Standardize search/retrieval outputs on `items[]` array.
+  - [x] Remove redundant legacy output arrays.
+
+## 🏗️ Phase 04: Architectural Hardening
+- **Goal**: Centralize interfaces and optimize performance-critical paths.
+- **Status**: ✅ Completed
+- **Plans**: `.planning/phases/04-architectural-hardening/04-0*.md`
+- **Tasks**:
+  - [x] Centralize Service Interfaces (Plan 04-01).
+  - [x] Optimize AST traversal for chunking (Plan 04-01).
+  - [x] Create `McpResponseMapper` utility (Plan 04-01).
+  - [x] Decompose `MemoryService` into focused interfaces (Plan 04-02).
+  - [x] Optimize graph traversal performance (Plan 04-02).
+  - [x] Refactor remaining tool handlers to use `McpResponseMapper` (Plan 04-02).
+
+## 🛠️ Phase 05: Release & CI/CD
+- **Goal**: Finalize build pipeline and release automation.
+- **Status**: ✅ Completed
+- **Tasks**:
+  - [x] Update GitHub Actions for Node 18, 20, 22.
+  - [x] Resolve CI deprecation warnings.
+  - [x] Finalize release automation via `gh` CLI.
+
+## 🏁 Phase 06: Stable Release Stabilization
+- **Goal**: Final A-to-Z verification and sandbox testing for stable release.
+- **Status**: ✅ Completed
+- **Tasks**:
+  - [x] Pivot versioning to `1.0.0`.
+  - [x] Perform full sandbox installation check.
+  - [x] Report issues to GitHub if found (Found & Reported: #95, #96).
+  - [x] Final release audit.

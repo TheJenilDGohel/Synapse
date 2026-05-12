@@ -16,7 +16,8 @@ import type { ResourceLink } from '../common/mime.js';
 import type {
   IWorkspaceService,
   IMemoryService
-} from '../../../core/interfaces/services.ts';
+} from '../../../core/interfaces/services.js';
+import { McpResponseMapper } from '../utils/response-mapper.js';
 
 export interface RegisterWorkspaceToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
@@ -40,12 +41,16 @@ export function registerWorkspaceTools({
       description: 'List configured local roots available to this MCP server.',
       inputSchema: {
         limit: z.number().int().min(1).max(1000).default(100),
-        offset: z.number().int().min(0).default(0)
+        offset: z.number().int().min(0).default(0),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ limit, offset }: Record<string, unknown>) => paginateItems(workspace.listRoots(), limit as number, offset as number)
+    async ({ limit, offset, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      paginateItems(workspace.listRoots(), limit as number, offset as number),
+      { item_format: item_format as string }
+    )
   );
 
   registerJsonTool(
@@ -57,19 +62,23 @@ export function registerWorkspaceTools({
         root_path: z.string().optional(),
         max_entries: z.number().int().min(1).max(1000).optional(),
         limit: z.number().int().min(1).max(1000).default(100),
-        offset: z.number().int().min(0).default(0)
+        offset: z.number().int().min(0).default(0),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ root_path, max_entries, limit, offset }: Record<string, unknown>) => {
+    async ({ root_path, max_entries, limit, offset, item_format }: Record<string, unknown>) => {
       const effectiveLimit = (max_entries || limit) as number;
       const projects = workspace.listProjects(root_path as string | undefined, 2000);
       const paged = paginateItems(projects, effectiveLimit, offset as number);
-      return {
-        ...paged,
-        truncated_total: projects.length === 2000
-      };
+      return McpResponseMapper.standardizeResponse(
+        {
+          ...paged,
+          truncated_total: projects.length === 2000
+        },
+        { item_format: item_format as string }
+      );
     }
   );
 
@@ -82,14 +91,20 @@ export function registerWorkspaceTools({
         project_path: z.string(),
         max_depth: z.number().int().min(1).max(8).default(3),
         max_entries: z.number().int().min(1).max(10000).default(1500),
-        compact: z.boolean().default(false)
+        compact: z.boolean().default(false),
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: BUNDLE_RESULT_SCHEMA
     },
-    async ({ project_path, max_depth, max_entries, compact }: Record<string, unknown>) => normalizeProjectTreeResult(
-      workspace.projectTree(project_path as string, max_depth as number, max_entries as number, compact as boolean),
-      project_path as string
+    async ({ project_path, max_depth, max_entries, compact, include_legacy_arrays, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      normalizeProjectTreeResult(
+        workspace.projectTree(project_path as string, max_depth as number, max_entries as number, compact as boolean),
+        project_path as string,
+        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+      ),
+      { item_format: item_format as string }
     )
   );
 
@@ -131,7 +146,7 @@ export function registerWorkspaceTools({
       const totalLines = typeof rec.total_lines === 'number' ? rec.total_lines : (typeof rec.end_line === 'number' ? rec.end_line : 0);
       const description = `chunk ${rec.start_line}-${rec.end_line} of ${totalLines} lines`;
       const resourceLinks: ResourceLink[] = absPath ? [buildResourceLink(absPath, description)] : [];
-      return createToolResponse(result, { resourceLinks });
+      return createToolResponse(McpResponseMapper.standardizeResponse(result), { resourceLinks });
     }
   );
 
@@ -149,17 +164,18 @@ export function registerWorkspaceTools({
     },
     async ({ path: filePath }: Record<string, unknown>) => {
       if (!memory) {
-        return { file_path: filePath, hints: [] };
+        return McpResponseMapper.standardizeResponse({ file_path: filePath, hints: [] });
       }
       try {
-        return await memory.getFileMemoryHints(filePath as string, true);
+        const result = await memory.getFileMemoryHints(filePath as string, true);
+        return McpResponseMapper.standardizeResponse(result);
       } catch (err) {
         // HOOK-09: Non-blocking -- return empty hints on failure
-        return {
+        return McpResponseMapper.standardizeResponse({
           file_path: filePath,
           hints: [],
           error: err instanceof Error ? err.message : 'hint lookup failed'
-        };
+        });
       }
     }
   );
@@ -171,14 +187,18 @@ export function registerWorkspaceTools({
       description: 'Return a high-level summary of a project directory.',
       inputSchema: {
         project_path: z.string(),
-        max_files: z.number().int().min(100).max(20000).default(3000)
+        max_files: z.number().int().min(100).max(20000).default(3000),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: BUNDLE_RESULT_SCHEMA
     },
-    async ({ project_path, max_files }: Record<string, unknown>) => normalizeProjectSummaryResult(
-      workspace.summarizeProject(project_path as string, max_files as number),
-      project_path as string
+    async ({ project_path, max_files, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      normalizeProjectSummaryResult(
+        workspace.summarizeProject(project_path as string, max_files as number),
+        project_path as string
+      ),
+      { item_format: item_format as string }
     )
   );
 

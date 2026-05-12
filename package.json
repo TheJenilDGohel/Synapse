@@ -1,6 +1,6 @@
 {
   "name": "synapse-cortex",
-  "version": "0.0.1-beta.3",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "Jenil",
   "keywords": [
@@ -82,6 +82,7 @@
     "bump:beta": "npm version prerelease --preid=beta --no-git-tag-version"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@vscode/ripgrep": "^1.17.1",
     "ora": "^9.3.0",
@@ -102,7 +103,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@huggingface/transformers": "^4.2.0",
     "@types/node": "^25.5.2",
     "depcheck": "^1.4.7",
     "eslint": "^10.2.0",

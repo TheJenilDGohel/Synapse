@@ -119,7 +119,7 @@ export function registerMemoryStoreTools({
       if (!item) {
         throw new Error(`memory not found: ${id}`);
       }
-      return normalizeMemoryEntryPayload(item);
+      return McpResponseMapper.standardizeResponse(normalizeMemoryEntryPayload(item));
     }
   );
 
@@ -160,7 +160,9 @@ export function registerMemoryStoreTools({
           duplicate: Boolean(r?.duplicate)
         }
       );
+      
       const response = McpResponseMapper.standardizeResponse(normalized, { terse: terse as string });
+      
       // FUSE-03: Attach auto-link results when present
       if (r?.auto_linked_entities) {
         (response as Record<string, unknown>).auto_linked_entities = r.auto_linked_entities;
@@ -199,7 +201,10 @@ export function registerMemoryStoreTools({
     },
     async ({ id, terse, ...patch }: Record<string, unknown>) => {
       const result = await memory.updateEntry(id as string, patch);
-      return McpResponseMapper.standardizeResponse(normalizeMemoryEntryPayload(result, { updated: true }), { terse: terse as string });
+      return McpResponseMapper.standardizeResponse(
+        normalizeMemoryEntryPayload(result, { updated: true }), 
+        { terse: terse as string }
+      );
     }
   );
 
@@ -215,7 +220,13 @@ export function registerMemoryStoreTools({
       annotations: DESTRUCTIVE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
     },
-    async ({ id, terse }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(normalizeDeleteResult(await memory.deleteEntry(id as string), { id: id as string }), { terse: terse as string })
+    async ({ id, terse }: Record<string, unknown>) => {
+      const result = await memory.deleteEntry(id as string);
+      return McpResponseMapper.standardizeResponse(
+        normalizeDeleteResult(result, { id: id as string }), 
+        { terse: terse as string }
+      );
+    }
   );
 
   registerJsonTool(
@@ -224,13 +235,15 @@ export function registerMemoryStoreTools({
       title: 'Memory Delete Batch',
       description: 'Delete up to 100 memory entries in a single call. Returns the count of deleted entries and per-row errors for IDs that were not found or failed.',
       inputSchema: {
-        ids: z.array(z.string().min(1)).min(1).max(100)
+        ids: z.array(z.string().min(1)).min(1).max(100),
+        terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: DESTRUCTIVE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
     },
-    async ({ ids }: Record<string, unknown>) => {
-      return memory.deleteEntryBatch({ ids: ids as string[] });
+    async ({ ids, terse }: Record<string, unknown>) => {
+      const result = await memory.deleteEntryBatch({ ids: ids as string[] });
+      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
     }
   );
 
@@ -261,7 +274,10 @@ export function registerMemoryStoreTools({
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
     },
-    async ({ terse, ...args }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(await memory.captureEvent(args), { terse: terse as string })
+    async ({ terse, ...args }: Record<string, unknown>) => {
+      const result = await memory.captureEvent(args);
+      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
+    }
   );
 
   registerJsonTool(
@@ -272,18 +288,23 @@ export function registerMemoryStoreTools({
       inputSchema: {
         project_path: z.string().optional(),
         limit: z.number().int().min(1).max(200).default(20),
-        offset: z.number().int().min(0).default(0)
+        offset: z.number().int().min(0).default(0),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ project_path, limit, offset }: Record<string, unknown>) => normalizeMemoryEventsResult(
-      await memory.listEvents({
+    async ({ project_path, limit, offset, item_format }: Record<string, unknown>) => {
+      const result = await memory.listEvents({
         projectPath: project_path,
         limit,
         offset
-      })
-    )
+      });
+      return McpResponseMapper.standardizeResponse(
+        normalizeMemoryEventsResult(result),
+        { item_format: item_format as string }
+      );
+    }
   );
 
   registerJsonTool(
@@ -295,17 +316,27 @@ export function registerMemoryStoreTools({
         id: z.string().min(1),
         threshold: z.number().min(0).max(1).default(0.55),
         max_results: z.number().int().min(1).max(50).default(10),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ id, threshold, max_results, include_legacy_arrays }: Record<string, unknown>) => normalizeMemorySuggestionResult(
-      await memory.suggestRelations(id as string, { threshold: threshold as number, maxResults: max_results as number }),
-      id as string,
-      threshold as number,
-      { includeLegacyArrays: Boolean(include_legacy_arrays) }
-    )
+    async ({ id, threshold, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) => {
+      const result = await memory.suggestRelations(id as string, { 
+        threshold: threshold as number, 
+        maxResults: max_results as number 
+      });
+      return McpResponseMapper.standardizeResponse(
+        normalizeMemorySuggestionResult(
+          result,
+          id as string,
+          threshold as number,
+          { includeLegacyArrays: Boolean(include_legacy_arrays) }
+        ),
+        { item_format: item_format as string }
+      );
+    }
   );
 
   registerJsonTool(
@@ -324,7 +355,14 @@ export function registerMemoryStoreTools({
     },
     async ({ source_id, target_id, relation_type, terse }: Record<string, unknown>) => {
       const result = await memory.addRelation(source_id as string, target_id as string, relation_type as string);
-      return McpResponseMapper.standardizeResponse(normalizeRelationResult(result, { source_id: source_id as string, target_id: target_id as string, relation_type: relation_type as string }), { terse: terse as string });
+      return McpResponseMapper.standardizeResponse(
+        normalizeRelationResult(result, { 
+          source_id: source_id as string, 
+          target_id: target_id as string, 
+          relation_type: relation_type as string 
+        }), 
+        { terse: terse as string }
+      );
     }
   );
 
@@ -344,8 +382,11 @@ export function registerMemoryStoreTools({
     async ({ source_id, target_id, terse }: Record<string, unknown>) => {
       const result = await memory.removeRelation(source_id as string, target_id as string);
       return McpResponseMapper.standardizeResponse(
-        normalizeRelationRemovalResult(result, { source_id: source_id as string, target_id: target_id as string }),
-        { terse: terse as any }
+        normalizeRelationRemovalResult(result, { 
+          source_id: source_id as string, 
+          target_id: target_id as string 
+        }),
+        { terse: terse as string }
       );
     }
   );
@@ -357,16 +398,23 @@ export function registerMemoryStoreTools({
       description: 'Return all memory entries linked to a given memory ID, traversing the knowledge graph one hop in both directions.',
       inputSchema: {
         id: z.string().min(1),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ id, include_legacy_arrays }: Record<string, unknown>) => normalizeRelatedMemoriesResult(
-      await memory.getRelated(id as string),
-      id as string,
-      { includeLegacyArrays: Boolean(include_legacy_arrays) }
-    )
+    async ({ id, include_legacy_arrays, item_format }: Record<string, unknown>) => {
+      const result = await memory.getRelated(id as string);
+      return McpResponseMapper.standardizeResponse(
+        normalizeRelatedMemoriesResult(
+          result,
+          id as string,
+          { includeLegacyArrays: Boolean(include_legacy_arrays) }
+        ),
+        { item_format: item_format as string }
+      );
+    }
   );
 
   registerJsonTool(
@@ -395,16 +443,17 @@ export function registerMemoryStoreTools({
           change_note: z.string().max(400).optional(),
           dedup_threshold: z.number().min(0).max(1).optional()
         })).min(1).max(100),
-        response_format: z.enum(['minimal', 'verbose']).default('minimal')
+        terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
     },
-    async ({ memories, response_format }: Record<string, unknown>) => {
-      return memory.storeEntryBatch({
+    async ({ memories, terse }: Record<string, unknown>) => {
+      const result = await memory.storeEntryBatch({
         memories: memories as Array<Record<string, unknown>>,
-        response_format: response_format as 'minimal' | 'verbose'
+        response_format: terse as 'minimal' | 'verbose'
       });
+      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
     }
   );
 }

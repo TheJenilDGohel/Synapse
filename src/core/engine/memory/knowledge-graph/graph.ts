@@ -60,8 +60,8 @@ export async function traverseGraph(
         WHERE r.depth < ?
           AND t.valid_to IS NULL
           ${predicateClause}
-          AND INSTR(',' || r.path || ',', ',' || t.object_id || ',') = 0
       )
+      CYCLE entity_id SET is_cycle USING node_path
       SELECT DISTINCT r.entity_id, r.depth, r.path,
              e.name, e.entity_type
       FROM reachable r
@@ -82,8 +82,8 @@ export async function traverseGraph(
         WHERE r.depth < ?
           AND t.valid_to IS NULL
           ${predicateClause}
-          AND INSTR(',' || r.path || ',', ',' || t.subject_id || ',') = 0
       )
+      CYCLE entity_id SET is_cycle USING node_path
       SELECT DISTINCT r.entity_id, r.depth, r.path,
              e.name, e.entity_type
       FROM reachable r
@@ -104,11 +104,8 @@ export async function traverseGraph(
         WHERE r.depth < ?
           AND t.valid_to IS NULL
           ${predicateClause}
-          AND INSTR(
-            ',' || r.path || ',',
-            ',' || CASE WHEN t.subject_id = r.entity_id THEN t.object_id ELSE t.subject_id END || ','
-          ) = 0
       )
+      CYCLE entity_id SET is_cycle USING node_path
       SELECT DISTINCT r.entity_id, r.depth, r.path,
              e.name, e.entity_type
       FROM reachable r

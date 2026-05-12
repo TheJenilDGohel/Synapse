@@ -9,6 +9,7 @@ import {
 } from '../common/response-normalizers.js';
 import { SEARCH_RESULT_SCHEMA } from '../common/schemas.js';
 import type { ISymbolSearchService } from '../../../core/interfaces/services.ts';
+import { McpResponseMapper } from '../utils/response-mapper.js';
 
 export interface RegisterSymbolToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
@@ -33,21 +34,25 @@ export function registerSymbolTools({
         project_path: z.string().optional().describe('Scope search to a specific project'),
         language: z.string().optional().describe('Filter by language: typescript, javascript, python, go, rust'),
         max_results: z.number().int().min(1).max(1000).default(100),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ symbol, project_path, language, max_results, include_legacy_arrays }: Record<string, unknown>) =>
-      normalizeCallersResult(
-        search.findCallersSymbol({
-          symbol: symbol as string,
-          projectPath: project_path as string | undefined,
-          language: language as string | undefined,
-          maxResults: max_results as number
-        }),
-        symbol as string,
-        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ symbol, project_path, language, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
+      McpResponseMapper.standardizeResponse(
+        normalizeCallersResult(
+          search.findCallersSymbol({
+            symbol: symbol as string,
+            projectPath: project_path as string | undefined,
+            language: language as string | undefined,
+            maxResults: max_results as number
+          }),
+          symbol as string,
+          { includeLegacyArrays: Boolean(include_legacy_arrays) }
+        ),
+        { item_format: item_format as string }
       )
   );
 
@@ -63,20 +68,24 @@ export function registerSymbolTools({
         symbol: z.string().min(1).describe('The symbol name to find the definition of'),
         project_path: z.string().optional().describe('Scope search to a specific project'),
         language: z.string().optional().describe('Filter by language: typescript, javascript, python, go, rust'),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ symbol, project_path, language, include_legacy_arrays }: Record<string, unknown>) =>
-      normalizeDefinitionResult(
-        search.findDefinitionSymbol({
-          symbol: symbol as string,
-          projectPath: project_path as string | undefined,
-          language: language as string | undefined
-        }),
-        symbol as string,
-        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ symbol, project_path, language, include_legacy_arrays, item_format }: Record<string, unknown>) =>
+      McpResponseMapper.standardizeResponse(
+        normalizeDefinitionResult(
+          search.findDefinitionSymbol({
+            symbol: symbol as string,
+            projectPath: project_path as string | undefined,
+            language: language as string | undefined
+          }),
+          symbol as string,
+          { includeLegacyArrays: Boolean(include_legacy_arrays) }
+        ),
+        { item_format: item_format as string }
       )
   );
 
@@ -93,21 +102,25 @@ export function registerSymbolTools({
         project_path: z.string().optional().describe('Scope search to a specific project'),
         language: z.string().optional().describe('Filter by language: typescript, javascript, python, go, rust'),
         max_results: z.number().int().min(1).max(1000).default(100),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ interface_name, project_path, language, max_results, include_legacy_arrays }: Record<string, unknown>) =>
-      normalizeImplementationsResult(
-        search.findImplementationsSymbol({
-          interfaceName: interface_name as string,
-          projectPath: project_path as string | undefined,
-          language: language as string | undefined,
-          maxResults: max_results as number
-        }),
-        interface_name as string,
-        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ interface_name, project_path, language, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
+      McpResponseMapper.standardizeResponse(
+        normalizeImplementationsResult(
+          search.findImplementationsSymbol({
+            interfaceName: interface_name as string,
+            projectPath: project_path as string | undefined,
+            language: language as string | undefined,
+            maxResults: max_results as number
+          }),
+          interface_name as string,
+          { includeLegacyArrays: Boolean(include_legacy_arrays) }
+        ),
+        { item_format: item_format as string }
       )
   );
 
@@ -124,22 +137,27 @@ export function registerSymbolTools({
         new_name: z.string().min(1).describe('The desired new name'),
         project_path: z.string().optional().describe('Scope search to a specific project'),
         max_results: z.number().int().min(1).max(2000).default(500),
-        include_legacy_arrays: z.boolean().default(false)
+        include_legacy_arrays: z.boolean().default(false),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: SEARCH_RESULT_SCHEMA
     },
-    async ({ old_name, new_name, project_path, max_results, include_legacy_arrays }: Record<string, unknown>) =>
-      normalizeRenamePreviewResult(
-        search.renamePreviewSymbol({
-          oldName: old_name as string,
-          newName: new_name as string,
-          projectPath: project_path as string | undefined,
-          maxResults: max_results as number
-        }),
-        old_name as string,
-        new_name as string,
-        { includeLegacyArrays: Boolean(include_legacy_arrays) }
+    async ({ old_name, new_name, project_path, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
+      McpResponseMapper.standardizeResponse(
+        normalizeRenamePreviewResult(
+          search.renamePreviewSymbol({
+            oldName: old_name as string,
+            newName: new_name as string,
+            projectPath: project_path as string | undefined,
+            maxResults: max_results as number
+          }),
+          old_name as string,
+          new_name as string,
+          { includeLegacyArrays: Boolean(include_legacy_arrays) }
+        ),
+        { item_format: item_format as string }
       )
   );
 }
+

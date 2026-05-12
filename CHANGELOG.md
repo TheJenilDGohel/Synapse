@@ -1,12 +1,19 @@
 <!-- cspell:ignore synapse SYNAPSE reranker RERANKER SARIF stopword optimised prefiltering -->
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.1-beta.4] - Unreleased
+## [1.0.0] - 2026-05-12
+
+### 🚀 Stable Release
+- **Official Launch**: Transition from beta to stable release.
+- **Production Ready**: Full stabilization of the core engine and tool suites.
+- **Enhanced Verification**: Exhaustive sandbox installation and usage validation.
+
+## [0.0.1-beta.4] - 2026-05-12
 
 ### 🛡️ Hardening & Security
+...
 - **SQL Injection Fix**: Secured `Backup` service against SQL injection in `VACUUM INTO` operations.
 - **Type Safety**: Removed 20+ `@ts-ignore` and `any` types across the codebase, replacing them with proper type declarations and `ts-expect-error` where necessary.
 - **Dependency Audit**: Merged 10+ dependency updates for core libraries and GitHub Actions.
