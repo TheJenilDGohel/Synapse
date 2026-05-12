@@ -12,17 +12,17 @@ import { MemoryHooks } from '../events/hooks.js';
 
 export class DurableStore implements IDurableStore {
   public hooks: MemoryHooks;
+  
+  // Properties to satisfy MemoryStoreLike interface for entries.ts
+  public enabled: boolean = true;
+  public dbPath: string = '';
+  public requestedBackend: string = 'auto';
+  public selectedBackend: string | null = null;
+  public embeddingService: any = null;
 
   constructor(private adapter: Adapter) {
     this.hooks = new MemoryHooks();
   }
-
-  // Satisfy MemoryStoreLike interface for entries.ts
-  get enabled(): boolean { return true; }
-  get dbPath(): string { return ''; }
-  get requestedBackend(): string { return 'auto'; }
-  get selectedBackend(): string { return 'auto'; }
-  get embeddingService(): any { return null; }
 
   async init(): Promise<void> {
     // Parent MemoryStore handles actual initialization

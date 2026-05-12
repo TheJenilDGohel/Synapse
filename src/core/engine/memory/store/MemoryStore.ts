@@ -150,10 +150,16 @@ export class MemoryStore {
     await this.ensureSchema();
 
     // Initialize sub-services
-    this.durableStore = new DurableStore(this.adapter);
-    this.kgService = new KnowledgeGraphService(this.adapter);
-    this.taxonomyService = new TaxonomyService(this.adapter);
-    this.ingestionEngine = new IngestionEngine(this.adapter, this.embeddingService, this.durableStore.hooks);
+    this.durableStore = new DurableStore(this.adapter!);
+    this.durableStore.enabled = this.enabled;
+    this.durableStore.dbPath = this.dbPath;
+    this.durableStore.requestedBackend = this.requestedBackend;
+    this.durableStore.selectedBackend = this.selectedBackend;
+    this.durableStore.embeddingService = this.embeddingService;
+
+    this.kgService = new KnowledgeGraphService(this.adapter!);
+    this.taxonomyService = new TaxonomyService(this.adapter!);
+    this.ingestionEngine = new IngestionEngine(this.adapter!, this.embeddingService, this.durableStore.hooks);
     this.hooks = this.durableStore.hooks; // Preserve hook reference for backward compatibility
 
     return {
