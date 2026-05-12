@@ -50,7 +50,8 @@ export function parseFlags(args: string[], schema: Record<string, FlagSchema>): 
 
       const def = schema[key];
       if (!def) {
-        positionals.push(arg);
+        // Unknown flag: do not add to positionals as it breaks argument ordering.
+        // We just skip it and its potential value.
         continue;
       }
 

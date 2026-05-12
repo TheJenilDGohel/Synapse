@@ -82,25 +82,33 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
   const { flags, positionals, helpRequested } = parseFlags(args, {
     'valid-from': { type: 'string' },
     confidence: { alias: 'c', type: 'number' },
+    subject: { alias: 's', type: 'string' },
+    predicate: { alias: 'p', type: 'string' },
+    object: { alias: 'o', type: 'string' },
   });
 
   if (helpRequested) {
     process.stdout.write('Usage: synapse kg add <subject> <predicate> <object> [flags]\n\n');
     process.stdout.write('Flags:\n');
+    process.stdout.write('  -s, --subject <name>    Subject entity name\n');
+    process.stdout.write('  -p, --predicate <name>  Predicate name\n');
+    process.stdout.write('  -o, --object <name>     Object entity name\n');
     process.stdout.write('  --valid-from <ISO>      Start date for fact validity\n');
     process.stdout.write('  -c, --confidence <num>   Confidence score (0.0-1.0)\n');
     return;
   }
 
-  if (positionals.length < 3) {
+  const subjectName = (flags.subject as string) || positionals[0];
+  const predicate = (flags.predicate as string) || positionals[1];
+  const objectName = (flags.object as string) || positionals[2];
+
+  if (!subjectName || !predicate || !objectName) {
     writeError(
-      'Three positional args required. Usage: synapse kg add <subject> <predicate> <object> [--valid-from ISO] [--confidence 0.0-1.0]',
+      'Subject, predicate, and object are required (as positionals or flags). Usage: synapse kg add <subject> <predicate> <object>',
       opts.json
     );
     return;
   }
-
-  const [subjectName, predicate, objectName] = positionals;
 
   const svc = createMemoryService();
   const result: any = await svc.addTriple({
@@ -140,16 +148,18 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
 async function handleQuery(args: string[], opts: GlobalOptions): Promise<void> {
   const { flags, positionals, helpRequested } = parseFlags(args, {
     direction: { alias: 'd', type: 'string' },
+    subject: { alias: 's', type: 'string' },
   });
 
   if (helpRequested) {
     process.stdout.write('Usage: synapse kg query <entity> [flags]\n\n');
     process.stdout.write('Flags:\n');
+    process.stdout.write('  -s, --subject <name>    Entity name to query\n');
     process.stdout.write('  -d, --direction <dir>   Search direction: outgoing, incoming, both (default)\n');
     return;
   }
 
-  const entityName = positionals.join(' ').trim();
+  const entityName = (flags.subject as string) || positionals.join(' ').trim();
   if (!entityName) {
     writeError('Entity name is required. Usage: synapse kg query <entity> [--direction outgoing|incoming|both]', opts.json);
     return;

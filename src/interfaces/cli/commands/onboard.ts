@@ -22,7 +22,7 @@ import { TOOL_COUNT } from '../tool-count.js';
 import type { GlobalOptions } from '../options.js';
 
 const __dirname: string = path.dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT: string = path.resolve(__dirname, '..', '..', '..');
+const PROJECT_ROOT: string = path.resolve(__dirname, '..', '..', '..', '..');
 
 /* ------------------------------------------------------------------ */
 /*  Output helpers                                                     */
@@ -154,7 +154,7 @@ function runSetup(quiet: boolean): boolean {
   const args: string[] = ['--yes'];
   if (quiet) args.push('--quiet');
 
-  const result = spawnSync(process.execPath, [setupScript, ...args], {
+  const result = spawnSync(process.execPath, [...process.execArgv, setupScript, ...args], {
     stdio: quiet ? 'ignore' : 'inherit',
     encoding: 'utf8',
     timeout: 60000,
@@ -166,7 +166,7 @@ function runSetup(quiet: boolean): boolean {
 
 function runSkillInstall(): boolean {
   const skillScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'install-synapse-skill.mjs');
-  const result = spawnSync(process.execPath, [skillScript, '--force', '--quiet'], {
+  const result = spawnSync(process.execPath, [...process.execArgv, skillScript, '--force', '--quiet'], {
     stdio: 'ignore',
     encoding: 'utf8',
     timeout: 30000,
@@ -177,7 +177,7 @@ function runSkillInstall(): boolean {
 
 function runHooksInstall(): boolean {
   const hooksScript = path.join(PROJECT_ROOT, 'scripts', 'hooks', 'install-hooks.cjs');
-  const result = spawnSync(process.execPath, [hooksScript], {
+  const result = spawnSync(process.execPath, [...process.execArgv, hooksScript], {
     stdio: 'ignore',
     encoding: 'utf8',
     timeout: 15000,
@@ -325,7 +325,8 @@ async function runOnboard(): Promise<void> {
   // Step 5: Doctor
   stepHeader(5, totalSteps, 'Verifying installation...');
   const doctorSpinner = startSpinner('Running health checks...');
-  const doctorResult = spawnSync(process.execPath, [path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-synapse.mjs'), '--json'], {
+  const doctorScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-synapse.mjs');
+  const doctorResult = spawnSync(process.execPath, [...process.execArgv, doctorScript, '--json'], {
     stdio: 'pipe',
     encoding: 'utf8',
     timeout: 30000,
@@ -334,7 +335,9 @@ async function runOnboard(): Promise<void> {
   let doctorOk = false;
   let doctorHealthy = false;
   try {
-    const parsed = JSON.parse(doctorResult.stdout || '{}');
+    const stdout = doctorResult.stdout || '';
+    const jsonMatch = stdout.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : '{}');
     doctorOk = parsed.ok === true;
     doctorHealthy = parsed.healthy === true;
   } catch {
