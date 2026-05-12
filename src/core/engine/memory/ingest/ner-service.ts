@@ -89,7 +89,9 @@ export class NERService {
     if (this._pipelinePromise) return this._pipelinePromise;
 
     this._pipelinePromise = (async () => {
-      const mod = await import('@huggingface/transformers') as {
+      const { createRequire } = await import('node:module');
+      const require = createRequire(import.meta.url);
+      const mod = require('@huggingface/transformers') as {
         env: { cacheDir: string };
         pipeline: (task: string, model: string, opts?: Record<string, unknown>) => Promise<unknown>;
       };

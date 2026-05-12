@@ -216,34 +216,42 @@ export class MemoryStore {
   }
 
   async getStatus() {
+    await this.init();
     return getStoreStatus(this as never);
   }
 
   async listEntries(args: ListEntriesOpts) {
+    await this.init();
     return this.durableStore.listEntries(args);
   }
 
   async getEntry(id: string) {
+    await this.init();
     return this.durableStore.getEntry(id);
   }
 
   async storeEntry(input: StoreEntryInput) {
+    await this.init();
     return this.durableStore.storeEntry(input);
   }
 
   async storeEntryBatch(input: StoreEntryBatchInput) {
+    await this.init();
     return this.durableStore.storeEntryBatch(input);
   }
 
   async updateEntry(id: string, patch: UpdateEntryPatch = {}) {
+    await this.init();
     return this.durableStore.updateEntry(id, patch);
   }
 
   async deleteEntry(id: string) {
+    await this.init();
     return this.durableStore.deleteEntry(id);
   }
 
   async deleteEntryBatch(input: DeleteEntryBatchInput) {
+    await this.init();
     return this.durableStore.deleteEntryBatch(input);
   }
 
@@ -291,90 +299,112 @@ export class MemoryStore {
   }
 
   async addEntity(args: AddEntityInput) {
+    await this.init();
     return this.kgService.addEntity(args);
   }
 
   async getEntity(entityId: string) {
+    await this.init();
     return this.kgService.getEntity(entityId);
   }
 
   async addTriple(args: AddTripleInput) {
+    await this.init();
     return this.kgService.addTriple(args);
   }
 
   async invalidateTriple(tripleId: string, validTo?: string) {
+    await this.init();
     return this.kgService.invalidateTriple(tripleId, validTo);
   }
 
   async queryEntityRelationships(entityId: string, opts: { direction?: string; includeInvalid?: boolean }) {
+    await this.init();
     return this.kgService.queryEntityRelationships(entityId, opts);
   }
 
   async listEntities(opts: { type?: string; nameContains?: string; limit?: number; offset?: number } = {}) {
+    await this.init();
     return this.kgService.listEntities(opts);
   }
 
   async queryTriplesAsOf(entityId: string, asOfDate: string, mode?: 'event' | 'transaction') {
+    await this.init();
     return this.kgService.queryTriplesAsOf(entityId, asOfDate, mode);
   }
 
   async getEntityTimeline(entityId: string) {
+    await this.init();
     return this.kgService.getEntityTimeline(entityId);
   }
 
   async getKgStats() {
+    await this.init();
     return this.kgService.getKgStats();
   }
 
   async searchTriples(args: { query: string; limit?: number }) {
+    await this.init();
     return this.kgService.searchTriples(args);
   }
 
   async addEntityBatch(args: AddEntityBatchInput) {
+    await this.init();
     return this.kgService.addEntityBatch(args);
   }
 
   async addTripleBatch(args: AddTripleBatchInput) {
+    await this.init();
     return this.kgService.addTripleBatch(args);
   }
 
   async deleteEntity(entityId: string) {
+    await this.init();
     return this.kgService.deleteEntity(entityId);
   }
 
   async deleteEntityBatch(args: DeleteEntityBatchInput) {
+    await this.init();
     return this.kgService.deleteEntityBatch(args);
   }
 
   async deleteTripleBatch(args: DeleteTripleBatchInput) {
+    await this.init();
     return this.kgService.deleteTripleBatch(args);
   }
 
   async backfillMemoryKgLinks(opts: { limit?: number; offset?: number; nest?: string; branch?: string } = {}): Promise<BackfillResult> {
+    await this.init();
     return this.kgService.backfillMemoryKgLinks(opts);
   }
 
   async listNests() {
+    await this.init();
     return this.taxonomyService.listNests();
   }
 
   async listBranches(nest: string) {
+    await this.init();
     return this.taxonomyService.listBranches(nest);
   }
 
   async getTaxonomyTree() {
+    await this.init();
     return this.taxonomyService.getTaxonomyTree();
   }
 
   async manageBranches(args: { action: 'merge' | 'rename' | 'delete' | 'list_stale'; nest: string; fromBranch?: string; toBranch?: string; branch?: string; olderThanDays?: number }) {
+    await this.init();
     return this.taxonomyService.manageBranches(args);
   }
 
   async traverseGraph(args: TraverseGraphOpts) {
+    await this.init();
     return this.kgService.traverseGraph(args);
   }
 
   async discoverBridges(args: DiscoverBridgesOpts) {
+    await this.init();
     return this.kgService.discoverBridges(args);
   }
 
@@ -394,10 +424,12 @@ export class MemoryStore {
   }
 
   async ingestMarkdown(opts: IngestOpts = {}) {
+    await this.init();
     return this.ingestionEngine.ingestMarkdown(opts);
   }
 
   async ingestJson(opts: IngestOpts = {}) {
+    await this.init();
     return this.ingestionEngine.ingestJson(opts);
   }
 

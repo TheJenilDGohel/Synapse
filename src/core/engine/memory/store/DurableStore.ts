@@ -17,6 +17,26 @@ export class DurableStore implements IDurableStore {
     this.hooks = new MemoryHooks();
   }
 
+  // Satisfy MemoryStoreLike interface for entries.ts
+  get enabled(): boolean { return true; }
+  get dbPath(): string { return ''; }
+  get requestedBackend(): string { return 'auto'; }
+  get selectedBackend(): string { return 'auto'; }
+  get embeddingService(): any { return null; }
+
+  async init(): Promise<void> {
+    // Parent MemoryStore handles actual initialization
+    return;
+  }
+
+  async getMeta(key: string): Promise<string | null> {
+    const row = await this.adapter.get<{ value: string }>(
+      'SELECT value FROM memory_meta WHERE key = ?',
+      [key]
+    );
+    return row ? row.value : null;
+  }
+
   async listEntries(args: ListEntriesOpts) {
     return listMemoryEntries(this as any, args);
   }

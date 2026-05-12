@@ -59,48 +59,50 @@ export type LanguageLoader = () => Promise<unknown>;
 export const LANGUAGE_LOADERS: Record<string, LanguageLoader> = {
   javascript: async () => { 
     const mod = await import('tree-sitter-javascript'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   },
   python: async () => { 
     const mod = await import('tree-sitter-python'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   },
   go: async () => { 
     const mod = await import('tree-sitter-go'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   },
   bash: async () => { 
     const mod = await import('tree-sitter-bash'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   },
   lua: async () => { 
     const mod = await import('tree-sitter-lua'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   },
   dart: async () => { 
     const mod = await import('tree-sitter-dart'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   },
   typescript: async () => { 
     const mod = await import('tree-sitter-typescript'); 
-    const l = (mod.default || mod).typescript || mod.default || mod;
-    return l.language || l;
+    const pkg = mod.default || mod;
+    const lang = pkg.typescript || pkg;
+    return lang.language || lang;
   },
   tsx: async () => { 
     const mod = await import('tree-sitter-typescript'); 
-    const l = (mod.default || mod).tsx || mod.default || mod;
-    return l.language || l;
+    const pkg = mod.default || mod;
+    const lang = pkg.tsx || pkg;
+    return lang.language || lang;
   },
   rust: async () => { 
     const mod = await import('tree-sitter-rust'); 
-    const l = mod.default || mod; 
-    return l.language || l; 
+    const pkg = mod.default || mod; 
+    return pkg.language || pkg; 
   }
 };
 

@@ -12,13 +12,15 @@ import { parseFlags } from '../parse-flags.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createInterface } from 'node:readline';
 import { printSubcommandHelp } from '../help.js';
 import type { VerbDef } from '../help.js';
 import { writeError as sharedWriteError } from '../output.js';
 // Lazy-loaded from scripts/runtime — outside rootDir, computed path prevents tsc from analyzing it
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const SKILL_SCRIPT = path.resolve(__dirname, '..', '..', '..', 'scripts', 'runtime', 'install-synapse-skill.mjs');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const SKILL_SCRIPT = path.resolve(__dirname, '..', '..', '..', '..', 'scripts', 'runtime', 'install-synapse-skill.mjs');
 let _skillModule: {
   listBundledSkillDirs: () => string[];
   getKnownToolSkillDirs: (home: string) => string[];
@@ -27,7 +29,7 @@ let _skillModule: {
 } | null = null;
 async function getSkillModule() {
   if (!_skillModule) {
-    _skillModule = await import(/* webpackIgnore: true */ SKILL_SCRIPT) as typeof _skillModule;
+    _skillModule = await import(/* webpackIgnore: true */ pathToFileURL(SKILL_SCRIPT).href) as typeof _skillModule;
   }
   return _skillModule!;
 }
@@ -174,7 +176,7 @@ async function handleInstall(args: string[], opts: GlobalOptions): Promise<void>
   process.argv = [process.argv[0], process.argv[1], ...fwdArgs];
 
   try {
-    const { main } = await import(/* webpackIgnore: true */ SKILL_SCRIPT);
+    const { main } = await import(/* webpackIgnore: true */ pathToFileURL(SKILL_SCRIPT).href);
     main();
 
     if (opts.json) {
