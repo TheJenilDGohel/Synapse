@@ -17,4 +17,4 @@
 
 ## 🛑 Blockers
 - #95: @huggingface/transformers missing from production dependencies (Fixed in `release/v1.0.0`).
-- #96: tree-sitter fails to set language during indexing (Reported, pending upstream/deep fix).
+- #96: tree-sitter fails to set language during indexing (Resolved via dependency upgrade and loading hardening).
