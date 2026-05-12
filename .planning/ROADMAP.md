@@ -50,10 +50,19 @@ Stabilize the core engine, optimize tool context usage, and harden the architect
 
 ## 🩹 Phase 07: Stability Patch
 - **Goal**: Resolve high-priority bugs discovered during final stabilization.
-- **Status**: ⏳ In Progress
+- **Status**: ✅ Completed
 - **Plans**: 2 plans
 - **Tasks**:
-  - [ ] Resolve Windows ESM path error in Skill CLI (Issue 1).
-  - [ ] Ensure MemoryStore sub-services are initialized before use (Issue 2).
-  - [ ] Fix tree-sitter language loading logic (Issue 3).
-  - [ ] Audit and fix core dependency categorization (Issue 4).
+  - [x] Resolve Windows ESM path error in Skill CLI (Issue 1).
+  - [x] Ensure MemoryStore sub-services are initialized before use (Issue 2).
+  - [x] Fix tree-sitter language loading logic (Issue 3).
+  - [x] Audit and fix core dependency categorization (Issue 4).
+
+## 💎 Phase 08: CLI Stability & Logic Refinement
+- **Goal**: Resolve critical CLI usability issues and logic bugs.
+- **Status**: ⏳ In Progress
+- **Plans**: 3 plans
+- **Tasks**:
+  - [ ] Implement robust ANSI style chaining via Proxy (#99).
+  - [ ] Enable subcommand-level help across all CLI verbs (#100).
+  - [ ] Differentiate critical vs optional checks in doctor/onboard (#101).

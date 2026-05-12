@@ -79,10 +79,18 @@ function truncate(str: string | null | undefined, max: number): string {
 /* ------------------------------------------------------------------ */
 
 async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags, positionals } = parseFlags(args, {
+  const { flags, positionals, helpRequested } = parseFlags(args, {
     'valid-from': { type: 'string' },
     confidence: { alias: 'c', type: 'number' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse kg add <subject> <predicate> <object> [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  --valid-from <ISO>      Start date for fact validity\n');
+    process.stdout.write('  -c, --confidence <num>   Confidence score (0.0-1.0)\n');
+    return;
+  }
 
   if (positionals.length < 3) {
     writeError(
@@ -130,9 +138,16 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
 /* ------------------------------------------------------------------ */
 
 async function handleQuery(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags, positionals } = parseFlags(args, {
+  const { flags, positionals, helpRequested } = parseFlags(args, {
     direction: { alias: 'd', type: 'string' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse kg query <entity> [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -d, --direction <dir>   Search direction: outgoing, incoming, both (default)\n');
+    return;
+  }
 
   const entityName = positionals.join(' ').trim();
   if (!entityName) {
@@ -183,7 +198,12 @@ async function handleQuery(args: string[], opts: GlobalOptions): Promise<void> {
 /* ------------------------------------------------------------------ */
 
 async function handleTimeline(args: string[], opts: GlobalOptions): Promise<void> {
-  const { positionals } = parseFlags(args, {});
+  const { positionals, helpRequested } = parseFlags(args, {});
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse kg timeline <entity>\n');
+    return;
+  }
 
   const entityName = positionals.join(' ').trim();
   if (!entityName) {
@@ -233,7 +253,13 @@ async function handleTimeline(args: string[], opts: GlobalOptions): Promise<void
 /*  Subcommand: kg stats                                               */
 /* ------------------------------------------------------------------ */
 
-async function handleStats(_args: string[], opts: GlobalOptions): Promise<void> {
+async function handleStats(args: string[], opts: GlobalOptions): Promise<void> {
+  const { helpRequested } = parseFlags(args, {});
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse kg stats\n');
+    return;
+  }
+
   const svc = createMemoryService();
   const result: any = await svc.getKgStats();
 
