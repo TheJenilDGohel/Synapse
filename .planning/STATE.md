@@ -16,5 +16,4 @@
 - **Quality Gates**: Passed (with noted issues #95, #96).
 
 ## 🛑 Blockers
-- #95: @huggingface/transformers missing from production dependencies (Fixed in `release/v1.0.0`).
-- #96: tree-sitter fails to set language during indexing (Resolved via dependency upgrade and loading hardening).
+- None. (All reported issues #95, #96 and security vulnerabilities #94 have been resolved and merged into `release/v1.0.0`).
