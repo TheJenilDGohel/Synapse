@@ -17,12 +17,12 @@ class Home extends StatelessComponent {
         section(classes: 'hero', [
           div(classes: 'hero-glow', []),
           h1([
-            text('Local Context for '),
-            span(classes: 'gradient-text', [text('MCP Clients')]),
+            text('The Unified Context Layer for '),
+            span(classes: 'gradient-text', [text('AI Agents')]),
           ]),
           p(classes: 'hero-subtitle', [
             text(
-              'Synapse combines semantic code search, persistent memory, and a temporal knowledge graph in one local MCP server.',
+              'A production-ready MCP server combining persistent AI memory, temporal knowledge graph, and semantic code intelligence. Zero cloud. Local-first. Pure SQLite.',
             ),
           ]),
           div(classes: 'hero-actions', [
@@ -35,20 +35,20 @@ class Home extends StatelessComponent {
           const Card(
             title: 'Persistent Memory',
             description:
-                'Persist project facts, decisions, and lessons in a local SQLite store that survives across sessions.',
+                'Persist project facts, decisions, and lessons in a local SQLite store that survives across sessions. Your AI remembers what you taught it, forever.',
             icon: '🧠',
             onTap: null, // Just a card for now
           ),
           const Card(
             title: 'Code Intelligence',
             description:
-                'Search code with hybrid lexical and semantic retrieval, AST-aware chunking, and symbol lookup.',
+                'Search code with hybrid lexical and semantic retrieval, AST-aware chunking, and precise symbol lookup (definitions, usages, callers).',
             icon: '🤖',
           ),
           const Card(
-            title: 'Knowledge Graph',
-            description: 'Track entities and relationships over time so clients can query how architecture changes.',
-            icon: '🎨',
+            title: 'Temporal Knowledge Graph',
+            description: 'Track architectural entities and relationships over time. Query past decisions using time-travel capabilities.',
+            icon: '🕸️',
           ),
         ]),
       ]),
@@ -105,7 +105,7 @@ class Home extends StatelessComponent {
       ]),
       css('.gradient-text').styles(
         raw: {
-          'background': 'linear-gradient(135deg, #38bdf8 0%, #818cf8 100%)',
+          'background': 'linear-gradient(135deg, #2dd4bf 0%, #0f766e 100%)',
           '-webkit-background-clip': 'text',
           '-webkit-text-fill-color': 'transparent',
         },

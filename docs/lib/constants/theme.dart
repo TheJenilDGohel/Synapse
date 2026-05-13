@@ -16,13 +16,13 @@ List<StyleRule> get styles => [
   css(':root', [
     css('&').styles(
       raw: {
-        '--primary-color': '#38bdf8',
-        '--secondary-color': '#818cf8',
-        '--background-color': '#020617',
-        '--surface-color': '#0f172a',
-        '--border-color': '#1e293b',
-        '--text-color': '#f8fafc',
-        '--text-muted-color': '#94a3b8',
+        '--primary-color': '#2dd4bf', // Teal, matching the GitHub badges
+        '--secondary-color': '#0f766e',
+        '--background-color': '#000000', // Deep black for enterprise feel
+        '--surface-color': '#0a0a0a',
+        '--border-color': '#262626',
+        '--text-color': '#ffffff',
+        '--text-muted-color': '#a3a3a3',
       },
     ),
   ]),
@@ -30,13 +30,13 @@ List<StyleRule> get styles => [
   css('[data-theme=\"light\"]', [
     css('&').styles(
       raw: {
-        '--primary-color': '#0ea5e9',
-        '--secondary-color': '#6366f1',
+        '--primary-color': '#0f766e',
+        '--secondary-color': '#2dd4bf',
         '--background-color': '#ffffff',
-        '--surface-color': '#f8fafc',
-        '--border-color': '#e2e8f0',
-        '--text-color': '#0f172a',
-        '--text-muted-color': '#64748b',
+        '--surface-color': '#f5f5f5',
+        '--border-color': '#e5e5e5',
+        '--text-color': '#171717',
+        '--text-muted-color': '#525252',
       },
     ),
   ]),
@@ -44,7 +44,7 @@ List<StyleRule> get styles => [
   css('html, body').styles(
     margin: .zero,
     padding: .zero,
-    fontFamily: const .list([FontFamily('Inter'), FontFamily('system-ui'), FontFamily('sans-serif')]),
+    fontFamily: const .list([FontFamily('Inter'), FontFamily('-apple-system'), FontFamily('BlinkMacSystemFont'), FontFamily('Segoe UI'), FontFamily('Roboto'), FontFamily('sans-serif')]),
     backgroundColor: backgroundColor,
     color: textColor,
     fontSize: 16.px,

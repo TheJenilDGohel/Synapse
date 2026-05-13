@@ -35,7 +35,7 @@ class Header extends StatelessComponent {
           ],
         ),
         h2([text('Synapse')]),
-        span(classes: 'version-badge', [text('v0.1.0-beta')]),
+        span(classes: 'version-badge', [text('v1.0.0')]),
       ]),
       div(classes: 'header-right', [
         const Search(),

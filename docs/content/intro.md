@@ -1,6 +1,7 @@
 ---
-title: Introduction
+title: Introduction | Synapse
 description: Synapse is the minimalist transmission layer for AI context. Bio-inspired persistent memory, temporal knowledge graph, and semantic code search for elite AI agents.
+keywords: AI, Agents, MCP, Semantic Search, Knowledge Graph
 ---
 
 # Introduction
