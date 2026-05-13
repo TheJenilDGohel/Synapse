@@ -92,12 +92,12 @@
   },
   "optionalDependencies": {
     "tree-sitter": "^0.22.2",
-    "tree-sitter-bash": "^0.23.0",
-    "tree-sitter-go": "^0.23.0",
-    "tree-sitter-javascript": "^0.23.0",
+    "tree-sitter-bash": "^0.25.1",
+    "tree-sitter-go": "^0.25.0",
+    "tree-sitter-javascript": "^0.25.0",
     "tree-sitter-lua": "^0.21.0",
-    "tree-sitter-python": "^0.23.0",
-    "tree-sitter-rust": "^0.23.0",
+    "tree-sitter-python": "^0.25.0",
+    "tree-sitter-rust": "^0.24.0",
     "tree-sitter-typescript": "^0.23.0"
   },
   "devDependencies": {
