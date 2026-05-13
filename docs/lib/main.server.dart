@@ -36,6 +36,21 @@ void main() {
       title: 'Synapse | Documentation',
       head: [
         if (siteBasePath.isNotEmpty) Component.element(tag: 'base', attributes: {'href': siteBaseHref}),
+        // SEO Meta Tags
+        meta(name: 'description', content: 'Synapse combines semantic code search, temporal knowledge graph, and persistent AI memory into one local MCP server.'),
+        meta(name: 'keywords', content: 'MCP, AI agents, code search, semantic search, knowledge graph, local-first, memory, sqlite'),
+        meta(name: 'author', content: 'Jenil'),
+        meta(name: 'robots', content: 'index, follow'),
+        // OpenGraph
+        meta(attributes: {'property': 'og:title', 'content': 'Synapse | Unified Context Layer for AI Agents'}),
+        meta(attributes: {'property': 'og:description', 'content': 'The only MCP server combining semantic code search, temporal knowledge graph, and persistent AI memory. 74 tools, zero cloud, pure SQLite.'}),
+        meta(attributes: {'property': 'og:type', 'content': 'website'}),
+        meta(attributes: {'property': 'og:url', 'content': 'https://thejenildgohel.github.io/Synapse/'}),
+        // Twitter Card
+        meta(name: 'twitter:card', content: 'summary_large_image'),
+        meta(name: 'twitter:title', content: 'Synapse | Unified Context Layer for AI Agents'),
+        meta(name: 'twitter:description', content: 'The minimalist transmission layer for AI context. Zero cloud. Local-first. Pure SQLite.'),
+
         link(
           rel: 'stylesheet',
           href: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css',
