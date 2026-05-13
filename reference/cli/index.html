@@ -1319,7 +1319,7 @@
             <ul>
               <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
               <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
@@ -1364,81 +1364,81 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <h1 id="quick-start">Quick Start</h1>
-            <p>Get Synapse running and connected to an MCP-compatible client in minutes.</p>
-            <h2 id="1-install">1. Install</h2>
-            <pre><code class="language-bash">npm install -g synapse-cortex
-</code></pre>
+            <h1 id="cli-reference">CLI Reference</h1>
             <p>
-              :::info Compatibility
-              Requires <strong>Node.js &gt;= 22.6.0</strong>. Check your version with <code>node --version</code>. Works on Windows, macOS, and Linux.
-              :::
+              The <code>synapse</code> command-line tool allows you to manage your local infrastructure, perform diagnostics, and manually interact with the memory and knowledge graph pillars.
             </p>
-            <h2 id="2-initialize-your-workspace">2. Initialize Your Workspace</h2>
-            <p>Navigate to your project root and run the setup sequence:</p>
-            <pre><code class="language-bash">synapse setup
-synapse doctor
-</code></pre>
+            <h2 id="core-commands">Core Commands</h2>
+            <h3 id="synapse-setup"><code>synapse setup</code></h3>
+            <p>
+              Initializes a new Synapse workspace. It creates the necessary database folders, downloads native extensions, and prepares the environment for AI integration.
+            </p>
+            <h3 id="synapse-doctor"><code>synapse doctor</code></h3>
+            <p>
+              Runs a comprehensive health check on your environment. It verifies Node.js version, native SQLite extensions, file system permissions, and network connectivity for model downloads.
+            </p>
+            <h3 id="synapse-upgrade"><code>synapse upgrade</code></h3>
+            <p>
+              Checks for and installs the latest version of Synapse. It also migrates your configuration and database schema if necessary.
+            </p>
+            <h3 id="synapse-onboard"><code>synapse onboard</code></h3>
+            <p>
+              A guided, interactive walkthrough for new users to help them configure their first workspace and connect their AI client.
+            </p>
+            <h3 id="synapse-dashboard"><code>synapse dashboard</code></h3>
+            <p>
+              Starts a local web-based dashboard (if enabled) to visually explore your persistent memory and knowledge graph.
+            </p>
+            <h2 id="pillar-commands">Pillar Commands</h2>
+            <h3 id="synapse-memory-verb"><code>synapse memory &lt;verb&gt;</code></h3>
+            <p>Manually interact with the memory pillar.</p>
             <ul>
-              <li>
-                <strong><code>setup</code></strong>: Creates the local SQLite database and downloads native vector extensions.
-              </li>
-              <li>
-                <strong><code>doctor</code></strong>: Verifies that your environment is healthy and ready for AI integration.
-              </li>
+              <li><strong><code>add &lt;content&gt;</code></strong>: Store a new fact.</li>
+              <li><strong><code>search &lt;query&gt;</code></strong>: Search for memories.</li>
+              <li><strong><code>list</code></strong>: List all stored memories.</li>
+              <li><strong><code>delete &lt;id&gt;</code></strong>: Remove a memory.</li>
             </ul>
-            <h2 id="3-connect-your-mcp-client">3. Connect Your MCP Client</h2>
+            <h3 id="synapse-kg-verb"><code>synapse kg &lt;verb&gt;</code></h3>
+            <p>Manually interact with the knowledge graph.</p>
+            <ul>
+              <li><strong><code>add &lt;subj&gt; &lt;pred&gt; &lt;obj&gt;</code></strong>: Record a triple.</li>
+              <li><strong><code>query &lt;entity&gt;</code></strong>: Show relationships for an entity.</li>
+              <li><strong><code>timeline &lt;entity&gt;</code></strong>: Show historical changes for an entity.</li>
+              <li><strong><code>stats</code></strong>: Show graph density and coverage.</li>
+            </ul>
+            <h2 id="utility-commands">Utility Commands</h2>
+            <h3 id="synapse-selftest"><code>synapse selftest</code></h3>
             <p>
-              Add Synapse to your AI client configuration. This enables the agent to call Synapse tools during a chat.
+              Runs an end-to-end validation suite, testing indexing, retrieval, and memory storage to ensure the system is working perfectly.
             </p>
-            <h3 id="recommended-config-claude-desktop">Recommended Config (Claude Desktop)</h3>
-            <p>Add this to your <code>claude_desktop_config.json</code>:</p>
-            <pre><code class="language-json">{
-  "mcpServers": {
-    "synapse": {
-      "command": "synapse",
-      "env": {
-        "MCP_MODE": "stdio",
-        "SYNAPSE_MEMORY_ENABLED": "true"
-      }
-    }
-  }
-}
-</code></pre>
-            <p>
-              Works with <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Cline</strong>, 
-              <strong>Continue</strong>, <strong>Gemini CLI</strong>, and any MCP-compatible environment.
-            </p>
-            <h2 id="4-prime-the-agent">4. Prime the Agent</h2>
-            <p>
-              Once connected, the most effective way to start is by "priming" the agent with the project's current state.
-            </p>
-            <blockquote>
-              <p><em>"Analyze the project structure and summarize the core modules and their relationships."</em></p>
-            </blockquote>
-            <p>
-              The agent will use tools like <code>agent_prime</code>, <code>project_tree</code>, and <code>summarize_project</code>
-               to build a mental map of your codebase.
-            </p>
-            <h2 id="5-teach-and-remember">5. Teach and Remember</h2>
-            <p>Synapse excels at capturing knowledge that usually gets lost between sessions.</p>
-            <blockquote><p><em>"Remember that we use Vitest for unit tests, not Jest. Always apply this rule."</em></p></blockquote>
-            <p>
-              The agent will use <code>teach</code> or <code>memory_store</code> to persist this fact. In future sessions, Synapse will automatically surface this rule when the agent starts a testing task.
-            </p>
+            <h3 id="synapse-version"><code>synapse version</code></h3>
+            <p>Prints the current version of the Synapse server.</p>
+            <h2 id="global-flags">Global Flags</h2>
+            <p>These flags can be appended to almost any command:</p>
+            <table>
+              <thead><tr><th align="left">Flag</th><th align="left">Description</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td align="left"><code>--json</code></td>
+                  <td align="left">Output results in machine-readable JSON format.</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>--verbose</code></td>
+                  <td align="left">Increase output detail for debugging.</td>
+                </tr>
+                <tr><td align="left"><code>--quiet</code></td><td align="left">Suppress all non-essential output.</td></tr>
+                <tr>
+                  <td align="left"><code>--config &lt;path&gt;</code></td>
+                  <td align="left">Specify a custom path to a <code>synapse.config.json</code> file.</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>--help, -h</code></td>
+                  <td align="left">Show help for the command or subcommand.</td>
+                </tr>
+              </tbody>
+            </table>
             <hr/>
-            <p><strong>Deep Dives:</strong></p>
-            <ul>
-              <li>
-                <strong><a href="install">Installation Guide</a></strong>: OS-specific setup and client configuration.
-              </li>
-              <li>
-                <strong><a href="tools">Tools Reference</a></strong>: Comprehensive list of all 74 available MCP tools.
-              </li>
-              <li>
-                <strong><a href="pillars/intel">The Three Pillars</a></strong>: Understanding Code Intelligence, Memory, and Knowledge Graph.
-              </li>
-            </ul>
+            <p><strong>Next:</strong> Learn about the <strong><a href="config">Configuration Options</a></strong>.</p>
           </section>
         </main>
       </div>

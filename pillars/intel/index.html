@@ -1368,11 +1368,12 @@
           <section class="content">
             <h1 id="code-intelligence">Code Intelligence</h1>
             <p>
-              Synapse gives your AI agent <strong>elite code understanding</strong>—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with AST-aware parsing, Synapse surfaces the most relevant context with surgical precision.
+              Synapse gives your AI agent <strong>elite code understanding</strong>—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with surgical AST parsing, Synapse surfaces the most relevant context with extreme precision.
             </p>
             <p>
               :::tip Precision Retrieval
-              Most code search tools force a choice between exact text matching <em>or</em> semantic similarity. Synapse does both, fusing the results to ensure your AI gets the right code every time.
+              Most code search tools force a choice between exact text matching <em>or</em> semantic similarity. Synapse does both, fusing the results via 
+              <strong>Reciprocal Rank Fusion (RRF)</strong> to ensure your AI gets the right code every time.
               :::
             </p>
             <h2 id="the-hybrid-search-engine">The Hybrid Search Engine</h2>
@@ -1386,44 +1387,42 @@
                 <tr>
                   <td align="left"><strong>Lexical</strong></td>
                   <td align="left">BM25</td>
-                  <td align="left">Exact function names, identifiers, error messages, and unique strings.</td>
+                  <td align="left">Exact function names, identifiers, unique error messages.</td>
                 </tr>
                 <tr>
                   <td align="left"><strong>Semantic</strong></td>
                   <td align="left">Vector</td>
-                  <td align="left">Conceptual search, finding similar logic, and "plain English" descriptions.</td>
+                  <td align="left">Conceptual search, "plain English" descriptions, finding similar logic.</td>
                 </tr>
               </tbody>
             </table>
-            <pre><code class="language-dart">// Example Query: "Find logic that handles user permission validation"
+            <pre><code class="language-bash">// Example: "Find logic that handles user permission validation"
 search_hybrid({ query: "validate user permissions" })
 // Returns exact symbols like `validatePermissions()` AND semantically 
 // relevant code like `checkUserRole()` or `hasAccess()`.
 </code></pre>
-            <h2 id="ast-aware-chunking">AST-Aware Chunking</h2>
+            <h2 id="surgical-ast-aware-chunking">Surgical AST-Aware Chunking</h2>
             <p>
-              Traditional tools split code at arbitrary line limits, often severing functions. Synapse uses <strong>Abstract Syntax Tree (AST)</strong>
-               parsing via <code>tree-sitter</code> to index code at its natural boundaries.
+              Traditional tools split code at arbitrary line limits, often severing functions in half. Synapse uses 
+              <strong>Abstract Syntax Tree (AST)</strong> parsing (via <code>tree-sitter</code>) to index code at its natural boundaries.
             </p>
             <p>Every chunk is:</p>
             <ul>
               <li><strong>Atomic</strong>: A complete function, class, or method. Never a fragment.</li>
-              <li><strong>Enriched</strong>: Bundled with its parent class, imports, and type signatures.</li>
-              <li>
-                <strong>Context-Preserved</strong>: When retrieved, a function includes its surrounding context automatically.
-              </li>
+              <li><strong>Self-Contained</strong>: Retains its parent class, imports, and type signatures.</li>
+              <li><strong>Language-Aware</strong>: Optimized for TypeScript, JavaScript, Python, Go, Rust, and Bash.</li>
             </ul>
             <h2 id="symbol-resolution-suite">Symbol Resolution Suite</h2>
             <p>
-              Synapse builds a comprehensive symbol index for your workspace, allowing agents to navigate code like an IDE.
+              Synapse builds a comprehensive, cross-linked symbol index for your workspace, allowing agents to navigate code like a senior developer.
             </p>
             <table>
               <thead><tr><th align="left">Tool</th><th align="left">Capability</th><th align="left">Use Case</th></tr></thead>
               <tbody>
                 <tr>
                   <td align="left"><code>find_definition</code></td>
-                  <td align="left">Definition Lookup</td>
-                  <td align="left">Jump to the source of a specific function.</td>
+                  <td align="left">Declaration Jump</td>
+                  <td align="left">Jump directly to the source of a specific function.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>find_usages</code></td>
@@ -1432,7 +1431,7 @@ search_hybrid({ query: "validate user permissions" })
                 </tr>
                 <tr>
                   <td align="left"><code>find_callers</code></td>
-                  <td align="left">Call Stack Analysis</td>
+                  <td align="left">Impact Analysis</td>
                   <td align="left">Identify every function that invokes a critical API.</td>
                 </tr>
                 <tr>
@@ -1457,6 +1456,9 @@ search_hybrid({ query: "validate user permissions" })
               <li>The <strong>complete structure</strong> (via AST-Aware Chunking).</li>
               <li>The <strong>related symbols</strong> (via Symbol Resolution).</li>
             </ol>
+            <p>
+              This "Surgical Context" approach reduces token waste and eliminates "hallucinations" caused by incomplete code snippets.
+            </p>
             <hr/>
             <p>
               <strong>Next:</strong> Learn how code-level facts are connected to architectural history in the <strong><a href="temporal">Knowledge Graph</a></strong>.

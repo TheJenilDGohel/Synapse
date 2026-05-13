@@ -1319,7 +1319,7 @@
             <ul>
               <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
               <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
@@ -1364,81 +1364,73 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <h1 id="quick-start">Quick Start</h1>
-            <p>Get Synapse running and connected to an MCP-compatible client in minutes.</p>
-            <h2 id="1-install">1. Install</h2>
-            <pre><code class="language-bash">npm install -g synapse-cortex
-</code></pre>
+            <h1 id="using-ai-memory">Using AI Memory</h1>
             <p>
-              :::info Compatibility
-              Requires <strong>Node.js &gt;= 22.6.0</strong>. Check your version with <code>node --version</code>. Works on Windows, macOS, and Linux.
-              :::
+              Synapse's <strong>Persistent Memory</strong> pillar allows your AI agent to learn from every interaction. This guide covers how to teach your agent, manage memories, and ensure high-quality recall.
             </p>
-            <h2 id="2-initialize-your-workspace">2. Initialize Your Workspace</h2>
-            <p>Navigate to your project root and run the setup sequence:</p>
-            <pre><code class="language-bash">synapse setup
-synapse doctor
-</code></pre>
-            <ul>
-              <li>
-                <strong><code>setup</code></strong>: Creates the local SQLite database and downloads native vector extensions.
-              </li>
-              <li>
-                <strong><code>doctor</code></strong>: Verifies that your environment is healthy and ready for AI integration.
-              </li>
-            </ul>
-            <h2 id="3-connect-your-mcp-client">3. Connect Your MCP Client</h2>
+            <h2 id="teaching-your-agent">Teaching Your Agent</h2>
             <p>
-              Add Synapse to your AI client configuration. This enables the agent to call Synapse tools during a chat.
+              The most powerful way to use memory is through the <code>teach</code> tool. Use this to record project-specific conventions, coding styles, or "gotchas" that the agent should always remember.
             </p>
-            <h3 id="recommended-config-claude-desktop">Recommended Config (Claude Desktop)</h3>
-            <p>Add this to your <code>claude_desktop_config.json</code>:</p>
-            <pre><code class="language-json">{
-  "mcpServers": {
-    "synapse": {
-      "command": "synapse",
-      "env": {
-        "MCP_MODE": "stdio",
-        "SYNAPSE_MEMORY_ENABLED": "true"
-      }
-    }
-  }
-}
-</code></pre>
-            <p>
-              Works with <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Cline</strong>, 
-              <strong>Continue</strong>, <strong>Gemini CLI</strong>, and any MCP-compatible environment.
-            </p>
-            <h2 id="4-prime-the-agent">4. Prime the Agent</h2>
-            <p>
-              Once connected, the most effective way to start is by "priming" the agent with the project's current state.
-            </p>
+            <h3 id="example-setting-a-coding-standard">Example: Setting a Coding Standard</h3>
             <blockquote>
-              <p><em>"Analyze the project structure and summarize the core modules and their relationships."</em></p>
+              <p>
+                <em>"In this project, always use functional components and Tailwind for styling. Record this rule."</em>
+              </p>
             </blockquote>
             <p>
-              The agent will use tools like <code>agent_prime</code>, <code>project_tree</code>, and <code>summarize_project</code>
-               to build a mental map of your codebase.
+              The agent will call <code>teach</code> with this instruction. In future sessions, when the agent is "primed" (using 
+              <code>agent_prime</code>), this rule will be surfaced automatically as a high-priority "Lesson Learned."
             </p>
-            <h2 id="5-teach-and-remember">5. Teach and Remember</h2>
-            <p>Synapse excels at capturing knowledge that usually gets lost between sessions.</p>
-            <blockquote><p><em>"Remember that we use Vitest for unit tests, not Jest. Always apply this rule."</em></p></blockquote>
+            <h2 id="capturing-lessons-learned">Capturing Lessons Learned</h2>
             <p>
-              The agent will use <code>teach</code> or <code>memory_store</code> to persist this fact. In future sessions, Synapse will automatically surface this rule when the agent starts a testing task.
+              During a task, an agent might discover something important—like a tricky bug or an undocumented dependency. Use the 
+              <code>memory_store</code> tool to capture these insights.
             </p>
-            <hr/>
-            <p><strong>Deep Dives:</strong></p>
+            <h3 id="example-documenting-a-fix">Example: Documenting a Fix</h3>
+            <blockquote>
+              <p>
+                <em>"The database connection fails if the <code>DB_TIMEOUT</code> is less than 5000ms. Remember this for 
+                  future debugging."</em>
+              </p>
+            </blockquote>
+            <p>
+              By storing this, you ensure that if the same issue arises again, the agent will have the solution ready in its context.
+            </p>
+            <h2 id="organizing-with-nests">Organizing with Nests</h2>
+            <p>
+              If you work on multiple unrelated projects or domains, use <strong>Nests</strong> to isolate context.
+            </p>
             <ul>
+              <li><strong><code>memory_list(nest_id="frontend")</code></strong>: Only see frontend-related memories.</li>
               <li>
-                <strong><a href="install">Installation Guide</a></strong>: OS-specific setup and client configuration.
-              </li>
-              <li>
-                <strong><a href="tools">Tools Reference</a></strong>: Comprehensive list of all 74 available MCP tools.
-              </li>
-              <li>
-                <strong><a href="pillars/intel">The Three Pillars</a></strong>: Understanding Code Intelligence, Memory, and Knowledge Graph.
+                <strong><code>memory_store(nest_id="security")</code></strong>: Keep security audits in a dedicated space.
               </li>
             </ul>
+            <h2 id="managing-memory-health">Managing Memory Health</h2>
+            <p>To keep your memory context high-signal, follow these practices:</p>
+            <ol>
+              <li>
+                <strong>Semantic Deduplication</strong>: Synapse automatically checks for duplicates when you call <code>memory_store</code>. If a similar fact exists, it will suggest updating the existing one instead of creating a new one.
+              </li>
+              <li>
+                <strong>Reviewing Stale Memories</strong>: Use <code>memory_list(status="stale")</code> to find memories that might be outdated. Use 
+                <code>memory_update</code> or <code>memory_delete</code> to keep the store clean.
+              </li>
+              <li>
+                <strong>Linking to Code</strong>: Use <code>memory_add_relation</code> to link a memory to a specific file or symbol. This ensures that the memory is retrieved whenever that part of the code is being worked on.
+              </li>
+            </ol>
+            <h2 id="pro-tip-the-winner-state">Pro-Tip: The "Winner" State</h2>
+            <p>At the end of a successful task, always ask your agent to <strong>Capture the Outcome</strong>.</p>
+            <blockquote><p><em>"Task complete. Capture the outcome and any new lessons learned into memory."</em></p></blockquote>
+            <p>
+              The agent will use <code>capture_outcome</code> to store a summary of what was done, what worked, and what didn't. This "Winner" state becomes the baseline for the next agent that touches this part of the codebase.
+            </p>
+            <hr/>
+            <p>
+              <strong>Next:</strong> Learn how structured facts are managed in the <strong><a href="kg">Knowledge Graph</a></strong>.
+            </p>
           </section>
         </main>
       </div>

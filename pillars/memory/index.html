@@ -1366,31 +1366,50 @@
           <section class="content">
             <h1 id="persistent-memory">Persistent Memory</h1>
             <p>
-              Synapse provides <strong>persistent project memory</strong> that survives across sessions, projects, and conversations. Unlike context windows that disappear when a chat ends, Synapse memory persists in a local SQLite database.
+              Synapse provides <strong>persistent project memory</strong> that survives across sessions, projects, and conversations. Unlike standard context windows that are wiped clean when a chat ends, Synapse memory persists in a local SQLite database, allowing AI agents to build a cumulative understanding of your project.
             </p>
             <p>
-              :::important Why Persistent Memory?
-              Modern AI models have massive context windows, but they are still <strong>stateless</strong>. Every new chat is a "blank slate." Persistent memory allows agents to build a cumulative understanding of your project, learning from every interaction.
+              :::important The Statelessness Problem
+              Modern AI models have massive context windows, but they are still <strong>stateless</strong>. Every new chat is a "blank slate." Synapse breaks this cycle by providing a "hard drive" for AI reasoning.
               :::
             </p>
-            <h2 id="how-memory-works">How Memory Works</h2>
+            <h2 id="key-features">Key Features</h2>
+            <h3 id="1-teacher-mode-instructions-teach">1. Teacher-Mode Instructions (<code>teach</code>)</h3>
             <p>
-              When you store something with <code>memory_store</code>, the content is embedded as a semantic vector and saved in the local database with:
+              The <code>teach</code> tool is the primary way to shape an agent's long-term behavior. Use it to record team-wide coding conventions, architectural constraints, or "never do X" rules.
             </p>
             <ul>
               <li>
-                <strong>Semantic Deduplication</strong>: Synapse uses cosine similarity to detect if a near-identical fact already exists, preventing "context bloat."
+                <strong>Persistence</strong>: These rules are automatically surfaced via <code>agent_prime</code> in future sessions.
               </li>
+              <li><strong>Priority</strong>: Teacher-mode memories carry higher weight in retrieval.</li>
+            </ul>
+            <h3 id="2-outcome-capture-capture_outcome">2. Outcome Capture (<code>capture_outcome</code>)</h3>
+            <p>
+              The "Winner" state of a task is often the most valuable piece of context for the <em>next</em> developer. 
+              <code>capture_outcome</code> allows an agent to record:
+            </p>
+            <ul>
+              <li>What was achieved.</li>
+              <li>Which files were changed and why.</li>
+              <li>Any new "Gotchas" discovered during the process.</li>
+            </ul>
+            <h3 id="3-semantic-deduplication">3. Semantic Deduplication</h3>
+            <p>
+              To prevent "context bloat," Synapse uses <strong>Vector Similarity Analysis</strong> (via <code>sqlite-vec</code>). When a new memory is stored:
+            </p>
+            <ul>
+              <li>Synapse calculates its cosine similarity against existing records.</li>
               <li>
-                <strong>Scoped Isolation</strong>: Memories can be tagged to specific tasks, projects, or "Nests" (isolated memory spaces) to prevent context bleed between unrelated work.
-              </li>
-              <li>
-                <strong>Relationship Tracking</strong>: Memories can be linked to entities in the <a href="temporal">Knowledge Graph</a>
-                 for structured multi-hop recall.
+                If a near-identical fact exists, the agent is notified to update the existing memory instead of creating a duplicate.
               </li>
             </ul>
+            <h3 id="4-scoped-isolation-nests">4. Scoped Isolation (Nests)</h3>
+            <p>
+              Memories can be isolated into <strong>Nests</strong>. This is critical for developers working on multiple client projects.
+            </p>
+            <ul><li>Context from "Project A" will never bleed into "Project B" unless explicitly requested.</li></ul>
             <h2 id="memory-tool-suite">Memory Tool Suite</h2>
-            <p>Synapse exposes a high-performance suite of tools for managing AI recall:</p>
             <table>
               <thead><tr><th align="left">Tool</th><th align="left">Capability</th><th align="left">Use Case</th></tr></thead>
               <tbody>
@@ -1405,44 +1424,43 @@
                   <td align="left">Ask "What did we decide about the API?"</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>memory_related</code></td>
-                  <td align="left">Similarity Discovery</td>
-                  <td align="left">Find all notes related to "authentication."</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_add_relation</code></td>
-                  <td align="left">Graph Linking</td>
-                  <td align="left">Explicitly link a memory to a code symbol.</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_capture_event</code></td>
-                  <td align="left">Temporal Logging</td>
-                  <td align="left">Record a deployment or a manual fix.</td>
-                </tr>
-                <tr>
                   <td align="left"><code>teach</code></td>
                   <td align="left">Rule Ingestion</td>
                   <td align="left">Record team-wide coding conventions.</td>
                 </tr>
+                <tr>
+                  <td align="left"><code>capture_outcome</code></td>
+                  <td align="left">Outcome Tracking</td>
+                  <td align="left">Log the result of a completed milestone.</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>agent_prime</code></td>
+                  <td align="left">Total Rehydration</td>
+                  <td align="left">Get all relevant lessons at the start of a task.</td>
+                </tr>
               </tbody>
             </table>
-            <h2 id="best-practices">Best Practices</h2>
-            <p>To get the most out of Synapse memory, follow these conventions:</p>
-            <h3 id="1-store-the-why-not-just-the-what">1. Store the "Why," not just the "What"</h3>
-            <p>
-              Don't just store "Added a login button." Store "Added a login button using OAuth2 because it reduces credential management overhead."
-            </p>
-            <h3 id="2-use-explicit-relations">2. Use Explicit Relations</h3>
-            <p>
-              When an AI agent makes a decision about a specific file, use <code>memory_add_relation</code> to link that memory to the file entity. This ensures that the next time the agent edits that file, the memory is surfaced automatically.
-            </p>
-            <h3 id="3-isolated-nests-for-security">3. Isolated Nests for Security</h3>
-            <p>
-              Use different <code>nest_id</code>s when working on separate client projects to ensure that private context from one project never leaks into another.
-            </p>
+            <h2 id="real-world-workflow-the-learning-loop">Real-World Workflow: The Learning Loop</h2>
+            <ol>
+              <li>
+                <strong>Start</strong>: Agent calls <code>agent_prime</code> and learns that "We use Vitest for this repo."
+              </li>
+              <li><strong>Execute</strong>: Agent writes a test using Vitest.</li>
+              <li>
+                <strong>Learn</strong>: Agent discovers that "Vitest needs <code>jsdom</code> for this specific module."
+              </li>
+              <li>
+                <strong>Store</strong>: Agent calls <code>memory_store</code> to record the <code>jsdom</code> requirement.
+              </li>
+              <li><strong>Close</strong>: Agent calls <code>capture_outcome</code> to summarize the new test coverage.</li>
+              <li>
+                <strong>Future</strong>: Next week, a different agent works on the same module and automatically receives the 
+                <code>jsdom</code> tip.
+              </li>
+            </ol>
             <hr/>
             <p>
-              <strong>Next:</strong> Explore how memories connect to architectural decisions in the <strong><a href="temporal">Knowledge Graph</a></strong>.
+              <strong>Next:</strong> See how memories connect to structured architectural facts in the <strong><a href="temporal">Knowledge Graph</a></strong>.
             </p>
           </section>
         </main>

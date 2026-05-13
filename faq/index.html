@@ -1319,7 +1319,7 @@
             <ul>
               <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
               <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
@@ -1364,81 +1364,79 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <h1 id="quick-start">Quick Start</h1>
-            <p>Get Synapse running and connected to an MCP-compatible client in minutes.</p>
-            <h2 id="1-install">1. Install</h2>
-            <pre><code class="language-bash">npm install -g synapse-cortex
-</code></pre>
+            <h1 id="faq--insights">FAQ &amp; Insights</h1>
+            <p>Understand the tradeoffs, performance characteristics, and common questions about Synapse.</p>
+            <h2 id="frequently-asked-questions">Frequently Asked Questions</h2>
+            <h3 id="1-is-synapse-a-replacement-for-my-ai-model">1. Is Synapse a replacement for my AI model?</h3>
             <p>
-              :::info Compatibility
-              Requires <strong>Node.js &gt;= 22.6.0</strong>. Check your version with <code>node --version</code>. Works on Windows, macOS, and Linux.
-              :::
+              No. Synapse is <strong>infrastructure</strong>. It is a specialized transmission layer that provides your existing AI model (via MCP) with the project context it needs to reason accurately.
             </p>
-            <h2 id="2-initialize-your-workspace">2. Initialize Your Workspace</h2>
-            <p>Navigate to your project root and run the setup sequence:</p>
-            <pre><code class="language-bash">synapse setup
-synapse doctor
-</code></pre>
+            <h3 id="2-where-is-my-data-stored">2. Where is my data stored?</h3>
+            <p>
+              All data—code indexes, persistent memories, and knowledge graph triples—is stored in a local SQLite database on your machine. By default, this is located at 
+              <code>~/.synapse/storage/synapse.db</code>.
+            </p>
+            <h3 id="3-does-synapse-send-my-code-to-the-cloud">3. Does Synapse send my code to the cloud?</h3>
+            <p>
+              <strong>No.</strong> Synapse is strictly local-first. We do not have a cloud backend, we do not collect telemetry, and we do not use external APIs for indexing or retrieval.
+            </p>
+            <h3 id="4-which-ai-clients-are-supported">4. Which AI clients are supported?</h3>
+            <p>
+              Synapse works with any client that supports the <strong>Model Context Protocol (MCP)</strong>. This includes:
+            </p>
+            <ul>
+              <li><strong>Claude Desktop</strong> &amp; <strong>Claude Code</strong></li>
+              <li><strong>Cursor</strong> &amp; <strong>Windsurf</strong></li>
+              <li><strong>Cline</strong> &amp; <strong>Continue</strong></li>
+              <li><strong>Gemini CLI</strong></li>
+            </ul>
+            <h3 id="5-how-does-synapse-handle-very-large-codebases">5. How does Synapse handle very large codebases?</h3>
+            <p>
+              Synapse uses <code>sqlite-vec</code> for high-performance vector search and <code>ripgrep</code> for ultra-fast lexical search. It uses AST-aware chunking to ensure that even in large files, only the relevant functions are surfaced to the AI.
+            </p>
+            <h2 id="pros--cons">Pros &amp; Cons</h2>
+            <h3 id="pros">Pros</h3>
             <ul>
               <li>
-                <strong><code>setup</code></strong>: Creates the local SQLite database and downloads native vector extensions.
+                <strong>Zero Latency</strong>: Local SQLite retrieval is significantly faster than cloud-based vector databases.
+              </li>
+              <li><strong>Total Privacy</strong>: Your IP, code, and memories never leave your local environment.</li>
+              <li>
+                <strong>Context Efficiency</strong>: Tools like <code>agent_prime</code> and <code>compact</code> modes reduce token waste, giving your AI more room to "think."
               </li>
               <li>
-                <strong><code>doctor</code></strong>: Verifies that your environment is healthy and ready for AI integration.
+                <strong>Temporal Reasoning</strong>: The only system that tracks how your architecture evolved over time, not just its current state.
+              </li>
+              <li><strong>Offline-Ready</strong>: Full functionality without an internet connection.</li>
+            </ul>
+            <h3 id="cons">Cons</h3>
+            <ul>
+              <li><strong>Local Resources</strong>: Indexing large projects consumes local CPU and Disk space.</li>
+              <li><strong>Model Storage</strong>: Local embedding models require ~500MB of storage.</li>
+              <li>
+                <strong>Node.js Dependency</strong>: Requires a modern Node.js runtime (v22.6.0+) on the host machine.
               </li>
             </ul>
-            <h2 id="3-connect-your-mcp-client">3. Connect Your MCP Client</h2>
+            <h2 id="performance-tips">Performance Tips</h2>
+            <h3 id="1-optimize-your-index">1. Optimize Your Index</h3>
             <p>
-              Add Synapse to your AI client configuration. This enables the agent to call Synapse tools during a chat.
+              If indexing is slow, ensure that your <code>.gitignore</code> is up to date. Synapse respects ignore rules and won't waste time indexing 
+              <code>node_modules</code>, <code>dist</code>, or other build artifacts.
             </p>
-            <h3 id="recommended-config-claude-desktop">Recommended Config (Claude Desktop)</h3>
-            <p>Add this to your <code>claude_desktop_config.json</code>:</p>
-            <pre><code class="language-json">{
-  "mcpServers": {
-    "synapse": {
-      "command": "synapse",
-      "env": {
-        "MCP_MODE": "stdio",
-        "SYNAPSE_MEMORY_ENABLED": "true"
-      }
-    }
-  }
-}
-</code></pre>
+            <h3 id="2-use-agent_prime">2. Use <code>agent_prime</code></h3>
             <p>
-              Works with <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Cline</strong>, 
-              <strong>Continue</strong>, <strong>Gemini CLI</strong>, and any MCP-compatible environment.
+              Instead of letting your AI agent hunt for context with dozens of small tool calls, instruct it to use 
+              <code>agent_prime</code> once at the start of a task. This rehydrates the most important context in a single round-trip.
             </p>
-            <h2 id="4-prime-the-agent">4. Prime the Agent</h2>
+            <h3 id="3-leverage-batch-tools">3. Leverage Batch Tools</h3>
             <p>
-              Once connected, the most effective way to start is by "priming" the agent with the project's current state.
-            </p>
-            <blockquote>
-              <p><em>"Analyze the project structure and summarize the core modules and their relationships."</em></p>
-            </blockquote>
-            <p>
-              The agent will use tools like <code>agent_prime</code>, <code>project_tree</code>, and <code>summarize_project</code>
-               to build a mental map of your codebase.
-            </p>
-            <h2 id="5-teach-and-remember">5. Teach and Remember</h2>
-            <p>Synapse excels at capturing knowledge that usually gets lost between sessions.</p>
-            <blockquote><p><em>"Remember that we use Vitest for unit tests, not Jest. Always apply this rule."</em></p></blockquote>
-            <p>
-              The agent will use <code>teach</code> or <code>memory_store</code> to persist this fact. In future sessions, Synapse will automatically surface this rule when the agent starts a testing task.
+              For bulk operations (like importing multiple facts or relationships), use <code>memory_store_batch</code>
+               or <code>synapse_kg_manage</code> with the <code>ingest_markdown</code> action. This is significantly faster than individual calls.
             </p>
             <hr/>
-            <p><strong>Deep Dives:</strong></p>
-            <ul>
-              <li>
-                <strong><a href="install">Installation Guide</a></strong>: OS-specific setup and client configuration.
-              </li>
-              <li>
-                <strong><a href="tools">Tools Reference</a></strong>: Comprehensive list of all 74 available MCP tools.
-              </li>
-              <li>
-                <strong><a href="pillars/intel">The Three Pillars</a></strong>: Understanding Code Intelligence, Memory, and Knowledge Graph.
-              </li>
-            </ul>
+            <p>
+              <strong>Next:</strong> Learn about the system's underlying <strong><a href="architecture">Architecture</a></strong>.
+            </p>
           </section>
         </main>
       </div>

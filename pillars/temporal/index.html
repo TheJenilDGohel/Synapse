@@ -1394,59 +1394,60 @@
             <p>
               Query the graph as it existed at any point in the past. This is critical for understanding why a bug occurred in a previous version or tracking how a design decision has drifted over time.
             </p>
-            <h3 id="2-blast-radius-analysis">2. Blast Radius Analysis</h3>
-            <p>Use <code>graph_traverse</code> to calculate the recursive impact of a change.</p>
-            <blockquote><p><em>"If I modify the User schema, which 3rd-level downstream services will be affected?"</em></p></blockquote>
-            <h3 id="3-structural-reasoning">3. Structural Reasoning</h3>
+            <h3 id="2-multi-hop-traversal">2. Multi-Hop Traversal</h3>
+            <p>AI agents can follow relationships recursively to analyze the "Blast Radius" of a change.</p>
+            <blockquote><p><em>"Which modules will be affected if I change the 'User' database schema?"</em></p></blockquote>
+            <h3 id="3-integrated-branching">3. Integrated Branching</h3>
             <p>
-              Find bridges and bottlenecks in your architecture with <code>graph_bridges</code>. Identify which modules are single points of failure before they cause production issues.
+              Just like Git, Synapse supports <strong>KG Branches</strong>. You can record experimental architectural changes in a branch without affecting the main "Source of Truth" graph.
             </p>
-            <h2 id="graph-tool-suite">Graph Tool Suite</h2>
+            <h2 id="graph-power-tools">Graph Power Tools</h2>
+            <p>In Synapse v1.0.0, we provide two unified controllers that handle all graph operations:</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Capability</th><th align="left">Use Case</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Action</th><th align="left">Use Case</th></tr></thead>
               <tbody>
                 <tr>
-                  <td align="left"><code>kg_add_triple</code></td>
-                  <td align="left">Fact Recording</td>
-                  <td align="left">Link <code>UserService</code> to <code>Redis</code> cache.</td>
+                  <td align="left"><code>synapse_kg_manage</code></td>
+                  <td align="left"><code>add_triple</code></td>
+                  <td align="left">Record a new architectural relationship.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>kg_as_of</code></td>
-                  <td align="left">Temporal Recall</td>
-                  <td align="left">View the architecture as of <code>2024-01-01</code>.</td>
+                  <td align="left"><code>synapse_kg_manage</code></td>
+                  <td align="left"><code>delete_entity</code></td>
+                  <td align="left">Purge a module and its relationships.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>graph_traverse</code></td>
-                  <td align="left">Multi-hop Path</td>
-                  <td align="left">Trace dependencies across 5+ services.</td>
+                  <td align="left"><code>synapse_kg_manage</code></td>
+                  <td align="left"><code>ingest_markdown</code></td>
+                  <td align="left">Import a set of facts from a document.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>kg_timeline</code></td>
-                  <td align="left">Entity History</td>
-                  <td align="left">See every decision that affected <code>AuthModule</code>.</td>
+                  <td align="left"><code>synapse_kg_query</code></td>
+                  <td align="left"><code>traverse</code></td>
+                  <td align="left">Perform a recursive path-finding search.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>graph_bridges</code></td>
-                  <td align="left">Network Analysis</td>
-                  <td align="left">Find critical dependencies in the graph.</td>
+                  <td align="left"><code>synapse_kg_query</code></td>
+                  <td align="left"><code>get_state</code></td>
+                  <td align="left">View the graph as it was on a specific date.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>kg_backfill_links</code></td>
-                  <td align="left">Auto-Linking</td>
-                  <td align="left">Convert memory blobs into structured triples.</td>
+                  <td align="left"><code>synapse_kg_query</code></td>
+                  <td align="left"><code>timeline</code></td>
+                  <td align="left">See the history of a specific module.</td>
                 </tr>
               </tbody>
             </table>
             <h2 id="real-world-workflow-tracking-an-adr">Real-World Workflow: Tracking an ADR</h2>
             <p>When making an Architectural Decision (ADR), Synapse turns it into a living part of the graph:</p>
             <ol>
-              <li><strong>Register the Decision</strong>: <code>kg_add_entity</code> for <code>ADR-007</code>.</li>
               <li>
-                <strong>Link the Impact</strong>: <code>kg_add_triple</code> between <code>ADR-007</code> and every affected module.
+                <strong>Register</strong>: Use <code>synapse_kg_manage(action="add_entity")</code> for <code>ADR-007</code>.
               </li>
               <li>
-                <strong>Link the Owner</strong>: <code>kg_add_triple</code> between <code>ADR-007</code> and the developer.
+                <strong>Link</strong>: Use <code>add_triple</code> to connect <code>ADR-007</code> to every affected module.
               </li>
+              <li><strong>Persist</strong>: Store the full decision text in <a href="memory">Persistent Memory</a>.</li>
             </ol>
             <p>
               Six months later, an AI agent working on one of those modules will automatically pull <code>ADR-007</code>

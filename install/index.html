@@ -1366,12 +1366,10 @@
           <section class="content">
             <h1 id="installation">Installation</h1>
             <p>
-              Synapse is a lightweight, local-first MCP server. This guide walks you through installation and environment setup.
+              Synapse is a lightweight, local-first MCP server. This guide walks you through system requirements, installation, and environment setup.
             </p>
             <h2 id="system-requirements">System Requirements</h2>
-            <p>
-              Synapse uses modern Node.js features and native SQLite extensions. Ensure your system meets these requirements before installing:
-            </p>
+            <p>Synapse uses modern Node.js features and native SQLite extensions.</p>
             <table>
               <thead><tr><th align="left">Requirement</th><th align="left">Minimum</th></tr></thead>
               <tbody>
@@ -1382,73 +1380,80 @@
                 </tr>
                 <tr>
                   <td align="left"><strong>RAM</strong></td>
-                  <td align="left">4 GB minimum (8 GB recommended for large codebases)</td>
+                  <td align="left">4 GB minimum (8 GB recommended for indexing large codebases)</td>
                 </tr>
                 <tr>
                   <td align="left"><strong>Disk</strong></td>
-                  <td align="left">500 MB+ (grows with your knowledge graph)</td>
+                  <td align="left">500 MB+ (for local embedding models and SQLite database)</td>
                 </tr>
               </tbody>
             </table>
             <p>
-              :::info
-              Node.js v22.6.0+ is required for native SQLite support and modern ESM features used by the vector extension.
+              :::info Windows Users
+              We recommend using <strong>PowerShell 7</strong> or <strong>WSL2</strong> for the best experience. If using CMD, ensure that your PATH includes the global NPM bin directory.
               :::
             </p>
             <h2 id="1-global-install">1. Global Install</h2>
             <p>
-              Install the <code>synapse-cortex</code> package globally. This provides the <code>synapse</code> CLI and starts the MCP server.
+              Install the <code>synapse-cortex</code> package globally. This provides the <code>synapse</code> CLI and the background MCP server.
             </p>
             <pre><code class="language-bash">npm install -g synapse-cortex
 </code></pre>
             <h2 id="2-workspace-setup">2. Workspace Setup</h2>
             <p>
-              Navigate to your project root and run the setup command. This initializes Synapse for the current workspace.
+              Navigate to your project root and run the setup command. This initializes the local environment for that specific project.
             </p>
             <pre><code class="language-bash">synapse setup
 </code></pre>
             <p><strong>What happens during setup:</strong></p>
             <ul>
-              <li>A local SQLite database is created to store your knowledge graph and embeddings.</li>
-              <li>Native vector search extensions (<code>sqlite-vec</code>) are compiled for your architecture.</li>
-              <li>Optional tools like <code>ripgrep</code> are detected and integrated for faster code search.</li>
+              <li>A local SQLite database is created at <code>~/.synapse/storage</code>.</li>
+              <li>Native vector search extensions (<code>sqlite-vec</code>) are linked for your architecture.</li>
+              <li>Default configuration is generated at <code>~/.synapse/config/synapse.config.json</code>.</li>
             </ul>
-            <h2 id="3-verify-the-install">3. Verify the Install</h2>
+            <h2 id="3-verify-health">3. Verify Health</h2>
             <p>
-              Run the doctor command to check that all dependencies are correctly linked and your environment is healthy:
+              Run the <code>doctor</code> command to ensure that your runtime is healthy and all native bindings are working correctly:
             </p>
             <pre><code class="language-bash">synapse doctor
 </code></pre>
+            <p>If you see any errors, check the <strong><a href="faq">FAQ</a></strong> for troubleshooting steps.</p>
+            <h2 id="4-connect-your-ai-client">4. Connect Your AI Client</h2>
             <p>
-              This detects common issues: incompatible Node.js versions, missing native bindings, or blocked ports.
+              Synapse communicates via the <strong>Model Context Protocol (MCP)</strong>. You must add it as an MCP server in your AI client's configuration.
             </p>
-            <h2 id="4-register-with-your-ai-client">4. Register with Your AI Client</h2>
+            <h3 id="claude-desktop">Claude Desktop</h3>
             <p>
-              Synapse communicates via the <strong>Model Context Protocol (MCP)</strong>. Add it as an MCP server in your AI client config.
+              Add this to your <code>%APPDATA%\Claude\claude_desktop_config.json</code> (Windows) or <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+               (macOS):
             </p>
-            <h3 id="claude-desktop--claude-code">Claude Desktop / Claude Code</h3>
-            <p>Add this to your <code>claude_desktop_config.json</code>:</p>
             <pre><code class="language-json">{
   "mcpServers": {
     "synapse": {
       "command": "synapse",
-      "startup_timeout_sec": 30,
       "env": {
         "MCP_MODE": "stdio",
-        "SYNAPSE_CONFIG": "~/.synapse/config/synapse.config.json",
-        "SYNAPSE_INDEX_BACKEND": "sqlite-vec",
         "SYNAPSE_MEMORY_ENABLED": "true"
       }
     }
   }
 }
 </code></pre>
+            <h3 id="cursor--windsurf--cline">Cursor / Windsurf / Cline</h3>
+            <p>Add a new MCP server with the following settings:</p>
+            <ul>
+              <li><strong>Name</strong>: <code>synapse</code></li>
+              <li><strong>Type</strong>: <code>command</code></li>
+              <li><strong>Command</strong>: <code>synapse</code></li>
+            </ul>
+            <h3 id="claude-code">Claude Code</h3>
             <p>
-              Synapse also works with <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Cline</strong>, <strong>Continue</strong>, 
-              <strong>Gemini CLI</strong>, and any other MCP-compatible client.
+              Synapse integrates seamlessly with Claude Code. Ensure you run <code>synapse hooks install</code> to enable automatic memory capturing during your coding sessions.
             </p>
             <h2 id="5-staying-up-to-date">5. Staying Up to Date</h2>
-            <p>Synapse ships updates frequently. Use the built-in upgrade command to stay current:</p>
+            <p>
+              Synapse is actively developed. Use the built-in upgrade command to pull the latest features and migrations:
+            </p>
             <pre><code class="language-bash">synapse upgrade
 </code></pre>
           </section>

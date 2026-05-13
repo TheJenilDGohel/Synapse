@@ -1319,7 +1319,7 @@
             <ul>
               <li><label for="sidebar-toggle"><a href="/Synapse/intro">Introduction</a></label></li>
               <li><label for="sidebar-toggle"><a href="/Synapse/install">Installation</a></label></li>
-              <li><label for="sidebar-toggle"><a class="active" href="/Synapse/quickstart">Quick Start</a></label></li>
+              <li><label for="sidebar-toggle"><a href="/Synapse/quickstart">Quick Start</a></label></li>
             </ul>
           </div>
           <div class="nav-group">
@@ -1364,81 +1364,121 @@
         </header>
         <main class="layout-content">
           <section class="content">
-            <h1 id="quick-start">Quick Start</h1>
-            <p>Get Synapse running and connected to an MCP-compatible client in minutes.</p>
-            <h2 id="1-install">1. Install</h2>
-            <pre><code class="language-bash">npm install -g synapse-cortex
-</code></pre>
+            <h1 id="configuration-reference">Configuration Reference</h1>
             <p>
-              :::info Compatibility
-              Requires <strong>Node.js &gt;= 22.6.0</strong>. Check your version with <code>node --version</code>. Works on Windows, macOS, and Linux.
-              :::
+              Synapse can be configured via environment variables or a JSON configuration file. By default, it looks for a config file at 
+              <code>~/.synapse/config/synapse.config.json</code>.
             </p>
-            <h2 id="2-initialize-your-workspace">2. Initialize Your Workspace</h2>
-            <p>Navigate to your project root and run the setup sequence:</p>
-            <pre><code class="language-bash">synapse setup
-synapse doctor
-</code></pre>
-            <ul>
-              <li>
-                <strong><code>setup</code></strong>: Creates the local SQLite database and downloads native vector extensions.
-              </li>
-              <li>
-                <strong><code>doctor</code></strong>: Verifies that your environment is healthy and ready for AI integration.
-              </li>
-            </ul>
-            <h2 id="3-connect-your-mcp-client">3. Connect Your MCP Client</h2>
+            <h2 id="environment-variables">Environment Variables</h2>
             <p>
-              Add Synapse to your AI client configuration. This enables the agent to call Synapse tools during a chat.
+              Use these variables to override default behavior, especially when running in containerized environments or CI/CD.
             </p>
-            <h3 id="recommended-config-claude-desktop">Recommended Config (Claude Desktop)</h3>
-            <p>Add this to your <code>claude_desktop_config.json</code>:</p>
+            <table>
+              <thead>
+                <tr><th align="left">Variable</th><th align="left">Description</th><th align="left">Default</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td align="left"><code>SYNAPSE_HOME</code></td>
+                  <td align="left">Root directory for all Synapse data (logs, database, cache).</td>
+                  <td align="left"><code>~/.synapse</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>SYNAPSE_CONFIG</code></td>
+                  <td align="left">Absolute path to a custom <code>synapse.config.json</code>.</td>
+                  <td align="left"><code>$SYNAPSE_HOME/config/...</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>SYNAPSE_MEMORY_ENABLED</code></td>
+                  <td align="left">Enable or disable the persistent memory pillar.</td>
+                  <td align="left"><code>true</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>SYNAPSE_DB_PATH</code></td>
+                  <td align="left">Path to the main SQLite database.</td>
+                  <td align="left"><code>$SYNAPSE_HOME/storage/synapse.db</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>PROJECT_ROOTS</code></td>
+                  <td align="left">Semicolon-separated list of roots to index. Format: <code>label=path;path2</code>.</td>
+                  <td align="left">Current Directory</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>SYNAPSE_EMBED_CACHE_DIR</code></td>
+                  <td align="left">Directory where local embedding models are stored.</td>
+                  <td align="left"><code>$SYNAPSE_HOME/cache</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>SYNAPSE_RERANKER_CACHE_DIR</code></td>
+                  <td align="left">Directory where reranker models are stored.</td>
+                  <td align="left"><code>$SYNAPSE_HOME/cache</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>SYNAPSE_INDEX_BACKEND</code></td>
+                  <td align="left">The storage backend for the code index: <code>sqlite-vec</code> or <code>json</code>.</td>
+                  <td align="left"><code>sqlite-vec</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>DISABLE_CONSOLE_OUTPUT</code></td>
+                  <td align="left">Suppress all non-essential console logging.</td>
+                  <td align="left"><code>false</code></td>
+                </tr>
+                <tr>
+                  <td align="left"><code>MCP_MODE</code></td>
+                  <td align="left">Communication mode: <code>stdio</code> (default) or <code>sse</code>.</td>
+                  <td align="left"><code>stdio</code></td>
+                </tr>
+              </tbody>
+            </table>
+            <h2 id="configuration-file-schema">Configuration File Schema</h2>
+            <p>
+              The <code>synapse.config.json</code> file allows for fine-grained control over indexing and memory behavior.
+            </p>
             <pre><code class="language-json">{
-  "mcpServers": {
-    "synapse": {
-      "command": "synapse",
-      "env": {
-        "MCP_MODE": "stdio",
-        "SYNAPSE_MEMORY_ENABLED": "true"
-      }
-    }
+  "roots": [
+    { "label": "MyProject", "path": "/Users/name/dev/project" }
+  ],
+  "index": {
+    "backend": "sqlite-vec",
+    "chunkLines": 60,
+    "chunkOverlap": 15,
+    "maxIndexedFiles": 20000,
+    "embeddingModel": "sentence-transformers/all-MiniLM-L6-v2",
+    "rerankerModel": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  },
+  "memory": {
+    "enabled": true,
+    "autoCapture": true,
+    "dbPath": "/path/to/memory.db"
   }
 }
 </code></pre>
-            <p>
-              Works with <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Cline</strong>, 
-              <strong>Continue</strong>, <strong>Gemini CLI</strong>, and any MCP-compatible environment.
-            </p>
-            <h2 id="4-prime-the-agent">4. Prime the Agent</h2>
-            <p>
-              Once connected, the most effective way to start is by "priming" the agent with the project's current state.
-            </p>
-            <blockquote>
-              <p><em>"Analyze the project structure and summarize the core modules and their relationships."</em></p>
-            </blockquote>
-            <p>
-              The agent will use tools like <code>agent_prime</code>, <code>project_tree</code>, and <code>summarize_project</code>
-               to build a mental map of your codebase.
-            </p>
-            <h2 id="5-teach-and-remember">5. Teach and Remember</h2>
-            <p>Synapse excels at capturing knowledge that usually gets lost between sessions.</p>
-            <blockquote><p><em>"Remember that we use Vitest for unit tests, not Jest. Always apply this rule."</em></p></blockquote>
-            <p>
-              The agent will use <code>teach</code> or <code>memory_store</code> to persist this fact. In future sessions, Synapse will automatically surface this rule when the agent starts a testing task.
-            </p>
-            <hr/>
-            <p><strong>Deep Dives:</strong></p>
+            <h3 id="index-settings">Index Settings</h3>
             <ul>
               <li>
-                <strong><a href="install">Installation Guide</a></strong>: OS-specific setup and client configuration.
+                <strong><code>chunkLines</code></strong>: Maximum number of lines in a single code chunk. High values provide more context but consume more tokens.
               </li>
               <li>
-                <strong><a href="tools">Tools Reference</a></strong>: Comprehensive list of all 74 available MCP tools.
+                <strong><code>chunkOverlap</code></strong>: Number of overlapping lines between chunks to ensure semantic continuity.
               </li>
               <li>
-                <strong><a href="pillars/intel">The Three Pillars</a></strong>: Understanding Code Intelligence, Memory, and Knowledge Graph.
+                <strong><code>maxIndexedFiles</code></strong>: Safety limit for the number of files Synapse will index in a single root.
               </li>
             </ul>
+            <h3 id="memory-settings">Memory Settings</h3>
+            <ul>
+              <li>
+                <strong><code>autoCapture</code></strong>: When enabled, Synapse will automatically log significant events (like tool usage) to the background event log.
+              </li>
+              <li><strong><code>enabled</code></strong>: Master switch for the persistent memory system.</li>
+            </ul>
+            <h2 id="performance-tuning">Performance Tuning</h2>
+            <p>For very large codebases, you may want to increase the indexing limits:</p>
+            <pre><code class="language-bash">export SYNAPSE_VECTOR_MAX_FILES=50000
+export SYNAPSE_RG_TIMEOUT_MS=30000
+</code></pre>
+            <hr/>
+            <p><strong>Next:</strong> View the full <strong><a href="tools">Tools Reference</a></strong>.</p>
           </section>
         </main>
       </div>

@@ -1366,31 +1366,32 @@
           <section class="content">
             <h1 id="tools-overview">Tools Overview</h1>
             <p>
-              Synapse exposes focused MCP tools via the Model Context Protocol. Every tool runs locally: no cloud service, no hosted index, and no external API requirement.
+              Synapse exposes <strong>74 high-density MCP tools</strong>, optimized for maximum context efficiency. Instead of forcing the AI to make dozens of calls, we provide "Power Tools" like 
+              <code>synapse_kg_manage</code> and <code>agent_prime</code> that handle multiple operations in a single turn.
             </p>
             <h2 id="tool-suites">Tool Suites</h2>
             <h3 id="1-workspace--discovery">1. Workspace &amp; Discovery</h3>
             <p>File navigation, project summaries, and scoped reads.</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th></tr></thead>
               <tbody>
                 <tr>
                   <td align="left"><code>project_tree</code></td>
-                  <td align="left">Directory structure with smart filtering</td>
+                  <td align="left">Multi-level directory tree with <code>compact</code> mode</td>
                 </tr>
                 <tr>
                   <td align="left"><code>read_file</code></td>
-                  <td align="left">Optimized file reading for large codebases</td>
+                  <td align="left">Precise chunked reading with <code>signatures</code> mode</td>
                 </tr>
                 <tr>
                   <td align="left"><code>file_changed</code></td>
-                  <td align="left">Check if a file has changed since last index</td>
+                  <td align="left">Notify Synapse of an edit to trigger memory hints</td>
                 </tr>
+                <tr><td align="left"><code>list_projects</code></td><td align="left">List all registered workspaces</td></tr>
                 <tr>
-                  <td align="left"><code>list_projects</code></td>
-                  <td align="left">List all registered Synapse projects</td>
+                  <td align="left"><code>list_roots</code></td>
+                  <td align="left">List top-level indexed directories</td>
                 </tr>
-                <tr><td align="left"><code>list_roots</code></td><td align="left">List indexed workspace roots</td></tr>
                 <tr>
                   <td align="left"><code>summarize_project</code></td>
                   <td align="left">Generate a high-level architectural map</td>
@@ -1400,165 +1401,174 @@
             <h3 id="2-search--code-intelligence">2. Search &amp; Code Intelligence</h3>
             <p>Hybrid search, symbol resolution, and AST-aware queries.</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th></tr></thead>
               <tbody>
-                <tr><td align="left"><code>search_hybrid</code></td><td align="left">Fused BM25 + vector retrieval</td></tr>
-                <tr><td align="left"><code>search_code</code></td><td align="left">Code-specific semantic search</td></tr>
+                <tr>
+                  <td align="left"><code>search_hybrid</code></td>
+                  <td align="left">RRF-fused lexical (BM25) + semantic (Vector) search</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>search_code</code></td>
+                  <td align="left">Exact-match text search across the codebase</td>
+                </tr>
                 <tr>
                   <td align="left"><code>search_files</code></td>
-                  <td align="left">Find files by name or path pattern</td>
+                  <td align="left">Find files by name or glob pattern</td>
                 </tr>
-                <tr><td align="left"><code>find</code></td><td align="left">Low-level text and regex search</td></tr>
-                <tr><td align="left"><code>find_definition</code></td><td align="left">Symbol definition lookup</td></tr>
-                <tr><td align="left"><code>find_usages</code></td><td align="left">All references to a symbol</td></tr>
+                <tr>
+                  <td align="left"><code>find</code></td>
+                  <td align="left">Cross-domain search (Code + Memory + Graph)</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>find_definition</code></td>
+                  <td align="left">Jump to symbol declaration (TS, JS, Py, Go, Rust)</td>
+                </tr>
+                <tr><td align="left"><code>find_usages</code></td><td align="left">Find all references to a symbol</td></tr>
                 <tr>
                   <td align="left"><code>find_callers</code></td>
-                  <td align="left">All callers of a specific function</td>
+                  <td align="left">Find all call sites of a function</td>
                 </tr>
                 <tr>
                   <td align="left"><code>find_implementations</code></td>
-                  <td align="left">Implementations of interfaces or abstract classes</td>
+                  <td align="left">Find classes implementing an interface/trait</td>
                 </tr>
-                <tr><td align="left"><code>get_symbol</code></td><td align="left">Symbol metadata and export info</td></tr>
+                <tr>
+                  <td align="left"><code>get_symbol</code></td>
+                  <td align="left">Comprehensive symbol metadata and exports</td>
+                </tr>
                 <tr>
                   <td align="left"><code>rename_preview</code></td>
-                  <td align="left">Impact analysis for symbol renames</td>
+                  <td align="left">Dry-run impact analysis for refactoring</td>
                 </tr>
               </tbody>
             </table>
             <h3 id="3-persistent-memory">3. Persistent Memory</h3>
-            <p>Cross-session recall with semantic deduplication and relationship tracking.</p>
+            <p>Cross-session semantic recall with dedup and relationship tracking.</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th></tr></thead>
               <tbody>
-                <tr><td align="left"><code>memory_store</code></td><td align="left">Persist a fact or lesson</td></tr>
+                <tr>
+                  <td align="left"><code>memory_store</code></td>
+                  <td align="left">Persist a fact, lesson, or decision</td>
+                </tr>
                 <tr>
                   <td align="left"><code>memory_recall</code></td>
-                  <td align="left">Semantic search across stored memories</td>
+                  <td align="left">Semantic vector search across all memories</td>
                 </tr>
-                <tr><td align="left"><code>memory_get</code></td><td align="left">Fetch a specific memory by ID</td></tr>
+                <tr>
+                  <td align="left"><code>memory_get</code></td>
+                  <td align="left">Fetch one memory with its revision history</td>
+                </tr>
                 <tr>
                   <td align="left"><code>memory_update</code></td>
-                  <td align="left">Update or correct an existing memory</td>
+                  <td align="left">Edit an existing memory (creates a new revision)</td>
                 </tr>
-                <tr><td align="left"><code>memory_delete</code></td><td align="left">Remove a stale memory</td></tr>
+                <tr><td align="left"><code>memory_delete</code></td><td align="left">Archive or purge a memory</td></tr>
                 <tr>
                   <td align="left"><code>memory_list</code></td>
-                  <td align="left">List memories with optional filters</td>
+                  <td align="left">Filtered list with <code>compact</code> and <code>lite</code> modes</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_related</code></td>
-                  <td align="left">Find semantically related memories</td>
+                  <td align="left">One-hop graph traversal from a memory</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_add_relation</code></td>
-                  <td align="left">Link two memories together</td>
+                  <td align="left">Link two memories (e.g., <code>depends_on</code>)</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_remove_relation</code></td>
-                  <td align="left">Remove a link between memories</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_check_duplicate</code></td>
-                  <td align="left">Detect near-identical existing memories</td>
-                </tr>
-                <tr><td align="left"><code>memory_capture_event</code></td><td align="left">Log a timestamped event</td></tr>
-                <tr>
-                  <td align="left"><code>memory_events</code></td>
-                  <td align="left">Retrieve the event log for an entity</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>memory_store_batch</code></td>
-                  <td align="left">Batch-store multiple memories</td>
-                </tr>
-                <tr><td align="left"><code>memory_delete_batch</code></td><td align="left">Batch-delete memories</td></tr>
-                <tr>
-                  <td align="left"><code>memory_status</code></td>
-                  <td align="left">Memory health and storage stats</td>
+                  <td align="left">Break a link between memories</td>
                 </tr>
                 <tr>
                   <td align="left"><code>memory_suggest_relations</code></td>
-                  <td align="left">Suggest links between memories</td>
+                  <td align="left">AI-powered linking suggestions</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>memory_capture_event</code></td>
+                  <td align="left">Log a timestamped background work event</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>memory_events</code></td>
+                  <td align="left">View recent work history and auto-promotions</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>memory_store_batch</code></td>
+                  <td align="left">Atomic ingestion of up to 100 memories</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>memory_delete_batch</code></td>
+                  <td align="left">Atomic deletion of up to 100 memories</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>memory_status</code></td>
+                  <td align="left">Detailed health and storage metrics</td>
                 </tr>
               </tbody>
             </table>
-            <h3 id="4-knowledge-graph">4. Knowledge Graph</h3>
-            <p>Temporal triples, time-travel queries, and multi-hop traversal.</p>
+            <h3 id="4-knowledge-graph-unified">4. Knowledge Graph (Unified)</h3>
+            <p>Temporal facts, time-travel, and multi-hop traversal.</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th></tr></thead>
               <tbody>
-                <tr><td align="left"><code>kg_add_entity</code></td><td align="left">Register a new entity</td></tr>
                 <tr>
-                  <td align="left"><code>kg_add_triple</code></td>
-                  <td align="left">Record a relationship between entities</td>
-                </tr>
-                <tr><td align="left"><code>kg_query</code></td><td align="left">Graph query with temporal filters</td></tr>
-                <tr><td align="left"><code>kg_as_of</code></td><td align="left">Time-travel query at a past date</td></tr>
-                <tr>
-                  <td align="left"><code>kg_timeline</code></td>
-                  <td align="left">Full history of changes to an entity</td>
+                  <td align="left"><code>synapse_kg_manage</code></td>
+                  <td align="left"><strong>Unified Controller</strong>: Add/Delete entities, triples, and branches.</td>
                 </tr>
                 <tr>
-                  <td align="left"><code>kg_invalidate</code></td>
-                  <td align="left">Mark a relationship as outdated</td>
-                </tr>
-                <tr><td align="left"><code>kg_stats</code></td><td align="left">Graph health and coverage metrics</td></tr>
-                <tr>
-                  <td align="left"><code>graph_traverse</code></td>
-                  <td align="left">Multi-hop relationship traversal</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>graph_bridges</code></td>
-                  <td align="left">Find critical bridge nodes in the graph</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_add_entities_batch</code></td>
-                  <td align="left">Batch-register multiple entities</td>
-                </tr>
-                <tr>
-                  <td align="left"><code>kg_add_triples_batch</code></td>
-                  <td align="left">Batch-record multiple relationships</td>
+                  <td align="left"><code>synapse_kg_query</code></td>
+                  <td align="left"><strong>Unified Reader</strong>: Traversal, as-of history, and stats.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>kg_backfill_links</code></td>
-                  <td align="left">Link entities found in memory to the graph</td>
+                  <td align="left">Auto-generate triples from existing memory context</td>
                 </tr>
               </tbody>
             </table>
-            <h3 id="5-context-operations">5. Context Operations</h3>
-            <p>Task context, teaching, and outcome capture helpers for MCP clients.</p>
+            <h3 id="5-agent-orchestration">5. Agent Orchestration</h3>
+            <p>Priming, teaching, and outcome capture for autonomous agents.</p>
             <table>
-              <thead><tr><th align="left">Tool</th><th align="left">Description</th></tr></thead>
+              <thead><tr><th align="left">Tool</th><th align="left">Capability</th></tr></thead>
               <tbody>
                 <tr>
                   <td align="left"><code>agent_prime</code></td>
-                  <td align="left">Surface relevant memories before a task</td>
+                  <td align="left"><strong>Mandatory Start</strong>: Rehydrate all context in one call.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>teach</code></td>
-                  <td align="left">Batch-store project conventions and operating notes</td>
+                  <td align="left">Persist durable behavior rules and team conventions.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>capture_outcome</code></td>
-                  <td align="left">Log the result of a completed task</td>
+                  <td align="left">Persist the "Winner" state of a completed task.</td>
                 </tr>
                 <tr>
                   <td align="left"><code>task_context</code></td>
-                  <td align="left">Initialize task-scoped memory isolation</td>
+                  <td align="left">Rapid rehydration of memory and recent changes.</td>
                 </tr>
-                <tr><td align="left"><code>whats_new</code></td><td align="left">Surface recent changes and updates</td></tr>
+                <tr>
+                  <td align="left"><code>whats_new</code></td>
+                  <td align="left">Cross-session delta of file changes and memories.</td>
+                </tr>
+                <tr>
+                  <td align="left"><code>synapse_audit</code></td>
+                  <td align="left">Comprehensive self-audit of system integrity.</td>
+                </tr>
               </tbody>
             </table>
-            <h2 id="live-tool-list">Live Tool List</h2>
-            <p>Below is the live list of tools currently active in your Synapse instance:</p>
-            <!--@tools_list-->
-            <div class="tools-container loading-container"><div class="spinner"></div> Discovering tools...</div>
-            <!--/@tools_list-->
+            <h2 id="context-efficiency">Context Efficiency</h2>
+            <p>Every Synapse tool is designed to minimize token usage. We achieve this through:</p>
+            <ul>
+              <li><strong>Output Truncation</strong>: Automatic handling of large payloads.</li>
+              <li>
+                <strong>Modes</strong>: Use <code>lite</code> or <code>compact</code> modes to get IDs instead of full text.
+              </li>
+              <li><strong>Batching</strong>: Perform hundreds of operations in a single tool call.</li>
+            </ul>
             <p>
-              :::tip
-              For deep-dives on specific tool parameters and usage patterns, see the individual pillar pages: 
-              <strong><a href="pillars/intel">Code Intelligence</a></strong>, <strong><a href="pillars/temporal">Knowledge Graph</a></strong>, and 
-              <strong><a href="pillars/memory">Persistent Memory</a></strong>.
+              :::tip Agent Pro-Tip
+              If you are an AI agent reading this: <strong>Always call <code>agent_prime</code> at the start of a task.</strong>
+               It is the fastest way to understand the project architecture, recent work, and your own past lessons.
               :::
             </p>
           </section>

@@ -1365,84 +1365,107 @@
         <main class="layout-content">
           <section class="content">
             <h1 id="introduction">Introduction</h1>
-            <p><strong>Synapse</strong> is a local context server for MCP-compatible clients.</p>
+            <p><strong>Synapse</strong> is the minimalist transmission layer for AI project context.</p>
             <p>
-              It gives coding assistants and automation tools a reliable way to search code, remember project facts, and query architectural relationships without sending your data to a hosted service.
+              It provides coding assistants and automation agents with a reliable, bio-inspired system for <strong>persistent memory</strong>, 
+              <strong>temporal knowledge graphs</strong>, and <strong>semantic code intelligence</strong>—all running entirely on your machine.
             </p>
             <p>
-              :::tip
-              Synapse is not a model. It is local infrastructure for retrieval, memory, and project context.
+              :::tip The Philosophy: Bridging the Signal Gap
+              In biology, a synapse is the specialized gap between neurons where signals pass. In the AI ecosystem, Synapse is that gap. We ensure the "signal" of architectural history, design decisions, and project intelligence reaches your AI agent with zero friction.
               :::
             </p>
             <h2 id="the-problem-synapse-solves">The Problem Synapse Solves</h2>
+            <p>Every AI task fails because of a <strong>loss of signal</strong>.</p>
             <p>
-              Modern coding assistants often lose project signal between sessions. They may not know the architectural history, recent breaking changes, or lessons learned from past work. They can read files, but they need structured context to reason about a project consistently.
+              Standard AI agents lose context between sessions. They don't know the "why" behind a refactor, the recent breaking changes, or the specific lessons learned from past attempts. They can read your files, but they lack the 
+              <strong>project intelligence</strong> to reason about them consistently over time.
             </p>
-            <h3 id="how-synapse-compares">How Synapse Compares</h3>
+            <p>Synapse bridges this gap.</p>
+            <h2 id="how-synapse-compares">How Synapse Compares</h2>
+            <p>No other MCP server combines all three pillars into a single, local-first system.</p>
             <table>
               <thead>
                 <tr>
-                  <th align="left">Feature</th>
+                  <th align="left">Pillar</th>
                   <th align="center">Synapse</th>
-                  <th align="center">Basic Memory</th>
-                  <th align="center">Code Search</th>
+                  <th align="center">Mem0</th>
+                  <th align="center">GitNexus</th>
+                  <th align="center">code-context</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td align="left"><strong>Local-First</strong></td>
+                  <td align="left"><strong>Persistent AI Memory</strong></td>
                   <td align="center">✅</td>
-                  <td align="center">✅</td>
-                  <td align="center">✅</td>
-                </tr>
-                <tr>
-                  <td align="left"><strong>Code Intelligence</strong></td>
-                  <td align="center">✅</td>
-                  <td align="center">❌</td>
-                  <td align="center">✅</td>
-                </tr>
-                <tr>
-                  <td align="left"><strong>Persistent Memory</strong></td>
-                  <td align="center">✅</td>
-                  <td align="center">✅</td>
-                  <td align="center">❌</td>
-                </tr>
-                <tr>
-                  <td align="left"><strong>Temporal Graph</strong></td>
                   <td align="center">✅</td>
                   <td align="center">❌</td>
                   <td align="center">❌</td>
                 </tr>
                 <tr>
-                  <td align="left"><strong>Time-Travel Queries</strong></td>
+                  <td align="left"><strong>Temporal Knowledge Graph</strong></td>
                   <td align="center">✅</td>
                   <td align="center">❌</td>
                   <td align="center">❌</td>
+                  <td align="center">❌</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Semantic Code Search</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                  <td align="center">✅</td>
+                  <td align="center">✅</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>AST-Aware Chunking</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                  <td align="center">✅</td>
+                  <td align="center">❌</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>Local-First / No Cloud</strong></td>
+                  <td align="center">✅</td>
+                  <td align="center">⚠️</td>
+                  <td align="center">✅</td>
+                  <td align="center">⚠️</td>
+                </tr>
+                <tr>
+                  <td align="left"><strong>MCP Tools (v1.0.0)</strong></td>
+                  <td align="center"><strong>74</strong></td>
+                  <td align="center">8</td>
+                  <td align="center">16</td>
+                  <td align="center">~10</td>
                 </tr>
               </tbody>
             </table>
             <h2 id="the-three-pillars">The Three Pillars</h2>
             <p>
-              Synapse is built on three tightly integrated pillars that give MCP clients a complete picture of your codebase:
+              Synapse is built on three tightly integrated systems that provide a complete picture of your codebase:
             </p>
             <ol>
               <li>
-                <p><strong><a href="pillars/intel">Code Intelligence</a></strong>: Hybrid BM25 + vector search, AST-aware chunking, and symbol resolution (<code>find_definition</code>, 
+                <p><strong><a href="pillars/intel">Code Intelligence</a></strong>: Hybrid BM25 + vector search, AST-aware chunking, and precise symbol resolution (<code>find_definition</code>, 
                   <code>find_usages</code>, <code>find_callers</code>).</p>
               </li>
               <li>
-                <p><strong><a href="pillars/temporal">Knowledge Graph</a></strong>: A temporal entity-triple store with multi-hop graph traversal and 
-                  <code>as_of</code> time-travel queries.</p>
+                <p><strong><a href="pillars/temporal">Knowledge Graph</a></strong>: A temporal entity-triple store with multi-hop traversal and 
+                  <code>as_of</code> time-travel queries for tracking architectural evolution.</p>
               </li>
               <li>
-                <p><strong><a href="pillars/memory">Persistent Memory</a></strong>: Cross-session semantic recall with automatic deduplication and scoped isolation.</p>
+                <p><strong><a href="pillars/memory">Persistent Memory</a></strong>: Cross-session semantic recall with automatic deduplication, scoped isolation, and teacher-mode instructions.</p>
               </li>
             </ol>
             <h2 id="zero-cloud-pure-local">Zero Cloud. Pure Local.</h2>
             <p>
               Everything runs on your machine. Your codebase, memories, and knowledge graph are stored in a local SQLite database using the 
-              <code>sqlite-vec</code> extension. No telemetry, no hosted index, no external API requirement.
+              <code>sqlite-vec</code> extension.
             </p>
+            <ul>
+              <li><strong>Privacy First</strong>: Your data never leaves your machine.</li>
+              <li><strong>Speed</strong>: Local SQLite performance beats network-bound vector DBs every time.</li>
+              <li><strong>Offline-Ready</strong>: Work without an internet connection.</li>
+            </ul>
             <p>Ready to connect a client? Head to the <strong><a href="quickstart">Quick Start</a></strong> guide.</p>
           </section>
         </main>
