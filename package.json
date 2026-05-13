@@ -1,6 +1,6 @@
 {
   "name": "synapse-cortex",
-  "version": "0.0.1-beta.3",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "Jenil",
   "keywords": [
@@ -64,7 +64,7 @@
     "test:coverage": "node --import tsx/esm --test --experimental-test-coverage",
     "lint": "eslint . --max-warnings=0",
     "quality:cycles": "madge --circular --extensions js,mjs,ts src",
-    "quality:deps": "depcheck --json --ignores=publint,@huggingface/transformers,tree-sitter-*,ripgrep-bin",
+    "quality:deps": "depcheck --json --ignores=publint,tree-sitter-*,ripgrep-bin",
     "quality:package": "node scripts/quality/quality-package.mjs",
     "quality:audit": "node scripts/quality/quality-audit.mjs",
     "quality": "npm run check && npm run lint && npm run test:coverage && npm run quality:cycles && npm run quality:deps && npm run quality:package && npm run quality:audit",
@@ -82,6 +82,7 @@
     "bump:beta": "npm version prerelease --preid=beta --no-git-tag-version"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@vscode/ripgrep": "^1.17.1",
     "ora": "^9.3.0",
@@ -90,19 +91,17 @@
     "zod": "^4.3.6"
   },
   "optionalDependencies": {
-    "tree-sitter": "^0.21.1",
-    "tree-sitter-bash": "^0.25.1",
-    "tree-sitter-dart": "^1.0.0",
-    "tree-sitter-go": "^0.25.0",
-    "tree-sitter-javascript": "^0.25.0",
+    "tree-sitter": "^0.22.2",
+    "tree-sitter-bash": "^0.23.0",
+    "tree-sitter-go": "^0.23.0",
+    "tree-sitter-javascript": "^0.23.0",
     "tree-sitter-lua": "^0.21.0",
-    "tree-sitter-python": "^0.25.0",
-    "tree-sitter-rust": "^0.24.0",
-    "tree-sitter-typescript": "^0.23.2"
+    "tree-sitter-python": "^0.23.0",
+    "tree-sitter-rust": "^0.23.0",
+    "tree-sitter-typescript": "^0.23.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@huggingface/transformers": "^4.2.0",
     "@types/node": "^25.5.2",
     "depcheck": "^1.4.7",
     "eslint": "^10.2.0",

@@ -1,3 +1,4 @@
+import { parseFlags } from '../parse-flags.js';
 /**
  * Guided first-run onboarding wizard for Synapse.
  *
@@ -21,7 +22,7 @@ import { TOOL_COUNT } from '../tool-count.js';
 import type { GlobalOptions } from '../options.js';
 
 const __dirname: string = path.dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT: string = path.resolve(__dirname, '..', '..', '..');
+const PROJECT_ROOT: string = path.resolve(__dirname, '..', '..', '..', '..');
 
 /* ------------------------------------------------------------------ */
 /*  Output helpers                                                     */
@@ -153,7 +154,7 @@ function runSetup(quiet: boolean): boolean {
   const args: string[] = ['--yes'];
   if (quiet) args.push('--quiet');
 
-  const result = spawnSync(process.execPath, [setupScript, ...args], {
+  const result = spawnSync(process.execPath, [...process.execArgv, setupScript, ...args], {
     stdio: quiet ? 'ignore' : 'inherit',
     encoding: 'utf8',
     timeout: 60000,
@@ -165,7 +166,7 @@ function runSetup(quiet: boolean): boolean {
 
 function runSkillInstall(): boolean {
   const skillScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'install-synapse-skill.mjs');
-  const result = spawnSync(process.execPath, [skillScript, '--force', '--quiet'], {
+  const result = spawnSync(process.execPath, [...process.execArgv, skillScript, '--force', '--quiet'], {
     stdio: 'ignore',
     encoding: 'utf8',
     timeout: 30000,
@@ -176,7 +177,7 @@ function runSkillInstall(): boolean {
 
 function runHooksInstall(): boolean {
   const hooksScript = path.join(PROJECT_ROOT, 'scripts', 'hooks', 'install-hooks.cjs');
-  const result = spawnSync(process.execPath, [hooksScript], {
+  const result = spawnSync(process.execPath, [...process.execArgv, hooksScript], {
     stdio: 'ignore',
     encoding: 'utf8',
     timeout: 15000,
@@ -324,12 +325,35 @@ async function runOnboard(): Promise<void> {
   // Step 5: Doctor
   stepHeader(5, totalSteps, 'Verifying installation...');
   const doctorSpinner = startSpinner('Running health checks...');
-  const doctorOk = runDoctor();
-  if (doctorOk) doctorSpinner.succeed('All health checks passed');
-  else doctorSpinner.warn('Some checks need attention');
-  resultLine(doctorOk, doctorOk
-    ? 'All health checks passed'
-    : c.yellow('Some checks failed — run `synapse doctor` for details'));
+  const doctorScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-synapse.mjs');
+  const doctorResult = spawnSync(process.execPath, [...process.execArgv, doctorScript, '--json'], {
+    stdio: 'pipe',
+    encoding: 'utf8',
+    timeout: 30000,
+  });
+
+  let doctorOk = false;
+  let doctorHealthy = false;
+  try {
+    const stdout = doctorResult.stdout || '';
+    const jsonMatch = stdout.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : '{}');
+    doctorOk = parsed.ok === true;
+    doctorHealthy = parsed.healthy === true;
+  } catch {
+    doctorOk = doctorResult.status === 0;
+  }
+
+  if (doctorHealthy) {
+    doctorSpinner.succeed('All health checks passed');
+    resultLine(true, 'All health checks passed');
+  } else if (doctorOk) {
+    doctorSpinner.warn('Operational with warnings');
+    resultLine(true, c.yellow('Operational (non-critical checks need attention — run `synapse doctor` for details)'));
+  } else {
+    doctorSpinner.fail('Critical checks failed');
+    resultLine(false, c.red('Some critical checks failed — run `synapse doctor` to diagnose'));
+  }
 
   // Step 6: Priority Boost
   stepHeader(6, totalSteps, 'Boosting AI priority...');
@@ -351,8 +375,8 @@ async function runOnboard(): Promise<void> {
   } else {
     writeLines(box([
       allOk
-        ? `${c.green(c.B.check)} ${c.bold('Synapse is ready!')}`
-        : `${c.yellow('!')} ${c.bold('Synapse is partially configured')}`,
+        ? (doctorHealthy ? `${c.green(c.B.check)} ${c.bold('Synapse is ready!')}` : `${c.yellow('!')} ${c.bold('Synapse is operational')}`)
+        : `${c.red('!')} ${c.bold('Synapse is partially configured')}`,
       '',
       `${c.green(c.B.check)} ${c.dim(`${TOOL_COUNT} MCP tools available`)}`,
       env.clientCount > 0
@@ -361,12 +385,13 @@ async function runOnboard(): Promise<void> {
       env.claudeCode
         ? `${c.green(c.B.check)} ${c.dim('Memory hooks active in Claude Code')}`
         : `${c.yellow(c.B.circle)} ${c.dim('Claude Code hooks skipped')}`,
+      !doctorHealthy && doctorOk ? `${c.yellow('!')} ${c.dim('Some optional dependencies missing (run `synapse doctor`)')}` : '',
       '',
       c.bold('Try these commands:'),
       `  ${c.cyan('/synapse:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
       `  ${c.cyan('/synapse:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
       `  ${c.cyan('/synapse:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
-    ], { padding: 1 }));
+    ].filter(Boolean), { padding: 1 }));
   }
 
   process.exitCode = allOk ? 0 : 1;
@@ -376,6 +401,13 @@ async function runOnboard(): Promise<void> {
 /*  Public API                                                         */
 /* ------------------------------------------------------------------ */
 
-export async function run(_args: string[], _opts: GlobalOptions): Promise<void> {
+export async function run(args: string[], _opts: GlobalOptions): Promise<void> {
+  const { helpRequested } = parseFlags(args, {});
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse onboard\n\n');
+    process.stdout.write('Starts the guided first-run onboarding wizard to set up configuration,\n');
+    process.stdout.write('install skills, and verify system health.\n');
+    return;
+  }
   await runOnboard();
 }

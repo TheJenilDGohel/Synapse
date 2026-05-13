@@ -1,104 +1,91 @@
 ---
 title: Tools Overview
-description: MCP tools provided by Synapse, organized by functional suite.
+description: Comprehensive reference for the 74 MCP tools provided by Synapse.
 ---
 
 # Tools Overview
 
-Synapse exposes focused MCP tools via the Model Context Protocol. Every tool runs locally: no cloud service, no hosted index, and no external API requirement.
+Synapse exposes **74 high-density MCP tools**, optimized for maximum context efficiency. Instead of forcing the AI to make dozens of calls, we provide "Power Tools" like `synapse_kg_manage` and `agent_prime` that handle multiple operations in a single turn.
 
 ## Tool Suites
 
 ### 1. Workspace & Discovery
-
 File navigation, project summaries, and scoped reads.
 
-| Tool | Description |
+| Tool | Capability |
 |:---|:---|
-| `project_tree` | Directory structure with smart filtering |
-| `read_file` | Optimized file reading for large codebases |
-| `file_changed` | Check if a file has changed since last index |
-| `list_projects` | List all registered Synapse projects |
-| `list_roots` | List indexed workspace roots |
+| `project_tree` | Multi-level directory tree with `compact` mode |
+| `read_file` | Precise chunked reading with `signatures` mode |
+| `file_changed` | Notify Synapse of an edit to trigger memory hints |
+| `list_projects` | List all registered workspaces |
+| `list_roots` | List top-level indexed directories |
 | `summarize_project` | Generate a high-level architectural map |
 
 ### 2. Search & Code Intelligence
-
 Hybrid search, symbol resolution, and AST-aware queries.
 
-| Tool | Description |
+| Tool | Capability |
 |:---|:---|
-| `search_hybrid` | Fused BM25 + vector retrieval |
-| `search_code` | Code-specific semantic search |
-| `search_files` | Find files by name or path pattern |
-| `find` | Low-level text and regex search |
-| `find_definition` | Symbol definition lookup |
-| `find_usages` | All references to a symbol |
-| `find_callers` | All callers of a specific function |
-| `find_implementations` | Implementations of interfaces or abstract classes |
-| `get_symbol` | Symbol metadata and export info |
-| `rename_preview` | Impact analysis for symbol renames |
+| `search_hybrid` | RRF-fused lexical (BM25) + semantic (Vector) search |
+| `search_code` | Exact-match text search across the codebase |
+| `search_files` | Find files by name or glob pattern |
+| `find` | Cross-domain search (Code + Memory + Graph) |
+| `find_definition` | Jump to symbol declaration (TS, JS, Py, Go, Rust) |
+| `find_usages` | Find all references to a symbol |
+| `find_callers` | Find all call sites of a function |
+| `find_implementations` | Find classes implementing an interface/trait |
+| `get_symbol` | Comprehensive symbol metadata and exports |
+| `rename_preview` | Dry-run impact analysis for refactoring |
 
 ### 3. Persistent Memory
+Cross-session semantic recall with dedup and relationship tracking.
 
-Cross-session recall with semantic deduplication and relationship tracking.
-
-| Tool | Description |
+| Tool | Capability |
 |:---|:---|
-| `memory_store` | Persist a fact or lesson |
-| `memory_recall` | Semantic search across stored memories |
-| `memory_get` | Fetch a specific memory by ID |
-| `memory_update` | Update or correct an existing memory |
-| `memory_delete` | Remove a stale memory |
-| `memory_list` | List memories with optional filters |
-| `memory_related` | Find semantically related memories |
-| `memory_add_relation` | Link two memories together |
-| `memory_remove_relation` | Remove a link between memories |
-| `memory_check_duplicate` | Detect near-identical existing memories |
-| `memory_capture_event` | Log a timestamped event |
-| `memory_events` | Retrieve the event log for an entity |
-| `memory_store_batch` | Batch-store multiple memories |
-| `memory_delete_batch` | Batch-delete memories |
-| `memory_status` | Memory health and storage stats |
-| `memory_suggest_relations` | Suggest links between memories |
+| `memory_store` | Persist a fact, lesson, or decision |
+| `memory_recall` | Semantic vector search across all memories |
+| `memory_get` | Fetch one memory with its revision history |
+| `memory_update` | Edit an existing memory (creates a new revision) |
+| `memory_delete` | Archive or purge a memory |
+| `memory_list` | Filtered list with `compact` and `lite` modes |
+| `memory_related` | One-hop graph traversal from a memory |
+| `memory_add_relation` | Link two memories (e.g., `depends_on`) |
+| `memory_remove_relation` | Break a link between memories |
+| `memory_suggest_relations` | AI-powered linking suggestions |
+| `memory_capture_event` | Log a timestamped background work event |
+| `memory_events` | View recent work history and auto-promotions |
+| `memory_store_batch` | Atomic ingestion of up to 100 memories |
+| `memory_delete_batch` | Atomic deletion of up to 100 memories |
+| `memory_status` | Detailed health and storage metrics |
 
-### 4. Knowledge Graph
+### 4. Knowledge Graph (Unified)
+Temporal facts, time-travel, and multi-hop traversal.
 
-Temporal triples, time-travel queries, and multi-hop traversal.
-
-| Tool | Description |
+| Tool | Capability |
 |:---|:---|
-| `kg_add_entity` | Register a new entity |
-| `kg_add_triple` | Record a relationship between entities |
-| `kg_query` | Graph query with temporal filters |
-| `kg_as_of` | Time-travel query at a past date |
-| `kg_timeline` | Full history of changes to an entity |
-| `kg_invalidate` | Mark a relationship as outdated |
-| `kg_stats` | Graph health and coverage metrics |
-| `graph_traverse` | Multi-hop relationship traversal |
-| `graph_bridges` | Find critical bridge nodes in the graph |
-| `kg_add_entities_batch` | Batch-register multiple entities |
-| `kg_add_triples_batch` | Batch-record multiple relationships |
-| `kg_backfill_links` | Link entities found in memory to the graph |
+| `synapse_kg_manage` | **Unified Controller**: Add/Delete entities, triples, and branches. |
+| `synapse_kg_query` | **Unified Reader**: Traversal, as-of history, and stats. |
+| `kg_backfill_links` | Auto-generate triples from existing memory context |
 
-### 5. Context Operations
+### 5. Agent Orchestration
+Priming, teaching, and outcome capture for autonomous agents.
 
-Task context, teaching, and outcome capture helpers for MCP clients.
-
-| Tool | Description |
+| Tool | Capability |
 |:---|:---|
-| `agent_prime` | Surface relevant memories before a task |
-| `teach` | Batch-store project conventions and operating notes |
-| `capture_outcome` | Log the result of a completed task |
-| `task_context` | Initialize task-scoped memory isolation |
-| `whats_new` | Surface recent changes and updates |
+| `agent_prime` | **Mandatory Start**: Rehydrate all context in one call. |
+| `teach` | Persist durable behavior rules and team conventions. |
+| `capture_outcome` | Persist the "Winner" state of a completed task. |
+| `task_context` | Rapid rehydration of memory and recent changes. |
+| `whats_new` | Cross-session delta of file changes and memories. |
+| `synapse_audit` | Comprehensive self-audit of system integrity. |
 
-## Live Tool List
+## Context Efficiency
 
-Below is the live list of tools currently active in your Synapse instance:
+Every Synapse tool is designed to minimize token usage. We achieve this through:
+- **Output Truncation**: Automatic handling of large payloads.
+- **Modes**: Use `lite` or `compact` modes to get IDs instead of full text.
+- **Batching**: Perform hundreds of operations in a single tool call.
 
-<tools-list />
-
-:::tip
-For deep-dives on specific tool parameters and usage patterns, see the individual pillar pages: **[Code Intelligence](pillars/intel)**, **[Knowledge Graph](pillars/temporal)**, and **[Persistent Memory](pillars/memory)**.
+:::tip Agent Pro-Tip
+If you are an AI agent reading this: **Always call `agent_prime` at the start of a task.** It is the fastest way to understand the project architecture, recent work, and your own past lessons.
 :::

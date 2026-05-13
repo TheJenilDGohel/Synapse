@@ -3,19 +3,69 @@ import { ensurePaginatedShape, stripEmptyFields } from '../terse-utils.js';
 
 export interface NormalizedProjectTreeResult {
   project_path: string;
-  entries: unknown[];
+  count: number;
+  items: unknown[];
+  entries?: unknown[];
   [key: string]: unknown;
 }
 
-export function normalizeProjectTreeResult(result: any, projectPath: string): NormalizedProjectTreeResult {
+export function normalizeProjectTreeResult(result: any, projectPath: string, options: { includeLegacyArrays?: boolean } = {}): NormalizedProjectTreeResult {
   const entries = Array.isArray(result)
     ? result
     : (Array.isArray(result?.entries) ? result.entries : []);
 
-  return {
-    ...result,
+  const base = { ...(result || {}) };
+  delete base.entries;
+  delete base.items;
+
+  const paginated = ensurePaginatedShape(entries, { total: entries.length });
+  const normalized: NormalizedProjectTreeResult = {
+    ...base,
+    ...paginated,
     project_path: result?.project_path || projectPath,
-    entries
+    count: paginated.count,
+    items: paginated.items
+  };
+
+  if (options.includeLegacyArrays) {
+    normalized.entries = entries;
+  }
+  return normalized;
+}
+
+export interface NormalizedSearchFileResult {
+  query: string;
+  count: number;
+  items: unknown[];
+  [key: string]: unknown;
+}
+
+export function normalizeSearchFileResult(result: any, query: string): NormalizedSearchFileResult {
+  const items = Array.isArray(result) ? result : [];
+  const paginated = ensurePaginatedShape(items, { total: items.length });
+  return {
+    ...paginated,
+    query,
+    count: paginated.count,
+    items: paginated.items
+  };
+}
+
+export interface NormalizedSearchCodeResult {
+  query: string;
+  count: number;
+  items: unknown[];
+  [key: string]: unknown;
+}
+
+export function normalizeSearchCodeResult(result: any, query: string): NormalizedSearchCodeResult {
+  const items = Array.isArray(result) ? result : [];
+  const paginated = ensurePaginatedShape(items, { total: items.length });
+  return {
+    ...paginated,
+    query,
+    count: paginated.count,
+    items: paginated.items
   };
 }
 

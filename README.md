@@ -75,7 +75,7 @@ No other MCP server covers all three pillars. Here's how the landscape breaks do
 | Temporal time-travel queries | **Yes** | No | No | No | No |
 | Conversation ingestion | **Yes** | No | No | No | No |
 | Local-first / no cloud | **Yes** | Yes | Partial | Yes | Yes |
-| MCP tools (v0.0.1-beta.3) | **52** | 16 | ~5 | 14 | ~10 |
+| MCP tools (v1.0.0) | **52** | 16 | ~5 | 14 | ~10 |
 
 > **Context Efficiency Update:** As of v0.0.1-beta.3, Synapse has compressed its tool payload by **~65%**, providing you with more effective context for actual reasoning.
 
@@ -147,6 +147,28 @@ Synapse exposes **52 high-density MCP tools**, optimized for maximum context eff
 <summary><b>Agent Context</b> — priming, teaching, outcomes, task context</summary>
 <p><code>agent_prime</code>, <code>teach</code>, <code>capture_outcome</code>, <code>task_context</code>, <code>whats_new</code></p>
 </details>
+
+---
+
+## 🛠️ Troubleshooting: Cache & Model Storage
+
+Synapse uses local caches for embeddings and reranker models.
+
+### Cache Fallback
+If the configured cache directory is not writable, Synapse will automatically fall back to a temporary system directory. **Cache fallback is informational** and does not affect the correctness of results, though it may result in re-downloads if the temporary directory is cleared by the OS.
+
+**Cache fallback is acceptable** for ephemeral environments, but for persistent use, ensure the cache directory is writable.
+
+### Environment Variables
+You can override the default cache locations using:
+- `SYNAPSE_EMBED_CACHE_DIR`: Directory for embedding models.
+- `SYNAPSE_RERANKER_CACHE_DIR`: Directory for reranker models.
+
+### Skip Model Downloads
+To skip downloading models during setup (e.g., in CI or when models are already present):
+```bash
+synapse setup --skip-model-download=true
+```
 
 ---
 

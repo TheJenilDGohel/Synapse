@@ -6,12 +6,7 @@ import {
   normalizeTaskContextResult,
   normalizeAgentPrimeResult
 } from '../common/response-normalizers.js';
-import {
-  applyReadFormatToItems,
-  applyReadFormatToBundle,
-  toMinimalWriteResponse
-} from '../common/terse-utils.js';
-import type { ReadResponseFormat } from '../common/terse-utils.js';
+import { McpResponseMapper } from '../utils/response-mapper.js';
 import { READ_ONLY_ANNOTATIONS, WRITE_ANNOTATIONS } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import type {
@@ -24,7 +19,7 @@ import type {
 import type {
   IMemoryService,
   IMemoryWorkflowService
-} from '../../../core/interfaces/services.ts';
+} from '../../../core/interfaces/services.js';
 
 type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
 interface SharedSchemas {
@@ -86,9 +81,9 @@ export function registerMemoryWorkflowTools({
     },
     async (args: Record<string, unknown>) => {
       const result = await memoryWorkflow.getTaskContext(args);
-      return applyReadFormatToBundle(
+      return McpResponseMapper.standardizeResponse(
         normalizeTaskContextResult(result, args),
-        (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+        { item_format: args.item_format as string }
       );
     }
   );
@@ -102,7 +97,7 @@ export function registerMemoryWorkflowTools({
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_STATUS_RESULT_SCHEMA
     },
-    async () => normalizeMemoryStatus(await memory.getStatus())
+    async () => McpResponseMapper.standardizeResponse(normalizeMemoryStatus(await memory.getStatus()))
   );
 
   registerJsonTool(
@@ -129,7 +124,7 @@ export function registerMemoryWorkflowTools({
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
     },
-    async ({ query, root_path, project_path, branch_name, topic, feature, kind, actor_id, tags, limit, item_format }: Record<string, unknown>) => applyReadFormatToItems(
+    async ({ query, root_path, project_path, branch_name, topic, feature, kind, actor_id, tags, limit, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
       normalizeMemoryRecallResult(
         await memory.recall({
           query,
@@ -145,7 +140,7 @@ export function registerMemoryWorkflowTools({
         }),
         query as string
       ),
-      (item_format as ReadResponseFormat | undefined) ?? 'verbose'
+      { item_format: item_format as string }
     )
   );
 
@@ -182,7 +177,10 @@ export function registerMemoryWorkflowTools({
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
     },
-    async ({ terse, ...args }: Record<string, unknown>) => toMinimalWriteResponse(normalizeCaptureOutcomeResult(await memoryWorkflow.captureOutcome(args)), terse as string)
+    async ({ terse, ...args }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
+      normalizeCaptureOutcomeResult(await memoryWorkflow.captureOutcome(args)), 
+      { terse: terse as string }
+    )
   );
 
   registerJsonTool(
@@ -205,9 +203,9 @@ export function registerMemoryWorkflowTools({
     },
     async (args: Record<string, unknown>) => {
       const result = await memoryWorkflow.agentPrime(args as any);
-      return applyReadFormatToBundle(
+      return McpResponseMapper.standardizeResponse(
         normalizeAgentPrimeResult(result),
-        (args.item_format as ReadResponseFormat | undefined) ?? 'verbose'
+        { item_format: args.item_format as string }
       );
     }
   );
@@ -221,19 +219,20 @@ export function registerMemoryWorkflowTools({
         since: z.string().min(1),
         agent_id: z.string().optional(),
         project_path: z.string().optional(),
-        limit: z.number().int().min(1).max(50).default(10)
+        limit: z.number().int().min(1).max(50).default(10),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
     },
-    async ({ since, agent_id, project_path, limit }: Record<string, unknown>) => {
+    async ({ since, agent_id, project_path, limit, item_format }: Record<string, unknown>) => {
       const result = await memory.whatsNew({
         since: since as string,
         agentId: agent_id as string | undefined,
         projectPath: project_path as string | undefined,
         limit: limit as number | undefined
       });
-      return result;
+      return McpResponseMapper.standardizeResponse(result, { item_format: item_format as string });
     }
   );
 
@@ -256,7 +255,7 @@ export function registerMemoryWorkflowTools({
     },
     async ({ terse, ...args }: Record<string, unknown>) => {
       const result = await memoryWorkflow.teach(args as any);
-      return toMinimalWriteResponse(result, terse as string);
+      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
     }
   );
 }

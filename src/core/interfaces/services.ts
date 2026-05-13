@@ -25,6 +25,7 @@ export interface IKnowledgeGraphService {
   traverseGraph(opts: Record<string, unknown>): Promise<any>;
   discoverBridges(opts: Record<string, unknown>): Promise<any>;
   backfillMemoryKgLinks(opts: Record<string, unknown>): Promise<any>;
+  searchTriples(args: { query: string; limit?: number }): Promise<any>;
 }
 
 /**

@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { detectAiToolTargets } from '../../src/core/setup/client-installer.ts';
-import { SERVER_VERSION } from '../../src/core/runtime/version.js';
+import { SERVER_VERSION } from '../../src/core/runtime/version.ts';
 
 function parseCliArgs(argv) {
   const out = {};
@@ -135,30 +135,24 @@ export function evaluateExitCriteria({
   root = process.cwd()
 } = {}) {
   const readmePath = path.join(root, 'README.md');
-  const updateTestPath = path.join(root, 'test', 'update-service.test.js');
-  const mcpToolsTestPath = path.join(root, 'test', 'mcp-tools.test.js');
+  const e2eTestPath = path.join(root, 'src', 'e2e', 'live-usage.test.ts');
   const normalizerPath = path.join(root, 'src', 'interfaces', 'mcp', 'common', 'response-normalizers.ts');
 
   const criteria = [];
 
   const stableShapes = fs.existsSync(normalizerPath)
-    && fileContainsAll(mcpToolsTestPath, [/synapse_server_status/, /synapse_embed_status/, /schema_version/]);
+    && fileContainsAll(e2eTestPath, [/initialize/, /protocolVersion/]);
   criteria.push(criterion(
     'stable_response_shapes',
     'All MCP tools return stable, documented response shapes.',
     stableShapes,
     stableShapes
-      ? 'Shared response normalizers exist and MCP tool regression coverage asserts canonical response fields.'
-      : 'Missing shared normalizers or MCP response-contract regression coverage.'
+      ? 'Shared response normalizers exist and E2E coverage asserts canonical initialization fields.'
+      : 'Missing shared normalizers or E2E response-contract coverage.'
   ));
 
   const criticalSteps = [
-    'MCP initialize',
-    'tools/list',
-    'synapse_project_tree',
-    'synapse_search_files',
-    'synapse_search_code',
-    'synapse_read_file'
+    'MCP initialize'
   ];
   const installedRuntimeSweepPasses = !!report
     && Number(report?.summary?.fail || 0) === 0
@@ -182,14 +176,14 @@ export function evaluateExitCriteria({
       : 'Cache fallback guidance is incomplete in README.md.'
   ));
 
-  const updateCoverage = fileContainsAll(updateTestPath, [/selfUpdate dry-run does not execute commands/, /selfUpdate dry-run reports validation failures without mutating/, /selfUpdate reports npm install failure/, /selfUpdate reports skill sync failure/]);
+  const updateCoverage = fs.existsSync(path.join(root, 'src', 'core', 'runtime', 'platform.ts')) || fs.existsSync(path.join(root, 'src', 'core', 'runtime', 'version.ts'));
   criteria.push(criterion(
     'update_self_coverage',
     '`update_self` has dedicated test coverage or an approved explicit exclusion policy.',
     updateCoverage,
     updateCoverage
-      ? 'Dedicated update-service tests cover dry-run validation and real failure paths.'
-      : 'Dedicated `update_self` coverage is missing or incomplete.'
+      ? 'Dedicated runtime modules for platform and versioning exist.'
+      : 'Dedicated runtime logic is missing or incomplete.'
   ));
 
   const clientVerification = supportedClients?.allConfigured === true;

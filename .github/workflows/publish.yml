@@ -14,12 +14,12 @@ jobs:
     name: Build & Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
@@ -31,15 +31,7 @@ jobs:
         run: node scripts/release/sync-versions.mjs
 
       - name: Run checks and tests
-        run: |
-          # Skip tests if the test directory is missing (per maintainer directive)
-          if [ -d "test" ]; then
-            npm run quality
-          else
-            echo "Test directory missing, running build and check only."
-            npm run build
-            npm run check
-          fi
+        run: npm run quality
 
       - name: Determine npm tag
         id: determine_tag

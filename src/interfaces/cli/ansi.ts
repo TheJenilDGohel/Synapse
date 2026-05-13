@@ -61,13 +61,31 @@ export const B = {
 /** High-level badge helper */
 export const badge = (s: string) => isColorEnabled() ? `\x1b[7m ${s} \x1b[0m` : `[${s}]`;
 
-/** Modern color API (grouped) */
-export const c = {
-  red, green, yellow, blue, magenta, cyan, white, gray,
-  bold, dim, italic, badge,
-  inverse: (s: string) => isColorEnabled() ? `\x1b[7m${s}\x1b[27m` : s,
-  B: B,
+/** Modern color API (grouped) with chaining support */
+const STYLES: Record<string, number> = {
+  red: 31, green: 32, yellow: 33, blue: 34, magenta: 35, cyan: 36, white: 37, gray: 90,
+  bold: 1, dim: 2, italic: 3, inverse: 7
 };
+
+function createStyler(codes: number[] = []) {
+  const styler = (s: string): string => {
+    if (!isColorEnabled() || codes.length === 0) return s;
+    return `\x1b[${codes.join(';')}m${s}\x1b[0m`;
+  };
+
+  return new Proxy(styler, {
+    get(target, prop: string) {
+      if (prop === 'B') return B;
+      if (prop === 'badge') return badge;
+      if (prop in STYLES) {
+        return createStyler([...codes, STYLES[prop]]);
+      }
+      return (target as any)[prop];
+    }
+  });
+}
+
+export const c = createStyler() as any;
 
 /** Status symbols — colored unicode in TTY, plain ASCII fallback. */
 export const symbol = {

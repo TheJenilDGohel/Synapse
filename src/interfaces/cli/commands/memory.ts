@@ -76,13 +76,24 @@ function confirm(prompt: string): Promise<boolean> {
 /* ------------------------------------------------------------------ */
 
 async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags, positionals } = parseFlags(args, {
+  const { flags, positionals, helpRequested } = parseFlags(args, {
     type: { alias: 't', type: 'string' },
     importance: { alias: 'i', type: 'number' },
     nest: { alias: 'n', type: 'string' },
     branch: { alias: 'b', type: 'string' },
     title: { type: 'string' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory add <content> [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -t, --type <kind>       Memory kind (default: knowledge)\n');
+    process.stdout.write('  -i, --importance <0-100> Importance score (default: 50)\n');
+    process.stdout.write('  -n, --nest <name>       Category nest\n');
+    process.stdout.write('  -b, --branch <name>     Topic branch\n');
+    process.stdout.write('  --title <text>          Custom title\n');
+    return;
+  }
 
   const content = positionals.join(' ').trim();
   if (!content) {
@@ -120,12 +131,22 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
 }
 
 async function handleSearch(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags, positionals } = parseFlags(args, {
+  const { flags, positionals, helpRequested } = parseFlags(args, {
     limit: { alias: 'l', type: 'number' },
     nest: { alias: 'n', type: 'string' },
     branch: { alias: 'b', type: 'string' },
     kind: { alias: 'k', type: 'string' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory search <query> [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -l, --limit <num>       Max results (default: 10)\n');
+    process.stdout.write('  -n, --nest <name>       Filter by nest\n');
+    process.stdout.write('  -b, --branch <name>     Filter by branch\n');
+    process.stdout.write('  -k, --kind <type>       Filter by kind\n');
+    return;
+  }
 
   const query = positionals.join(' ').trim();
   if (!query) {
@@ -163,12 +184,22 @@ async function handleSearch(args: string[], opts: GlobalOptions): Promise<void> 
 }
 
 async function handleList(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags } = parseFlags(args, {
+  const { flags, helpRequested } = parseFlags(args, {
     limit: { alias: 'l', type: 'number' },
     kind: { alias: 'k', type: 'string' },
     status: { alias: 's', type: 'string' },
     json: { type: 'boolean' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory list [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -l, --limit <num>       Max entries (default: 20)\n');
+    process.stdout.write('  -k, --kind <type>       Filter by kind\n');
+    process.stdout.write('  -s, --status <text>     Filter by status\n');
+    process.stdout.write('  --json                  Output as JSON\n');
+    return;
+  }
 
   const useJson = opts.json || Boolean(flags.json);
 
@@ -218,7 +249,12 @@ async function handleList(args: string[], opts: GlobalOptions): Promise<void> {
 }
 
 async function handleShow(args: string[], opts: GlobalOptions): Promise<void> {
-  const { positionals } = parseFlags(args, {});
+  const { positionals, helpRequested } = parseFlags(args, {});
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory show <id>\n');
+    return;
+  }
 
   const id = positionals[0];
   if (!id) {
@@ -270,9 +306,14 @@ async function handleShow(args: string[], opts: GlobalOptions): Promise<void> {
 }
 
 async function handleDelete(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags, positionals } = parseFlags(args, {
+  const { flags, positionals, helpRequested } = parseFlags(args, {
     force: { alias: 'f', type: 'boolean' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory delete <id> [-f|--force]\n');
+    return;
+  }
 
   const id = positionals[0];
   if (!id) {
@@ -296,10 +337,18 @@ async function handleDelete(args: string[], opts: GlobalOptions): Promise<void> 
 }
 
 async function handlePrime(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags, positionals } = parseFlags(args, {
+  const { flags, positionals, helpRequested } = parseFlags(args, {
     task: { alias: 't', type: 'string' },
     project: { alias: 'p', type: 'string' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory prime "your task" [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -t, --task <text>       The task to rehydrate context for\n');
+    process.stdout.write('  -p, --project <path>    Project root path\n');
+    return;
+  }
 
   const task = (flags.task as string) || positionals.join(' ').trim();
   if (!task) {
@@ -355,7 +404,7 @@ async function handlePrime(args: string[], opts: GlobalOptions): Promise<void> {
 }
 
 async function handleContext(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags } = parseFlags(args, {
+  const { flags, helpRequested } = parseFlags(args, {
     task: { alias: 't', type: 'string' },
     query: { alias: 'q', type: 'string' },
     projectPath: { alias: 'p', type: 'string' },
@@ -365,6 +414,16 @@ async function handleContext(args: string[], opts: GlobalOptions): Promise<void>
     feature: { type: 'string' },
     kind: { type: 'string' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory context [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -t, --task <text>       Task description\n');
+    process.stdout.write('  -q, --query <text>      Search query\n');
+    process.stdout.write('  -p, --projectPath <path> Project root\n');
+    process.stdout.write('  -l, --limit <num>       Context entry limit\n');
+    return;
+  }
 
   const { MemoryWorkflowService } = await import('../../../core/engine/index.js');
   const workflow = new MemoryWorkflowService({ memory: services.getMemory() as any });
@@ -390,12 +449,22 @@ async function handleContext(args: string[], opts: GlobalOptions): Promise<void>
 }
 
 async function handleOutcome(args: string[], opts: GlobalOptions): Promise<void> {
-  const { flags } = parseFlags(args, {
+  const { flags, helpRequested } = parseFlags(args, {
     task: { alias: 't', type: 'string' },
     summary: { alias: 's', type: 'string' },
     status: { type: 'string' },
     projectPath: { alias: 'p', type: 'string' },
   });
+
+  if (helpRequested) {
+    process.stdout.write('Usage: synapse memory outcome [flags]\n\n');
+    process.stdout.write('Flags:\n');
+    process.stdout.write('  -t, --task <text>       Task name/ID (required)\n');
+    process.stdout.write('  -s, --summary <text>    Brief outcome summary (required)\n');
+    process.stdout.write('  --status <text>         Status (default: completed)\n');
+    process.stdout.write('  -p, --projectPath <path> Project root\n');
+    return;
+  }
 
   if (!flags.task || !flags.summary) {
     writeError('Task and summary are required.', opts.json);
