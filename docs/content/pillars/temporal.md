@@ -1,6 +1,6 @@
 ---
 title: Temporal Knowledge Graph
-description: A temporal entity-triple store with multi-hop traversal and time-travel queries for tracking architectural decisions over time.
+description: A temporal entity-triple store with multi-hop traversal and time-travel queries for tracking architectural intelligence.
 ---
 
 # Temporal Knowledge Graph
@@ -26,31 +26,33 @@ Triples in Synapse are **immutable**. When a relationship changes (e.g., migrati
 ### 1. Time-Travel Queries (`as_of`)
 Query the graph as it existed at any point in the past. This is critical for understanding why a bug occurred in a previous version or tracking how a design decision has drifted over time.
 
-### 2. Blast Radius Analysis
-Use `graph_traverse` to calculate the recursive impact of a change.
-> *"If I modify the User schema, which 3rd-level downstream services will be affected?"*
+### 2. Multi-Hop Traversal
+AI agents can follow relationships recursively to analyze the "Blast Radius" of a change.
+> *"Which modules will be affected if I change the 'User' database schema?"*
 
-### 3. Structural Reasoning
-Find bridges and bottlenecks in your architecture with `graph_bridges`. Identify which modules are single points of failure before they cause production issues.
+### 3. Integrated Branching
+Just like Git, Synapse supports **KG Branches**. You can record experimental architectural changes in a branch without affecting the main "Source of Truth" graph.
 
-## Graph Tool Suite
+## Graph Power Tools
 
-| Tool | Capability | Use Case |
+In Synapse v1.0.0, we provide two unified controllers that handle all graph operations:
+
+| Tool | Action | Use Case |
 | :--- | :--- | :--- |
-| `kg_add_triple` | Fact Recording | Link `UserService` to `Redis` cache. |
-| `kg_as_of` | Temporal Recall | View the architecture as of `2024-01-01`. |
-| `graph_traverse` | Multi-hop Path | Trace dependencies across 5+ services. |
-| `kg_timeline` | Entity History | See every decision that affected `AuthModule`. |
-| `graph_bridges` | Network Analysis | Find critical dependencies in the graph. |
-| `kg_backfill_links` | Auto-Linking | Convert memory blobs into structured triples. |
+| `synapse_kg_manage` | `add_triple` | Record a new architectural relationship. |
+| `synapse_kg_manage` | `delete_entity` | Purge a module and its relationships. |
+| `synapse_kg_manage` | `ingest_markdown` | Import a set of facts from a document. |
+| `synapse_kg_query` | `traverse` | Perform a recursive path-finding search. |
+| `synapse_kg_query` | `get_state` | View the graph as it was on a specific date. |
+| `synapse_kg_query` | `timeline` | See the history of a specific module. |
 
 ## Real-World Workflow: Tracking an ADR
 
 When making an Architectural Decision (ADR), Synapse turns it into a living part of the graph:
 
-1. **Register the Decision**: `kg_add_entity` for `ADR-007`.
-2. **Link the Impact**: `kg_add_triple` between `ADR-007` and every affected module.
-3. **Link the Owner**: `kg_add_triple` between `ADR-007` and the developer.
+1. **Register**: Use `synapse_kg_manage(action="add_entity")` for `ADR-007`.
+2. **Link**: Use `add_triple` to connect `ADR-007` to every affected module.
+3. **Persist**: Store the full decision text in [Persistent Memory](memory).
 
 Six months later, an AI agent working on one of those modules will automatically pull `ADR-007` into its context, ensuring the original design constraints are respected.
 

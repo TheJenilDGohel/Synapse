@@ -88,23 +88,46 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse kg add <subject> <predicate> <object> [flags]\n\n');
+    process.stdout.write('Create a subject→predicate→object triple in the knowledge graph.\n\n');
+    process.stdout.write('Usage:\n');
+    process.stdout.write('  synapse kg add <subject> <predicate> <object> [flags]\n');
+    process.stdout.write('  synapse kg add --subject <name> --predicate <name> --object <name> [flags]\n\n');
+    process.stdout.write('Arguments:\n');
+    process.stdout.write('  subject       The entity that is the source of the relationship\n');
+    process.stdout.write('  predicate     The name of the relationship (e.g., "uses", "depends_on")\n');
+    process.stdout.write('  object        The entity that is the target of the relationship\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -s, --subject <name>    Subject entity name\n');
     process.stdout.write('  -p, --predicate <name>  Predicate name\n');
     process.stdout.write('  -o, --object <name>     Object entity name\n');
-    process.stdout.write('  --valid-from <ISO>      Start date for fact validity\n');
-    process.stdout.write('  -c, --confidence <num>   Confidence score (0.0-1.0)\n');
+    process.stdout.write('  --valid-from <ISO>      Start date for fact validity (e.g. 2024-05-20)\n');
+    process.stdout.write('  -c, --confidence <num>   Confidence score (0.0-1.0, default: 1.0)\n');
+    process.stdout.write('  -h, --help               Show this help\n\n');
+    process.stdout.write('Examples:\n');
+    process.stdout.write('  synapse kg add "AuthService" "uses" "JWT"\n');
+    process.stdout.write('  synapse kg add --subject "Gemini" --predicate "testing" --object "Synapse" --confidence 0.9\n');
     return;
   }
 
+  // Support both positional and flag-based arguments.
+  // We prefer flags if provided, then fall back to positionals.
   const subjectName = (flags.subject as string) || positionals[0];
   const predicate = (flags.predicate as string) || positionals[1];
   const objectName = (flags.object as string) || positionals[2];
 
   if (!subjectName || !predicate || !objectName) {
+    const errorMsg = 'Subject, predicate, and object are required. You can provide them as positionals ' +
+      'or using --subject, --predicate, and --object flags.\n\n' +
+      'Example: synapse kg add "AuthService" "uses" "JWT"';
+    writeError(errorMsg, opts.json);
+    return;
+  }
+
+  // Guard against accidental flag leakage into content (Issue #103)
+  if (subjectName.startsWith('--') || predicate.startsWith('--') || objectName.startsWith('--')) {
     writeError(
-      'Subject, predicate, and object are required (as positionals or flags). Usage: synapse kg add <subject> <predicate> <object>',
+      `Detected potential flag "${subjectName.startsWith('--') ? subjectName : (predicate.startsWith('--') ? predicate : objectName)}" in content. ` +
+      'Please ensure you are not missing a value after a flag, or wrap the content in quotes if it literally starts with --.',
       opts.json
     );
     return;
