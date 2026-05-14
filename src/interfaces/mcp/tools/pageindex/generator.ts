@@ -18,7 +18,6 @@ export function generatePageIndexTree(text: string, maxDepth: number): PageIndex
   const stack: { level: number; node: PageIndexNode }[] = [];
 
   let nodeIdCounter = 1;
-  let currentHeaderLine = 0;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -56,7 +55,6 @@ export function generatePageIndexTree(text: string, maxDepth: number): PageIndex
       }
 
       stack.push({ level, node });
-      currentHeaderLine = i + 1;
     }
   }
 
