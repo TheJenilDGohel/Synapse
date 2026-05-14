@@ -8,10 +8,12 @@ Synapse provides a unified context layer for AI agents, integrating semantic cod
 ## Strategic Objective: Unified Agentic Context Layer
 Move beyond a collection of tools to a "Unified Brain" that understands the intersection of code, intent, and time.
 
-**Rock Solid Features (Upcoming):**
-- **Automated Entity Resolution (v0.2.0)**: Automatically link developer memories/decisions to specific AST function nodes and classes.
-- **Hybrid Graph-RAG (v0.2.0)**: Single-query retrieval combining semantic code search with relationship-aware memory.
-- **Temporal Knowledge "Rewind" (v0.3.0)**: Capability to view the codebase state and developer intent at any point in the project history.
+**Rock Solid Features (Implemented):**
+- **Automated Entity Resolution**: Automatically link developer memories/decisions to specific AST function nodes and classes.
+- **Hybrid Graph-RAG**: Single-query retrieval combining semantic code search with relationship-aware memory (`synapse_search`).
+- **Temporal Knowledge "Rewind"**: Capability to view the codebase state and developer intent at any point in history (`synapse_kg_query`).
+- **Power Controllers**: Consolidated 72+ granular tools into ~14 high-density controllers for maximum context efficiency.
+- **CalVer Standard**: Transitioned to `YYYY.MM.Patch` versioning for better release synchronization.
 
 ## Current Milestone: v0.1.0 Jaspr Documentation Site
 

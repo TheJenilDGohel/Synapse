@@ -1,4 +1,4 @@
-# Synapse Milestone Roadmap: v2026.05.0 Stable Release
+# Synapse Milestone Roadmap: v2026.5.0 Stable Release
 
 ## 🎯 Milestone Goal
 Stabilize the core engine, optimize tool context usage, and harden the architecture for final stable release.
@@ -75,3 +75,15 @@ Stabilize the core engine, optimize tool context usage, and harden the architect
   - [x] Implement `synapse_help` / Dynamic Tool Discovery.
   - [x] Consolidate granular tools (Git, Memory CRUD) into Power Tools.
   - [x] Implement JIT tool loading in the MCP server.
+
+## 📦 Phase 10: MCP Tool Consolidation
+- **Goal**: Complete the transition to high-density controllers and remove 60+ redundant granular tools.
+- **Status**: ✅ Completed
+- **Plan**: `.planning/phases/10-tool-consolidation/10-01-PLAN.md`
+- **Tasks**:
+  - [x] Consolidate Memory tools into Manage/Query controllers.
+  - [x] Consolidate Search and Symbol tools into Power Controllers.
+  - [x] Consolidate Workspace and System tools.
+  - [x] Update `synapse_discovery` and `synapse_help` for new architecture.
+  - [x] Cleanup orphaned files and update CHANGELOG.
+

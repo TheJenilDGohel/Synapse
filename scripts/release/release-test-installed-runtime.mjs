@@ -148,7 +148,7 @@ export async function runInstalledRuntimeReleaseTest(options = {}) {
     });
     const nextClient = new Client({
       name: 'synapse-release-smoke',
-      version: '2026.05.0'
+      version: '2026.5.0'
     }, {
       capabilities: {}
     });

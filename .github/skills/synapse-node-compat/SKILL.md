@@ -1,8 +1,6 @@
-Tool target: GitHub Copilot / VS Code agent mode. Keep guidance aligned with Agent Skills conventions and repo/project-first workflows.
-
 ---
 name: synapse-node-compat
-version: 0.3.0-beta.2
+version: 2026.5.0
 description: Expert system for maintaining Node.js version compatibility and graceful feature degradation in Synapse.
 category: tools
 tags: [node-js, compatibility, version-gating, native-dependencies, polyfills]
@@ -24,7 +22,7 @@ Instead of hard engine bumps, Synapse prefers gating specific features (like the
 Compatibility is protected by isolating version-sensitive imports behind `async import()` or lazy-loading patterns. This prevents top-level crashes in shared entry points like the CLI or common utilities.
 
 ### 3. Graceful Degradation
-When a runtime requirement isn't met (e.g., missing `node:sqlite`), Synapse identifies the gap, disables only the affected tools, and provides a clear, actionable diagnostic through `synapse doctor`.
+When a runtime requirement isn't met (e.g., missing `node:sqlite`), Synapse identifies the gap, disables only the affected tools, and provides a clear, actionable diagnostic through `synapse_health`.
 
 ## Code Examples
 
@@ -58,7 +56,7 @@ try {
 
 1. **Gate Features, Not the Engine**: Keep core search working on Node 18 even if memory requires Node 22.
 2. **Avoid Top-Level Versioned Imports**: Never import a module that might be missing at the top level of a shared utility file.
-3. **Actionable Status**: If a feature is disabled, the `doctor` output must state: Feature name, Reason, Required Version, and Update command.
+3. **Actionable Status**: If a feature is disabled, the `synapse_health` output must reflect the gap.
 4. **Test the Published Shape**: High-version features often behave differently when bundled/published via npm than in the development tree.
 
 ## Troubleshooting

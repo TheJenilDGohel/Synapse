@@ -1,8 +1,6 @@
-Tool target: GitHub Copilot / VS Code agent mode. Keep guidance aligned with Agent Skills conventions and repo/project-first workflows.
-
 ---
 name: synapse-sql-adapter
-version: 0.3.0-beta.2
+version: 2026.5.0
 description: Expert system for Synapse database engineering, specializing in SQLite-backed semantic vector search and persistent memory adapters.
 category: tools
 tags: [sqlite, vector-search, indexing, migrations, performance, database-adapters]
@@ -21,7 +19,7 @@ Master the high-performance data plane of Synapse. This skill covers the special
 Synapse leverages `sqlite-vec` for native, in-process vector similarity search. The expert understands how to manage `vec0` virtual tables, handle dimension consistency, and ensure platform-specific extension loading (`.so`, `.dylib`, `.dll`) remains robust.
 
 ### 2. Transactional Integrity
-Memory operations (especially batch writes) must be transactional. The expert uses `db.transaction()` patterns to ensure that linked knowledge (Memories + Knowledge Graph Triples) is committed atomically or not at all.
+Memory operations (especially batch writes via `synapse_memory_manage({ action: "store_batch" })`) must be transactional. The expert uses `db.transaction()` patterns to ensure that linked knowledge (Memories + Knowledge Graph Triples) is committed atomically or not at all.
 
 ### 3. Schema Evolution
 Synapse uses a minimal, append-only migration strategy. The expert ensures that updates to the schema (e.g., adding a new metadata column to the `memories` table) preserve backward compatibility with existing local indices.
@@ -62,7 +60,7 @@ function loadVectorExtension(db) {
 1. **Lazy Database Binding**: Never open the database file until the first tool call requires it. This keeps the MCP server startup instant and prevents lock contention during concurrent agent initializations.
 2. **Prepared Statement Caching**: Reuse prepared statements for all performance-critical paths (search, batch ingest).
 3. **Bound Parameters Only**: Never use string interpolation for SQL queries. Always use `?` or named parameters to prevent SQL injection and improve plan caching.
-4. **Isolate IO**: Keep database-specific logic in the `adapters` or `services` layer; never bleed raw SQL into the MCP tool definitions.
+4. **Isolate IO**: Keep database-specific logic in the `adapters` or `services` layer; never bleed raw SQL into the MCP tool controllers.
 
 ## Troubleshooting
 

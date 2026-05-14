@@ -36,113 +36,49 @@ export function registerGraphTools({
   schemas
 }: RegisterGraphToolsOptions): void {
   // --- KG Manage Controller (synapse_kg_manage) ---
+  // Refactored to flat z.object for Gemini compatibility
   registerJsonTool(
     ['synapse_kg_manage'],
     {
       title: 'KG Manage',
-      description: 'Unified controller for all knowledge graph mutations (add, delete, ingest, branch management, diary write).',
-      inputSchema: z.discriminatedUnion('action', [
-        z.object({
-          action: z.literal('add_entity'),
-          name: z.string().min(1).max(400),
-          type: z.string().max(100).default('concept'),
-          properties: z.record(z.string(), z.any()).default({}),
-          memory_id: z.string().optional(),
-          terse: z.enum(['minimal', 'verbose']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('add_triple'),
-          subject_name: z.string().min(1).max(400),
-          predicate: z.string().min(1).max(400),
-          object_name: z.string().min(1).max(400),
-          subject_id: z.string().max(400).optional(),
-          object_id: z.string().max(400).optional(),
-          valid_from: z.string().nullable().optional(),
-          valid_to: z.string().nullable().optional(),
-          confidence: z.number().min(0).max(1).default(1.0),
-          source_memory_id: z.string().nullable().optional(),
-          source_type: z.string().max(100).default('manual'),
-          terse: z.enum(['minimal', 'verbose']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('add_entities_batch'),
-          entities: z.array(z.object({
-            name: z.string().min(1).max(400), type: z.string().max(100).default('concept'),
-            properties: z.record(z.string(), z.any()).default({}), memory_id: z.string().optional()
-          })).min(1).max(500),
-          response_format: z.enum(['minimal', 'verbose']).default('minimal')
-        }),
-        z.object({
-          action: z.literal('add_triples_batch'),
-          triples: z.array(z.object({
-            subject_name: z.string().min(1).max(400), predicate: z.string().min(1).max(400),
-            object_name: z.string().min(1).max(400), subject_id: z.string().max(400).optional(),
-            object_id: z.string().max(400).optional(), valid_from: z.string().nullable().optional(),
-            valid_to: z.string().nullable().optional(), confidence: z.number().min(0).max(1).default(1.0),
-            source_memory_id: z.string().nullable().optional(), source_type: z.string().max(100).default('manual')
-          })).min(1).max(500),
-          response_format: z.enum(['minimal', 'verbose']).default('minimal')
-        }),
-        z.object({
-          action: z.literal('invalidate'),
-          triple_id: z.string().min(1),
-          valid_to: z.string().nullable().optional(),
-          terse: z.enum(['minimal', 'verbose']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('delete_entity'),
-          entity_id: z.string().min(1)
-        }),
-        z.object({
-          action: z.literal('delete_entities_batch'),
-          entity_ids: z.array(z.string().min(1)).min(1).max(100)
-        }),
-        z.object({
-          action: z.literal('delete_triples_batch'),
-          triple_ids: z.array(z.string().min(1)).min(1).max(100)
-        }),
-        z.object({
-          action: z.literal('manage_branches'),
-          action_type: z.enum(['merge', 'rename', 'delete', 'list_stale']),
-          nest: z.string().min(1).max(200),
-          from_branch: z.string().max(200).optional(),
-          to_branch: z.string().max(200).optional(),
-          branch: z.string().max(200).optional(),
-          older_than_days: z.number().int().min(1).max(3650).default(30)
-        }),
-        z.object({
-          action: z.literal('ingest_markdown'),
-          content: z.string().min(1).max(500000),
-          source_label: z.string().max(1000).optional(),
-          nest: z.string().max(200).default(''),
-          branch: z.string().max(200).default(''),
-          agent_id: z.string().max(200).default(''),
-          terse: z.enum(['minimal', 'verbose']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('ingest_json'),
-          content: z.string().min(1).max(500000),
-          source_label: z.string().max(1000).optional(),
-          nest: z.string().max(200).default(''),
-          branch: z.string().max(200).default(''),
-          agent_id: z.string().max(200).default(''),
-          terse: z.enum(['minimal', 'verbose']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('backfill_links'),
-          limit: z.number().int().min(1).max(500).default(200),
-          offset: z.number().int().min(0).default(0),
-          nest: z.string().max(200).optional(),
-          branch: z.string().max(200).optional()
-        }),
-        z.object({
-          action: z.literal('write_diary'),
-          agent_id: z.string().min(1).max(200),
-          content: z.string().min(1).max(20000),
-          topic: z.string().max(200).optional(),
-          terse: z.enum(['minimal', 'verbose']).default('verbose')
-        })
-      ]),
+      description: 'Unified controller for all knowledge graph mutations (add, delete, ingest, branch management, diary write). Use "action" to select mode.',
+      inputSchema: z.object({
+        action: z.enum(['add_entity', 'add_triple', 'add_entities_batch', 'add_triples_batch', 'invalidate', 'delete_entity', 'delete_entities_batch', 'delete_triples_batch', 'manage_branches', 'ingest_markdown', 'ingest_json', 'backfill_links', 'write_diary']).describe('The KG mutation action to perform'),
+        name: z.string().max(400).optional().describe('Entity name (action: add_entity)'),
+        type: z.string().max(100).optional().describe('Entity type (action: add_entity)'),
+        properties: z.record(z.string(), z.any()).optional().describe('Entity properties (action: add_entity)'),
+        memory_id: z.string().optional().describe('Associated memory ID (action: add_entity)'),
+        subject_name: z.string().max(400).optional().describe('Subject name (action: add_triple)'),
+        predicate: z.string().max(400).optional().describe('Predicate (action: add_triple)'),
+        object_name: z.string().max(400).optional().describe('Object name (action: add_triple)'),
+        subject_id: z.string().max(400).optional().describe('Subject ID (action: add_triple)'),
+        object_id: z.string().max(400).optional().describe('Object ID (action: add_triple)'),
+        valid_from: z.string().nullable().optional().describe('Start of validity period'),
+        valid_to: z.string().nullable().optional().describe('End of validity period'),
+        confidence: z.number().min(0).max(1).optional().describe('Confidence score'),
+        source_memory_id: z.string().nullable().optional().describe('Source memory ID'),
+        source_type: z.string().max(100).optional().describe('Source type (manual, tool, etc)'),
+        entities: z.array(z.any()).max(500).optional().describe('Batch of entity objects (action: add_entities_batch)'),
+        triples: z.array(z.any()).max(500).optional().describe('Batch of triple objects (action: add_triples_batch)'),
+        triple_id: z.string().optional().describe('ID of triple to invalidate'),
+        entity_id: z.string().optional().describe('ID of entity to delete'),
+        entity_ids: z.array(z.string()).max(100).optional().describe('IDs of entities to delete in batch'),
+        triple_ids: z.array(z.string()).max(100).optional().describe('IDs of triples to delete in batch'),
+        action_type: z.enum(['merge', 'rename', 'delete', 'list_stale']).optional().describe('Specific branch operation (action: manage_branches)'),
+        nest: z.string().max(200).optional().describe('Taxonomy nest'),
+        branch: z.string().max(200).optional().describe('Taxonomy branch'),
+        from_branch: z.string().max(200).optional().describe('Source branch for merge/rename'),
+        to_branch: z.string().max(200).optional().describe('Destination branch for merge/rename'),
+        older_than_days: z.number().int().min(1).max(3650).optional().describe('Age threshold for listing stale branches'),
+        content: z.string().max(500000).optional().describe('Content to ingest or diary entry'),
+        source_label: z.string().max(1000).optional().describe('Label for ingested content'),
+        agent_id: z.string().max(200).optional().describe('Agent identifier (action: ingest_*, write_diary)'),
+        limit: z.number().int().min(1).max(500).optional().describe('Result limit'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset'),
+        topic: z.string().max(200).optional().describe('Diary topic'),
+        terse: z.enum(['minimal', 'verbose']).default('verbose').describe('Output verbosity'),
+        response_format: z.enum(['minimal', 'verbose']).optional().describe('Output format for batch operations')
+      }),
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA,
       category: 'Knowledge Graph'
@@ -152,46 +88,46 @@ export function registerGraphTools({
       switch (action) {
         case 'add_entity':
           return McpResponseMapper.standardizeResponse(
-            await memory.addEntity({ name: args.name, type: args.type, properties: args.properties, memoryId: args.memory_id }), 
-            { terse: args.terse }
+            await memory.addEntity({ name: args.name, type: args.type || 'concept', properties: args.properties || {}, memoryId: args.memory_id }), 
+            { terse: args.terse || 'verbose' }
           );
         case 'add_triple':
           return McpResponseMapper.standardizeResponse(
             await memory.addTriple({
               subjectName: args.subject_name, subjectId: args.subject_id, predicate: args.predicate,
               objectName: args.object_name, objectId: args.object_id,
-              validFrom: args.valid_from, validTo: args.valid_to, confidence: args.confidence,
-              sourceMemoryId: args.source_memory_id, sourceType: args.source_type
+              validFrom: args.valid_from, validTo: args.valid_to, confidence: args.confidence ?? 1.0,
+              sourceMemoryId: args.source_memory_id, sourceType: args.source_type || 'manual'
             }), 
-            { terse: args.terse }
+            { terse: args.terse || 'verbose' }
           );
         case 'add_entities_batch':
           return McpResponseMapper.standardizeResponse(
             await memory.addEntityBatch({
-              entities: args.entities.map((e: any) => ({
-                name: e.name, type: e.type, properties: e.properties, memoryId: e.memory_id
+              entities: (args.entities || []).map((e: any) => ({
+                name: e.name, type: e.type || 'concept', properties: e.properties || {}, memoryId: e.memory_id
               })),
-              response_format: args.response_format
+              response_format: args.response_format || 'minimal'
             }),
-            { terse: args.response_format }
+            { terse: args.response_format || 'minimal' }
           );
         case 'add_triples_batch':
           return McpResponseMapper.standardizeResponse(
             await memory.addTripleBatch({
-              triples: args.triples.map((t: any) => ({
+              triples: (args.triples || []).map((t: any) => ({
                 subjectName: t.subject_name, subjectId: t.subject_id, predicate: t.predicate,
                 objectName: t.object_name, objectId: t.object_id, validFrom: t.valid_from,
-                validTo: t.valid_to, confidence: t.confidence,
-                sourceMemoryId: t.source_memory_id, sourceType: t.source_type
+                validTo: t.valid_to, confidence: t.confidence ?? 1.0,
+                sourceMemoryId: t.source_memory_id, sourceType: t.source_type || 'manual'
               })),
-              response_format: args.response_format
+              response_format: args.response_format || 'minimal'
             }),
-            { terse: args.response_format }
+            { terse: args.response_format || 'minimal' }
           );
         case 'invalidate':
           return McpResponseMapper.standardizeResponse(
             await memory.invalidateTriple(args.triple_id, args.valid_to), 
-            { terse: args.terse }
+            { terse: args.terse || 'verbose' }
           );
         case 'delete_entity':
           return McpResponseMapper.standardizeResponse(
@@ -216,29 +152,29 @@ export function registerGraphTools({
               fromBranch: args.from_branch,
               toBranch: args.to_branch,
               branch: args.branch,
-              olderThanDays: args.older_than_days
+              olderThanDays: args.older_than_days ?? 30
             }),
             { terse: 'verbose' }
           );
         case 'ingest_markdown':
           return McpResponseMapper.standardizeResponse(
-            await memory.ingestMarkdown({ content: args.content, filePath: args.source_label || '', nest: args.nest, branch: args.branch, agentId: args.agent_id }), 
-            { terse: args.terse }
+            await memory.ingestMarkdown({ content: args.content, filePath: args.source_label || '', nest: args.nest || '', branch: args.branch || '', agentId: args.agent_id || '' }), 
+            { terse: args.terse || 'verbose' }
           );
         case 'ingest_json':
           return McpResponseMapper.standardizeResponse(
-            await memory.ingestJson({ content: args.content, filePath: args.source_label || '', nest: args.nest, branch: args.branch, agentId: args.agent_id }), 
-            { terse: args.terse }
+            await memory.ingestJson({ content: args.content, filePath: args.source_label || '', nest: args.nest || '', branch: args.branch || '', agentId: args.agent_id || '' }), 
+            { terse: args.terse || 'verbose' }
           );
         case 'backfill_links':
           return McpResponseMapper.standardizeResponse(
-            await memory.backfillMemoryKgLinks({ limit: args.limit, offset: args.offset, nest: args.nest, branch: args.branch }),
+            await memory.backfillMemoryKgLinks({ limit: args.limit ?? 200, offset: args.offset ?? 0, nest: args.nest, branch: args.branch }),
             { terse: 'verbose' }
           );
         case 'write_diary':
           return McpResponseMapper.standardizeResponse(
             await memory.writeDiaryEntry({ agentId: args.agent_id, content: args.content, topic: args.topic }), 
-            { terse: args.terse }
+            { terse: args.terse || 'verbose' }
           );
         default:
           throw new Error(`Unknown action: ${action}`);
@@ -247,89 +183,37 @@ export function registerGraphTools({
   );
 
   // --- KG Query Controller (synapse_kg_query) ---
+  // Refactored to flat z.object for Gemini compatibility
   registerJsonTool(
     ['synapse_kg_query'],
     {
       title: 'KG Query',
-      description: 'Unified controller for all knowledge graph queries and state introspection.',
-      inputSchema: z.discriminatedUnion('action', [
-        z.object({
-          action: z.literal('list_entities'),
-          type: z.string().max(100).optional(),
-          name_contains: z.string().max(200).optional(),
-          limit: z.number().int().min(1).max(200).default(20),
-          offset: z.number().int().min(0).default(0),
-          item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('query_relationships'),
-          entity_id: z.string().min(1).max(400),
-          direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
-          include_invalid: z.boolean().default(false),
-          item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('as_of'),
-          entity_id: z.string().min(1).max(400),
-          as_of_date: z.string().min(1),
-          mode: z.enum(['event', 'transaction']).default('event')
-        }),
-        z.object({
-          action: z.literal('timeline'),
-          entity_id: z.string().min(1).max(400)
-        }),
-        z.object({
-          action: z.literal('stats')
-        }),
-        z.object({
-          action: z.literal('nest_list')
-        }),
-        z.object({
-          action: z.literal('nest_branches'),
-          nest: z.string().min(1).max(200)
-        }),
-        z.object({
-          action: z.literal('nest_tree')
-        }),
-        z.object({
-          action: z.literal('traverse'),
-          start_entity_id: z.string().min(1).max(400),
-          max_hops: z.number().int().min(1).max(5).default(2),
-          direction: z.enum(['outgoing', 'incoming', 'both']).default('both'),
-          limit: z.number().int().min(1).max(200).default(20),
-          entity_type: z.string().max(100).optional(),
-          predicates: z.array(z.string().max(200)).max(20).optional(),
-          max_per_depth: z.number().int().min(1).max(100).optional(),
-          item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('bridges'),
-          nest: z.string().max(200).optional(),
-          mode: z.enum(['cross-nest', 'cross-branch']).default('cross-nest')
-        }),
-        z.object({
-          action: z.literal('diary_read'),
-          agent_id: z.string().min(1).max(200),
-          topic: z.string().max(200).optional(),
-          limit: z.number().int().min(1).max(100).default(20),
-          offset: z.number().int().min(0).default(0),
-          item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-        }),
-        z.object({
-          action: z.literal('check_duplicate'),
-          content: z.string().min(1).max(20000),
-          threshold: z.number().min(0).max(1).default(0.92),
-          nest: z.string().max(200).optional(),
-          branch: z.string().max(200).optional(),
-          project_path: z.string().max(1000).optional()
-        }),
-        z.object({
-          action: z.literal('hooks_stats')
-        }),
-        z.object({
-          action: z.literal('hooks_list_events')
-        })
-      ]),
+      description: 'Unified controller for all knowledge graph queries and state introspection. Use "action" to select mode.',
+      inputSchema: z.object({
+        action: z.enum(['list_entities', 'query_relationships', 'as_of', 'timeline', 'stats', 'nest_list', 'nest_branches', 'nest_tree', 'traverse', 'bridges', 'diary_read', 'check_duplicate', 'hooks_stats', 'hooks_list_events']).describe('The KG read action to perform'),
+        type: z.string().max(100).optional().describe('Filter by entity type (action: list_entities)'),
+        name_contains: z.string().max(200).optional().describe('Filter by name substring (action: list_entities)'),
+        limit: z.number().int().min(1).max(200).optional().describe('Result limit'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset'),
+        entity_id: z.string().max(400).optional().describe('Target entity ID'),
+        direction: z.enum(['outgoing', 'incoming', 'both']).optional().describe('Relation direction'),
+        include_invalid: z.boolean().default(false).describe('Include invalidated triples'),
+        as_of_date: z.string().optional().describe('ISO timestamp for temporal query'),
+        mode: z.enum(['event', 'transaction', 'cross-nest', 'cross-branch']).optional().describe('Temporal or Bridge mode'),
+        nest: z.string().max(200).optional().describe('Taxonomy nest'),
+        start_entity_id: z.string().max(400).optional().describe('Start entity for graph traversal'),
+        max_hops: z.number().int().min(1).max(5).optional().describe('Max traversal depth'),
+        entity_type: z.string().max(100).optional().describe('Filter traversal by entity type'),
+        predicates: z.array(z.string().max(200)).max(20).optional().describe('Filter traversal by predicates'),
+        max_per_depth: z.number().int().min(1).max(100).optional().describe('Limit results per depth level'),
+        agent_id: z.string().max(200).optional().describe('Agent ID for diary read'),
+        topic: z.string().max(200).optional().describe('Topic for diary read'),
+        content: z.string().max(20000).optional().describe('Content to check for duplicate'),
+        threshold: z.number().min(0).max(1).optional().describe('Similarity threshold'),
+        project_path: z.string().max(1000).optional().describe('Project path for duplicate check'),
+        branch: z.string().max(200).optional().describe('Branch for duplicate check'),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose').describe('Output verbosity')
+      }),
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA,
       level: ToolLevel.CORE,
@@ -340,20 +224,20 @@ export function registerGraphTools({
       switch (action) {
         case 'list_entities':
           return McpResponseMapper.standardizeResponse(
-            await memory.listEntities({ type: args.type, nameContains: args.name_contains, limit: args.limit, offset: args.offset }),
+            await memory.listEntities({ type: args.type, nameContains: args.name_contains, limit: args.limit ?? 20, offset: args.offset ?? 0 }),
             { item_format: args.item_format as string }
           );
         case 'query_relationships':
           return McpResponseMapper.standardizeResponse(
             await memory.queryEntityRelationships(args.entity_id, {
-              direction: args.direction,
+              direction: args.direction || 'both',
               includeInvalid: args.include_invalid
             }),
             { item_format: args.item_format as string }
           );
         case 'as_of':
           return McpResponseMapper.standardizeResponse(
-            await memory.queryTriplesAsOf(args.entity_id, args.as_of_date, args.mode)
+            await memory.queryTriplesAsOf(args.entity_id, args.as_of_date, args.mode || 'event')
           );
         case 'timeline':
           return McpResponseMapper.standardizeResponse(
@@ -379,9 +263,9 @@ export function registerGraphTools({
           return McpResponseMapper.standardizeResponse(
             await memory.traverseGraph({
               startEntityId: args.start_entity_id,
-              maxHops: args.max_hops,
-              direction: args.direction,
-              limit: args.limit,
+              maxHops: args.max_hops ?? 2,
+              direction: args.direction || 'both',
+              limit: args.limit ?? 20,
               entityType: args.entity_type,
               predicates: args.predicates,
               maxPerDepth: args.max_per_depth
@@ -390,16 +274,16 @@ export function registerGraphTools({
           );
         case 'bridges':
           return McpResponseMapper.standardizeResponse(
-            await memory.discoverBridges({ nest: args.nest, mode: args.mode })
+            await memory.discoverBridges({ nest: args.nest, mode: args.mode || 'cross-nest' })
           );
         case 'diary_read':
           return McpResponseMapper.standardizeResponse(
-            await memory.readDiaryEntries({ agentId: args.agent_id, topic: args.topic, limit: args.limit, offset: args.offset }),
+            await memory.readDiaryEntries({ agentId: args.agent_id, topic: args.topic, limit: args.limit ?? 20, offset: args.offset ?? 0 }),
             { item_format: args.item_format as string }
           );
         case 'check_duplicate':
           return McpResponseMapper.standardizeResponse(
-            await memory.checkDuplicate(args.content, { threshold: args.threshold, nest: args.nest, branch: args.branch, projectPath: args.project_path })
+            await memory.checkDuplicate(args.content, { threshold: args.threshold ?? 0.92, nest: args.nest, branch: args.branch, projectPath: args.project_path })
           );
         case 'hooks_stats':
           return McpResponseMapper.standardizeResponse(

@@ -3,15 +3,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2026.05.0] - 2026-05-14
+## [2026.5.0] - 2026-05-14
 
 ### 🔄 Versioning
 - **CalVer Transition**: Switched from SemVer to Calendar Versioning (`YYYY.MM.Patch`) for better alignment with the rapid release cycle and temporal context mission.
 
-### 🚀 Tool Density Optimization
+### 🚀 Tool Density & AI Compatibility
 - **JIT Loading**: Implemented just-in-time tool loading to reduce the initial MCP schema size and token overhead.
 - **Tool Categorization**: Introduced hierarchical tool categories for improved discovery via `synapse_help` and `synapse_discovery`.
-- **Power Controllers**: Consolidated granular Knowledge Graph and Memory tools into high-density "Power Controllers" (`synapse_kg_manage`, `synapse_kg_query`).
+- **Power Controllers**: Consolidated 72+ granular tools into 12 high-density "Power Controllers" using flat JSON objects for maximum compatibility.
+  - `synapse_memory_manage`: Consolidated store, update, delete, relations, ingestion, and workflow teach/outcome.
+  - `synapse_memory_query`: Consolidated list, recall, context, events, and taxonomy.
+  - `synapse_search`: Consolidated file, code, hybrid, and unified search.
+  - `synapse_symbol_query`: Consolidated callers, definition, implementations, usages, and rename preview.
+  - `synapse_workspace_manage`: Consolidated root listing, project mapping, tree exploration, and file reading.
+  - `synapse_system_manage`: Consolidated indexing, health audits, database maintenance, and updates.
+- **Gemini Compatibility**: Refactored all tool schemas to use flat objects and explicit parameter descriptions, resolving discovery issues in Gemini and Vertex AI clients.
+- **Breaking Changes**: Removed 60+ redundant granular tools in favor of unified controllers to minimize context window "tax".
 
 ## [1.0.0] - 2026-05-12
 
@@ -33,7 +41,7 @@ All notable changes to this project will be documented in this file.
 - **Async I/O**: Refactored chunker and ingestion pipelines to use asynchronous file system operations, improving throughput for large workspaces.
 - **Batch Operations**: Implemented batch file removals in SQLite VEC service.
 
-## [0.0.1-beta.3] - 2026-05-08
+## [0.0.1-beta.3] - 2026.5.08
 
 ### 🛡️ Hardened Foundations
 - **Dependency Inversion (DIP)**: Centralized all core service interfaces in `src/core/interfaces/services.ts`. All external entrypoints (CLI, MCP) now depend on abstractions rather than concrete implementations.
@@ -50,19 +58,19 @@ All notable changes to this project will be documented in this file.
 - **Enhanced Normalization**: Introduced the `McpResponseMapper` to unify and optimize tool output across the platform.
 - **Clean Slate**: Removed redundant test files and legacy tool definitions to streamline the codebase.
 
-## [0.0.1-beta.2] - 2026-05-03
+## [0.0.1-beta.2] - 2026.5.03
 
 ### 🛠️ Hotfixes
 - **Dependency Stabilization**: Resolved strict peer dependency conflicts with `tree-sitter` and its language parsers that were preventing clean global installations.
 - **Search Binary Fix**: Replaced problematic `ripgrep-bin` with `@vscode/ripgrep` to ensure `rg` works flawlessly across all platforms without requiring native compilation (make/gcc) on Windows.
 
-## [0.0.1-beta.1] - 2026-05-03
+## [0.0.1-beta.1] - 2026.5.03
 
 ### 🔄 Redistribution & Sync
 - **Package Rename**: Official redistribution as `synapse-cortex` on npm.
 - **CI/CD Stabilization**: Synchronized version markers and release tags for automated distribution.
 
-## [0.0.1-beta] - 2026-05-03
+## [0.0.1-beta] - 2026.5.03
 
 ### 🚀 Zero-Friction Installation
 - **Bundled ripgrep**: Integrated `ripgrep-bin` for out-of-the-box code search even if system-wide `rg` is missing.

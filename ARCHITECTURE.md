@@ -68,7 +68,8 @@ All external entrypoints (CLI, MCP) now depend exclusively on the **Contract Lay
 
 #### 1.2 DSA & Performance Optimization
 - **AST Parsing**: Implemented `WeakMap`-based memoization for AST node lookups. The complexity of resolving scope paths has been reduced from **O(N²)** to **O(N)** amortized, ensuring ultra-fast indexing of large codebases.
-- **Response Mapping**: Centralized tool I/O via `McpResponseMapper` ensures consistent, token-efficient responses across all 50+ tools.
+- **Power Controllers**: Centralized 72+ granular MCP tools into ~14 high-density "Power Controllers" using flat JSON objects. This architectural shift ensures **Gemini/Vertex AI compatibility** while maximizing context window efficiency for all LLMs.
+- **Response Mapping**: Centralized tool I/O via `McpResponseMapper` ensures consistent, token-optimized responses across all controllers.
 
 ---
 

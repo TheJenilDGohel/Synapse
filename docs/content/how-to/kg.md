@@ -16,7 +16,7 @@ The graph is composed of **Entities** (the nouns) and **Triples** (the relations
 
 ## The Unified Controllers
 
-In Synapse v2026.05.0, all graph mutations and queries are handled by two "Power Tools":
+In Synapse v2026.5.0, all graph mutations and queries are handled by two "Power Tools":
 
 ### 1. `synapse_kg_manage`
 Use this tool to add or delete entities and triples. It supports batching and markdown ingestion.
