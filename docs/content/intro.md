@@ -33,7 +33,7 @@ No other MCP server combines all three pillars into a single, local-first system
 | **Semantic Code Search** | ✅ | ❌ | ✅ | ✅ |
 | **AST-Aware Chunking** | ✅ | ❌ | ✅ | ❌ |
 | **Local-First / No Cloud** | ✅ | ⚠️ | ✅ | ⚠️ |
-| **MCP Tools (v1.0.0)** | **74** | 8 | 16 | ~10 |
+| **MCP Tools (v2026.05.0)** | **74** | 8 | 16 | ~10 |
 
 ## The Three Pillars
 

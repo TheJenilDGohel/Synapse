@@ -3,6 +3,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026.05.0] - 2026-05-14
+
+### 🔄 Versioning
+- **CalVer Transition**: Switched from SemVer to Calendar Versioning (`YYYY.MM.Patch`) for better alignment with the rapid release cycle and temporal context mission.
+
+### 🚀 Tool Density Optimization
+- **JIT Loading**: Implemented just-in-time tool loading to reduce the initial MCP schema size and token overhead.
+- **Tool Categorization**: Introduced hierarchical tool categories for improved discovery via `synapse_help` and `synapse_discovery`.
+- **Power Controllers**: Consolidated granular Knowledge Graph and Memory tools into high-density "Power Controllers" (`synapse_kg_manage`, `synapse_kg_query`).
+
 ## [1.0.0] - 2026-05-12
 
 ### 🚀 Stable Release

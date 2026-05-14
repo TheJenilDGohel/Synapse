@@ -6,7 +6,7 @@
  * retrieval, and reasoning capabilities. Everything exported here is usable
  * without any MCP server, CLI, or HTTP context.
  *
- * Milestone: v1.0.0 — Architecture Teardown & Engine Decoupling
+ * Milestone: v2026.05.0 — Architecture Teardown & Engine Decoupling
  * Requirements satisfied: CORE-01 (SQLite isolation), CORE-02 (stateless retrieval)
  *
  * @example

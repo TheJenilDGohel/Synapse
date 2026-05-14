@@ -76,7 +76,7 @@ test('E2E Live Usage: MCP Server initializes and responds', async () => {
         capabilities: {},
         clientInfo: {
           name: 'E2E-Test-Client',
-          version: '1.0.0',
+          version: '2026.05.0',
         },
       },
     };
