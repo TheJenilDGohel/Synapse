@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolResponse, READ_ONLY_ANNOTATIONS } from '../../common/tool-utils.js';
+import { READ_ONLY_ANNOTATIONS } from '../../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../../common/tool-utils.js';
 import { BUNDLE_RESULT_SCHEMA } from '../../common/schemas.js';
 import type { IWorkspaceService } from '../../../../core/interfaces/services.js';
