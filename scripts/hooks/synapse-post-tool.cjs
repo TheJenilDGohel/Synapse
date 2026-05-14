@@ -18,8 +18,7 @@ const fs = require('fs');
 const os = require('os');
 const DEBOUNCE_FILE = path.join(os.tmpdir(), 'synapse-post-hook-last.json');
 const DEBOUNCE_MS = 60000; // 60s between captures
-const IS_WINDOWS = process.platform === 'win32';
-const SYNAPSE_BIN = IS_WINDOWS ? 'synapse.cmd' : 'synapse';
+const SYNAPSE_CLI = path.resolve(__dirname, '..', '..', 'bin', 'synapse.cjs');
 
 let input = '';
 const stdinTimeout = setTimeout(() => {
@@ -61,13 +60,12 @@ process.stdin.on('end', () => {
         ? `Ran: ${command.slice(0, 100)}`
         : `Used ${toolName}`;
 
-    // Capture outcome into memory via CLI. SYNAPSE_BIN handles the
-    // `synapse.cmd` shim on Windows; `shell: IS_WINDOWS` is required
-    // so cmd.exe launches the .cmd wrapper (direct spawn fails silently).
-    const result = spawnSync(SYNAPSE_BIN, ['capture-outcome', '--task', summary, '--summary', summary, '--json'], {
+    // Capture outcome into memory via CLI. Execution via process.execPath
+    // securely invokes the CLI without a shell, avoiding command injection risks.
+    const result = spawnSync(process.execPath, [SYNAPSE_CLI, 'capture-outcome', '--json', '--task', summary, '--summary', summary], {
       encoding: 'utf8',
       timeout: 5000,
-      shell: IS_WINDOWS,
+      shell: false,
       env: { ...process.env, SYNAPSE_MEMORY_ENABLED: 'true' }
     });
 
