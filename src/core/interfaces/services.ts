@@ -160,6 +160,8 @@ export interface ISymbolSearchService {
 export interface IWorkspaceService {
   listRoots(): any[];
   listProjects(rootPath: string | undefined, max: number): any[];
+  normalizeTarget(inputPath: string): string;
+  safeReadText(filePath: string): string;
   projectTree(projectPath: string, maxDepth: number, maxEntries: number, compact?: boolean): any;
   readFileChunk(filePath: string, startLine: number, endLine: number, maxWidth: number, mode?: 'lines' | 'signatures'): Promise<any>;
   summarizeProject(projectPath: string, maxFiles: number): any;

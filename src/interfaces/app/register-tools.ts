@@ -35,7 +35,8 @@ import {
   registerFindTools,
   registerAuditTools,
   registerSymbolTools,
-  registerBackupTools
+  registerBackupTools,
+  registerPageIndexTools
 } from '../mcp/index.js';
 import { MemoryWorkflowService } from '../../core/engine/index.js';
 import type { AppServices } from './create-services.js';
@@ -139,5 +140,10 @@ export function registerAppTools(server: any, runtime: any, services: any): void
     registerJsonTool,
     getMemoryAdapter: () => (services.memory as any).getAdapter?.() ?? null,
     memoryDbPath: runtime.memoryDbPath,
+  });
+
+  registerPageIndexTools({
+    registerJsonTool,
+    workspace: services.workspace
   });
 }
