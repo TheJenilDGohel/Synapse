@@ -5,7 +5,6 @@ import { BUNDLE_RESULT_SCHEMA } from '../../common/schemas.js';
 import type { IWorkspaceService } from '../../../../core/interfaces/services.js';
 import { McpResponseMapper } from '../../utils/response-mapper.js';
 import { generatePageIndexTree } from './generator.js';
-import fs from 'node:fs';
 
 export interface RegisterPageIndexToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
