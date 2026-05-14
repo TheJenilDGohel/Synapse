@@ -5,7 +5,8 @@ import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,
   IDEMPOTENT_WRITE_ANNOTATIONS,
-  DESTRUCTIVE_ANNOTATIONS
+  DESTRUCTIVE_ANNOTATIONS,
+  ToolLevel
 } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import type {
@@ -73,16 +74,11 @@ export function registerMemoryStoreTools({
         tags: z.array(z.string()).optional(),
         limit: z.number().int().min(1).max(200).default(20),
         offset: z.number().int().min(0).default(0),
-        // quick 260415-n69: opt-in token savings via item_format tiers.
-        // `verbose` (default) preserves backwards compat; `compact` keeps
-        // id/title/summary/tags/kind/importance (~50% smaller); `lite`
-        // keeps id/title only (~85% smaller). Named `item_format` to avoid
-        // collision with createJsonToolRegistrar's auto-injected
-        // `response_format: json|markdown` serialization parameter.
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ kind, status, project_path, topic, nest, branch, actor_id, tags, limit, offset, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
       normalizeMemoryRecallResult(
@@ -112,7 +108,8 @@ export function registerMemoryStoreTools({
         id: z.string().min(1)
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ id }: Record<string, unknown>) => {
       const item = await memory.getEntry(id as string);
@@ -148,7 +145,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ terse, ...args }: Record<string, unknown>) => {
       const result = await memory.storeEntry(args);
@@ -163,7 +161,6 @@ export function registerMemoryStoreTools({
       
       const response = McpResponseMapper.standardizeResponse(normalized, { terse: terse as string });
       
-      // FUSE-03: Attach auto-link results when present
       if (r?.auto_linked_entities) {
         (response as Record<string, unknown>).auto_linked_entities = r.auto_linked_entities;
       }
@@ -197,7 +194,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ id, terse, ...patch }: Record<string, unknown>) => {
       const result = await memory.updateEntry(id as string, patch);
@@ -218,7 +216,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: DESTRUCTIVE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ id, terse }: Record<string, unknown>) => {
       const result = await memory.deleteEntry(id as string);
@@ -239,7 +238,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: DESTRUCTIVE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ ids, terse }: Record<string, unknown>) => {
       const result = await memory.deleteEntryBatch({ ids: ids as string[] });
@@ -272,7 +272,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ terse, ...args }: Record<string, unknown>) => {
       const result = await memory.captureEvent(args);
@@ -292,7 +293,8 @@ export function registerMemoryStoreTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ project_path, limit, offset, item_format }: Record<string, unknown>) => {
       const result = await memory.listEvents({
@@ -320,7 +322,8 @@ export function registerMemoryStoreTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ id, threshold, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) => {
       const result = await memory.suggestRelations(id as string, { 
@@ -351,7 +354,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ source_id, target_id, relation_type, terse }: Record<string, unknown>) => {
       const result = await memory.addRelation(source_id as string, target_id as string, relation_type as string);
@@ -377,7 +381,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: DESTRUCTIVE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ source_id, target_id, terse }: Record<string, unknown>) => {
       const result = await memory.removeRelation(source_id as string, target_id as string);
@@ -402,7 +407,8 @@ export function registerMemoryStoreTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ id, include_legacy_arrays, item_format }: Record<string, unknown>) => {
       const result = await memory.getRelated(id as string);
@@ -446,7 +452,8 @@ export function registerMemoryStoreTools({
         terse: z.enum(['minimal', 'verbose']).default('verbose')
       },
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
     async ({ memories, terse }: Record<string, unknown>) => {
       const result = await memory.storeEntryBatch({

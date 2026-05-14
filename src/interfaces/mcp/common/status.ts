@@ -252,7 +252,6 @@ interface TaskRule {
   tip: string;
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars -- data table */
 const t = (name: string, description: string, example?: Record<string, unknown>): HelpGuideTool => ({ name, description, ...(example ? { example } : {}) });
 const HELP_RULES: TaskRule[] = [
   { pattern: /\b(start|begin|initialize|cold start|first|new task|setup task|rehydrate|resume)\b/i, type: 'task_initialization',
@@ -332,7 +331,7 @@ export function buildHelpGuide(task: string): HelpGuide {
         '2. Call usage_guide for workflow guidance.',
         '3. Start searching with search_files.',
       ],
-      tip: 'Call synapse_help with a specific task description for tailored guidance.',
+      tip: 'Call synapse_help with a specific task description for tailored guidance. Use synapse_discovery to activate specialized tools.' ,
     };
   }
 
@@ -358,8 +357,9 @@ export function buildHelpGuide(task: string): HelpGuide {
       '1. Run server_status to check runtime capabilities.',
       '2. Use search_files for module/file discovery.',
       '3. Use search_hybrid for concept-level search.',
+      '4. If specialized tools are needed, call synapse_discovery.',
     ],
-    tip: 'Describe your task more specifically for better guidance (e.g. "debug auth crash", "store a decision").',
+    tip: 'Describe your task more specifically for better guidance (e.g. "debug auth crash", "store a decision"). You can also activate tool categories via synapse_discovery.',
   };
 }
 

@@ -7,7 +7,7 @@ import {
   normalizeAgentPrimeResult
 } from '../common/response-normalizers.js';
 import { McpResponseMapper } from '../utils/response-mapper.js';
-import { READ_ONLY_ANNOTATIONS, WRITE_ANNOTATIONS } from '../common/tool-utils.js';
+import { READ_ONLY_ANNOTATIONS, WRITE_ANNOTATIONS, ToolLevel } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import type {
   MemoryKind,
@@ -199,7 +199,9 @@ export function registerMemoryWorkflowTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Agent Orchestration'
     },
     async (args: Record<string, unknown>) => {
       const result = await memoryWorkflow.agentPrime(args as any);

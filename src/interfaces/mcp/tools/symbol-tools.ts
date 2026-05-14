@@ -38,7 +38,8 @@ export function registerSymbolTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: SEARCH_RESULT_SCHEMA,
+      category: 'Symbol Intelligence'
     },
     async ({ symbol, project_path, language, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
       McpResponseMapper.standardizeResponse(
@@ -72,7 +73,8 @@ export function registerSymbolTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: SEARCH_RESULT_SCHEMA,
+      category: 'Symbol Intelligence'
     },
     async ({ symbol, project_path, language, include_legacy_arrays, item_format }: Record<string, unknown>) =>
       McpResponseMapper.standardizeResponse(
@@ -106,7 +108,8 @@ export function registerSymbolTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: SEARCH_RESULT_SCHEMA,
+      category: 'Symbol Intelligence'
     },
     async ({ interface_name, project_path, language, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
       McpResponseMapper.standardizeResponse(
@@ -141,7 +144,8 @@ export function registerSymbolTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: SEARCH_RESULT_SCHEMA,
+      category: 'Symbol Intelligence'
     },
     async ({ old_name, new_name, project_path, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
       McpResponseMapper.standardizeResponse(
@@ -160,4 +164,3 @@ export function registerSymbolTools({
       )
   );
 }
-

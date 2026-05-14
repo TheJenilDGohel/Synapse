@@ -3,7 +3,7 @@ import {
   normalizeUpdateSelfResult,
   normalizeUpdateStatus
 } from '../common/response-normalizers.js';
-import { READ_ONLY_ANNOTATIONS } from '../common/tool-utils.js';
+import { READ_ONLY_ANNOTATIONS, ToolLevel, toolRegistry, type ToolRegistryEntry } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import type { ServerStatus } from '../common/status.js';
 import { buildHelpGuide } from '../common/status.js';
@@ -94,11 +94,67 @@ export function registerCoreTools({
         task: z.string().max(500).default('')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: FREEFORM_RESULT_SCHEMA
+      outputSchema: FREEFORM_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Core'
     },
     async ({ task }: Record<string, unknown>) => buildHelpGuide(task as string)
   );
 
+  registerJsonTool(
+    'synapse_discovery',
+    {
+      title: 'Discovery',
+      description: 'Discover and activate specialized Synapse tools. Use this when the core toolset is insufficient for your task.',
+      inputSchema: {
+        activate_category: z.string().optional(),
+        activate_tool: z.string().optional()
+      },
+      annotations: READ_ONLY_ANNOTATIONS,
+      outputSchema: FREEFORM_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Core'
+    },
+    async ({ activate_category, activate_tool }: Record<string, unknown>, extra: unknown) => {
+      const activate = (registerJsonTool as any).activate;
+      const results: string[] = [];
+
+      if (activate_tool) {
+        const entry = toolRegistry.getEntry(activate_tool as string);
+        if (entry) {
+          activate(entry.name);
+          results.push(`Activated tool: ${entry.name}`);
+        } else {
+          results.push(`Tool not found: ${activate_tool}`);        
+        }
+      }
+
+      if (activate_category) {
+        const toActivate = toolRegistry.getAllEntries().filter((e: ToolRegistryEntry) => e.category === activate_category);
+        for (const e of toActivate) {
+          activate(e.name);
+        }
+        results.push(`Activated category "${activate_category}" (${toActivate.length} tools)`);
+      }
+
+      // If no activation requested, just list available
+      const all = toolRegistry.getAllEntries();
+      const active = all.filter((e: ToolRegistryEntry) => toolRegistry.isActive(e.name));
+      const inactive = all.filter((e: ToolRegistryEntry) => !toolRegistry.isActive(e.name));
+
+      const categories = [...new Set(inactive.map((e: ToolRegistryEntry) => e.category))];
+
+      return {
+        message: results.join('\n') || 'Use this tool to activate specialized capabilities.',
+        active_tools_count: active.length,
+        available_categories: categories.map(cat => ({
+          name: cat,
+          tools: inactive.filter((e: ToolRegistryEntry) => e.category === cat).map((e: ToolRegistryEntry) => e.name)
+        })),
+        tip: 'Activating specialized tools increases token overhead. Only activate what you need for the current task.'
+      };
+    }
+    );
   registerJsonTool(
     ['synapse_update_status'],
     {

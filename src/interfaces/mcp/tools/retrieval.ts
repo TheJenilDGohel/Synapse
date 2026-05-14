@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolResponse, READ_ONLY_ANNOTATIONS, WRITE_ANNOTATIONS } from '../common/tool-utils.js';
+import { createToolResponse, READ_ONLY_ANNOTATIONS, WRITE_ANNOTATIONS, ToolLevel } from '../common/tool-utils.js';
 import type { ToolResponsePayload, RegisterJsonToolFn, PaginatedResult } from '../common/tool-utils.js';
 import { buildResourceLink } from '../common/mime.js';
 import type { ResourceLink } from '../common/mime.js';
@@ -268,7 +268,9 @@ export function registerRetrievalTools({
         item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: SEARCH_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Search & Intelligence'
     },
     async ({ query, project_path, all_roots, glob, max_results, case_sensitive, min_semantic_score, auto_index, use_reranker, include_legacy_arrays, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
       normalizeSearchHybridResult(

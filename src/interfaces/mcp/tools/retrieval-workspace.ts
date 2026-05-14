@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolResponse, READ_ONLY_ANNOTATIONS } from '../common/tool-utils.js';
+import { createToolResponse, READ_ONLY_ANNOTATIONS, ToolLevel } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn, PaginatedResult } from '../common/tool-utils.js';
 import { buildResourceLink } from '../common/mime.js';
 import {
@@ -120,7 +120,9 @@ export function registerWorkspaceTools({
         mode: z.enum(['lines', 'signatures']).default('lines')
       },
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: BUNDLE_RESULT_SCHEMA
+      outputSchema: BUNDLE_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Workspace'
     },
     async ({ path: filePath, start_line, end_line, mode }: Record<string, unknown>) => {
       const result = normalizeReadFileChunkResult(

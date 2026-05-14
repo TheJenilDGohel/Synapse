@@ -4,7 +4,8 @@ import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,
   IDEMPOTENT_WRITE_ANNOTATIONS,
-  DESTRUCTIVE_ANNOTATIONS
+  DESTRUCTIVE_ANNOTATIONS,
+  ToolLevel
 } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import { McpResponseMapper } from '../utils/response-mapper.js';
@@ -143,7 +144,8 @@ export function registerGraphTools({
         })
       ]),
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA,
+      category: 'Knowledge Graph'
     },
     async (input: any) => {
       const { action, ...args } = input;
@@ -194,7 +196,7 @@ export function registerGraphTools({
         case 'delete_entity':
           return McpResponseMapper.standardizeResponse(
             await memory.deleteEntity(args.entity_id),
-            { terse: 'verbose' } // default to verbose as no terse param provided for delete_entity
+            { terse: 'verbose' } 
           );
         case 'delete_entities_batch':
           return McpResponseMapper.standardizeResponse(
@@ -329,7 +331,9 @@ export function registerGraphTools({
         })
       ]),
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_BUNDLE_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Knowledge Graph'
     },
     async (input: any) => {
       const { action, ...args } = input;
