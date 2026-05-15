@@ -99,9 +99,10 @@ Stabilize the core engine, optimize tool context usage, and harden the architect
 
 ## 📚 Phase 12: Documentation Transformation
 - **Goal**: Modernize documentation for humans and AI agents.
-- **Status**: ✅ Completed
+- **Status**: ✅ Completed (Elite Deep-Dive)
 - **Tasks**:
   - [x] Research and design "Agent-First" structure.
   - [x] Implement `llms.txt` and `SKILL.md`.
   - [x] Transform existing content to Diátaxis standards.
   - [x] Update beta details and precise changelog.
+  - [x] Execute "Elite Deep-Dive" (JSON schemas, Temporal KG mechanics, Advanced config).
