@@ -1,6 +1,7 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../constants/site.dart';
 import '../constants/theme.dart';
 import '../components/header.dart';
 import '../components/card.dart';
@@ -16,6 +17,13 @@ class Home extends StatelessComponent {
       main_([
         section(classes: 'hero', [
           div(classes: 'hero-glow', []),
+          div(classes: 'release-badge-container', [
+            span(classes: 'release-badge', [
+              text('LATEST RELEASE'),
+              span(classes: 'version-dot', []),
+              text(stableVersion),
+            ]),
+          ]),
           h1([
             text('The Unified Context Layer for '),
             span(classes: 'gradient-text', [text('AI Agents')]),
@@ -66,7 +74,7 @@ class Home extends StatelessComponent {
       css('.hero', [
         css('&').styles(
           position: Position.relative(),
-          padding: .symmetric(vertical: 8.rem, horizontal: 2.rem),
+          padding: .symmetric(vertical: 6.rem, horizontal: 2.rem),
           textAlign: .center,
           maxWidth: 1000.px,
           margin: .symmetric(horizontal: .auto),
@@ -76,6 +84,33 @@ class Home extends StatelessComponent {
             padding: .symmetric(vertical: 4.rem, horizontal: 1.5.rem),
           ),
         ]),
+      ]),
+      css('.release-badge-container', [
+        css('&').styles(
+          display: .flex,
+          justifyContent: .center,
+          margin: .only(bottom: 2.rem),
+          raw: {'animation': 'fadeUp 0.8s ease-out'},
+        ),
+        css('.release-badge').styles(
+          display: .flex,
+          alignItems: .center,
+          gap: Gap(column: 0.5.rem),
+          padding: .symmetric(horizontal: 1.rem, vertical: 0.5.rem),
+          backgroundColor: const Color('color-mix(in srgb, var(--primary-color) 10%, var(--background-color))'),
+          border: Border.all(style: BorderStyle.solid, color: primaryColor.withOpacity(0.3), width: 1.px),
+          radius: .circular(99.px),
+          fontSize: 0.75.rem,
+          fontWeight: .w700,
+          color: primaryColor,
+          letterSpacing: 0.05.em,
+        ),
+        css('.version-dot').styles(
+          width: 6.px,
+          height: 6.px,
+          backgroundColor: primaryColor,
+          radius: .circular(99.px),
+        ),
       ]),
       css('.hero-glow').styles(
         position: Position.absolute(top: 50.percent, left: 50.percent),
@@ -105,7 +140,7 @@ class Home extends StatelessComponent {
       ]),
       css('.gradient-text').styles(
         raw: {
-          'background': 'linear-gradient(135deg, #2dd4bf 0%, #0f766e 100%)',
+          'background': 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)',
           '-webkit-background-clip': 'text',
           '-webkit-text-fill-color': 'transparent',
         },
@@ -116,7 +151,7 @@ class Home extends StatelessComponent {
           color: textMutedColor,
           maxWidth: 600.px,
           margin: .symmetric(horizontal: .auto, vertical: 2.5.rem),
-          lineHeight: Unit.expression('1.6'),
+          lineHeight: Unit.expression('1.7'),
           raw: {'animation': 'fadeUp 0.8s ease-out 0.1s both'},
         ),
         css.media(MediaQuery.screen(maxWidth: 768.px), [
@@ -144,10 +179,11 @@ class Home extends StatelessComponent {
         fontWeight: .w600,
         transition: Transition('all', duration: const Duration(milliseconds: 200)),
         textAlign: .center,
+        textDecoration: TextDecoration.none,
       ),
       css('.btn-primary').styles(
         backgroundColor: primaryColor,
-        color: backgroundColor,
+        color: Colors.white,
       ),
       css('.btn-primary:hover').styles(
         raw: {

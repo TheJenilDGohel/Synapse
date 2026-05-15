@@ -4,6 +4,7 @@ import 'package:jaspr_content/components/theme_toggle.dart';
 
 import '../constants/theme.dart';
 import 'search.dart';
+import 'version_switcher.dart';
 
 class Header extends StatelessComponent {
   final VoidCallback? onMenuTap;
@@ -35,7 +36,7 @@ class Header extends StatelessComponent {
           ],
         ),
         h2([text('Synapse')]),
-        span(classes: 'version-badge', [text('v2026.05.1-beta.0')]),
+        const VersionSwitcher(),
       ]),
       div(classes: 'header-right', [
         const Search(),

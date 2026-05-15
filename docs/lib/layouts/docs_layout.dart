@@ -4,6 +4,8 @@ import 'package:jaspr_content/jaspr_content.dart';
 
 import '../components/header.dart';
 import '../components/sidebar.dart';
+import '../constants/site.dart';
+import '../constants/theme.dart';
 
 class DocsLayout extends PageLayout {
   DocsLayout();
@@ -28,6 +30,13 @@ class DocsLayoutWrapper extends StatelessComponent {
       Sidebar(),
       div(classes: 'layout-main', [
         const Header(),
+        if (currentTrack == 'beta')
+          div(classes: 'beta-banner', [
+            span(classes: 'beta-tag', [text('BETA')]),
+            text(' You are viewing the documentation for the upcoming '),
+            strong([text(betaVersion)]),
+            text(' release. Tool schemas and actions may change.'),
+          ]),
         main_(classes: 'layout-content', [
           child,
         ]),
@@ -38,9 +47,28 @@ class DocsLayoutWrapper extends StatelessComponent {
 
   @css
   static List<StyleRule> get styles => [
+    css('.beta-banner', [
+      css('&').styles(
+        backgroundColor: const Color('color-mix(in srgb, var(--primary-color) 8%, var(--background-color))'),
+        borderBottom: BorderSide(style: BorderStyle.solid, color: borderColor, width: 1.px),
+        padding: .symmetric(horizontal: 2.rem, vertical: 0.75.rem),
+        fontSize: 0.875.rem,
+        textAlign: TextAlign.center,
+        color: textColor.withOpacity(0.9),
+      ),
+      css('.beta-tag').styles(
+        backgroundColor: primaryColor,
+        color: Colors.white,
+        padding: .symmetric(horizontal: 0.4.rem, vertical: 0.15.rem),
+        radius: .circular(4.px),
+        fontSize: 0.7.rem,
+        fontWeight: .w800,
+        margin: .only(right: 0.5.rem),
+      ),
+    ]),
     css('.layout-root', [
       css('&').styles(
-        display: .flex,
+...
         width: 100.percent,
         minHeight: 100.vh,
       ),
