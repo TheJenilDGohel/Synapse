@@ -1,0 +1,29 @@
+# Synapse - Unified Context Layer for AI Agents
+
+Synapse is a local-first MCP server that combines persistent AI memory, a temporal knowledge graph, and semantic code intelligence.
+
+## Core Capabilities
+- **Memory**: Long-term recall with semantic deduplication (Nests).
+- **Knowledge Graph**: Entity-triple store with temporal traversal and time-travel querying.
+- **Search**: Hybrid BM25 + vector search (sqlite-vec) across codebases.
+- **Symbol Intelligence**: AST-aware tracking of definitions, usages, and callers.
+
+## Installation
+```bash
+npm install -g synapse-cortex
+synapse setup
+synapse doctor
+```
+
+## Power Controllers (Tools)
+- `synapse_memory_manage`: CRUD operations, ingestion, and event capture for memories.
+- `synapse_memory_query`: Search, recall, and task-relevant context synthesis.
+- `synapse_search`: Unified code, file, and hybrid search.
+- `synapse_symbol_query`: Precise AST-aware symbol lookups (callers, definitions).
+- `synapse_workspace_manage`: File system exploration and bounded code reads.
+- `synapse_system_manage`: Indexing, health audits, and database maintenance.
+
+## Versioning
+Standard: CalVer (YYYY.MM.Patch)
+Current: 2026.05.1-beta.0
+Branch: beta
