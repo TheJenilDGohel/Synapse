@@ -14,20 +14,30 @@ class Sidebar extends StatelessComponent {
 
     return aside(classes: 'sidebar', [
       div(classes: 'sidebar-content', [
-        _buildNavGroup(context, 'Getting Started', [
+        _buildNavGroup(context, 'Core Guides', [
           (label: 'Introduction', path: '/intro'),
-          (label: 'Installation', path: '/install'),
-          (label: 'Quick Start', path: '/quickstart'),
+          (label: 'Quick Start', path: '/tutorials/quickstart'),
+          (label: 'Installation', path: '/how-to/install'),
+          (label: 'Configuration', path: '/how-to/configuration'),
+          (label: 'Managing Memory', path: '/how-to/memory'),
+          (label: 'Knowledge Graph', path: '/how-to/kg'),
         ], activePath),
-        _buildNavGroup(context, 'Pillars', [
-          (label: 'Temporal Graph', path: '/pillars/temporal'),
-          (label: 'Code Intelligence', path: '/pillars/intel'),
-          (label: 'Architecture', path: '/pillars/architecture'),
+        _buildNavGroup(context, 'Concepts', [
+          (label: 'Core Concepts', path: '/explanation/concepts'),
+          (label: 'Architecture', path: '/explanation/architecture'),
+          (label: 'Code Intelligence', path: '/explanation/code-intelligence'),
+          (label: 'Persistent Memory', path: '/explanation/memory'),
+          (label: 'Knowledge Graph', path: '/explanation/knowledge-graph'),
         ], activePath),
-        _buildNavGroup(context, 'Resources', [
-          (label: 'Tools Overview', path: '/tools'),
+        _buildNavGroup(context, 'Reference', [
+          (label: 'Power Controllers', path: '/reference/tools'),
+          (label: 'CLI Commands', path: '/reference/cli'),
+          (label: 'Config Options', path: '/reference/config'),
+        ], activePath),
+        _buildNavGroup(context, 'Community', [
+          (label: 'Community Hub', path: '/community'),
           (label: 'Contributing', path: '/contributing'),
-          (label: 'Community', path: '/community'),
+          (label: 'FAQ', path: '/faq'),
         ], activePath),
       ]),
     ]);
