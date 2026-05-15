@@ -8,6 +8,10 @@ keywords: AI, Agents, MCP, Semantic Search, Knowledge Graph
 
 **Synapse** is the minimalist transmission layer for AI project context.
 
+:::warning Public Beta
+Synapse is currently in a public beta cycle (**v2026.05.1-beta.0**). We are rapidly refining the engine and Power Controller schemas.
+:::
+
 It provides coding assistants and automation agents with a reliable, bio-inspired system for **persistent memory**, **temporal knowledge graphs**, and **semantic code intelligence**—all running entirely on your machine.
 
 :::tip The Philosophy: Bridging the Signal Gap
@@ -33,7 +37,7 @@ No other MCP server combines all three pillars into a single, local-first system
 | **Semantic Code Search** | ✅ | ❌ | ✅ | ✅ |
 | **AST-Aware Chunking** | ✅ | ❌ | ✅ | ❌ |
 | **Local-First / No Cloud** | ✅ | ⚠️ | ✅ | ⚠️ |
-| **MCP Tools (v2026.5.0)** | **74** | 8 | 16 | ~10 |
+| **MCP Tools (v2026.05.1-beta.0)** | **14** | 8 | 16 | ~10 |
 
 ## The Three Pillars
 

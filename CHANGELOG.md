@@ -3,6 +3,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026.05.1-beta.0] - 2026-05-15
+
+### 📚 Documentation (Diátaxis & Agent-First)
+- **Agent-First Layer**: Added `llms.txt` and `SKILL.md` for rapid context ingestion by AI agents (GEO).
+- **Diátaxis Restructure**: Completely reorganized documentation into focused categories: Tutorials, How-to Guides, Reference, and Explanation.
+- **Neural Branding**: Refined documentation content to reflect Synapse's bio-inspired architecture.
+
+### ⚡ CI/CD Optimization
+- **Parallelization**: Refactored GitHub Actions to run 7 quality jobs in parallel, reducing fast-path feedback to < 2 minutes.
+- **Job Splitting**: Separated Unit, Integration, and E2E tests into dedicated jobs with optimized matrices.
+- **Path Filtering**: CI now intelligently skips heavy test suites for documentation-only changes.
+- **Granular Tooling**: Added `quality:*` scripts to `package.json` for precise pipeline control.
+
+### 🔄 Versioning
+- **CalVer Standard**: Fully transitioned to `YYYY.MM.Patch` with zero-padded months for consistency.
+- **Automation**: Implemented `bump-version.mjs` to handle automated CalVer increments and beta cycles.
+
 ## [2026.05.0] - 2026-05-15
 
 ### 🔄 Versioning
