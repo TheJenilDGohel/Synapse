@@ -6,7 +6,7 @@ keywords: AI, Agents, MCP, Semantic Search, Knowledge Graph
 
 # Introduction
 
-**Synapse** is the minimalist transmission layer for AI project context.
+**Synapse** is the transmission layer for AI project context.
 
 :::warning Public Beta
 Synapse is currently in a public beta cycle (**v2026.05.1-beta.0**). We are rapidly refining the engine and Power Controller schemas.
@@ -14,48 +14,45 @@ Synapse is currently in a public beta cycle (**v2026.05.1-beta.0**). We are rapi
 
 It provides coding assistants and automation agents with a reliable, bio-inspired system for **persistent memory**, **temporal knowledge graphs**, and **semantic code intelligence**—all running entirely on your machine.
 
-:::tip The Philosophy: Bridging the Signal Gap
-In biology, a synapse is the specialized gap between neurons where signals pass. In the AI ecosystem, Synapse is that gap. We ensure the "signal" of architectural history, design decisions, and project intelligence reaches your AI agent with zero friction.
+:::tip The Synaptic Principle
+In biology, a synapse is the gap where intelligence passes from one neuron to another. Synapse is that gap in the AI stack: we ensure the "signal" of architectural intent reaches your agent with zero friction.
 :::
 
-## The Problem Synapse Solves
+## The Problem: Context Decay
 
-Every AI task fails because of a **loss of signal**. 
+Every AI task eventually hits a **Signal-to-Noise** wall. 
 
-Standard AI agents lose context between sessions. They don't know the "why" behind a refactor, the recent breaking changes, or the specific lessons learned from past attempts. They can read your files, but they lack the **project intelligence** to reason about them consistently over time.
+Standard agents lose context between sessions. They don't know the "why" behind a recent refactor, they repeat past mistakes, and they lack the **Temporal Intelligence** to understand how the codebase has evolved. They can read your files, but they can't remember your lessons.
 
-Synapse bridges this gap.
+Synapse eliminates context decay.
 
 ## How Synapse Compares
 
-No other MCP server combines all three pillars into a single, local-first system.
+No other MCP server integrates the three core context pillars into a single local-first architecture.
 
-| Pillar | Synapse | Mem0 | GitNexus | code-context |
+| Feature | Synapse | Mem0 | GitNexus | code-context |
 | :--- | :---: | :---: | :---: | :---: |
 | **Persistent AI Memory** | ✅ | ✅ | ❌ | ❌ |
 | **Temporal Knowledge Graph** | ✅ | ❌ | ❌ | ❌ |
 | **Semantic Code Search** | ✅ | ❌ | ✅ | ✅ |
-| **AST-Aware Chunking** | ✅ | ❌ | ✅ | ❌ |
-| **Local-First / No Cloud** | ✅ | ⚠️ | ✅ | ⚠️ |
-| **MCP Tools (v2026.05.1-beta.0)** | **14** | 8 | 16 | ~10 |
+| **AST-Aware Intelligence** | ✅ | ❌ | ✅ | ❌ |
+| **Local-First / Private** | ✅ | ⚠️ | ✅ | ⚠️ |
+| **Power Controller Model** | **Elite** | Granular | Granular | Granular |
 
 ## The Three Pillars
 
-Synapse is built on three tightly integrated systems that provide a complete picture of your codebase:
+Synapse is built on three deeply coupled systems:
 
-1. **[Code Intelligence](pillars/intel)**: Hybrid BM25 + vector search, AST-aware chunking, and precise symbol resolution (`find_definition`, `find_usages`, `find_callers`).
+1. **[Code Intelligence](explanation/concepts)**: AST-aware chunking and hybrid RRF search to understand the **Present**.
+2. **[Persistent Memory](explanation/concepts)**: Cross-session semantic recall and Teacher-Mode rules to understand the **Intent**.
+3. **[Knowledge Graph](explanation/concepts)**: Temporal triple-tracking and multi-hop traversal to understand the **Relationships**.
 
-2. **[Knowledge Graph](pillars/temporal)**: A temporal entity-triple store with multi-hop traversal and `as_of` time-travel queries for tracking architectural evolution.
+## High-Performance, Zero-Cloud
 
-3. **[Persistent Memory](pillars/memory)**: Cross-session semantic recall with automatic deduplication, scoped isolation, and teacher-mode instructions.
+Everything runs on your machine. 
+- **Absolute Privacy**: Your source code and architectural secrets never leave your environment.
+- **Native Speed**: Powered by `sqlite-vec` for near-instant retrieval across millions of tokens.
+- **Offline Intelligence**: Build and reason without an active internet connection.
 
-## Zero Cloud. Pure Local.
-
-Everything runs on your machine. Your codebase, memories, and knowledge graph are stored in a local SQLite database using the `sqlite-vec` extension. 
-
-- **Privacy First**: Your data never leaves your machine.
-- **Speed**: Local SQLite performance beats network-bound vector DBs every time.
-- **Offline-Ready**: Work without an internet connection.
-
-Ready to connect a client? Head to the **[Quick Start](quickstart)** guide.
+Ready to bridge the signal gap? Head to the **[Quick Start](tutorials/quickstart)**.
 
