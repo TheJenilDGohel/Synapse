@@ -3,10 +3,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2026.5.0] - 2026-05-14
+## [2026.05.0] - 2026-05-15
 
 ### 🔄 Versioning
 - **CalVer Transition**: Switched from SemVer to Calendar Versioning (`YYYY.MM.Patch`) for better alignment with the rapid release cycle and temporal context mission.
+- **Leading Zero Standard**: Standardized on zero-padded months (e.g., `2026.05.0`) for consistent sortability and readability.
 
 ### 🚀 Tool Density & AI Compatibility
 - **JIT Loading**: Implemented just-in-time tool loading to reduce the initial MCP schema size and token overhead.
@@ -41,7 +42,7 @@ All notable changes to this project will be documented in this file.
 - **Async I/O**: Refactored chunker and ingestion pipelines to use asynchronous file system operations, improving throughput for large workspaces.
 - **Batch Operations**: Implemented batch file removals in SQLite VEC service.
 
-## [0.0.1-beta.3] - 2026.5.08
+## [0.0.1-beta.3] - 2026-05-08
 
 ### 🛡️ Hardened Foundations
 - **Dependency Inversion (DIP)**: Centralized all core service interfaces in `src/core/interfaces/services.ts`. All external entrypoints (CLI, MCP) now depend on abstractions rather than concrete implementations.

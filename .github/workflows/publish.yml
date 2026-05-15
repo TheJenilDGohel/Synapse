@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -30,8 +31,12 @@ jobs:
       - name: Sync versions across README and docs
         run: node scripts/release/sync-versions.mjs
 
-      - name: Run checks and tests
-        run: npm run quality
+      - name: Pre-publish Quality Checks
+        run: |
+          npm run quality:typecheck
+          npm run quality:package
+          npm run quality:audit
+          npm run test:unit
 
       - name: Determine npm tag
         id: determine_tag

@@ -87,3 +87,12 @@ Stabilize the core engine, optimize tool context usage, and harden the architect
   - [x] Update `synapse_discovery` and `synapse_help` for new architecture.
   - [x] Cleanup orphaned files and update CHANGELOG.
 
+## ⚡ Phase 11: CI/CD Optimization
+- **Goal**: Parallelize pipeline jobs and optimize resource usage.
+- **Status**: ⏳ Planned
+- **Plan**: `.planning/phases/11-cicd-optimization/11-01-PLAN.md`
+- **Requirements**: [CI-OPT-01, CI-OPT-02, CI-OPT-03, CI-OPT-04, CI-OPT-05]
+- **Tasks**:
+  - [ ] Add granular quality scripts to `package.json`.
+  - [ ] Refactor `ci.yml` for parallel jobs and path-filtering.
+  - [ ] Optimize `publish.yml` with caching and granular checks.
