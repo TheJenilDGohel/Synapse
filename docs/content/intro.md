@@ -1,45 +1,57 @@
 ---
-title: Introduction
-description: Synapse is a local MCP context server for semantic code search, persistent memory, and a temporal knowledge graph. Zero-cloud, local-first infrastructure for AI agents.
+title: Introduction | Synapse
+description: Synapse is the minimalist transmission layer for AI context. Bio-inspired persistent memory, temporal knowledge graph, and semantic code search for elite AI agents.
+keywords: AI, Agents, MCP, Semantic Search, Knowledge Graph
 ---
 
 # Introduction
 
-**Synapse** is a local context server for MCP-compatible clients.
+**Synapse** is the minimalist transmission layer for AI project context.
 
-It gives coding assistants and automation tools a reliable way to search code, remember project facts, and query architectural relationships without sending your data to a hosted service.
+It provides coding assistants and automation agents with a reliable, bio-inspired system for **persistent memory**, **temporal knowledge graphs**, and **semantic code intelligence**—all running entirely on your machine.
 
-:::tip
-Synapse is not a model. It is local infrastructure for retrieval, memory, and project context.
+:::tip The Philosophy: Bridging the Signal Gap
+In biology, a synapse is the specialized gap between neurons where signals pass. In the AI ecosystem, Synapse is that gap. We ensure the "signal" of architectural history, design decisions, and project intelligence reaches your AI agent with zero friction.
 :::
 
 ## The Problem Synapse Solves
 
-Modern coding assistants often lose project signal between sessions. They may not know the architectural history, recent breaking changes, or lessons learned from past work. They can read files, but they need structured context to reason about a project consistently.
+Every AI task fails because of a **loss of signal**. 
 
-### How Synapse Compares
+Standard AI agents lose context between sessions. They don't know the "why" behind a refactor, the recent breaking changes, or the specific lessons learned from past attempts. They can read your files, but they lack the **project intelligence** to reason about them consistently over time.
 
-| Feature | Synapse | Basic Memory | Code Search |
-| :--- | :---: | :---: | :---: |
-| **Local-First** | ✅ | ✅ | ✅ |
-| **Code Intelligence** | ✅ | ❌ | ✅ |
-| **Persistent Memory** | ✅ | ✅ | ❌ |
-| **Temporal Graph** | ✅ | ❌ | ❌ |
-| **Time-Travel Queries** | ✅ | ❌ | ❌ |
+Synapse bridges this gap.
+
+## How Synapse Compares
+
+No other MCP server combines all three pillars into a single, local-first system.
+
+| Pillar | Synapse | Mem0 | GitNexus | code-context |
+| :--- | :---: | :---: | :---: | :---: |
+| **Persistent AI Memory** | ✅ | ✅ | ❌ | ❌ |
+| **Temporal Knowledge Graph** | ✅ | ❌ | ❌ | ❌ |
+| **Semantic Code Search** | ✅ | ❌ | ✅ | ✅ |
+| **AST-Aware Chunking** | ✅ | ❌ | ✅ | ❌ |
+| **Local-First / No Cloud** | ✅ | ⚠️ | ✅ | ⚠️ |
+| **MCP Tools (v1.0.0)** | **74** | 8 | 16 | ~10 |
 
 ## The Three Pillars
 
-Synapse is built on three tightly integrated pillars that give MCP clients a complete picture of your codebase:
+Synapse is built on three tightly integrated systems that provide a complete picture of your codebase:
 
-1. **[Code Intelligence](pillars/intel)**: Hybrid BM25 + vector search, AST-aware chunking, and symbol resolution (`find_definition`, `find_usages`, `find_callers`).
+1. **[Code Intelligence](pillars/intel)**: Hybrid BM25 + vector search, AST-aware chunking, and precise symbol resolution (`find_definition`, `find_usages`, `find_callers`).
 
-2. **[Knowledge Graph](pillars/temporal)**: A temporal entity-triple store with multi-hop graph traversal and `as_of` time-travel queries.
+2. **[Knowledge Graph](pillars/temporal)**: A temporal entity-triple store with multi-hop traversal and `as_of` time-travel queries for tracking architectural evolution.
 
-3. **[Persistent Memory](pillars/memory)**: Cross-session semantic recall with automatic deduplication and scoped isolation.
+3. **[Persistent Memory](pillars/memory)**: Cross-session semantic recall with automatic deduplication, scoped isolation, and teacher-mode instructions.
 
 ## Zero Cloud. Pure Local.
 
-Everything runs on your machine. Your codebase, memories, and knowledge graph are stored in a local SQLite database using the `sqlite-vec` extension. No telemetry, no hosted index, no external API requirement.
+Everything runs on your machine. Your codebase, memories, and knowledge graph are stored in a local SQLite database using the `sqlite-vec` extension. 
+
+- **Privacy First**: Your data never leaves your machine.
+- **Speed**: Local SQLite performance beats network-bound vector DBs every time.
+- **Offline-Ready**: Work without an internet connection.
 
 Ready to connect a client? Head to the **[Quick Start](quickstart)** guide.
 

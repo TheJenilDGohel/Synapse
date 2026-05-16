@@ -44,6 +44,9 @@ export interface StalenessResult {
 
 export function getVecTableDefinition(service: SqliteVecServiceLike): string {
   const mod = service.sqliteVecModule || 'vec0';
+  if (!/^vec[0-9]+$/.test(mod)) {
+    throw new Error(`Invalid sqlite-vec module name: ${mod}`);
+  }
   return `${mod}(chunk_rowid integer primary key, embedding float[${service.embeddingDimensions}])`;
 }
 
@@ -127,8 +130,8 @@ export function syncSqliteVecRowsFromChunks(service: SqliteVecServiceLike): void
     for (const row of rows) {
       const key = normalizeVecPrimaryKey(row.rowid);
       service.db.prepare(
-        `INSERT OR REPLACE INTO vec_chunks(chunk_rowid, embedding) VALUES (${key}, ?)`
-      ).run(row.embedding_json);
+        'INSERT OR REPLACE INTO vec_chunks(chunk_rowid, embedding) VALUES (?, ?)'
+      ).run(key, row.embedding_json);
     }
   });
 }

@@ -31,15 +31,7 @@ jobs:
         run: node scripts/release/sync-versions.mjs
 
       - name: Run checks and tests
-        run: |
-          # Skip tests if the test directory is missing (per maintainer directive)
-          if [ -d "test" ]; then
-            npm run quality
-          else
-            echo "Test directory missing, running build and check only."
-            npm run build
-            npm run check
-          fi
+        run: npm run quality
 
       - name: Determine npm tag
         id: determine_tag

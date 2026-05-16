@@ -11,12 +11,14 @@ export interface FlagSchema {
 export interface ParsedFlags {
   flags: Record<string, string | number | boolean>;
   positionals: string[];
+  helpRequested: boolean;
 }
 
 export function parseFlags(args: string[], schema: Record<string, FlagSchema>): ParsedFlags {
   const flags: Record<string, string | number | boolean> = {};
   const positionals: string[] = [];
   const aliasMap: Record<string, string> = {};
+  let helpRequested = false;
 
   for (const [key, def] of Object.entries(schema)) {
     if (def.alias) aliasMap[def.alias] = key;
@@ -24,6 +26,11 @@ export function parseFlags(args: string[], schema: Record<string, FlagSchema>): 
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
+
+    if (arg === '--help' || arg === '-h') {
+      helpRequested = true;
+      continue;
+    }
 
     if (arg === '--') {
       positionals.push(...args.slice(i + 1));
@@ -43,7 +50,8 @@ export function parseFlags(args: string[], schema: Record<string, FlagSchema>): 
 
       const def = schema[key];
       if (!def) {
-        positionals.push(arg);
+        // Unknown flag: do not add to positionals as it breaks argument ordering.
+        // We just skip it and its potential value.
         continue;
       }
 
@@ -78,5 +86,5 @@ export function parseFlags(args: string[], schema: Record<string, FlagSchema>): 
     positionals.push(arg);
   }
 
-  return { flags, positionals };
+  return { flags, positionals, helpRequested };
 }

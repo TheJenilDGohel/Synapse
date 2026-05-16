@@ -123,7 +123,9 @@ export class EmbeddingService {
     if (this._pipelinePromise) return this._pipelinePromise as Promise<(text: string, opts: { pooling: string; normalize: boolean }) => Promise<{ data: ArrayLike<number> }>>;
 
     this._pipelinePromise = (async () => {
-      const mod = await import('@huggingface/transformers') as { env: { cacheDir: string }; pipeline: (task: string, model: string) => Promise<unknown> };
+      const { createRequire } = await import('node:module');
+      const require = createRequire(import.meta.url);
+      const mod = require('@huggingface/transformers') as { env: { cacheDir: string }; pipeline: (task: string, model: string) => Promise<unknown> };
       if (this.cacheDir) {
         mod.env.cacheDir = this.cacheDir;
       }

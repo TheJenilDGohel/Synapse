@@ -79,7 +79,9 @@ export class RerankerService {
     if (this._modelPromise) return this._modelPromise;
 
     this._modelPromise = (async () => {
-      const mod = await import('@huggingface/transformers') as {
+      const { createRequire } = await import('node:module');
+      const require = createRequire(import.meta.url);
+      const mod = require('@huggingface/transformers') as {
         env: { cacheDir: string };
         AutoTokenizer: { from_pretrained: (model: string) => Promise<unknown> };
         AutoModelForSequenceClassification: { from_pretrained: (model: string) => Promise<unknown> };

@@ -111,11 +111,12 @@ function resolveIndexBackend() {
 function checkNodeVersion() {
   const major = Number.parseInt(process.versions.node.split('.')[0] || '0', 10);
   if (Number.isFinite(major) && major >= 18) {
-    return { id: 'node_version', ok: true, detail: `Node.js ${process.versions.node}` };
+    return { id: 'node_version', ok: true, detail: `Node.js ${process.versions.node}`, critical: true };
   }
   return {
     id: 'node_version',
     ok: false,
+    critical: true,
     detail: `Node.js >=18 required. Current: ${process.versions.node}`,
     fix: 'Install Node.js 18+ and re-run doctor.'
   };
@@ -126,12 +127,13 @@ function checkNpmNpx() {
   const npxOk = commandExists(NPX_BIN, ['--version']);
 
   if (npmOk && npxOk) {
-    return { id: 'npm_npx', ok: true, detail: `npm and npx available` };
+    return { id: 'npm_npx', ok: true, detail: `npm and npx available`, critical: true };
   }
 
   return {
     id: 'npm_npx',
     ok: false,
+    critical: true,
     detail: `Missing npm or npx`,
     fix: 'Install/reinstall Node.js with npm, then re-run doctor.'
   };
@@ -140,7 +142,7 @@ function checkNpmNpx() {
 function checkRipgrep() {
   const ok = commandExists(RG_BIN);
   if (ok) {
-    return { id: 'ripgrep', ok: true, detail: 'ripgrep available' };
+    return { id: 'ripgrep', ok: true, detail: 'ripgrep available', critical: false };
   }
 
   let fix;
@@ -152,18 +154,19 @@ function checkRipgrep() {
     fix = 'Install ripgrep: sudo apt-get install ripgrep';
   }
 
-  return { id: 'ripgrep', ok: false, detail: 'ripgrep (rg) missing', fix };
+  return { id: 'ripgrep', ok: false, critical: false, detail: 'ripgrep (rg) missing', fix };
 }
 
 async function checkSdkImport() {
   try {
     await import('@modelcontextprotocol/sdk/server/mcp.js');
     await import('@modelcontextprotocol/sdk/server/stdio.js');
-    return { id: 'sdk_import', ok: true, detail: 'MCP SDK imports resolved' };
+    return { id: 'sdk_import', ok: true, detail: 'MCP SDK imports resolved', critical: true };
   } catch (error) {
     return {
       id: 'sdk_import',
       ok: false,
+      critical: true,
       detail: `MCP SDK import failed: ${error?.code || error?.message || 'unknown error'}`,
       fix: 'If running from source, run npm install. If using npx package, reinstall and retry.'
     };
@@ -172,16 +175,17 @@ async function checkSdkImport() {
 
 async function checkSqliteBackend() {
   if (resolveIndexBackend() !== 'sqlite-vec') {
-    return { id: 'sqlite_backend', ok: true, detail: 'sqlite-vec backend not selected' };
+    return { id: 'sqlite_backend', ok: true, detail: 'sqlite-vec backend not selected', critical: true };
   }
 
   try {
     await import('node:sqlite');
-    return { id: 'sqlite_backend', ok: true, detail: 'node:sqlite available for sqlite-vec backend' };
+    return { id: 'sqlite_backend', ok: true, detail: 'node:sqlite available for sqlite-vec backend', critical: true };
   } catch {
     return {
       id: 'sqlite_backend',
       ok: false,
+      critical: true,
       detail: 'node:sqlite unavailable for sqlite-vec backend',
       fix: 'Use Node.js 22+ or switch backend to json in setup.'
     };
@@ -194,6 +198,7 @@ function checkConfigFile() {
     return {
       id: 'config_file',
       ok: false,
+      critical: true,
       detail: `Config not found: ${configPath}`,
       fix: 'Run synapse setup to create config.'
     };
@@ -206,6 +211,7 @@ function checkConfigFile() {
     return {
       id: 'config_file',
       ok: false,
+      critical: true,
       detail: `Invalid JSON config: ${configPath}`,
       fix: 'Fix JSON syntax in synapse.config.json.'
     };
@@ -215,6 +221,7 @@ function checkConfigFile() {
     return {
       id: 'config_file',
       ok: false,
+      critical: true,
       detail: 'Config has no roots[]',
       fix: 'Add at least one valid root path in synapse.config.json.'
     };
@@ -236,6 +243,7 @@ function checkConfigFile() {
     return {
       id: 'config_file',
       ok: false,
+      critical: false, // Root paths missing is common and not strictly fatal for core service start
       detail: `Some configured roots are missing: ${missing.join(', ')}`,
       fix: 'Update synapse.config.json with existing directories.'
     };
@@ -244,13 +252,14 @@ function checkConfigFile() {
   return {
     id: 'config_file',
     ok: true,
-    detail: `Config OK (${configPath}) with ${parsed.roots.length} root(s)`
+    detail: `Config OK (${configPath}) with ${parsed.roots.length} root(s)`,
+    critical: true
   };
 }
 
 function checkSqliteVecExtension() {
   if (resolveIndexBackend() !== 'sqlite-vec') {
-    return { id: 'sqlite_vec_extension', ok: true, detail: 'sqlite-vec native extension not required for current backend' };
+    return { id: 'sqlite_vec_extension', ok: true, detail: 'sqlite-vec native extension not required for current backend', critical: true };
   }
 
   const configured = (safeEnv.SYNAPSE_SQLITE_VEC_EXTENSION || '').trim();
@@ -267,13 +276,15 @@ function checkSqliteVecExtension() {
     return {
       id: 'sqlite_vec_extension',
       ok: true,
-      detail: `sqlite-vec native extension ready (${detected.path})`
+      detail: `sqlite-vec native extension ready (${detected.path})`,
+      critical: true
     };
   }
 
   return {
     id: 'sqlite_vec_extension',
     ok: false,
+    critical: true,
     detail: configuredPath
       ? `sqlite-vec backend selected but configured vec0 path is missing: ${configuredPath}`
       : 'sqlite-vec backend selected but vec0 native extension is not configured',
@@ -310,6 +321,7 @@ function checkModelCacheWritable() {
     return {
       id: 'model_cache',
       ok: false,
+      critical: true,
       detail: 'Model cache not writable for configured or fallback locations',
       fix: 'Set SYNAPSE_EMBED_CACHE_DIR/SYNAPSE_RERANKER_CACHE_DIR to a writable path, then re-run synapse setup.'
     };
@@ -319,6 +331,7 @@ function checkModelCacheWritable() {
   return {
     id: 'model_cache',
     ok: true,
+    critical: true,
     detail: fallbackUsed
       ? 'Model cache writable (fallback location active — run with --json for details)'
       : 'Model cache writable'
@@ -336,7 +349,7 @@ function checkGlobalInstallStaleTempDirs() {
     }).stdout.trim();
   } catch { /* ignore */ }
   if (!nodeModulesDir || !fs.existsSync(nodeModulesDir)) {
-    return { id: 'global_stale_temp', ok: true, detail: 'Could not locate global node_modules (skipped)' };
+    return { id: 'global_stale_temp', ok: true, detail: 'Could not locate global node_modules (skipped)', critical: false };
   }
 
   const entries = fs.readdirSync(nodeModulesDir);
@@ -344,7 +357,7 @@ function checkGlobalInstallStaleTempDirs() {
   const stale = entries.filter((e) => e.startsWith(stalePrefix));
 
   if (stale.length === 0) {
-    return { id: 'global_stale_temp', ok: true, detail: 'No stale npm temp dirs found' };
+    return { id: 'global_stale_temp', ok: true, detail: 'No stale npm temp dirs found', critical: false };
   }
 
   if (fixFlag) {
@@ -356,11 +369,12 @@ function checkGlobalInstallStaleTempDirs() {
       } catch { /* best-effort */ }
     }
     if (removed === stale.length) {
-      return { id: 'global_stale_temp', ok: true, detail: `Cleaned ${removed} stale npm temp dir(s)` };
+      return { id: 'global_stale_temp', ok: true, detail: `Cleaned ${removed} stale npm temp dir(s)`, critical: false };
     }
     return {
       id: 'global_stale_temp',
       ok: false,
+      critical: false,
       detail: `Partially cleaned: ${removed}/${stale.length} temp dirs removed`,
       fix: 'Manually remove remaining dirs or run with sudo: rm -rf ' + path.join(nodeModulesDir, stalePrefix) + '*'
     };
@@ -369,6 +383,7 @@ function checkGlobalInstallStaleTempDirs() {
   return {
     id: 'global_stale_temp',
     ok: false,
+    critical: false,
     detail: `${stale.length} stale npm temp dir(s) found (blocks global reinstall)`,
     fix: 'Run: synapse doctor --fix  OR  rm -rf ' + path.join(nodeModulesDir, stalePrefix) + '*'
   };
@@ -379,7 +394,9 @@ function printText(results) {
   console.log('');
 
   for (const r of results) {
-    const mark = r.ok ? symbol.ok() : symbol.fail();
+    let mark = r.ok ? symbol.ok() : symbol.fail();
+    if (!r.ok && !r.critical) mark = symbol.warn();
+    
     console.log(`${mark} ${c.bold(r.id)}: ${r.detail}`);
     if (!r.ok && r.fix) {
       console.log(`   ${c.yellow('fix:')} ${r.fix}`);
@@ -387,14 +404,21 @@ function printText(results) {
   }
 
   const passed = results.filter((r) => r.ok).length;
-  const failed = results.length - passed;
+  const criticalFailed = results.filter((r) => !r.ok && r.critical).length;
+  const optionalFailed = results.filter((r) => !r.ok && !r.critical).length;
+
   console.log('');
   console.log(`Health: ${bar(passed, results.length)}`);
   console.log('');
-  if (failed === 0) {
-    console.log(`${symbol.ok()} ${c.green('Doctor result: healthy')}`);
+
+  if (criticalFailed === 0) {
+    if (optionalFailed === 0) {
+      console.log(`${symbol.ok()} ${c.green('Doctor result: healthy')}`);
+    } else {
+      console.log(`${symbol.warn()} ${c.yellow(`Doctor result: operational (${optionalFailed} optional issues found)`)}`);
+    }
   } else {
-    console.log(`${symbol.fail()} ${c.red(`Doctor result: ${failed} issue(s) found`)}`);
+    console.log(`${symbol.fail()} ${c.red(`Doctor result: ${criticalFailed + optionalFailed} issue(s) found (${criticalFailed} critical)`)}`);
   }
 }
 
@@ -432,13 +456,17 @@ async function main() {
   ];
 
   if (asJson) {
-    console.log(JSON.stringify({ ok: checks.every((c) => c.ok), checks }, null, 2));
+    console.log(JSON.stringify({ 
+      ok: checks.every((c) => c.ok || !c.critical), 
+      healthy: checks.every((c) => c.ok),
+      checks 
+    }, null, 2));
   } else {
     printText(checks);
   }
 
   const strict = parseBoolean(safeEnv.SYNAPSE_DOCTOR_STRICT, true);
-  if (strict && checks.some((c) => !c.ok)) {
+  if (strict && checks.some((c) => !c.ok && c.critical)) {
     process.exit(1);
   }
 }

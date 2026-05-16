@@ -1,6 +1,6 @@
 name: docs
 description: Documentation site for Synapse Cortex.
-version: 0.0.1+beta3
+version: 1.0.0
 
 environment:
   sdk: ^3.10.0

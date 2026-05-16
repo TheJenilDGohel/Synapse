@@ -83,6 +83,11 @@ interface BackendSelection {
   adapter: Adapter;
 }
 
+import { DurableStore } from './DurableStore.js';
+import { KnowledgeGraphService } from '../knowledge-graph/KnowledgeGraphService.js';
+import { TaxonomyService } from '../taxonomy/TaxonomyService.js';
+import { IngestionEngine } from '../ingest/IngestionEngine.js';
+
 export class MemoryStore {
   enabled: boolean;
   requestedBackend: string;
@@ -91,6 +96,12 @@ export class MemoryStore {
   hooks: MemoryHooks;
   adapter: Adapter | null;
   selectedBackend: string | null;
+
+  // Sub-services
+  private durableStore!: DurableStore;
+  private kgService!: KnowledgeGraphService;
+  private taxonomyService!: TaxonomyService;
+  private ingestionEngine!: IngestionEngine;
 
   constructor({
     enabled,
@@ -137,6 +148,19 @@ export class MemoryStore {
     this.selectedBackend = selected.name;
     await applySqliteTuning(this.adapter);
     await this.ensureSchema();
+
+    // Initialize sub-services
+    this.durableStore = new DurableStore(this.adapter!);
+    this.durableStore.enabled = this.enabled;
+    this.durableStore.dbPath = this.dbPath;
+    this.durableStore.requestedBackend = this.requestedBackend;
+    this.durableStore.selectedBackend = this.selectedBackend;
+    this.durableStore.embeddingService = this.embeddingService;
+
+    this.kgService = new KnowledgeGraphService(this.adapter!);
+    this.taxonomyService = new TaxonomyService(this.adapter!);
+    this.ingestionEngine = new IngestionEngine(this.adapter!, this.embeddingService, this.durableStore.hooks);
+    this.hooks = this.durableStore.hooks; // Preserve hook reference for backward compatibility
 
     return {
       enabled: true,
@@ -198,57 +222,43 @@ export class MemoryStore {
   }
 
   async getStatus() {
+    await this.init();
     return getStoreStatus(this as never);
   }
 
   async listEntries(args: ListEntriesOpts) {
-    return listMemoryEntries(this as never, args);
+    await this.init();
+    return this.durableStore.listEntries(args);
   }
 
   async getEntry(id: string) {
-    return getMemoryEntry(this as never, id);
+    await this.init();
+    return this.durableStore.getEntry(id);
   }
 
   async storeEntry(input: StoreEntryInput) {
-    const hookResult = await this.hooks.emit('before:store', input);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await storeMemoryEntry(this as never, hookResult.payload as StoreEntryInput);
-    await this.hooks.emit('after:store', result);
-    return result;
+    await this.init();
+    return this.durableStore.storeEntry(input);
   }
 
   async storeEntryBatch(input: StoreEntryBatchInput) {
-    const hookResult = await this.hooks.emit('before:store:batch', input);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await storeEntryBatchFn(this as never, hookResult.payload as StoreEntryBatchInput);
-    await this.hooks.emit('after:store:batch', result);
-    return result;
+    await this.init();
+    return this.durableStore.storeEntryBatch(input);
   }
 
   async updateEntry(id: string, patch: UpdateEntryPatch = {}) {
-    const hookResult = await this.hooks.emit('before:update', { id, patch });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { id: string; patch: UpdateEntryPatch };
-    const result = await updateMemoryEntry(this as never, payload.id, payload.patch);
-    await this.hooks.emit('after:update', result);
-    return result;
+    await this.init();
+    return this.durableStore.updateEntry(id, patch);
   }
 
   async deleteEntry(id: string) {
-    const hookResult = await this.hooks.emit('before:delete', { id });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { id: string };
-    const result = await deleteMemoryEntry(this as never, payload.id);
-    await this.hooks.emit('after:delete', result);
-    return result;
+    await this.init();
+    return this.durableStore.deleteEntry(id);
   }
 
   async deleteEntryBatch(input: DeleteEntryBatchInput) {
-    const hookResult = await this.hooks.emit('before:delete:batch', input);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await deleteEntryBatchFn(this as never, hookResult.payload as DeleteEntryBatchInput);
-    await this.hooks.emit('after:delete:batch', result);
-    return result;
+    await this.init();
+    return this.durableStore.deleteEntryBatch(input);
   }
 
   async recall(args: RecallInput) {
@@ -296,167 +306,117 @@ export class MemoryStore {
 
   async addEntity(args: AddEntityInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:addEntity', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await addEntityFn(this.adapter!, hookResult.payload as AddEntityInput);
-    await this.hooks.emit('after:kg:addEntity', result);
-    return result;
+    return this.kgService.addEntity(args);
   }
 
   async getEntity(entityId: string) {
     await this.init();
-    return getEntityFn(this.adapter!, entityId);
+    return this.kgService.getEntity(entityId);
   }
 
   async addTriple(args: AddTripleInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:addTriple', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await addTripleFn(this.adapter!, hookResult.payload as AddTripleInput);
-    await this.hooks.emit('after:kg:addTriple', result);
-    return result;
+    return this.kgService.addTriple(args);
   }
 
   async invalidateTriple(tripleId: string, validTo?: string) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:invalidate', { tripleId, validTo });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { tripleId: string; validTo?: string };
-    const result = await invalidateTripleFn(this.adapter!, payload.tripleId, payload.validTo);
-    await this.hooks.emit('after:kg:invalidate', result);
-    return result;
+    return this.kgService.invalidateTriple(tripleId, validTo);
   }
 
   async queryEntityRelationships(entityId: string, opts: { direction?: string; includeInvalid?: boolean }) {
     await this.init();
-    return queryEntityRelationshipsFn(this.adapter!, entityId, opts);
+    return this.kgService.queryEntityRelationships(entityId, opts);
   }
 
   async listEntities(opts: { type?: string; nameContains?: string; limit?: number; offset?: number } = {}) {
     await this.init();
-    return listEntitiesFn(this.adapter!, opts);
+    return this.kgService.listEntities(opts);
   }
 
   async queryTriplesAsOf(entityId: string, asOfDate: string, mode?: 'event' | 'transaction') {
     await this.init();
-    return queryTriplesAsOfFn(this.adapter!, entityId, asOfDate, mode);
+    return this.kgService.queryTriplesAsOf(entityId, asOfDate, mode);
   }
 
   async getEntityTimeline(entityId: string) {
     await this.init();
-    return getEntityTimelineFn(this.adapter!, entityId);
+    return this.kgService.getEntityTimeline(entityId);
   }
 
   async getKgStats() {
     await this.init();
-    return getKgStatsFn(this.adapter!);
+    return this.kgService.getKgStats();
   }
 
   async searchTriples(args: { query: string; limit?: number }) {
     await this.init();
-    return searchTriplesFn(this.adapter!, args);
+    return this.kgService.searchTriples(args);
   }
 
   async addEntityBatch(args: AddEntityBatchInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:addEntity', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await addEntityBatchFn(this.adapter!, hookResult.payload as AddEntityBatchInput);
-    await this.hooks.emit('after:kg:addEntity', result);
-    return result;
+    return this.kgService.addEntityBatch(args);
   }
 
   async addTripleBatch(args: AddTripleBatchInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:addTriple', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await addTripleBatchFn(this.adapter!, hookResult.payload as AddTripleBatchInput);
-    await this.hooks.emit('after:kg:addTriple', result);
-    return result;
+    return this.kgService.addTripleBatch(args);
   }
 
   async deleteEntity(entityId: string) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:deleteEntity', { entityId });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { entityId: string };
-    const result = await deleteEntityFn(this.adapter!, payload.entityId);
-    await this.hooks.emit('after:kg:deleteEntity', result);
-    return result;
+    return this.kgService.deleteEntity(entityId);
   }
 
   async deleteEntityBatch(args: DeleteEntityBatchInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:deleteEntity', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await deleteEntityBatchFn(this.adapter!, hookResult.payload as DeleteEntityBatchInput);
-    await this.hooks.emit('after:kg:deleteEntity', result);
-    return result;
+    return this.kgService.deleteEntityBatch(args);
   }
 
   async deleteTripleBatch(args: DeleteTripleBatchInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:deleteTriple', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await deleteTripleBatchFn(this.adapter!, hookResult.payload as DeleteTripleBatchInput);
-    await this.hooks.emit('after:kg:deleteTriple', result);
-    return result;
+    return this.kgService.deleteTripleBatch(args);
   }
 
   async backfillMemoryKgLinks(opts: { limit?: number; offset?: number; nest?: string; branch?: string } = {}): Promise<BackfillResult> {
     await this.init();
-    const hookResult = await this.hooks.emit('before:kg:backfill', opts);
-    if (hookResult.cancelled) return { memories_scanned: 0, memories_linked: 0, triples_created: 0, errors: 0 };
-    const result = await backfillMemoryKgLinksFn(this.adapter!, hookResult.payload as typeof opts);
-    await this.hooks.emit('after:kg:backfill', result);
-    return result;
+    return this.kgService.backfillMemoryKgLinks(opts);
   }
 
   async listNests() {
     await this.init();
-    return listNestsFn(this.adapter!);
+    return this.taxonomyService.listNests();
   }
 
   async listBranches(nest: string) {
     await this.init();
-    return listBranchesFn(this.adapter!, nest);
+    return this.taxonomyService.listBranches(nest);
   }
 
   async getTaxonomyTree() {
     await this.init();
-    return getTaxonomyTreeFn(this.adapter!);
+    return this.taxonomyService.getTaxonomyTree();
   }
 
   async manageBranches(args: { action: 'merge' | 'rename' | 'delete' | 'list_stale'; nest: string; fromBranch?: string; toBranch?: string; branch?: string; olderThanDays?: number }) {
     await this.init();
-    return manageBranchesFn(this.adapter!, args);
+    return this.taxonomyService.manageBranches(args);
   }
 
   async traverseGraph(args: TraverseGraphOpts) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:graph:traverse', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await traverseGraphFn(this.adapter!, hookResult.payload as TraverseGraphOpts);
-    await this.hooks.emit('after:graph:traverse', result);
-    return result;
+    return this.kgService.traverseGraph(args);
   }
 
   async discoverBridges(args: DiscoverBridgesOpts) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:graph:bridges', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await discoverBridgesFn(this.adapter!, hookResult.payload as DiscoverBridgesOpts);
-    await this.hooks.emit('after:graph:bridges', result);
-    return result;
+    return this.kgService.discoverBridges(args);
   }
 
   async writeDiaryEntry(args: WriteDiaryInput) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:diary:write', args);
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await writeDiaryEntryFn(this.adapter!, hookResult.payload as WriteDiaryInput);
-    await this.hooks.emit('after:diary:write', result);
-    return result;
+    return writeDiaryEntryFn(this.adapter!, args);
   }
 
   async readDiaryEntries(args: ReadDiaryInput) {
@@ -466,39 +426,22 @@ export class MemoryStore {
 
   async checkDuplicate(content: string, opts: DuplicateCheckOpts = {}) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:dedup', { content, opts });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { content: string; opts: DuplicateCheckOpts };
-    const result = await checkDuplicateFn(this.adapter!, this.embeddingService, payload.content, payload.opts);
-    await this.hooks.emit('after:dedup', result);
-    return result;
+    return checkDuplicateFn(this.adapter!, this.embeddingService, content, opts);
   }
 
   async ingestMarkdown(opts: IngestOpts = {}) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:ingest', { type: 'markdown', opts });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { type: string; opts: IngestOpts };
-    const result = await ingestMarkdownFn(this.adapter!, this.embeddingService, payload.opts);
-    await this.hooks.emit('after:ingest', result);
-    return result;
+    return this.ingestionEngine.ingestMarkdown(opts);
   }
 
   async ingestJson(opts: IngestOpts = {}) {
     await this.init();
-    const hookResult = await this.hooks.emit('before:ingest', { type: 'json', opts });
-    if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const payload = hookResult.payload as { type: string; opts: IngestOpts };
-    const result = await ingestJsonFn(this.adapter!, this.embeddingService, payload.opts);
-    await this.hooks.emit('after:ingest', result);
-    return result;
+    return this.ingestionEngine.ingestJson(opts);
   }
 
   async getFileMemoryHints(filePath: string, suggestUpdate: boolean = false): Promise<ProactiveHintResult> {
     await this.init();
-    const result = await getFileMemoryHintsFn(this.adapter!, filePath, suggestUpdate);
-    await this.hooks.emit(suggestUpdate ? 'after:file:changed' : 'after:file:read', result);
-    return result;
+    return getFileMemoryHintsFn(this.adapter!, filePath, suggestUpdate);
   }
 
   async whatsNew(args: WhatsNewInput) {
@@ -507,19 +450,17 @@ export class MemoryStore {
   }
 
   async scanAndBackfillProjects(opts: ProjectBackfillOpts): Promise<ProjectBackfillResult> {
-    await this.init();
-    const hookResult = await this.hooks.emit('before:graph:backfill_projects', opts);
-    if (hookResult.cancelled) {
-      return { root_path: opts.rootPath, projects_found: 0, projects_backfilled: 0, projects_skipped: 0, dry_run: !!opts.dryRun, projects: [] };
-    }
     const { scanAndBackfillProjects: scanFn } = await import('../backfill.js');
-    const result = await scanFn(this as never, hookResult.payload as ProjectBackfillOpts);
-    await this.hooks.emit('after:graph:backfill_projects', result);
-    return result;
+    return scanFn(this as never, opts);
   }
 
   async audit(): Promise<AuditResult> {
     await this.init();
     return runAuditFn(this.adapter!);
+  }
+
+  // Getter for store (DurableStore)
+  get store(): DurableStore {
+    return this.durableStore;
   }
 }

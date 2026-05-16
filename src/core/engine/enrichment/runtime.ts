@@ -1,4 +1,6 @@
-import { pipeline, env } from '@huggingface/transformers';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { pipeline, env } = require('@huggingface/transformers');
 
 /**
  * Enrichment Runtime - Wraps Transformers.js v4 for code metadata generation.

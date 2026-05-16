@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: Install Synapse and connect it to any MCP-compatible client.
+description: Install Synapse and connect it to any MCP-compatible client in 5 minutes.
 ---
 
 # Quick Start
@@ -13,35 +13,36 @@ Get Synapse running and connected to an MCP-compatible client in minutes.
 npm install -g synapse-cortex
 ```
 
-:::info
-Requires **Node.js >= 22.6.0**. Check your version with `node --version`.
+:::info Compatibility
+Requires **Node.js >= 22.6.0**. Check your version with `node --version`. Works on Windows, macOS, and Linux.
 :::
 
 ## 2. Initialize Your Workspace
 
-Navigate to your project root and run setup:
+Navigate to your project root and run the setup sequence:
 
 ```bash
 synapse setup
 synapse doctor
 ```
 
-`setup` creates the local SQLite database and installs native dependencies. `doctor` confirms the runtime is healthy.
+- **`setup`**: Creates the local SQLite database and downloads native vector extensions.
+- **`doctor`**: Verifies that your environment is healthy and ready for AI integration.
 
 ## 3. Connect Your MCP Client
 
-Add Synapse as an MCP server in your client configuration:
+Add Synapse to your AI client configuration. This enables the agent to call Synapse tools during a chat.
+
+### Recommended Config (Claude Desktop)
+Add this to your `claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "synapse": {
       "command": "synapse",
-      "startup_timeout_sec": 30,
       "env": {
         "MCP_MODE": "stdio",
-        "SYNAPSE_CONFIG": "~/.synapse/config/synapse.config.json",
-        "SYNAPSE_INDEX_BACKEND": "sqlite-vec",
         "SYNAPSE_MEMORY_ENABLED": "true"
       }
     }
@@ -49,28 +50,28 @@ Add Synapse as an MCP server in your client configuration:
 }
 ```
 
-This works with Claude Desktop, Claude Code, Cursor, Windsurf, Cline, Continue, Gemini CLI, and other MCP-compatible clients.
+Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, **Continue**, **Gemini CLI**, and any MCP-compatible environment.
 
-## 4. Query Your Project
+## 4. Prime the Agent
 
-Once connected, your client can call Synapse tools for code search, memory, and graph queries. Start with an architecture overview:
+Once connected, the most effective way to start is by "priming" the agent with the project's current state.
 
-> *"Using Synapse, analyze the project structure and identify the core services and their relationships."*
+> *"Analyze the project structure and summarize the core modules and their relationships."*
 
-Synapse can use `summarize_project`, `search_hybrid`, and `project_tree` to produce a semantically accurate map of your codebase.
+The agent will use tools like `agent_prime`, `project_tree`, and `summarize_project` to build a mental map of your codebase.
 
-## 5. Store Project Knowledge
+## 5. Teach and Remember
 
-Store a project-level fact that persists across future sessions:
+Synapse excels at capturing knowledge that usually gets lost between sessions.
 
-> *"Remember that the authentication module uses JWT with 15-minute expiry. Store this in memory."*
+> *"Remember that we use Vitest for unit tests, not Jest. Always apply this rule."*
 
-Synapse stores this with `memory_store`, and the fact can be retrieved later with `memory_recall`.
+The agent will use `teach` or `memory_store` to persist this fact. In future sessions, Synapse will automatically surface this rule when the agent starts a testing task.
 
 ---
 
-**What's Next?**
+**Deep Dives:**
 
-- Understand **[Code Intelligence](pillars/intel)**: semantic search, symbol finding, and AST-aware retrieval.
-- Explore the **[Knowledge Graph](pillars/temporal)**: temporal triples and architectural decision tracking.
-- Learn about **[Persistent Memory](pillars/memory)**: cross-session recall and scoped isolation.
+- **[Installation Guide](install)**: OS-specific setup and client configuration.
+- **[Tools Reference](tools)**: Comprehensive list of all 74 available MCP tools.
+- **[The Three Pillars](pillars/intel)**: Understanding Code Intelligence, Memory, and Knowledge Graph.
