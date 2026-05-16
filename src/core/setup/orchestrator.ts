@@ -1,18 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { spawnSync } from 'node:child_process';
 import {
-  ensureSqliteVecExtension,
   migrateSynapseHomeLayout,
-  resolveSynapseHome,
-  resolveWritableModelCacheDir,
-  buildSynapsePaths
+  resolveSynapseHome
 } from '../runtime/index.js';
-import {
-  buildSynapseServerConfig,
-  installSynapseIntoDetectedClients
-} from './client-installer.js';
 
 export interface SetupOptions {
   paths?: string[];
