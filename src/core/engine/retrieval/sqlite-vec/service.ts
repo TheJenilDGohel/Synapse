@@ -420,14 +420,26 @@ export class SqliteVecIndexService {
       });
     }
 
+    // Pre-fetch file signatures in bulk to avoid N+1 queries
+    const existingSignatures = new Map<string, string>();
+    const BATCH_SIZE_SIG = 500;
+    for (let i = 0; i < files.length; i += BATCH_SIZE_SIG) {
+      const batch = files.slice(i, i + BATCH_SIZE_SIG);
+      const placeholders = batch.map(() => '?').join(',');
+      const rows = dbRef.prepare(`SELECT path, signature FROM files WHERE path IN (${placeholders})`).all(...batch) as { path: string; signature: string }[];
+      for (const r of rows) {
+        existingSignatures.set(r.path, r.signature);
+      }
+    }
+
     // Phase 2: process each file independently
     for (const filePath of files) {
       try {
         const st = fs.statSync(filePath);
         const signature = makeFileSignature(st);
-        const existing = stmtSelectSig.get(filePath) as { signature: string } | undefined;
+        const existingSig = existingSignatures.get(filePath);
 
-        if (!force && existing && existing.signature === signature) {
+        if (!force && existingSig !== undefined && existingSig === signature) {
           skipped += 1;
           continue;
         }
@@ -454,7 +466,7 @@ export class SqliteVecIndexService {
           return { ...chunk, enrichment };
         }));
 
-        const existingChunkRows = existing ? stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[] : [];
+        const existingChunkRows = (existingSig !== undefined) ? stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[] : [];
 
         if (existingChunkRows.length > 0) {
           for (const oldRow of existingChunkRows) {
