@@ -26,7 +26,7 @@ const DEBOUNCE_FILE = path.join(TMP_DIR, 'synapse-pre-hook-last.json');
 const DEBOUNCE_MS = 30000; // 30s between memory context retrievals
 const SHOUT_DEBOUNCE_MS = 60000; // throttle the strong reminder to once/minute
 const WORK_TOOLS = new Set(['Edit', 'Write', 'Bash', 'MultiEdit', 'Read', 'Grep']);
-const SYNAPSE_BIN = path.join(__dirname, '..', '..', 'bin', 'synapse.cjs');
+const SYNAPSE_CLI = path.resolve(__dirname, '..', '..', 'bin', 'synapse.cjs');
 
 let input = '';
 const stdinTimeout = setTimeout(() => {
@@ -83,9 +83,10 @@ process.stdin.on('end', () => {
       process.exit(0);
     }
 
-    const result = spawnSync(process.execPath, [SYNAPSE_BIN, 'memory', 'prime', query, '--json'], {
+    const result = spawnSync(process.execPath, [SYNAPSE_CLI, 'memory', 'prime', '--json', '--', query], {
       encoding: 'utf8',
       timeout: 8000,
+      shell: false,
       env: { ...process.env, SYNAPSE_MEMORY_ENABLED: 'true' }
     });
 

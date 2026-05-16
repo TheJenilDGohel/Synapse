@@ -11,44 +11,77 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
-    name: Code Quality & Tests (Ubuntu)
+  check-lint-coverage:
+    name: Code Quality (check, lint, coverage)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit --no-fund
         
-      - name: Run all quality checks
-        run: npm run quality
+      - name: Run check
+        run: npm run check
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run coverage
+        run: npm run test:coverage
+
+  quality-checks:
+    name: Quality Checks (cycles, deps, package, audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Run cycles check
+        run: npm run quality:cycles
+
+      - name: Run deps check
+        run: npm run quality:deps
+
+      - name: Run package check
+        run: npm run quality:package
+
+      - name: Run audit check
+        run: npm run quality:audit
 
   test-matrix:
     name: Build & Test (${{ matrix.os }}, Node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
-    needs: quality
+    needs: [check-lint-coverage, quality-checks]
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node: [18, 20, 22]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci --ignore-scripts --prefer-offline --no-audit --no-fund
         
       - name: Run Postinstall manually
         run: npm run postinstall --if-present
