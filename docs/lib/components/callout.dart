@@ -43,42 +43,4 @@ class Callout extends StatelessComponent {
       ],
     );
   }
-
-  @css
-  static List<StyleRule> get styles => [
-    css('.callout', [
-      css('&').styles(
-        margin: .symmetric(vertical: 1.5.rem),
-        padding: .all(1.25.rem),
-        radius: .circular(8.px),
-        backgroundColor: surfaceColor,
-      ),
-      css('.callout-header', [
-        css('&').styles(
-          display: .flex,
-          alignItems: .center,
-          gap: Gap(column: 0.75.rem),
-          margin: .only(bottom: 0.75.rem),
-        ),
-        css('.callout-icon').styles(fontSize: 1.25.rem),
-        css('.callout-title').styles(
-          fontWeight: .w700,
-          fontSize: 1.rem,
-          textTransform: TextTransform.upperCase,
-          letterSpacing: 0.025.em,
-        ),
-      ]),
-      css('.callout-content p').styles(
-        margin: .zero,
-        color: textColor.withOpacity(0.8),
-        lineHeight: Unit.expression('1.6'),
-      ),
-
-      // Type specific overrides if needed
-      css('.callout-info .callout-title').styles(color: CalloutType.info.color),
-      css('.callout-tip .callout-title').styles(color: CalloutType.tip.color),
-      css('.callout-warning .callout-title').styles(color: CalloutType.warning.color),
-      css('.callout-danger .callout-title').styles(color: CalloutType.danger.color),
-    ]),
-  ];
 }

@@ -1,74 +1,74 @@
 [
   {
-    "name": "project_tree",
-    "description": "List the file structure of a project root with optional depth and pattern filtering.",
-    "category": "Workspace",
-    "parameters": ["root_path", "depth", "exclude_patterns"]
+    "name": "synapse_search",
+    "description": "Unified controller for file discovery, code search, and semantic retrieval. Supports 'files', 'code', 'hybrid', and 'find' modes.",
+    "category": "Search & Intelligence",
+    "parameters": ["action", "query", "project_path", "all_roots", "max_results", "glob"]
   },
   {
-    "name": "search_hybrid",
-    "description": "Perform a hybrid search combining lexical (BM25) and semantic (vector) retrieval.",
-    "category": "Search",
-    "parameters": ["query", "limit", "min_score"]
+    "name": "synapse_symbol_query",
+    "description": "Unified controller for static code intelligence. Jump to definitions, find callers, list implementations, or preview renames.",
+    "category": "Symbol Intelligence",
+    "parameters": ["action", "symbol", "project_path", "language", "max_results", "glob"]
   },
   {
-    "name": "memory_store",
-    "description": "Store a new memory fragment with automatic semantic deduplication.",
-    "category": "Memory",
-    "parameters": ["content", "metadata", "tags"]
+    "name": "synapse_memory_manage",
+    "description": "Unified controller for all memory mutations. Store fragments, update entries, manage relations, and capture task outcomes.",
+    "category": "Memory Management",
+    "parameters": ["action", "title", "content", "kind", "tags", "importance", "scope"]
   },
   {
-    "name": "kg_query",
-    "description": "Query the temporal knowledge graph for entities, triples, or timelines.",
+    "name": "synapse_memory_query",
+    "description": "Unified controller for memory retrieval. Recall context for tasks, list events, explore taxonomy, and query semantic similarity.",
+    "category": "Memory Management",
+    "parameters": ["action", "query", "project_path", "nest", "branch", "limit", "item_format"]
+  },
+  {
+    "name": "synapse_kg_manage",
+    "description": "Unified controller for knowledge graph mutations. Add entities/triples, manage branches, and ingest documents into the graph.",
     "category": "Knowledge Graph",
-    "parameters": ["query", "as_of", "mode"]
+    "parameters": ["action", "name", "type", "subject_name", "predicate", "object_name"]
   },
   {
-    "name": "find_definition",
-    "description": "Locate the definition of a symbol across the workspace using AST analysis.",
-    "category": "Code Intelligence",
-    "parameters": ["symbol", "file_hint"]
+    "name": "synapse_kg_query",
+    "description": "Unified controller for knowledge graph introspection. List entities, traverse relationships, and query temporal states (as_of).",
+    "category": "Knowledge Graph",
+    "parameters": ["action", "entity_id", "nest", "max_hops", "mode", "item_format"]
   },
   {
-    "name": "agent_prime",
-    "description": "Provide the agent with initial context and project-specific instructions.",
+    "name": "synapse_workspace_manage",
+    "description": "Unified controller for workspace operations. Explore project trees, read file chunks, and summarize project architecture.",
+    "category": "Workspace",
+    "parameters": ["action", "project_path", "path", "max_depth", "start_line", "end_line"]
+  },
+  {
+    "name": "synapse_system_manage",
+    "description": "Unified controller for system maintenance. Manage semantic indices, run health audits, create backups, and update the server.",
+    "category": "System",
+    "parameters": ["action", "project_path", "destination", "source", "channel", "version"]
+  },
+  {
+    "name": "synapse_agent_prime",
+    "description": "Mandatory task initialization. Rehydrates project context, recalled memories, and suggested actions in one call.",
     "category": "Agent Context",
-    "parameters": ["project_id", "agent_type"]
+    "parameters": ["task", "project_path", "nest", "branch"]
   },
   {
-    "name": "recall_memories",
-    "description": "Retrieve memories relevant to the current task context using semantic similarity.",
-    "category": "Memory",
-    "parameters": ["task_id", "limit"]
+    "name": "synapse_pageindex_tree",
+    "description": "[PROTOTYPE] Generates a hierarchical TOC-style semantic tree for a document, allowing reasoning before reading.",
+    "category": "Vectorless RAG",
+    "parameters": ["file_path", "max_depth"]
   },
   {
-    "name": "kg_add_triple",
-    "description": "Add a subject-predicate-object triple to the knowledge graph.",
-    "category": "Knowledge Graph",
-    "parameters": ["subject", "predicate", "object"]
+    "name": "synapse_pageindex_read_node",
+    "description": "[PROTOTYPE] Reads the specific content of a node from a generated PageIndex tree using the node_id.",
+    "category": "Vectorless RAG",
+    "parameters": ["file_path", "node_id"]
   },
   {
-    "name": "ast_chunk_file",
-    "description": "Parse a source file into semantic chunks based on its Abstract Syntax Tree.",
-    "category": "Code Intelligence",
-    "parameters": ["file_path", "language"]
-  },
-  {
-    "name": "workspace_index_status",
-    "description": "Get the current status of the workspace indexing process.",
-    "category": "Workspace",
+    "name": "synapse_health",
+    "description": "Returns a compact runtime health summary for fast smoke checks.",
+    "category": "Core",
     "parameters": []
-  },
-  {
-    "name": "semantic_rerank",
-    "description": "Rerank a list of search results using a cross-encoder model for higher precision.",
-    "category": "Search",
-    "parameters": ["query", "results"]
-  },
-  {
-    "name": "memory_audit",
-    "description": "Run an audit on the memory store to identify inconsistent or stale entries.",
-    "category": "Memory",
-    "parameters": ["scope"]
   }
 ]

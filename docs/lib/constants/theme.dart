@@ -10,6 +10,3 @@ const surfaceColor = Color('var(--surface-color)');
 const borderColor = Color('var(--border-color)');
 const textColor = Color('var(--text-color)');
 const textMutedColor = Color('var(--text-muted)');
-
-@css
-List<StyleRule> get styles => [];

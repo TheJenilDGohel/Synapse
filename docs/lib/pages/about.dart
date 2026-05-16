@@ -51,35 +51,4 @@ class About extends StatelessComponent {
       ),
     ]);
   }
-
-  @css
-  static List<StyleRule> get styles => [
-    css('.support-grid').styles(
-      display: .grid,
-      raw: {'grid-template-columns': '1fr 1fr'},
-      gap: Gap(row: 2.rem, column: 2.rem),
-      margin: .only(top: 3.rem),
-    ),
-    css('.support-card').styles(
-      padding: .all(1.5.rem),
-      backgroundColor: const Color('#0f172a'), // surfaceColor
-      border: Border.all(style: BorderStyle.solid, color: const Color('#1e293b'), width: 1.px), // borderColor
-      radius: .circular(16.px),
-    ),
-    css('.card-icon').styles(
-      fontSize: 2.rem,
-      display: .block,
-      margin: .only(bottom: 1.rem),
-    ),
-    css('.support-card h3').styles(
-      fontSize: 1.125.rem,
-      margin: .only(bottom: 0.5.rem),
-    ),
-    css('.support-card p').styles(
-      fontSize: 0.95.rem,
-      color: const Color('#94a3b8'), // textMutedColor
-      margin: .only(bottom: 1.5.rem),
-      lineHeight: Unit.expression('1.5'),
-    ),
-  ];
 }
