@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { createToolResponse, READ_ONLY_ANNOTATIONS } from '../common/tool-utils.js';
-import type { RegisterJsonToolFn, PaginatedResult } from '../common/tool-utils.js';
+import { createToolResponse, READ_ONLY_ANNOTATIONS, ToolLevel } from '../common/tool-utils.js';
+import type { RegisterJsonToolFn, PaginatedResult, ToolResponsePayload } from '../common/tool-utils.js';
 import { buildResourceLink } from '../common/mime.js';
 import {
   normalizeProjectTreeResult,
@@ -11,7 +11,6 @@ import {
   BUNDLE_RESULT_SCHEMA,
   SEARCH_RESULT_SCHEMA
 } from '../common/schemas.js';
-import type { RootEntry } from '../../../core/runtime/config.js';
 import type { ResourceLink } from '../common/mime.js';
 import type {
   IWorkspaceService,
@@ -34,172 +33,115 @@ export function registerWorkspaceTools({
   defaultMaxReadLines,
   memory
 }: RegisterWorkspaceToolsOptions): void {
-  registerJsonTool(
-    'synapse_list_roots',
-    {
-      title: 'List Roots',
-      description: 'List configured local roots available to this MCP server.',
-      inputSchema: {
-        limit: z.number().int().min(1).max(1000).default(100),
-        offset: z.number().int().min(0).default(0),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
-    },
-    async ({ limit, offset, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
-      paginateItems(workspace.listRoots(), limit as number, offset as number),
-      { item_format: item_format as string }
-    )
-  );
 
+  // --- Workspace Management Controller (synapse_workspace_manage) ---
+  // Refactored to flat z.object for Gemini compatibility
   registerJsonTool(
-    'synapse_list_projects',
+    ['synapse_workspace_manage'],
     {
-      title: 'List Projects',
-      description: 'List first-level project directories under a root.',
-      inputSchema: {
-        root_path: z.string().optional(),
-        max_entries: z.number().int().min(1).max(1000).optional(),
-        limit: z.number().int().min(1).max(1000).default(100),
-        offset: z.number().int().min(0).default(0),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
+      title: 'Workspace Management',
+      description: 'Unified controller for file operations, project metadata, and workspace exploration. Use "action" to select mode.',
+      inputSchema: z.object({
+        action: z.enum(['list_roots', 'list_projects', 'tree', 'read', 'file_changed', 'summarize', 'backfill']).describe('The workspace action to perform'),
+        root_path: z.string().optional().describe('Root path for project listing or backfill'),
+        project_path: z.string().optional().describe('Path to the project directory'),
+        path: z.string().optional().describe('Path to the specific file (action: read, file_changed)'),
+        limit: z.number().int().min(1).max(1000).optional().describe('Maximum number of results to return'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset'),
+        max_entries: z.number().int().min(1).max(10000).optional().describe('Maximum entries to return in lists or trees'),
+        max_depth: z.number().int().min(1).max(8).optional().describe('Maximum depth for directory tree'),
+        compact: z.boolean().default(false).describe('Return a compact tree representation'),
+        include_legacy_arrays: z.boolean().default(false).describe('Include legacy result formats'),
+        start_line: z.number().int().min(1).optional().describe('Starting line number (action: read)'),
+        end_line: z.number().int().min(1).optional().describe('Ending line number (action: read)'),
+        mode: z.enum(['lines', 'signatures']).optional().describe('Read mode: full lines or function signatures'),
+        max_files: z.number().int().min(100).max(20000).optional().describe('Max files to include in project summary'),
+        dry_run: z.boolean().default(false).describe('Perform a dry run without making changes (action: backfill)'),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose').describe('Output verbosity')
+      }),
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: BUNDLE_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
+      category: 'Workspace'
     },
-    async ({ root_path, max_entries, limit, offset, item_format }: Record<string, unknown>) => {
-      const effectiveLimit = (max_entries || limit) as number;
-      const projects = workspace.listProjects(root_path as string | undefined, 2000);
-      const paged = paginateItems(projects, effectiveLimit, offset as number);
-      return McpResponseMapper.standardizeResponse(
-        {
-          ...paged,
-          truncated_total: projects.length === 2000
-        },
-        { item_format: item_format as string }
-      );
-    }
-  );
+    async (args: Record<string, unknown>) => {
+      const { action, ...params } = args;
 
-  registerJsonTool(
-    'synapse_project_tree',
-    {
-      title: 'Project Tree',
-      description: 'Return a compact tree of files/directories for a project path.',
-      inputSchema: {
-        project_path: z.string(),
-        max_depth: z.number().int().min(1).max(8).default(3),
-        max_entries: z.number().int().min(1).max(10000).default(1500),
-        compact: z.boolean().default(false),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: BUNDLE_RESULT_SCHEMA
-    },
-    async ({ project_path, max_depth, max_entries, compact, include_legacy_arrays, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
-      normalizeProjectTreeResult(
-        workspace.projectTree(project_path as string, max_depth as number, max_entries as number, compact as boolean),
-        project_path as string,
-        { includeLegacyArrays: Boolean(include_legacy_arrays) }
-      ),
-      { item_format: item_format as string }
-    )
-  );
-
-  registerJsonTool(
-    'synapse_read_file',
-    {
-      title: 'Read File',
-      description: 'Read a bounded chunk of a file with line numbers.',
-      inputSchema: {
-        path: z.string(),
-        start_line: z.number().int().min(1).default(1),
-        end_line: z.number().int().min(1).default(defaultMaxReadLines),
-        mode: z.enum(['lines', 'signatures']).default('lines')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: BUNDLE_RESULT_SCHEMA
-    },
-    async ({ path: filePath, start_line, end_line, mode }: Record<string, unknown>) => {
-      const result = normalizeReadFileChunkResult(
-        await workspace.readFileChunk(filePath as string, start_line as number, end_line as number, 800, mode as 'lines' | 'signatures'),
-        filePath as string,
-        start_line as number,
-        end_line as number
-      );
-      // HOOK-07: Proactive memory hints for linked files
-      if (memory) {
-        try {
-          const hintResult = await memory.getFileMemoryHints(filePath as string, false);
-          if (hintResult.hints.length > 0) {
-            (result as Record<string, unknown>)._memory_hints = hintResult.hints;
-          }
-        } catch {
-          // HOOK-09: Non-blocking -- hint failure does not affect file read
+      switch (action) {
+        case 'list_roots': {
+          return McpResponseMapper.standardizeResponse(
+            paginateItems(workspace.listRoots(), (params.limit ?? 100) as number, (params.offset ?? 0) as number),
+            { item_format: params.item_format as string }
+          );
         }
+        case 'list_projects': {
+          const effectiveLimit = (params.max_entries || params.limit || 100) as number;
+          const projects = workspace.listProjects(params.root_path as string | undefined, 2000);
+          const paged = paginateItems(projects, effectiveLimit, (params.offset ?? 0) as number);
+          return McpResponseMapper.standardizeResponse(
+            { ...paged, truncated_total: projects.length === 2000 },
+            { item_format: params.item_format as string }
+          );
+        }
+        case 'tree': {
+          return McpResponseMapper.standardizeResponse(
+            normalizeProjectTreeResult(
+              workspace.projectTree((params.project_path as string) || '', (params.max_depth ?? 3) as number, (params.max_entries ?? 1500) as number, params.compact as boolean),
+              (params.project_path as string) || '',
+              { includeLegacyArrays: Boolean(params.include_legacy_arrays) }
+            ),
+            { item_format: params.item_format as string }
+          );
+        }
+        case 'read': {
+          const result = normalizeReadFileChunkResult(
+            await workspace.readFileChunk(params.path as string, (params.start_line ?? 1) as number, (params.end_line ?? defaultMaxReadLines) as number, 800, (params.mode as 'lines' | 'signatures') || 'lines'),
+            params.path as string,
+            (params.start_line ?? 1) as number,
+            (params.end_line ?? defaultMaxReadLines) as number
+          );
+          if (memory) {
+            try {
+              const hintResult = await memory.getFileMemoryHints(params.path as string, false);
+              if (hintResult.hints.length > 0) (result as Record<string, unknown>)._memory_hints = hintResult.hints;
+            } catch {}
+          }
+          const rec = result as Record<string, unknown>;
+          const absPath = typeof rec.path === 'string' ? rec.path : (params.path as string);
+          const totalLines = typeof rec.total_lines === 'number' ? rec.total_lines : (typeof rec.end_line === 'number' ? rec.end_line : 0);
+          const description = `chunk ${rec.start_line}-${rec.end_line} of ${totalLines} lines`;
+          const resourceLinks: ResourceLink[] = absPath ? [buildResourceLink(absPath, description)] : [];
+          return createToolResponse(McpResponseMapper.standardizeResponse(result), { resourceLinks });
+        }
+        case 'file_changed': {
+          if (!memory) return McpResponseMapper.standardizeResponse({ file_path: params.path, hints: [] });
+          try {
+            const result = await memory.getFileMemoryHints(params.path as string, true);
+            return McpResponseMapper.standardizeResponse(result);
+          } catch (err) {
+            return McpResponseMapper.standardizeResponse({
+              file_path: params.path, hints: [],
+              error: err instanceof Error ? err.message : 'hint lookup failed'
+            });
+          }
+        }
+        case 'summarize': {
+          return McpResponseMapper.standardizeResponse(
+            normalizeProjectSummaryResult(
+              workspace.summarizeProject(params.project_path as string, (params.max_files ?? 3000) as number),
+              params.project_path as string
+            ),
+            { item_format: params.item_format as string }
+          );
+        }
+        case 'backfill': {
+          if (!memory) throw new Error('memory store not available');
+          const result = await memory.scanAndBackfillProjects({ rootPath: params.root_path as string, dryRun: params.dry_run as boolean });
+          return McpResponseMapper.standardizeResponse(result);
+        }
+        default:
+          throw new Error(`unknown action: ${action}`);
       }
-      // RLINK-01..03: emit one resource_link for the chunk
-      const rec = result as Record<string, unknown>;
-      const absPath = typeof rec.path === 'string' ? rec.path : (filePath as string);
-      const totalLines = typeof rec.total_lines === 'number' ? rec.total_lines : (typeof rec.end_line === 'number' ? rec.end_line : 0);
-      const description = `chunk ${rec.start_line}-${rec.end_line} of ${totalLines} lines`;
-      const resourceLinks: ResourceLink[] = absPath ? [buildResourceLink(absPath, description)] : [];
-      return createToolResponse(McpResponseMapper.standardizeResponse(result), { resourceLinks });
     }
   );
-
-  // HOOK-08: Report file changes and receive proactive memory hints
-  registerJsonTool(
-    'synapse_file_changed',
-    {
-      title: 'File Changed',
-      description: 'Report that a file was edited and receive proactive hints about high-importance memories linked to it. Memories with importance >= 70 that reference the file are flagged with suggest_update=true, indicating the memory may need updating to reflect the file change.',
-      inputSchema: {
-        path: z.string()
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: BUNDLE_RESULT_SCHEMA
-    },
-    async ({ path: filePath }: Record<string, unknown>) => {
-      if (!memory) {
-        return McpResponseMapper.standardizeResponse({ file_path: filePath, hints: [] });
-      }
-      try {
-        const result = await memory.getFileMemoryHints(filePath as string, true);
-        return McpResponseMapper.standardizeResponse(result);
-      } catch (err) {
-        // HOOK-09: Non-blocking -- return empty hints on failure
-        return McpResponseMapper.standardizeResponse({
-          file_path: filePath,
-          hints: [],
-          error: err instanceof Error ? err.message : 'hint lookup failed'
-        });
-      }
-    }
-  );
-
-  registerJsonTool(
-    'synapse_summarize_project',
-    {
-      title: 'Summarize Project',
-      description: 'Return a high-level summary of a project directory.',
-      inputSchema: {
-        project_path: z.string(),
-        max_files: z.number().int().min(100).max(20000).default(3000),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: BUNDLE_RESULT_SCHEMA
-    },
-    async ({ project_path, max_files, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
-      normalizeProjectSummaryResult(
-        workspace.summarizeProject(project_path as string, max_files as number),
-        project_path as string
-      ),
-      { item_format: item_format as string }
-    )
-  );
-
 }

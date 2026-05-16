@@ -46,9 +46,9 @@ Synapse offers an unprecedented feature set compared to specialized servers.
 | **AST-aware Chunking** | **✅** | ❌ | ✅ | ❌ |
 | **Temporal Time-Travel** | **✅** | ❌ | ❌ | ❌ |
 | **Local-first / No Cloud** | **✅** | Hybrid | ✅ | ✅ |
-| **Total MCP Tools** | **74** | 8 | 16 | ~10 |
+| **MCP Tool Model** | **Power Controllers** | Granular | Granular | Granular |
 
-*(Note: Synapse boasts a highly optimized tool payload size, compressed for maximum context efficiency during LLM reasoning).*
+*(Note: Synapse uses a high-density "Power Controller" model with ~14 tools that replace 74+ granular ones, maximizing context efficiency for LLM reasoning).*
 
 ## 🚀 Quick Start
 
@@ -88,13 +88,13 @@ Add Synapse to your AI client configuration (e.g., Claude Desktop, Cursor, Winds
 
 ## 🛠️ Comprehensive Tool Suites
 
-Synapse exposes **74 high-density MCP tools**, thoughtfully organized into powerful domains:
+Synapse exposes high-density **Power Controllers**, compatible with Gemini and Claude:
 
-- **Workspace & Discovery**: Navigate files, generate project summaries, and read code with bounded scopes (`project_tree`, `read_file`, `summarize_project`).
-- **Search & Code Intelligence**: Execute hybrid searches and look up precise AST symbols (`search_hybrid`, `find_usages`, `find_implementations`).
-- **Memory & Recall**: Store, retrieve, and deduplicate contextual knowledge across sessions (`memory_store`, `memory_list`, `memory_suggest_relations`).
-- **Knowledge Graph**: Traverse and manage temporal entity relationships (`synapse_kg_query`, `synapse_kg_manage`).
-- **Agent Context**: Prime your agent, teach lessons, and capture task outcomes (`agent_prime`, `teach`, `capture_outcome`).
+- **Workspace & Discovery**: Navigate files, generate project summaries, and read code with bounded scopes (`synapse_workspace_manage`).
+- **Search & Code Intelligence**: Execute hybrid searches and look up precise AST symbols (`synapse_search`, `synapse_symbol_query`).
+- **Memory & Recall**: Store, retrieve, and deduplicate contextual knowledge across sessions (`synapse_memory_manage`, `synapse_memory_query`).
+- **Knowledge Graph**: Traverse and manage temporal entity relationships (`synapse_kg_manage`, `synapse_kg_query`).
+- **Agent Context**: Prime your agent, teach lessons, and capture task outcomes (`synapse_agent_prime`, `synapse_memory_manage`).
 
 ## 🛡️ Enterprise Security & Reliability
 

@@ -1,5 +1,9 @@
 const siteBasePath = String.fromEnvironment('SITE_BASE_PATH');
 
+const stableVersion = 'v2026.05.0';
+const betaVersion = 'v2026.05.1-beta.0';
+const currentTrack = 'beta'; // 'stable' or 'beta'
+
 String get siteBaseHref {
   if (siteBasePath.isEmpty) {
     return '/';

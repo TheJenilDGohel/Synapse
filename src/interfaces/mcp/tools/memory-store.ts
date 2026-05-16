@@ -1,11 +1,24 @@
 import { z } from 'zod';
-import { normalizeMemoryEventsResult, normalizeMemoryEntryPayload, normalizeMemoryRecallResult, normalizeMemorySuggestionResult, normalizeRelatedMemoriesResult, normalizeRelationRemovalResult, normalizeRelationResult, normalizeDeleteResult } from '../common/response-normalizers.js';
+import {
+  normalizeMemoryEventsResult,
+  normalizeMemoryEntryPayload,
+  normalizeMemoryRecallResult,
+  normalizeMemorySuggestionResult,
+  normalizeRelatedMemoriesResult,
+  normalizeRelationRemovalResult,
+  normalizeRelationResult,
+  normalizeDeleteResult,
+  normalizeCaptureOutcomeResult,
+  normalizeMemoryStatus,
+  normalizeTaskContextResult
+} from '../common/response-normalizers.js';
 import { McpResponseMapper } from '../utils/response-mapper.js';
 import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,
   IDEMPOTENT_WRITE_ANNOTATIONS,
-  DESTRUCTIVE_ANNOTATIONS
+  DESTRUCTIVE_ANNOTATIONS,
+  ToolLevel
 } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
 import type {
@@ -17,7 +30,7 @@ import type {
   MemoryEventStatus
 } from '../common/schemas.js';
 
-import { IMemoryService } from '../../../core/interfaces/services.js';
+import { IMemoryService, IMemoryWorkflowService } from '../../../core/interfaces/services.js';
 
 type OutputArchetype = { data: z.ZodTypeAny; meta: z.ZodTypeAny };
 interface SharedSchemas {
@@ -37,17 +50,19 @@ interface SharedSchemas {
   OUTPUT_FREEFORM_RESULT_SCHEMA: OutputArchetype;
 }
 
-export interface RegisterMemoryStoreToolsOptions {
+export interface RegisterMemoryToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   schemas: SharedSchemas;
   memory: IMemoryService;
+  memoryWorkflow: IMemoryWorkflowService;
 }
 
-export function registerMemoryStoreTools({
+export function registerMemoryTools({
   registerJsonTool,
   schemas,
-  memory
-}: RegisterMemoryStoreToolsOptions): void {
+  memory,
+  memoryWorkflow
+}: RegisterMemoryToolsOptions): void {
   const {
     MEMORY_KIND_SCHEMA,
     MEMORY_STATUS_SCHEMA,
@@ -57,403 +72,223 @@ export function registerMemoryStoreTools({
     MEMORY_EVENT_STATUS_SCHEMA
   } = schemas;
 
+  // --- Memory Manage Controller (synapse_memory_manage) ---
+  // Refactored to flat z.object for Gemini compatibility
   registerJsonTool(
-    ['synapse_memory_list'],
+    ['synapse_memory_manage'],
     {
-      title: 'Memory List',
-      description: 'List stored memories with optional scope, kind, nest, branch, and tag filters. Use item_format=compact to drop content/metadata (~50% fewer tokens) or lite to return only id+title (~85% fewer tokens).',
-      inputSchema: {
-        kind: MEMORY_KIND_SCHEMA.optional(),
-        status: MEMORY_STATUS_SCHEMA.optional(),
-        project_path: z.string().optional(),
-        topic: z.string().optional(),
-        nest: z.string().optional(),
-        branch: z.string().optional(),
-        actor_id: z.string().max(200).optional(),
-        tags: z.array(z.string()).optional(),
-        limit: z.number().int().min(1).max(200).default(20),
-        offset: z.number().int().min(0).default(0),
-        // quick 260415-n69: opt-in token savings via item_format tiers.
-        // `verbose` (default) preserves backwards compat; `compact` keeps
-        // id/title/summary/tags/kind/importance (~50% smaller); `lite`
-        // keeps id/title only (~85% smaller). Named `item_format` to avoid
-        // collision with createJsonToolRegistrar's auto-injected
-        // `response_format: json|markdown` serialization parameter.
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
-    },
-    async ({ kind, status, project_path, topic, nest, branch, actor_id, tags, limit, offset, item_format }: Record<string, unknown>) => McpResponseMapper.standardizeResponse(
-      normalizeMemoryRecallResult(
-        await memory.listEntries({
-          kind,
-          status,
-          projectPath: project_path,
-          topic,
-          nest,
-          branch,
-          actorId: actor_id as string | undefined,
-          tags,
-          limit,
-          offset
-        })
-      ),
-      { item_format: item_format as string }
-    )
-  );
-
-  registerJsonTool(
-    ['synapse_memory_get'],
-    {
-      title: 'Memory Get',
-      description: 'Fetch one stored memory with revision history.',
-      inputSchema: {
-        id: z.string().min(1)
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
-    },
-    async ({ id }: Record<string, unknown>) => {
-      const item = await memory.getEntry(id as string);
-      if (!item) {
-        throw new Error(`memory not found: ${id}`);
-      }
-      return McpResponseMapper.standardizeResponse(normalizeMemoryEntryPayload(item));
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_store'],
-    {
-      title: 'Memory Store',
-      description: 'Store a durable local memory entry.',
-      inputSchema: {
-        title: z.string().min(1).max(400),
-        content: z.string().min(1).max(20000),
-        kind: MEMORY_KIND_SCHEMA.optional(),
-        summary: z.string().max(4000).optional(),
-        status: MEMORY_STATUS_SCHEMA.optional(),
-        importance: z.number().int().min(0).max(100).optional(),
-        confidence: z.number().min(0).max(1).optional(),
-        tags: z.array(z.string()).max(50).optional(),
-        links: z.array(MEMORY_LINK_SCHEMA).max(50).optional(),
-        scope: MEMORY_SCOPE_SCHEMA.optional(),
-        nest: z.string().max(200).optional(),
-        branch: z.string().max(200).optional(),
-        actor_id: z.string().max(200).optional(),
-        source_type: z.string().max(60).optional(),
-        source_ref: z.string().max(1000).optional(),
-        change_note: z.string().max(400).optional(),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
+      title: 'Memory Manage',
+      description: 'Unified controller for all memory mutations (store, update, delete, relations, ingestion).',
+      inputSchema: z.object({
+        action: z.enum(['store', 'update', 'delete', 'capture_event', 'add_relation', 'remove_relation', 'store_batch', 'teach', 'capture_outcome']).describe('The memory mutation action to perform'),
+        id: z.string().optional().describe('Memory ID (action: update, delete, get, suggest, related)'),
+        ids: z.array(z.string()).max(100).optional().describe('Batch of Memory IDs (action: delete)'),
+        title: z.string().min(1).max(400).optional().describe('Memory title (action: store, update, capture_event, capture_outcome)'),
+        content: z.string().min(1).max(20000).optional().describe('Memory content (action: store, update, capture_event, capture_outcome, store_batch)'),
+        kind: MEMORY_KIND_SCHEMA.optional().describe('Memory kind (action: store, update, capture_event, capture_outcome, store_batch)'),
+        summary: z.string().max(4000).optional().describe('Memory summary (action: store, update, capture_event, capture_outcome)'),
+        status: MEMORY_STATUS_SCHEMA.optional().describe('Memory status (action: store, update, capture_event, capture_outcome)'),
+        importance: z.number().int().min(0).max(100).optional().describe('Importance score (0-100)'),
+        confidence: z.number().min(0).max(1).optional().describe('Confidence score (0-1)'),
+        tags: z.array(z.string()).max(50).optional().describe('Tags to associate with the memory'),
+        links: z.array(MEMORY_LINK_SCHEMA).max(50).optional().describe('Internal/External links'),
+        scope: MEMORY_SCOPE_SCHEMA.optional().describe('Memory scope (root, project, branch, topic, feature)'),
+        nest: z.string().max(200).optional().describe('Taxonomy nest name'),
+        branch: z.string().max(200).optional().describe('Taxonomy branch name'),
+        actor_id: z.string().max(200).optional().describe('ID of the actor who created the memory'),
+        source_type: z.string().max(60).optional().describe('Type of the source (action: store, update, capture_event)'),
+        source_ref: z.string().max(1000).optional().describe('Reference to the source material'),
+        change_note: z.string().max(400).optional().describe('Note describing the change (action: store, update)'),
+        event_type: MEMORY_EVENT_TYPE_SCHEMA.optional().describe('Type of event (action: capture_event, capture_outcome)'),
+        event_status: MEMORY_EVENT_STATUS_SCHEMA.optional().describe('Status of the event (action: capture_event, capture_outcome)'),
+        files_changed: z.number().int().min(0).max(10000).optional().describe('Number of files changed (action: capture_event, capture_outcome)'),
+        has_tests: z.boolean().optional().describe('Whether tests were included (action: capture_event, capture_outcome)'),
+        source_id: z.string().optional().describe('Source ID for relation (action: add_relation, remove_relation)'),
+        target_id: z.string().optional().describe('Target ID for relation (action: add_relation, remove_relation)'),
+        relation_type: z.string().max(60).optional().describe('Type of relation (action: add_relation)'),
+        memories: z.array(z.any()).max(100).optional().describe('Batch of memory objects (action: store_batch)'),
+        instruction: z.string().max(4000).optional().describe('Durable behavior rule (action: teach)'),
+        task: z.string().optional().describe('Task identifier (action: capture_outcome)'),
+        details: z.string().optional().describe('Outcome details (action: capture_outcome)'),
+        root_path: z.string().optional().describe('Root path for context/outcome'),
+        project_path: z.string().optional().describe('Project path for context/outcome'),
+        branch_name: z.string().optional().describe('Branch name for context/outcome'),
+        topic: z.string().optional().describe('Topic for context/outcome'),
+        feature: z.string().optional().describe('Feature for context/outcome'),
+        terse: z.enum(['minimal', 'verbose']).default('verbose').describe('Output verbosity')
+      }),
       annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
+      outputSchema: schemas.OUTPUT_FREEFORM_RESULT_SCHEMA,
+      category: 'Memory Management'
     },
-    async ({ terse, ...args }: Record<string, unknown>) => {
-      const result = await memory.storeEntry(args);
-      const r = result as Record<string, unknown>;
-      const normalized = normalizeMemoryEntryPayload(
-        r?.memory || null,
-        {
-          created: Boolean(r?.created),
-          duplicate: Boolean(r?.duplicate)
+    async (args: Record<string, unknown>) => {
+      const { action, terse = 'verbose', ...params } = args;
+
+      switch (action) {
+        case 'store': {
+          const result = await memory.storeEntry(params);
+          const r = result as Record<string, unknown>;
+          const normalized = normalizeMemoryEntryPayload(r?.memory || null, { created: Boolean(r?.created), duplicate: Boolean(r?.duplicate) });
+          const response = McpResponseMapper.standardizeResponse(normalized, { terse: terse as string });
+          if (r?.auto_linked_entities) (response as any).auto_linked_entities = r.auto_linked_entities;
+          if (r?.auto_triples) (response as any).auto_triples = r.auto_triples;
+          return response;
         }
-      );
-      
-      const response = McpResponseMapper.standardizeResponse(normalized, { terse: terse as string });
-      
-      // FUSE-03: Attach auto-link results when present
-      if (r?.auto_linked_entities) {
-        (response as Record<string, unknown>).auto_linked_entities = r.auto_linked_entities;
+        case 'update': {
+          const result = await memory.updateEntry(params.id as string, params);
+          return McpResponseMapper.standardizeResponse(normalizeMemoryEntryPayload(result, { updated: true }), { terse: terse as string });
+        }
+        case 'delete': {
+          if (params.ids) {
+            const result = await memory.deleteEntryBatch({ ids: params.ids as string[] });
+            return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
+          }
+          const result = await memory.deleteEntry(params.id as string);
+          return McpResponseMapper.standardizeResponse(normalizeDeleteResult(result, { id: params.id as string }), { terse: terse as string });
+        }
+        case 'capture_event': {
+          const result = await memory.captureEvent({ ...params, status: params.event_status as any });
+          return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
+        }
+        case 'add_relation': {
+          const result = await memory.addRelation(params.source_id as string, params.target_id as string, (params.relation_type as string) || 'related');
+          return McpResponseMapper.standardizeResponse(normalizeRelationResult(result, { source_id: params.source_id as string, target_id: params.target_id as string, relation_type: (params.relation_type as string) || 'related' }), { terse: terse as string });
+        }
+        case 'remove_relation': {
+          const result = await memory.removeRelation(params.source_id as string, params.target_id as string);
+          return McpResponseMapper.standardizeResponse(normalizeRelationRemovalResult(result, { source_id: params.source_id as string, target_id: params.target_id as string }), { terse: terse as string });
+        }
+        case 'store_batch': {
+          const result = await memory.storeEntryBatch({ memories: params.memories as any[], response_format: terse as any });
+          return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
+        }
+        case 'teach': {
+          const result = await memoryWorkflow.teach(params as any);
+          return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
+        }
+        case 'capture_outcome': {
+          const result = await memoryWorkflow.captureOutcome({ ...params, status: params.event_status as any });
+          return McpResponseMapper.standardizeResponse(normalizeCaptureOutcomeResult(result), { terse: terse as string });
+        }
+        default:
+          throw new Error(`unknown action: ${action}`);
       }
-      if (r?.auto_triples) {
-        (response as Record<string, unknown>).auto_triples = r.auto_triples;
+    }
+  );
+
+  // --- Memory Query Controller (synapse_memory_query) ---
+  // Refactored to flat z.object for Gemini compatibility
+  registerJsonTool(
+    ['synapse_memory_query'],
+    {
+      title: 'Memory Query',
+      description: 'Unified controller for all memory read operations (list, get, recall, context, events, taxonomy).',
+      inputSchema: z.object({
+        action: z.enum(['list', 'get', 'recall', 'task_context', 'events', 'suggest', 'related', 'status', 'whats_new', 'nest_list', 'nest_branches', 'taxonomy_tree']).describe('The memory read action to perform'),
+        id: z.string().optional().describe('Memory ID (action: get, suggest, related)'),
+        query: z.string().optional().describe('Search query string (action: recall, task_context)'),
+        kind: MEMORY_KIND_SCHEMA.optional().describe('Filter by memory kind'),
+        status: MEMORY_STATUS_SCHEMA.optional().describe('Filter by memory status'),
+        project_path: z.string().optional().describe('Filter by project path'),
+        topic: z.string().optional().describe('Filter by topic'),
+        nest: z.string().optional().describe('Filter by taxonomy nest'),
+        branch: z.string().optional().describe('Filter by taxonomy branch'),
+        actor_id: z.string().max(200).optional().describe('Filter by actor ID'),
+        tags: z.array(z.string()).optional().describe('Filter by tags'),
+        limit: z.number().int().min(1).max(200).optional().describe('Maximum number of results to return'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset'),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose').describe('Output verbosity'),
+        root_path: z.string().optional().describe('Scope recall/context to root'),
+        branch_name: z.string().optional().describe('Scope recall/context to branch name'),
+        feature: z.string().optional().describe('Scope recall/context to feature'),
+        task: z.string().optional().describe('Current task identifier (action: task_context)'),
+        threshold: z.number().min(0).max(1).optional().describe('Similarity threshold (action: suggest)'),
+        max_results: z.number().int().min(1).max(50).optional().describe('Max results (action: suggest)'),
+        include_legacy_arrays: z.boolean().default(false).describe('Include legacy result formats'),
+        since: z.string().optional().describe('ISO timestamp for delta query (action: whats_new)'),
+        agent_id: z.string().optional().describe('Agent ID filter (action: whats_new)')
+      }),
+      annotations: READ_ONLY_ANNOTATIONS,
+      outputSchema: schemas.OUTPUT_FREEFORM_RESULT_SCHEMA,
+      category: 'Memory Management'
+    },
+    async (args: Record<string, unknown>) => {
+      const { action, item_format = 'verbose', ...params } = args;
+
+      switch (action) {
+        case 'list': {
+          const result = await memory.listEntries({
+            kind: params.kind as any,
+            status: params.status as any,
+            projectPath: params.project_path as any,
+            topic: params.topic as any,
+            nest: params.nest as any,
+            branch: params.branch as any,
+            actorId: params.actor_id as any,
+            tags: params.tags as any,
+            limit: (params.limit ?? 20) as any,
+            offset: (params.offset ?? 0) as any
+          });
+          return McpResponseMapper.standardizeResponse(normalizeMemoryRecallResult(result), { item_format: item_format as string });
+        }
+        case 'get': {
+          const item = await memory.getEntry(params.id as string);
+          if (!item) throw new Error(`memory not found: ${params.id}`);
+          return McpResponseMapper.standardizeResponse(normalizeMemoryEntryPayload(item));
+        }
+        case 'recall': {
+          const result = await memory.recall({
+            query: params.query as string,
+            rootPath: params.root_path as any,
+            projectPath: params.project_path as any,
+            branchName: params.branch_name as any,
+            topic: params.topic as any,
+            feature: params.feature as any,
+            kind: params.kind as any,
+            actorId: params.actor_id as any,
+            tags: params.tags as any,
+            limit: (params.limit ?? 10) as any
+          });
+          return McpResponseMapper.standardizeResponse(normalizeMemoryRecallResult(result, params.query as string), { item_format: item_format as string });
+        }
+        case 'task_context': {
+          const result = await memoryWorkflow.getTaskContext({ ...params, limit: params.limit ?? 8 } as any);
+          return McpResponseMapper.standardizeResponse(normalizeTaskContextResult(result, { ...params, limit: params.limit ?? 8 } as any), { item_format: item_format as string });
+        }
+        case 'events': {
+          const result = await memory.listEvents({ projectPath: params.project_path as any, limit: (params.limit ?? 20) as any, offset: (params.offset ?? 0) as any });
+          return McpResponseMapper.standardizeResponse(normalizeMemoryEventsResult(result), { item_format: item_format as string });
+        }
+        case 'suggest': {
+          const result = await memory.suggestRelations(params.id as string, { threshold: (params.threshold ?? 0.55) as number, maxResults: (params.max_results ?? 10) as number });
+          return McpResponseMapper.standardizeResponse(normalizeMemorySuggestionResult(result, params.id as string, (params.threshold ?? 0.55) as number, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'related': {
+          const result = await memory.getRelated(params.id as string);
+          return McpResponseMapper.standardizeResponse(normalizeRelatedMemoriesResult(result, params.id as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'status': {
+          return McpResponseMapper.standardizeResponse(normalizeMemoryStatus(await memory.getStatus()));
+        }
+        case 'whats_new': {
+          const result = await memory.whatsNew({ since: params.since as string, agentId: params.agent_id as string, projectPath: params.project_path as string, limit: (params.limit ?? 10) as number });
+          return McpResponseMapper.standardizeResponse(result, { item_format: item_format as string });
+        }
+        case 'nest_list': {
+          const result = await memory.listNests();
+          return McpResponseMapper.standardizeResponse(result);
+        }
+        case 'nest_branches': {
+          const result = await memory.listBranches(params.nest as string);
+          return McpResponseMapper.standardizeResponse(result);
+        }
+        case 'taxonomy_tree': {
+          const result = await memory.getTaxonomyTree();
+          return McpResponseMapper.standardizeResponse(result);
+        }
+        default:
+          throw new Error(`unknown action: ${action}`);
       }
-      return response;
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_update'],
-    {
-      title: 'Memory Update',
-      description: 'Update a stored memory entry and append a revision.',
-      inputSchema: {
-        id: z.string().min(1),
-        kind: MEMORY_KIND_SCHEMA.optional(),
-        title: z.string().min(1).max(400).optional(),
-        summary: z.string().max(4000).optional(),
-        content: z.string().min(1).max(20000).optional(),
-        status: MEMORY_STATUS_SCHEMA.optional(),
-        importance: z.number().int().min(0).max(100).optional(),
-        confidence: z.number().min(0).max(1).optional(),
-        tags: z.array(z.string()).max(50).optional(),
-        links: z.array(MEMORY_LINK_SCHEMA).max(50).optional(),
-        scope: MEMORY_SCOPE_SCHEMA.optional(),
-        source_type: z.string().max(60).optional(),
-        source_ref: z.string().max(1000).optional(),
-        change_note: z.string().max(400).default('Memory updated'),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
-    },
-    async ({ id, terse, ...patch }: Record<string, unknown>) => {
-      const result = await memory.updateEntry(id as string, patch);
-      return McpResponseMapper.standardizeResponse(
-        normalizeMemoryEntryPayload(result, { updated: true }), 
-        { terse: terse as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_delete'],
-    {
-      title: 'Memory Delete',
-      description: 'Delete a stored memory entry and all of its revisions.',
-      inputSchema: {
-        id: z.string().min(1),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: DESTRUCTIVE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
-    },
-    async ({ id, terse }: Record<string, unknown>) => {
-      const result = await memory.deleteEntry(id as string);
-      return McpResponseMapper.standardizeResponse(
-        normalizeDeleteResult(result, { id: id as string }), 
-        { terse: terse as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_delete_batch'],
-    {
-      title: 'Memory Delete Batch',
-      description: 'Delete up to 100 memory entries in a single call. Returns the count of deleted entries and per-row errors for IDs that were not found or failed.',
-      inputSchema: {
-        ids: z.array(z.string().min(1)).min(1).max(100),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: DESTRUCTIVE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
-    },
-    async ({ ids, terse }: Record<string, unknown>) => {
-      const result = await memory.deleteEntryBatch({ ids: ids as string[] });
-      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_capture_event'],
-    {
-      title: 'Memory Capture Event',
-      description: 'Ingest a background work event and auto-promote meaningful events into durable memory.',
-      inputSchema: {
-        event_type: MEMORY_EVENT_TYPE_SCHEMA,
-        status: MEMORY_EVENT_STATUS_SCHEMA,
-        title: z.string().min(1).max(400),
-        summary: z.string().max(4000).default(''),
-        content: z.string().max(20000).default(''),
-        kind: MEMORY_KIND_SCHEMA.optional(),
-        importance: z.number().int().min(0).max(100).optional(),
-        confidence: z.number().min(0).max(1).optional(),
-        files_changed: z.number().int().min(0).max(10000).default(0),
-        has_tests: z.boolean().default(false),
-        tags: z.array(z.string()).max(50).default([]),
-        links: z.array(MEMORY_LINK_SCHEMA).max(50).default([]),
-        scope: MEMORY_SCOPE_SCHEMA,
-        nest: z.string().max(200).optional(),
-        branch: z.string().max(200).optional(),
-        source_ref: z.string().max(1000).default(''),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_MEMORY_RESULT_SCHEMA
-    },
-    async ({ terse, ...args }: Record<string, unknown>) => {
-      const result = await memory.captureEvent(args);
-      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_events'],
-    {
-      title: 'Memory Events',
-      description: 'List recently captured memory events and whether they were promoted into durable memory.',
-      inputSchema: {
-        project_path: z.string().optional(),
-        limit: z.number().int().min(1).max(200).default(20),
-        offset: z.number().int().min(0).default(0),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
-    },
-    async ({ project_path, limit, offset, item_format }: Record<string, unknown>) => {
-      const result = await memory.listEvents({
-        projectPath: project_path,
-        limit,
-        offset
-      });
-      return McpResponseMapper.standardizeResponse(
-        normalizeMemoryEventsResult(result),
-        { item_format: item_format as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_suggest_relations'],
-    {
-      title: 'Memory Suggest Relations',
-      description: 'Find semantically similar memory entries that could be linked to a given memory. Uses dense embeddings (all-MiniLM-L6-v2) when available, falls back to token overlap. Returns candidates ranked by similarity without creating any relations — use synapse_memory_add_relation to confirm.',
-      inputSchema: {
-        id: z.string().min(1),
-        threshold: z.number().min(0).max(1).default(0.55),
-        max_results: z.number().int().min(1).max(50).default(10),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
-    },
-    async ({ id, threshold, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) => {
-      const result = await memory.suggestRelations(id as string, { 
-        threshold: threshold as number, 
-        maxResults: max_results as number 
-      });
-      return McpResponseMapper.standardizeResponse(
-        normalizeMemorySuggestionResult(
-          result,
-          id as string,
-          threshold as number,
-          { includeLegacyArrays: Boolean(include_legacy_arrays) }
-        ),
-        { item_format: item_format as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_add_relation'],
-    {
-      title: 'Memory Add Relation',
-      description: 'Link two memory entries with a named relation. Use to build a traversable knowledge graph (e.g. "depends_on", "contradicts", "supersedes", "related").',
-      inputSchema: {
-        source_id: z.string().min(1),
-        target_id: z.string().min(1),
-        relation_type: z.string().min(1).max(60).default('related'),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: IDEMPOTENT_WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
-    },
-    async ({ source_id, target_id, relation_type, terse }: Record<string, unknown>) => {
-      const result = await memory.addRelation(source_id as string, target_id as string, relation_type as string);
-      return McpResponseMapper.standardizeResponse(
-        normalizeRelationResult(result, { 
-          source_id: source_id as string, 
-          target_id: target_id as string, 
-          relation_type: relation_type as string 
-        }), 
-        { terse: terse as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_remove_relation'],
-    {
-      title: 'Memory Remove Relation',
-      description: 'Remove a relation between two memory entries.',
-      inputSchema: {
-        source_id: z.string().min(1),
-        target_id: z.string().min(1),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: DESTRUCTIVE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_ACK_RESULT_SCHEMA
-    },
-    async ({ source_id, target_id, terse }: Record<string, unknown>) => {
-      const result = await memory.removeRelation(source_id as string, target_id as string);
-      return McpResponseMapper.standardizeResponse(
-        normalizeRelationRemovalResult(result, { 
-          source_id: source_id as string, 
-          target_id: target_id as string 
-        }),
-        { terse: terse as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_related'],
-    {
-      title: 'Memory Related',
-      description: 'Return all memory entries linked to a given memory ID, traversing the knowledge graph one hop in both directions.',
-      inputSchema: {
-        id: z.string().min(1),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_SEARCH_RESULT_SCHEMA
-    },
-    async ({ id, include_legacy_arrays, item_format }: Record<string, unknown>) => {
-      const result = await memory.getRelated(id as string);
-      return McpResponseMapper.standardizeResponse(
-        normalizeRelatedMemoriesResult(
-          result,
-          id as string,
-          { includeLegacyArrays: Boolean(include_legacy_arrays) }
-        ),
-        { item_format: item_format as string }
-      );
-    }
-  );
-
-  registerJsonTool(
-    ['synapse_memory_store_batch'],
-    {
-      title: 'Memory Store Batch',
-      description: 'Store up to 100 memory entries in a single atomic transaction. Deduplicates via fingerprint and optional semantic similarity. Returns created/duplicate counts and per-row validation errors.',
-      inputSchema: {
-        memories: z.array(z.object({
-          kind: MEMORY_KIND_SCHEMA.optional(),
-          title: z.string().max(400).optional(),
-          summary: z.string().max(4000).optional(),
-          content: z.string().min(1).max(20000),
-          status: MEMORY_STATUS_SCHEMA.optional(),
-          importance: z.number().int().min(0).max(100).optional(),
-          confidence: z.number().min(0).max(1).optional(),
-          tags: z.array(z.string()).max(50).optional(),
-          links: z.array(MEMORY_LINK_SCHEMA).max(50).optional(),
-          scope: MEMORY_SCOPE_SCHEMA.optional(),
-          nest: z.string().max(200).optional(),
-          branch: z.string().max(200).optional(),
-          agent_id: z.string().max(200).optional(),
-          actor_id: z.string().max(200).optional(),
-          source_type: z.string().max(60).optional(),
-          source_ref: z.string().max(1000).optional(),
-          change_note: z.string().max(400).optional(),
-          dedup_threshold: z.number().min(0).max(1).optional()
-        })).min(1).max(100),
-        terse: z.enum(['minimal', 'verbose']).default('verbose')
-      },
-      annotations: WRITE_ANNOTATIONS,
-      outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA
-    },
-    async ({ memories, terse }: Record<string, unknown>) => {
-      const result = await memory.storeEntryBatch({
-        memories: memories as Array<Record<string, unknown>>,
-        response_format: terse as 'minimal' | 'verbose'
-      });
-      return McpResponseMapper.standardizeResponse(result, { terse: terse as string });
     }
   );
 }

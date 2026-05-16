@@ -3,6 +3,42 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026.05.1-beta.0] - 2026-05-15
+
+### 📚 Documentation (Diátaxis & Agent-First)
+- **Agent-First Layer**: Added `llms.txt` and `SKILL.md` for rapid context ingestion by AI agents (GEO).
+- **Diátaxis Restructure**: Completely reorganized documentation into focused categories: Tutorials, How-to Guides, Reference, and Explanation.
+- **Neural Branding**: Refined documentation content to reflect Synapse's bio-inspired architecture.
+
+### ⚡ CI/CD Optimization
+- **Parallelization**: Refactored GitHub Actions to run 7 quality jobs in parallel, reducing fast-path feedback to < 2 minutes.
+- **Job Splitting**: Separated Unit, Integration, and E2E tests into dedicated jobs with optimized matrices.
+- **Path Filtering**: CI now intelligently skips heavy test suites for documentation-only changes.
+- **Granular Tooling**: Added `quality:*` scripts to `package.json` for precise pipeline control.
+
+### 🔄 Versioning
+- **CalVer Standard**: Fully transitioned to `YYYY.MM.Patch` with zero-padded months for consistency.
+- **Automation**: Implemented `bump-version.mjs` to handle automated CalVer increments and beta cycles.
+
+## [2026.05.0] - 2026-05-15
+
+### 🔄 Versioning
+- **CalVer Transition**: Switched from SemVer to Calendar Versioning (`YYYY.MM.Patch`) for better alignment with the rapid release cycle and temporal context mission.
+- **Leading Zero Standard**: Standardized on zero-padded months (e.g., `2026.05.0`) for consistent sortability and readability.
+
+### 🚀 Tool Density & AI Compatibility
+- **JIT Loading**: Implemented just-in-time tool loading to reduce the initial MCP schema size and token overhead.
+- **Tool Categorization**: Introduced hierarchical tool categories for improved discovery via `synapse_help` and `synapse_discovery`.
+- **Power Controllers**: Consolidated 72+ granular tools into 12 high-density "Power Controllers" using flat JSON objects for maximum compatibility.
+  - `synapse_memory_manage`: Consolidated store, update, delete, relations, ingestion, and workflow teach/outcome.
+  - `synapse_memory_query`: Consolidated list, recall, context, events, and taxonomy.
+  - `synapse_search`: Consolidated file, code, hybrid, and unified search.
+  - `synapse_symbol_query`: Consolidated callers, definition, implementations, usages, and rename preview.
+  - `synapse_workspace_manage`: Consolidated root listing, project mapping, tree exploration, and file reading.
+  - `synapse_system_manage`: Consolidated indexing, health audits, database maintenance, and updates.
+- **Gemini Compatibility**: Refactored all tool schemas to use flat objects and explicit parameter descriptions, resolving discovery issues in Gemini and Vertex AI clients.
+- **Breaking Changes**: Removed 60+ redundant granular tools in favor of unified controllers to minimize context window "tax".
+
 ## [1.0.0] - 2026-05-12
 
 ### 🚀 Stable Release
@@ -40,19 +76,19 @@ All notable changes to this project will be documented in this file.
 - **Enhanced Normalization**: Introduced the `McpResponseMapper` to unify and optimize tool output across the platform.
 - **Clean Slate**: Removed redundant test files and legacy tool definitions to streamline the codebase.
 
-## [0.0.1-beta.2] - 2026-05-03
+## [0.0.1-beta.2] - 2026.5.03
 
 ### 🛠️ Hotfixes
 - **Dependency Stabilization**: Resolved strict peer dependency conflicts with `tree-sitter` and its language parsers that were preventing clean global installations.
 - **Search Binary Fix**: Replaced problematic `ripgrep-bin` with `@vscode/ripgrep` to ensure `rg` works flawlessly across all platforms without requiring native compilation (make/gcc) on Windows.
 
-## [0.0.1-beta.1] - 2026-05-03
+## [0.0.1-beta.1] - 2026.5.03
 
 ### 🔄 Redistribution & Sync
 - **Package Rename**: Official redistribution as `synapse-cortex` on npm.
 - **CI/CD Stabilization**: Synchronized version markers and release tags for automated distribution.
 
-## [0.0.1-beta] - 2026-05-03
+## [0.0.1-beta] - 2026.5.03
 
 ### 🚀 Zero-Friction Installation
 - **Bundled ripgrep**: Integrated `ripgrep-bin` for out-of-the-box code search even if system-wide `rg` is missing.

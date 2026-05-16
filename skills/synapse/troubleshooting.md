@@ -7,7 +7,7 @@ Symptom: `sdk_import` check fails (`ERR_MODULE_NOT_FOUND`).
 Fix:
 ```bash
 npm install
-synapse-doctor
+synapse doctor
 ```
 
 ## ripgrep missing
@@ -19,9 +19,9 @@ To get full performance:
 - Linux: `sudo apt-get install ripgrep`
 - Windows: `winget install BurntSushi.ripgrep.MSVC`
 
-## File exceeds size cap in `read_file`
+## File exceeds size cap in `read` action
 
-Synapse caps reads at 800 lines per window. Narrow your `start_line` / `end_line` range.
+Synapse caps reads at 800 lines per window. Narrow your `start_line` / `end_line` range in `synapse_workspace_manage({ action: "read" })`.
 
 ## MCP startup timeout
 
@@ -35,17 +35,17 @@ startup_timeout_sec = 30
 ## Semantic search returns no results
 
 Check:
-- `synapse_index_status`
-- `synapse_embed_status`
+- `synapse_system_manage({ action: "index_status" })`
+- `synapse_system_manage({ action: "embed_status" })`
 
 Interpretation:
 - `enabled=true` but `available=false` means the embedding model is configured but has not loaded successfully in the current runtime.
-- If `search_hybrid` returns `reranker.applied=false`, inspect the reranker/model path instead of assuming semantic ranking is active.
+- If `synapse_search({ action: "hybrid" })` returns `reranker.applied=false`, inspect the reranker/model path instead of assuming semantic ranking is active.
 
 Then rebuild with:
 
 ```bash
-synapse_index_project
+synapse_system_manage({ action: "index_project" })
 ```
 
 ## glob `*.ts` returns no results from subdirectories
@@ -56,12 +56,12 @@ Use `**/*.ts` instead of `*.ts`.
 
 Synapse auto-falls back to JSON backend. Confirm via:
 - `synapse_server_status`
-- `synapse_index_status`
+- `synapse_system_manage({ action: "index_status" })`
 
 ## Memory disabled or unavailable
 
 Check:
-- `synapse_memory_status`
+- `synapse_memory_query({ action: "status" })`
 
 Common causes:
 - user did not opt in during setup
@@ -69,4 +69,4 @@ Common causes:
 
 ## Duplicate-looking tools in MCP clients
 
-Stable releases expose canonical `synapse_*` tools only.
+Stable releases expose canonical `synapse_*` tools only. Use high-density **Power Controllers** with the `action` parameter.

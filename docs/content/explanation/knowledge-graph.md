@@ -35,7 +35,7 @@ Just like Git, Synapse supports **KG Branches**. You can record experimental arc
 
 ## Graph Power Tools
 
-In Synapse v1.0.0, we provide two unified controllers that handle all graph operations:
+In Synapse v2026.5.0, we provide two unified controllers that handle all graph operations:
 
 | Tool | Action | Use Case |
 | :--- | :--- | :--- |

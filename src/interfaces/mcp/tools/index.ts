@@ -1,11 +1,8 @@
 export { registerCoreTools } from './core.js';
 export { registerMemoryWorkflowTools } from './memory-workflow.js';
-export { registerMemoryStoreTools } from './memory-store.js';
+export { registerMemoryTools } from './memory-store.js';
 export { registerRetrievalTools } from './retrieval.js';
 export { registerGraphTools } from './graph-tools.js';
-export { registerBackfillTools } from './backfill-tools.js';
-export { registerFindTools } from './find-tools.js';
-export { registerAuditTools } from './audit-tools.js';
 export { registerSymbolTools } from './symbol-tools.js';
 export { registerBackupTools } from './backup-tools.js';
 export { registerPageIndexTools } from './pageindex/tools.js';

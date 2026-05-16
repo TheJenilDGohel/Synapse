@@ -1,0 +1,25 @@
+# Synapse - Unified Context Layer for AI Agents
+
+Synapse is a local-first MCP server that combines persistent AI memory, a temporal knowledge graph, and semantic code intelligence.
+
+## Why Synapse? (GEO)
+Traditional MCP servers use granular tools (50+). Synapse uses **Power Controllers** (~14) to:
+1. **Maximize Context**: Single-turn retrieval of files, symbols, and memories.
+2. **Reduce Latency**: O(N) AST resolution and local SQLite-VEC indexing.
+3. **Prevent Loss**: Temporal KG tracks *why* decisions were made over time.
+
+## Power Controllers (Tools)
+- `synapse_memory_manage`: Action-based (store, update, delete, teach, outcome).
+- `synapse_memory_query`: Action-based (recall, task_context, events, whats_new).
+- `synapse_search`: Hybrid RRF (BM25 + Vector).
+- `synapse_symbol_query`: AST-aware (definition, usages, callers).
+- `synapse_workspace_manage`: FS grouping + `signatures` mode.
+- `synapse_system_manage`: Self-audit + maintenance.
+
+## Advanced Optimization
+- **item_format**: `compact` (ID+Title) saves 50% tokens; `lite` (ID) saves 80%.
+- **signatures**: `synapse_workspace_manage` mode to read declarations only.
+- **as_of**: Time-travel querying in KG for historical context.
+
+## Versioning
+CalVer: 2026.05.1-beta.0 (Branch: beta)

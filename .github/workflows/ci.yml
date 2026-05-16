@@ -2,42 +2,27 @@ name: CI
 
 on:
   push:
-    branches: [ "main", "milestone/v0.0.1-beta.3" ]
+    branches: [ "main", "milestone/*" ]
   pull_request:
-    branches: [ "main", "milestone/v0.0.1-beta.3" ]
+    branches: [ "main", "milestone/*" ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.vscode/**'
+      - '.github/ISSUE_TEMPLATE/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  check-lint-coverage:
-    name: Code Quality (check, lint, coverage)
+  quality:
+    name: Quality (${{ matrix.check }})
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund
-        
-      - name: Run check
-        run: npm run check
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run coverage
-        run: npm run test:coverage
-
-  quality-checks:
-    name: Quality Checks (cycles, deps, package, audit)
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [lint, typecheck, check-scripts, cycles, deps, package, audit, coverage]
     steps:
       - uses: actions/checkout@v4
 
@@ -50,22 +35,22 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --no-fund
 
-      - name: Run cycles check
-        run: npm run quality:cycles
+      - name: Run ${{ matrix.check }}
+        run: |
+          if [ "${{ matrix.check }}" == "coverage" ]; then
+            npm run test:coverage
+          elif [ "${{ matrix.check }}" == "typecheck" ]; then
+            npm run check
+          elif [ "${{ matrix.check }}" == "check-scripts" ]; then
+            npm run check
+          else
+            npm run quality:${{ matrix.check }}
+          fi
 
-      - name: Run deps check
-        run: npm run quality:deps
-
-      - name: Run package check
-        run: npm run quality:package
-
-      - name: Run audit check
-        run: npm run quality:audit
-
-  test-matrix:
-    name: Build & Test (${{ matrix.os }}, Node ${{ matrix.node }})
+  unit-tests:
+    name: Unit Tests (${{ matrix.os }}, Node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
-    needs: [check-lint-coverage, quality-checks]
+    needs: quality
     strategy:
       fail-fast: false
       matrix:
@@ -73,16 +58,16 @@ jobs:
         node: [18, 20, 22]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci --ignore-scripts --prefer-offline --no-audit --no-fund
-        
+
       - name: Run Postinstall manually
         run: npm run postinstall --if-present
         continue-on-error: true
@@ -90,8 +75,48 @@ jobs:
       - name: Run Unit Tests
         run: npm test
 
-      - name: Run Installation Integration Test
+  integration-tests:
+    name: Integration Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: quality
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Run Installation Test
         run: npm run test:install
 
-      - name: Run Live Usage E2E Test
+  e2e-tests:
+    name: E2E Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: quality
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Run E2E Tests
         run: npm run test:e2e

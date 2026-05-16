@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { toolRegistry, ToolLevel, type ToolRegistryEntry } from './registry.js';
+export { toolRegistry, ToolLevel, type ToolRegistryEntry };
 import { FREEFORM_RESULT_SCHEMA } from './schemas.js';
 import type { ResourceLink } from './mime.js';
 import { collapseRepetitiveLines, teeLargeOutput } from './context-compression.js';
@@ -258,6 +260,8 @@ interface ToolDefinition {
   annotations?: Record<string, unknown>;
   markdownTitle?: string;
   outputSchema?: { data: z.ZodTypeAny; meta: z.ZodTypeAny };
+  level?: ToolLevel;
+  category?: string;
 }
 
 interface McpServer {
@@ -281,9 +285,9 @@ export type RegisterJsonToolFn = (
 ) => void;
 
 export function createJsonToolRegistrar(server: McpServer, responseFormatSchema: z.ZodTypeAny, synapseHome?: string): RegisterJsonToolFn {
-  return function registerJsonTool(
+  const registrar = function registerJsonTool(
     names: string | string[],
-    { title, description, inputSchema, annotations, markdownTitle, outputSchema }: ToolDefinition,
+    { title, description, inputSchema, annotations, markdownTitle, outputSchema, level = ToolLevel.ADVANCED, category = 'General' }: ToolDefinition,
     handler: ToolHandler
   ): void {
     const canonical = Array.isArray(names) ? names[0] : names;
@@ -308,26 +312,63 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
       };
     }
 
-    server.registerTool(
-      canonical,
-      {
-        title,
-        description,
-        inputSchema: schema,
-        outputSchema: outputSchema ?? {
-          data: FREEFORM_RESULT_SCHEMA.data,
-          meta: FREEFORM_RESULT_SCHEMA.meta
-        },
-        annotations
+    const toolOptions = {
+      title,
+      description,
+      inputSchema: schema,
+      outputSchema: outputSchema ?? {
+        data: FREEFORM_RESULT_SCHEMA.data,
+        meta: FREEFORM_RESULT_SCHEMA.meta
       },
-      async (args: Record<string, unknown>, extra: unknown) => {
+      annotations
+    };
+
+    // Register with internal Synapse registry
+    toolRegistry.register({
+      name: canonical,
+      definition: toolOptions,
+      handler: async (args: Record<string, unknown>, extra: unknown) => {
         const incoming = args || {};
         const responseFormat = (incoming.response_format as string) || 'json';
         const toolArgs = { ...incoming };
         delete toolArgs.response_format;
         const data = await handler(toolArgs, extra);
         return toolResult(data, responseFormat, markdownTitle || title, undefined, synapseHome);
+      },
+      level,
+      category
+    });
+
+    // Only register Level 0 tools with the actual MCP server on initial boot.
+    // Level 1 tools are "discovered" later.
+    if (level === ToolLevel.CORE) {
+      server.registerTool(
+        canonical,
+        toolOptions,
+        async (args: Record<string, unknown>, extra: unknown) => {
+          const entry = toolRegistry.getEntry(canonical);
+          return entry!.handler(args, extra);
+        }
+      );
+      toolRegistry.activate(canonical);
+    }
+  };
+
+  // Add activation capability to the registrar
+  (registrar as any).activate = (name: string) => {
+    if (toolRegistry.isActive(name)) return;
+    const entry = toolRegistry.getEntry(name);
+    if (!entry) return;
+
+    server.registerTool(
+      entry.name,
+      entry.definition,
+      async (args: Record<string, unknown>, extra: unknown) => {
+        return entry.handler(args, extra);
       }
     );
+    toolRegistry.activate(name);
   };
+
+  return registrar;
 }

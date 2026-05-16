@@ -5,159 +5,104 @@ import {
   normalizeCallersResult,
   normalizeDefinitionResult,
   normalizeImplementationsResult,
-  normalizeRenamePreviewResult
+  normalizeRenamePreviewResult,
+  normalizeSymbolResult,
+  normalizeUsageResult
 } from '../common/response-normalizers.js';
 import { SEARCH_RESULT_SCHEMA } from '../common/schemas.js';
-import type { ISymbolSearchService } from '../../../core/interfaces/services.ts';
+import type { ISymbolSearchService, ISearchService } from '../../../core/interfaces/services.ts';
 import { McpResponseMapper } from '../utils/response-mapper.js';
 
 export interface RegisterSymbolToolsOptions {
   registerJsonTool: RegisterJsonToolFn;
   search: ISymbolSearchService;
+  coreSearch: ISearchService;
+  defaultMaxResults: number;
 }
 
 export function registerSymbolTools({
   registerJsonTool,
-  search
+  search,
+  coreSearch,
+  defaultMaxResults
 }: RegisterSymbolToolsOptions): void {
 
+  // --- Symbol Intelligence Controller (synapse_symbol_query) ---
+  // Refactored to flat z.object for Gemini compatibility
   registerJsonTool(
-    'synapse_find_callers',
+    ['synapse_symbol_query'],
     {
-      title: 'Find Callers',
-      description:
-        'Find every call site of a function or method across indexed files. ' +
-        'Returns file path, line number, and surrounding context for each call. ' +
-        'Requires the project to be indexed first via synapse_index_project.',
-      inputSchema: {
-        symbol: z.string().min(1).describe('The function or method name to find callers of'),
+      title: 'Symbol Query',
+      description: 'Unified controller for static code intelligence (callers, definitions, usages, implementations). Use "action" to select mode.',
+      inputSchema: z.object({
+        action: z.enum(['callers', 'definition', 'implementations', 'usages', 'get', 'rename_preview']).describe('The symbol intelligence action to perform'),
+        symbol: z.string().optional().describe('The symbol name to query (action: callers, definition, usages, get)'),
+        interface_name: z.string().optional().describe('The interface or trait name to find implementations of (action: implementations)'),
+        old_name: z.string().optional().describe('The current symbol name to rename (action: rename_preview)'),
+        new_name: z.string().optional().describe('The desired new name (action: rename_preview)'),
         project_path: z.string().optional().describe('Scope search to a specific project'),
+        all_roots: z.boolean().default(false).describe('Search across all configured roots'),
         language: z.string().optional().describe('Filter by language: typescript, javascript, python, go, rust'),
-        max_results: z.number().int().min(1).max(1000).default(100),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
+        max_results: z.number().int().min(1).max(2000).optional().describe('Maximum number of results to return'),
+        glob: z.string().default('*').describe('Glob pattern to filter files'),
+        case_sensitive: z.boolean().default(false).describe('Enable case-sensitive matching'),
+        context_lines: z.number().int().min(0).max(10).default(0).describe('Lines of context around matches'),
+        include_legacy_arrays: z.boolean().default(false).describe('Include legacy result formats'),
+        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose').describe('Output verbosity')
+      }),
       annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
+      outputSchema: SEARCH_RESULT_SCHEMA,
+      category: 'Symbol Intelligence'
     },
-    async ({ symbol, project_path, language, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
-      McpResponseMapper.standardizeResponse(
-        normalizeCallersResult(
-          search.findCallersSymbol({
-            symbol: symbol as string,
-            projectPath: project_path as string | undefined,
-            language: language as string | undefined,
-            maxResults: max_results as number
-          }),
-          symbol as string,
-          { includeLegacyArrays: Boolean(include_legacy_arrays) }
-        ),
-        { item_format: item_format as string }
-      )
-  );
+    async (args: Record<string, unknown>) => {
+      const { action, item_format = 'verbose', ...params } = args;
 
-  registerJsonTool(
-    'synapse_find_definition',
-    {
-      title: 'Find Definition',
-      description:
-        'Jump to the declaration location(s) of a symbol across TypeScript, JavaScript, ' +
-        'Python, Go, and Rust files. Returns file path, line range, and declaration text. ' +
-        'Requires the project to be indexed first via synapse_index_project.',
-      inputSchema: {
-        symbol: z.string().min(1).describe('The symbol name to find the definition of'),
-        project_path: z.string().optional().describe('Scope search to a specific project'),
-        language: z.string().optional().describe('Filter by language: typescript, javascript, python, go, rust'),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
-    },
-    async ({ symbol, project_path, language, include_legacy_arrays, item_format }: Record<string, unknown>) =>
-      McpResponseMapper.standardizeResponse(
-        normalizeDefinitionResult(
-          search.findDefinitionSymbol({
-            symbol: symbol as string,
-            projectPath: project_path as string | undefined,
-            language: language as string | undefined
-          }),
-          symbol as string,
-          { includeLegacyArrays: Boolean(include_legacy_arrays) }
-        ),
-        { item_format: item_format as string }
-      )
-  );
-
-  registerJsonTool(
-    'synapse_find_implementations',
-    {
-      title: 'Find Implementations',
-      description:
-        'Find every class, struct, or object that implements a given interface or trait. ' +
-        'Supports TypeScript implements, Python class inheritance, Rust impl-for, and Go struct patterns. ' +
-        'Requires the project to be indexed first via synapse_index_project.',
-      inputSchema: {
-        interface_name: z.string().min(1).describe('The interface or trait name to find implementations of'),
-        project_path: z.string().optional().describe('Scope search to a specific project'),
-        language: z.string().optional().describe('Filter by language: typescript, javascript, python, go, rust'),
-        max_results: z.number().int().min(1).max(1000).default(100),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
-    },
-    async ({ interface_name, project_path, language, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
-      McpResponseMapper.standardizeResponse(
-        normalizeImplementationsResult(
-          search.findImplementationsSymbol({
-            interfaceName: interface_name as string,
-            projectPath: project_path as string | undefined,
-            language: language as string | undefined,
-            maxResults: max_results as number
-          }),
-          interface_name as string,
-          { includeLegacyArrays: Boolean(include_legacy_arrays) }
-        ),
-        { item_format: item_format as string }
-      )
-  );
-
-  registerJsonTool(
-    'synapse_rename_preview',
-    {
-      title: 'Rename Preview',
-      description:
-        'Preview every location that would change when renaming a symbol. ' +
-        'Does NOT modify any files -- returns a dry-run list of changes grouped by file. ' +
-        'Requires the project to be indexed first via synapse_index_project.',
-      inputSchema: {
-        old_name: z.string().min(1).describe('The current symbol name to rename'),
-        new_name: z.string().min(1).describe('The desired new name'),
-        project_path: z.string().optional().describe('Scope search to a specific project'),
-        max_results: z.number().int().min(1).max(2000).default(500),
-        include_legacy_arrays: z.boolean().default(false),
-        item_format: z.enum(['verbose', 'compact', 'lite']).default('verbose')
-      },
-      annotations: READ_ONLY_ANNOTATIONS,
-      outputSchema: SEARCH_RESULT_SCHEMA
-    },
-    async ({ old_name, new_name, project_path, max_results, include_legacy_arrays, item_format }: Record<string, unknown>) =>
-      McpResponseMapper.standardizeResponse(
-        normalizeRenamePreviewResult(
-          search.renamePreviewSymbol({
-            oldName: old_name as string,
-            newName: new_name as string,
-            projectPath: project_path as string | undefined,
-            maxResults: max_results as number
-          }),
-          old_name as string,
-          new_name as string,
-          { includeLegacyArrays: Boolean(include_legacy_arrays) }
-        ),
-        { item_format: item_format as string }
-      )
+      switch (action) {
+        case 'callers': {
+          const results = search.findCallersSymbol({
+            symbol: params.symbol as string, projectPath: params.project_path as any, language: params.language as any,
+            maxResults: (params.max_results ?? 100) as number
+          });
+          return McpResponseMapper.standardizeResponse(normalizeCallersResult(results, params.symbol as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'definition': {
+          const results = search.findDefinitionSymbol({
+            symbol: params.symbol as string, projectPath: params.project_path as any, language: params.language as any
+          });
+          return McpResponseMapper.standardizeResponse(normalizeDefinitionResult(results, params.symbol as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'implementations': {
+          const results = search.findImplementationsSymbol({
+            interfaceName: params.interface_name as string, projectPath: params.project_path as any, language: params.language as any,
+            maxResults: (params.max_results ?? 100) as number
+          });
+          return McpResponseMapper.standardizeResponse(normalizeImplementationsResult(results, params.interface_name as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'usages': {
+          const results = coreSearch.findUsages({
+            symbol: params.symbol as string, projectPath: params.project_path as any, allRoots: params.all_roots as any,
+            glob: params.glob as any, maxResults: (params.max_results ?? defaultMaxResults) as any, caseSensitive: params.case_sensitive as any,
+            contextLines: params.context_lines as any
+          });
+          return McpResponseMapper.standardizeResponse(normalizeUsageResult(results, params.symbol as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'get': {
+          const results = coreSearch.getSymbol({
+            symbol: params.symbol as string, projectPath: params.project_path as any, allRoots: params.all_roots as any,
+            glob: params.glob as any, maxResults: (params.max_results ?? defaultMaxResults) as any, caseSensitive: params.case_sensitive as any
+          });
+          return McpResponseMapper.standardizeResponse(normalizeSymbolResult(results, params.symbol as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        case 'rename_preview': {
+          const results = search.renamePreviewSymbol({
+            oldName: params.old_name as string, newName: params.new_name as string, projectPath: params.project_path as any,
+            maxResults: (params.max_results ?? 500) as number
+          });
+          return McpResponseMapper.standardizeResponse(normalizeRenamePreviewResult(results, params.old_name as string, params.new_name as string, { includeLegacyArrays: Boolean(params.include_legacy_arrays) }), { item_format: item_format as string });
+        }
+        default:
+          throw new Error(`unknown action: ${action}`);
+      }
+    }
   );
 }
-

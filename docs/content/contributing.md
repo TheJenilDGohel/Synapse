@@ -5,11 +5,11 @@ description: Guide for contributing to the Synapse core and documentation.
 
 # Contributing to Synapse
 
-We are building a local-first MCP context server for code intelligence, persistent memory, and knowledge graph search. Whether you work on systems code, documentation, tests, or client integrations, contributions are welcome.
+Synapse is the transmission layer for AI project context. We welcome contributions that harden our "Biological" engine, optimize our "Power Controllers," or refine our "Neural" documentation.
 
-## Development Environment Setup
+## Elite Developer Setup
 
-Synapse requires **Node.js >= 22.6.0** and **TypeScript 6.0+**.
+Synapse uses cutting-edge Node.js features and TypeScript standards.
 
 ```bash
 git clone https://github.com/TheJenilDGohel/synapse.git
@@ -19,40 +19,39 @@ npm run setup
 npm run doctor
 ```
 
-## Quality Checks
+## Engineering Standards
 
-Before opening a pull request, run the project quality checks:
+To maintain the high-signal nature of Synapse, please follow these core mandates:
 
-```bash
-npm run quality
-```
+### 1. Power Controller Design
+We do not add granular tools. Every new capability must be integrated into one of our **Power Controllers** (Manage, Query, Search, etc.).
+- **Durable Unions**: Use discriminated unions in JSON schemas to handle multiple actions.
+- **Context Efficiency**: Always provide `compact` and `lite` output formats.
+- **Gemini Compatibility**: Keep input schemas flat (avoid nested objects where possible).
 
-Key commands:
+### 2. Downward Isolation
+Strictly respect the layer boundaries:
+- `src/interfaces/` → Thin wrappers (CLI/MCP).
+- `src/core/interfaces/` → The immutable contracts.
+- `src/core/engine/` → The heavy-lifting business logic.
+- `src/core/runtime/` → OS and hardware abstractions.
 
-- **`npm test`**: Executes the test suite using the native Node.js test runner.
-- **`npm run lint`**: Enforces ESLint rules.
-- **`npm run check`**: Performs static type analysis and syntax validation.
+### 3. Verification Rigor
+A PR is incomplete without verification:
+- **Unit Tests**: Coverage for the logic in `src/core/engine`.
+- **E2E Tests**: Live validation of the MCP tool-call in `src/e2e`.
+- **Performance Audit**: If changing AST logic, run `npm run stress:synapse`.
 
-## Architecture Rules
-
-Before proposing significant changes, review the **[Architecture Overview](pillars/architecture)**. The codebase follows downward-only dependencies:
-
-1. `interfaces` depends on `core` and application assembly code.
-2. `core` owns runtime, engine, memory, retrieval, and update logic.
-3. MCP tools should stay thin and delegate behavior to core services.
-
-## How to Contribute
-
-### Bug Reports & Feature Requests
-
-Submit issues via the [GitHub issue tracker](https://github.com/TheJenilDGohel/synapse/issues). Include reproduction steps, expected behavior, actual behavior, and environment details.
+## Professional Workflow
 
 ### Pull Requests
+1. **Branching**: Use `feat/` or `fix/` prefixes.
+2. **Atomic Commits**: Each commit should represent one logical "thought."
+3. **Docs-First**: If the tool call changes, the documentation must change in the *same* PR.
 
-- **Atomic scope**: Keep PRs focused on one logical change.
-- **Documentation**: Update `docs/content/` when adding or changing user-facing behavior.
-- **Tests**: Include focused tests for new features and bug fixes.
+### Behavioral Code of Conduct
+We follow the **[Neural Ethos]**: Be precise, be direct, and optimize for intelligence.
 
-## Code of Conduct
+---
 
-All contributors are expected to follow the [Code of Conduct](https://github.com/TheJenilDGohel/synapse/blob/main/CODE_OF_CONDUCT.md).
+*Thank you for helping us bridge the signal gap.*

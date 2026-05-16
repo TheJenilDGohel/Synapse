@@ -1,4 +1,4 @@
-# Synapse Milestone Roadmap: v1.0.0 Stable Release
+# Synapse Milestone Roadmap: v2026.5.0 Stable Release
 
 ## 🎯 Milestone Goal
 Stabilize the core engine, optimize tool context usage, and harden the architecture for final stable release.
@@ -60,9 +60,49 @@ Stabilize the core engine, optimize tool context usage, and harden the architect
 
 ## 💎 Phase 08: CLI Stability & Logic Refinement
 - **Goal**: Resolve critical CLI usability issues and logic bugs.
-- **Status**: ⏳ In Progress
+- **Status**: ✅ Completed
 - **Plans**: 3 plans
 - **Tasks**:
-  - [ ] Implement robust ANSI style chaining via Proxy (#99).
-  - [ ] Enable subcommand-level help across all CLI verbs (#100).
-  - [ ] Differentiate critical vs optional checks in doctor/onboard (#101).
+  - [x] Implement robust ANSI style chaining via Proxy (#99).
+  - [x] Enable subcommand-level help across all CLI verbs (#100).
+  - [x] Differentiate critical vs optional checks in doctor/onboard (#101).
+
+## 🚀 Phase 09: Tool Density Optimization
+- **Goal**: Reduce tool-schema token overhead and cognitive load.
+- **Status**: ✅ Completed
+- **Tasks**:
+  - [x] Audit token cost of all 74 current MCP tools.
+  - [x] Implement `synapse_help` / Dynamic Tool Discovery.
+  - [x] Consolidate granular tools (Git, Memory CRUD) into Power Tools.
+  - [x] Implement JIT tool loading in the MCP server.
+
+## 📦 Phase 10: MCP Tool Consolidation
+- **Goal**: Complete the transition to high-density controllers and remove 60+ redundant granular tools.
+- **Status**: ✅ Completed
+- **Plan**: `.planning/phases/10-tool-consolidation/10-01-PLAN.md`
+- **Tasks**:
+  - [x] Consolidate Memory tools into Manage/Query controllers.
+  - [x] Consolidate Search and Symbol tools into Power Controllers.
+  - [x] Consolidate Workspace and System tools.
+  - [x] Update `synapse_discovery` and `synapse_help` for new architecture.
+  - [x] Cleanup orphaned files and update CHANGELOG.
+
+## ⚡ Phase 11: CI/CD Optimization
+- **Goal**: Parallelize pipeline jobs and optimize resource usage.
+- **Status**: ✅ Completed
+- **Plan**: `.planning/phases/11-cicd-optimization/11-01-PLAN.md`
+- **Requirements**: [CI-OPT-01, CI-OPT-02, CI-OPT-03, CI-OPT-04, CI-OPT-05]
+- **Tasks**:
+  - [x] Add granular quality scripts to `package.json`.
+  - [x] Refactor `ci.yml` for parallel jobs and path-filtering.
+  - [x] Optimize `publish.yml` with caching and granular checks.
+
+## 📚 Phase 12: Documentation Transformation
+- **Goal**: Modernize documentation for humans and AI agents.
+- **Status**: ✅ Completed (Elite Deep-Dive)
+- **Tasks**:
+  - [x] Research and design "Agent-First" structure.
+  - [x] Implement `llms.txt` and `SKILL.md`.
+  - [x] Transform existing content to Diátaxis standards.
+  - [x] Update beta details and precise changelog.
+  - [x] Execute "Elite Deep-Dive" (JSON schemas, Temporal KG mechanics, Advanced config).

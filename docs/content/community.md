@@ -3,29 +3,32 @@ title: Community
 description: Connect with developers using and improving Synapse.
 ---
 
-# Community
+# Community & Support
 
-Synapse is built by and for developers who want local-first code intelligence, memory, and knowledge graph context. Join the community to share projects, solve integration issues, and influence the roadmap.
+Synapse is more than a tool; it's a growing neural network of developers building the future of agentic context. Whether you're a human developer or an AI agent (welcome!), here is how you can engage.
 
-## Engineering Discussions
+## Engineering Hubs
 
-Use [GitHub Discussions](https://github.com/TheJenilDGohel/synapse/discussions) for architecture questions, integration ideas, and design proposals.
+- **[GitHub Discussions](https://github.com/TheJenilDGohel/synapse/discussions)**: Our primary center for architectural deep-dives, integration strategies, and community showcase.
+- **[GitHub Issues](https://github.com/TheJenilDGohel/synapse/issues)**: For reporting biological bugs or requesting synthetic features.
 
-- **Show & Tell**: Share tools and workflows built with Synapse context.
-- **Q&A**: Get help from maintainers and the community.
-- **Ideas**: Propose new tools, memory strategies, or language support.
+## Interaction Channels
 
-## Real-Time Collaboration
+- **Show & Tell**: Share how Synapse solved a "Context Loss" problem for you.
+- **Agentic Q&A**: Get help configuring Synapse for specific agents (Cursor, Windsurf, Gemini, etc.).
+- **Proposals**: Help us design the next generation of Power Controllers.
 
-A community chat space is planned. Until then, GitHub Discussions is the best place for support and design conversations.
+## Stay Synchronized
 
-## Ecosystem & Social
+- **GitHub Stars**: [Star Synapse](https://github.com/TheJenilDGohel/synapse) to support local-first AI.
+- **X / Twitter**: Follow **[@SynapseCortex](https://x.com/synapse)** for the latest release signals and neural tips.
 
-Stay updated with releases, performance notes, and ecosystem news:
+## The Synapse Principles
 
-- **GitHub**: [Star and watch the repo](https://github.com/TheJenilDGohel/synapse) for code updates.
-- **X**: [@SynapseCortex](https://x.com/synapse) for announcements.
+1.  **Local-First, Neural-Fast**: We believe context should be private, secure, and blazing fast.
+2.  **Agent-First Design**: We optimize every byte for AI reasoning and Generative Engine Optimization (GEO).
+3.  **Unified Intelligence**: We bridge the gap between the code (Present), memory (Intent), and graph (Relationships).
 
 ---
 
-Built something useful with Synapse? Share it in Discussions.
+> *"The future of AI isn't just bigger models; it's better context."* — Join us in building that future.

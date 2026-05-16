@@ -28,18 +28,13 @@ import {
   buildUsageGuide,
   registerCoreTools,
   registerMemoryWorkflowTools,
-  registerMemoryStoreTools,
+  registerMemoryTools,
   registerRetrievalTools,
   registerGraphTools,
-  registerBackfillTools,
-  registerFindTools,
-  registerAuditTools,
   registerSymbolTools,
-  registerBackupTools,
   registerPageIndexTools
 } from '../mcp/index.js';
 import { MemoryWorkflowService } from '../../core/engine/index.js';
-import type { AppServices } from './create-services.js';
 
 export function registerAppTools(server: any, runtime: any, services: any): void {
   const registerJsonTool = createJsonToolRegistrar(server, RESPONSE_FORMAT_SCHEMA, runtime.synapseHome);
@@ -82,27 +77,30 @@ export function registerAppTools(server: any, runtime: any, services: any): void
     buildServerStatus,
     buildUsageGuide,
     updates: services.updates,
-    getLastHealthReport: services.getLastHealthReport ?? (() => null)
+    getLastHealthReport: services.getLastHealthReport ?? (() => null),
+    memory: services.memory,
+    vectorIndex: services.vectorIndex,
+    getMemoryAdapter: () => (services.memory as any).getAdapter?.() ?? null,
+    memoryDbPath: runtime.memoryDbPath
   });
 
   registerMemoryWorkflowTools({
+    registerJsonTool,
+    schemas: sharedSchemas,
+    memoryWorkflow
+  });
+
+  registerMemoryTools({
     registerJsonTool,
     schemas: sharedSchemas,
     memory: services.memory,
     memoryWorkflow
   });
 
-  registerMemoryStoreTools({
-    registerJsonTool,
-    schemas: sharedSchemas,
-    memory: services.memory
-  });
-
   registerRetrievalTools({
     registerJsonTool,
     paginateItems,
     workspace: services.workspace,
-    vectorIndex: services.vectorIndex,
     search: services.search,
     defaultMaxReadLines: DEFAULT_MAX_READ_LINES,
     defaultMaxResults: DEFAULT_MAX_RESULTS,
@@ -115,31 +113,11 @@ export function registerAppTools(server: any, runtime: any, services: any): void
     memory: services.memory
   });
 
-  registerBackfillTools({
-    registerJsonTool,
-    memory: services.memory
-  });
-
-  registerFindTools({
-    registerJsonTool,
-    memory: services.memory,
-    search: services.search
-  });
-
-  registerAuditTools({
-    registerJsonTool,
-    memory: services.memory
-  });
-
   registerSymbolTools({
     registerJsonTool,
-    search: services.search
-  });
-
-  registerBackupTools({
-    registerJsonTool,
-    getMemoryAdapter: () => (services.memory as any).getAdapter?.() ?? null,
-    memoryDbPath: runtime.memoryDbPath,
+    search: services.symbolSearch,
+    coreSearch: services.search,
+    defaultMaxResults: DEFAULT_MAX_RESULTS
   });
 
   registerPageIndexTools({

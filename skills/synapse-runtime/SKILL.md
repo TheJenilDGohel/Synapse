@@ -1,6 +1,6 @@
 ---
 name: synapse-runtime
-version: 0.3.0-beta.2
+version: 2026.5.0
 description: Expert system for Synapse runtime architecture, installation orchestration, and diagnostic systems.
 category: tools
 tags: [lifecycle, installation, diagnostics, configuration, startup-performance]
@@ -18,11 +18,11 @@ Master the installation and initialization lifecycle of Synapse. This skill cove
 ### 1. The PCL Skill System
 Synapse treats "Skill Installation" as a primary runtime event. The runtime expert uses `install-synapse-skill.mjs` to synchronize instructions across 10+ different AI tool families, generating client-native files (like `.mdc` for Cursor or `AGENTS.md` for OpenCode) to ensure seamless tool discovery.
 
-### 2. Diagnostic Integrity (Doctor)
-The `synapse doctor` command is the source of truth for runtime health. It validates Node.js versions, verifies database connectivity, audits knowledge graph density, and checks if the semantic index is current.
+### 2. Diagnostic Integrity (Health/Status)
+The `synapse_health` and `synapse_server_status` tools are the source of truth for runtime health. They validate Node.js versions, verify database connectivity, audit knowledge graph density, and check if the semantic index is current.
 
 ### 3. Graceful Startup
-Synapse implements a "lazy-start" architecture. Heavy modules (like semantic retrievers or indexers) are only imported when their specific tools are called. This keeps the MCP server's initial heartbeat fast enough to satisfy strict agent timeout requirements.
+Synapse implements a "lazy-start" architecture. Heavy modules (like semantic retrievers or indexers) are only imported when their specific tools (e.g., `synapse_search({ action: "hybrid" })`) are called. This keeps the MCP server's initial heartbeat fast enough to satisfy strict agent timeout requirements.
 
 ## Code Examples
 
@@ -57,7 +57,7 @@ async function ensureConfigDir(path) {
 ## Best Practices
 
 1. **Test the Published CLI**: Always verify changes by running the compiled/linked CLI (`synapse`) rather than just the raw source scripts.
-2. **Zero-Lock Startup**: Ensure that checking the server status or running `doctor` never acquires a database lock that could block a long-running indexing process.
+2. **Zero-Lock Startup**: Ensure that checking the server status or running `synapse_health` never acquires a database lock that could block a long-running indexing process.
 3. **Environment Variable Precedence**: System configuration should follow a clear hierarchy: CLI Flags > Environment Variables > Config File > Defaults.
 4. **Tool-Family Awareness**: When generating instruction files, always respect the specific formatting and file-naming conventions of the target AI client.
 

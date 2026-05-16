@@ -1,3 +1,5 @@
+export { toolRegistry, ToolLevel } from './registry.js';
+export type { ToolRegistryEntry } from './registry.js';
 export {
   RESPONSE_SCHEMA_VERSION,
   createToolResponse,
