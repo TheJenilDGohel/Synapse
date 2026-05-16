@@ -375,7 +375,6 @@ export class SqliteVecIndexService {
     let removed = 0;
     const failedFiles: { path: string; error: string }[] = [];
 
-    const stmtSelectSig = dbRef.prepare('SELECT signature FROM files WHERE path = ?');
     const stmtSelectChunkTermsByFile = dbRef.prepare('SELECT id, terms_json FROM chunks WHERE file_path = ?');
     const stmtDeleteTermIndexByFile = dbRef.prepare('DELETE FROM term_index WHERE chunk_id IN (SELECT id FROM chunks WHERE file_path = ?)');
     const stmtDeleteChunks = dbRef.prepare('DELETE FROM chunks WHERE file_path = ?');
@@ -385,7 +384,11 @@ export class SqliteVecIndexService {
     );
     const stmtInsertTermIndex = dbRef.prepare('INSERT OR IGNORE INTO term_index(term, chunk_id) VALUES (?, ?)');
 
-    const existingRows = dbRef.prepare('SELECT path FROM files').all() as { path: string }[];
+    const existingRows = dbRef.prepare('SELECT path, signature FROM files').all() as { path: string, signature: string }[];
+    const existingSignatures = new Map<string, string>();
+    for (const row of existingRows) {
+      existingSignatures.set(row.path, row.signature);
+    }
     const beforeChunkCount = (dbRef.prepare('SELECT COUNT(*) AS c FROM chunks').get() as { c: number })?.c || 0;
     const deltaDf = new Map<string, number>();
     let deltaTotalChunks = 0;
@@ -425,9 +428,9 @@ export class SqliteVecIndexService {
       try {
         const st = fs.statSync(filePath);
         const signature = makeFileSignature(st);
-        const existing = stmtSelectSig.get(filePath) as { signature: string } | undefined;
+        const existingSignature = existingSignatures.get(filePath);
 
-        if (!force && existing && existing.signature === signature) {
+        if (!force && existingSignature && existingSignature === signature) {
           skipped += 1;
           continue;
         }
@@ -454,7 +457,7 @@ export class SqliteVecIndexService {
           return { ...chunk, enrichment };
         }));
 
-        const existingChunkRows = existing ? stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[] : [];
+        const existingChunkRows = existingSignature ? stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[] : [];
 
         if (existingChunkRows.length > 0) {
           for (const oldRow of existingChunkRows) {
