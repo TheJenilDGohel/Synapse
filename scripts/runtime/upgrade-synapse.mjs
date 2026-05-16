@@ -278,8 +278,10 @@ async function main() {
     return;
   }
 
-  const packageName = parseArg('package') || 'synapse';
-  const targetVersion = resolveTargetVersion();
+  const rawPackageName = parseArg('package') || 'synapse';
+  const packageName = rawPackageName.replace(/[^a-zA-Z0-9@/._-]/g, '');
+  const rawTargetVersion = resolveTargetVersion();
+  const targetVersion = rawTargetVersion ? rawTargetVersion.replace(/[^a-zA-Z0-9.-]/g, '') : null;
   const installTarget = normalizeInstallTarget(targetVersion);
   const skipSkill = hasFlag('skip-skill');
   const dryRun = hasFlag('dry-run');

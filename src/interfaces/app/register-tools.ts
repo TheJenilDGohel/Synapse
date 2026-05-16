@@ -31,7 +31,8 @@ import {
   registerMemoryTools,
   registerRetrievalTools,
   registerGraphTools,
-  registerSymbolTools
+  registerSymbolTools,
+  registerPageIndexTools
 } from '../mcp/index.js';
 import { MemoryWorkflowService } from '../../core/engine/index.js';
 
@@ -117,5 +118,10 @@ export function registerAppTools(server: any, runtime: any, services: any): void
     search: services.symbolSearch,
     coreSearch: services.search,
     defaultMaxResults: DEFAULT_MAX_RESULTS
+  });
+
+  registerPageIndexTools({
+    registerJsonTool,
+    workspace: services.workspace
   });
 }
