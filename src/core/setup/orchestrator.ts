@@ -4,14 +4,14 @@ import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import {
   ensureSqliteVecExtension,
-  migrateSynapseHomeLayout,
-  resolveSynapseHome,
+  migrateLociHomeLayout,
+  resolveLociHome,
   resolveWritableModelCacheDir,
-  buildSynapsePaths
+  buildLociPaths
 } from '../runtime/index.js';
 import {
-  buildSynapseServerConfig,
-  installSynapseIntoDetectedClients
+  buildLociServerConfig,
+  installLociIntoDetectedClients
 } from './client-installer.js';
 
 export interface SetupOptions {
@@ -28,12 +28,12 @@ export interface SetupOptions {
 }
 
 export class SetupService {
-  private synapseHome: string;
+  private lociHome: string;
   private layout: any;
 
   constructor(env: Record<string, string | undefined> = process.env) {
-    this.synapseHome = resolveSynapseHome(env);
-    this.layout = migrateSynapseHomeLayout(this.synapseHome).paths;
+    this.lociHome = resolveLociHome(env);
+    this.layout = migrateLociHomeLayout(this.lociHome).paths;
   }
 
   public getLayout() {
@@ -83,7 +83,7 @@ export class SetupService {
   }
 
   public async runSetup(options: SetupOptions): Promise<any> {
-    // Ported from setup-synapse.mjs logic
+    // Ported from setup-loci.mjs logic
     // (Simplified for brevity in this step, but maintaining core logic)
     
     const roots = options.paths 
@@ -91,7 +91,7 @@ export class SetupService {
       : this.collectSuggestions().map((p, i) => ({ label: this.toLabel(p, `root${i+1}`), path: p }));
 
     const config = {
-      name: 'synapse',
+      name: 'loci',
       version: 4,
       updatedAt: new Date().toISOString(),
       roots,

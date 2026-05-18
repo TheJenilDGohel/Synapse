@@ -1,7 +1,7 @@
 /**
- * Self-test CLI command for Synapse.
+ * Self-test CLI command for Loci.
  *
- *   synapse selftest [--json]
+ *   loci selftest [--json]
  *
  * Runs end-to-end validation of the full pipeline:
  *   Runtime, Memory, Knowledge Graph, Taxonomy, Dedup,
@@ -35,9 +35,9 @@ import {
 
 export async function run(args: string[], opts: GlobalOptions): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    process.stdout.write('Synapse Self-Test - End-to-end system validation\n\n');
+    process.stdout.write('Loci Self-Test - End-to-end system validation\n\n');
     process.stdout.write('Usage:\n');
-    process.stdout.write('  synapse selftest [options]\n\n');
+    process.stdout.write('  loci selftest [options]\n\n');
     process.stdout.write('Options:\n');
     process.stdout.write('  --json      output results as JSON\n');
     process.stdout.write('  --help, -h  show this help\n');
@@ -159,7 +159,7 @@ export async function run(args: string[], opts: GlobalOptions): Promise<void> {
 
   const lines: string[] = [];
 
-  process.stdout.write(`\n  ${c.bold('Synapse Self-Check')}  ${c.gray(`v${SERVER_VERSION}`)}\n`);
+  process.stdout.write(`\n  ${c.bold('Loci Self-Check')}  ${c.gray(`v${SERVER_VERSION}`)}\n`);
   process.stdout.write(`  ${c.dim('Running system diagnostics and integration tests...')}\n\n`);
 
   for (const r of results) {

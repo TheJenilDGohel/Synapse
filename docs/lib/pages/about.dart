@@ -12,26 +12,26 @@ class About extends StatelessComponent {
       h1([text('Community & Support')]),
       p([
         text(
-          'Synapse is an open-source project built by and for the developer community. Here is how you can get involved and get help.',
+          'Loci is an open-source project built by and for the developer community. Here is how you can get involved and get help.',
         ),
       ]),
 
       div(classes: 'support-grid', [
         _buildSupportCard(
           'GitHub Discussions',
-          'Ask questions, share ideas, and connect with other Synapse users.',
-          'https://github.com/TheJenilDGohel/synapse/discussions',
+          'Ask questions, share ideas, and connect with other Loci users.',
+          'https://github.com/TheJenilDGohel/loci/discussions',
           '💬',
         ),
         _buildSupportCard(
           'Issue Tracker',
           'Report bugs or request new features on our GitHub repository.',
-          'https://github.com/TheJenilDGohel/synapse/issues',
+          'https://github.com/TheJenilDGohel/loci/issues',
           '🐛',
         ),
         _buildSupportCard(
           'Contributing',
-          'Help improve Synapse by contributing code, docs, tests, or issue reports.',
+          'Help improve Loci by contributing code, docs, tests, or issue reports.',
           '/contributing',
           '🤝',
         ),

@@ -1,19 +1,19 @@
 ---
 title: Contributing
-description: Guide for contributing to the Synapse core and documentation.
+description: Guide for contributing to the Loci core and documentation.
 ---
 
-# Contributing to Synapse
+# Contributing to Loci
 
-Synapse is the transmission layer for AI project context. We welcome contributions that harden our "Biological" engine, optimize our "Power Controllers," or refine our "Neural" documentation.
+Loci is the transmission layer for AI project context. We welcome contributions that harden our "Biological" engine, optimize our "Power Controllers," or refine our "Neural" documentation.
 
 ## Elite Developer Setup
 
-Synapse uses cutting-edge Node.js features and TypeScript standards.
+Loci uses cutting-edge Node.js features and TypeScript standards.
 
 ```bash
-git clone https://github.com/TheJenilDGohel/synapse.git
-cd synapse
+git clone https://github.com/TheJenilDGohel/loci.git
+cd loci
 npm install
 npm run setup
 npm run doctor
@@ -21,7 +21,7 @@ npm run doctor
 
 ## Engineering Standards
 
-To maintain the high-signal nature of Synapse, please follow these core mandates:
+To maintain the high-signal nature of Loci, please follow these core mandates:
 
 ### 1. Power Controller Design
 We do not add granular tools. Every new capability must be integrated into one of our **Power Controllers** (Manage, Query, Search, etc.).
@@ -40,7 +40,7 @@ Strictly respect the layer boundaries:
 A PR is incomplete without verification:
 - **Unit Tests**: Coverage for the logic in `src/core/engine`.
 - **E2E Tests**: Live validation of the MCP tool-call in `src/e2e`.
-- **Performance Audit**: If changing AST logic, run `npm run stress:synapse`.
+- **Performance Audit**: If changing AST logic, run `npm run stress:loci`.
 
 ## Professional Workflow
 

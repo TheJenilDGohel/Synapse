@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import {
-  buildSynapsePaths,
-  resolveSynapseHome,
+  buildLociPaths,
+  resolveLociHome,
   resolveWritableModelCacheDir,
   resolveConfigPath as resolveDefaultConfigPath,
 } from './home-layout.js';
@@ -28,14 +28,14 @@ export class DiagnosticService {
   constructor(env: Record<string, string | undefined> = process.env) {
     this.safeEnv = {
       HOME: env.HOME || '',
-      SYNAPSE_HOME: env.SYNAPSE_HOME || '',
-      SYNAPSE_CONFIG: env.SYNAPSE_CONFIG || '',
-      SYNAPSE_INDEX_BACKEND: env.SYNAPSE_INDEX_BACKEND || '',
-      SYNAPSE_SQLITE_VEC_EXTENSION: env.SYNAPSE_SQLITE_VEC_EXTENSION || '',
-      SYNAPSE_SQLITE_VEC_SEARCH_DIRS: env.SYNAPSE_SQLITE_VEC_SEARCH_DIRS || '',
-      SYNAPSE_EMBED_CACHE_DIR: env.SYNAPSE_EMBED_CACHE_DIR || '',
-      SYNAPSE_RERANKER_CACHE_DIR: env.SYNAPSE_RERANKER_CACHE_DIR || '',
-      SYNAPSE_DOCTOR_STRICT: env.SYNAPSE_DOCTOR_STRICT || '',
+      LOCI_HOME: env.LOCI_HOME || '',
+      LOCI_CONFIG: env.LOCI_CONFIG || '',
+      LOCI_INDEX_BACKEND: env.LOCI_INDEX_BACKEND || '',
+      LOCI_SQLITE_VEC_EXTENSION: env.LOCI_SQLITE_VEC_EXTENSION || '',
+      LOCI_SQLITE_VEC_SEARCH_DIRS: env.LOCI_SQLITE_VEC_SEARCH_DIRS || '',
+      LOCI_EMBED_CACHE_DIR: env.LOCI_EMBED_CACHE_DIR || '',
+      LOCI_RERANKER_CACHE_DIR: env.LOCI_RERANKER_CACHE_DIR || '',
+      LOCI_DOCTOR_STRICT: env.LOCI_DOCTOR_STRICT || '',
       USER: env.USER || '',
       USERNAME: env.USERNAME || '',
     };
@@ -61,12 +61,12 @@ export class DiagnosticService {
   private resolveConfigPath(): string {
     return resolveDefaultConfigPath({
       env: this.safeEnv,
-      synapseHome: resolveSynapseHome(this.safeEnv)
+      lociHome: resolveLociHome(this.safeEnv)
     });
   }
 
   private resolveIndexBackend(): string {
-    const byEnv = (this.safeEnv.SYNAPSE_INDEX_BACKEND || '').trim();
+    const byEnv = (this.safeEnv.LOCI_INDEX_BACKEND || '').trim();
     if (byEnv) return byEnv;
 
     const cfgPath = this.resolveConfigPath();
@@ -169,7 +169,7 @@ export class DiagnosticService {
         id: 'config_file',
         ok: false,
         detail: `Config not found: ${configPath}`,
-        fix: 'Run synapse setup to create config.'
+        fix: 'Run loci setup to create config.'
       };
     }
 
@@ -181,7 +181,7 @@ export class DiagnosticService {
         id: 'config_file',
         ok: false,
         detail: `Invalid JSON config: ${configPath}`,
-        fix: 'Fix JSON syntax in synapse.config.json.'
+        fix: 'Fix JSON syntax in loci.config.json.'
       };
     }
 
@@ -190,7 +190,7 @@ export class DiagnosticService {
         id: 'config_file',
         ok: false,
         detail: 'Config has no roots[]',
-        fix: 'Add at least one valid root path in synapse.config.json.'
+        fix: 'Add at least one valid root path in loci.config.json.'
       };
     }
 
@@ -211,7 +211,7 @@ export class DiagnosticService {
         id: 'config_file',
         ok: false,
         detail: `Some configured roots are missing: ${missing.join(', ')}`,
-        fix: 'Update synapse.config.json with existing directories.'
+        fix: 'Update loci.config.json with existing directories.'
       };
     }
 
@@ -227,13 +227,13 @@ export class DiagnosticService {
       return { id: 'sqlite_vec_extension', ok: true, detail: 'sqlite-vec native extension not required for current backend' };
     }
 
-    const configured = (this.safeEnv.SYNAPSE_SQLITE_VEC_EXTENSION || '').trim();
-    const synapseHome = resolveSynapseHome(this.safeEnv);
+    const configured = (this.safeEnv.LOCI_SQLITE_VEC_EXTENSION || '').trim();
+    const lociHome = resolveLociHome(this.safeEnv);
     const configuredPath = configured ? path.resolve(configured) : '';
     const detected = configuredPath
       ? (fs.existsSync(configuredPath) ? { path: configuredPath, source: 'configured' } : null)
       : findSqliteVecExtensionPath({
-        synapseHome,
+        lociHome,
         env: this.safeEnv
       });
 
@@ -251,13 +251,13 @@ export class DiagnosticService {
       detail: configuredPath
         ? `sqlite-vec backend selected but configured vec0 path is missing: ${configuredPath}`
         : 'sqlite-vec backend selected but vec0 native extension is not configured',
-      fix: 'Run synapse setup again so Synapse can install/configure sqlite-vec, or set SYNAPSE_SQLITE_VEC_EXTENSION to the vec0 shared library path.'
+      fix: 'Run loci setup again so Loci can install/configure sqlite-vec, or set LOCI_SQLITE_VEC_EXTENSION to the vec0 shared library path.'
     };
   }
 
   public checkModelCacheWritable(): DoctorCheckResult {
-    const synapseHome = resolveSynapseHome(this.safeEnv);
-    const defaultCache = buildSynapsePaths(synapseHome).dirs.cache;
+    const lociHome = resolveLociHome(this.safeEnv);
+    const defaultCache = buildLociPaths(lociHome).dirs.cache;
     
     // Minimalistic parsing to avoid dependency on complex config service here
     let configEmbeddingCache = '';
@@ -272,23 +272,23 @@ export class DiagnosticService {
     } catch { /* ignore */ }
 
     const embedPreferred = path.resolve(
-      (this.safeEnv.SYNAPSE_EMBED_CACHE_DIR || '').trim() ||
+      (this.safeEnv.LOCI_EMBED_CACHE_DIR || '').trim() ||
       configEmbeddingCache ||
       defaultCache
     );
     const rerankerPreferred = path.resolve(
-      (this.safeEnv.SYNAPSE_RERANKER_CACHE_DIR || '').trim() ||
+      (this.safeEnv.LOCI_RERANKER_CACHE_DIR || '').trim() ||
       configRerankerCache ||
       defaultCache
     );
     const embedResolved = resolveWritableModelCacheDir({
       preferredDir: embedPreferred,
-      synapseHome,
+      lociHome,
       env: this.safeEnv
     });
     const rerankerResolved = resolveWritableModelCacheDir({
       preferredDir: rerankerPreferred,
-      synapseHome,
+      lociHome,
       env: this.safeEnv
     });
 
@@ -297,7 +297,7 @@ export class DiagnosticService {
         id: 'model_cache',
         ok: false,
         detail: 'Model cache not writable for configured or fallback locations',
-        fix: 'Set SYNAPSE_EMBED_CACHE_DIR/SYNAPSE_RERANKER_CACHE_DIR to a writable path, then re-run synapse setup.'
+        fix: 'Set LOCI_EMBED_CACHE_DIR/LOCI_RERANKER_CACHE_DIR to a writable path, then re-run loci setup.'
       };
     }
 
@@ -324,7 +324,7 @@ export class DiagnosticService {
     }
 
     const entries = fs.readdirSync(nodeModulesDir);
-    const stalePrefix = '.synapse-cortex-';
+    const stalePrefix = '.loci-mcp-';
     const stale = entries.filter((e) => e.startsWith(stalePrefix));
 
     if (stale.length === 0) {
@@ -354,12 +354,12 @@ export class DiagnosticService {
       id: 'global_stale_temp',
       ok: false,
       detail: `${stale.length} stale npm temp dir(s) found (blocks global reinstall)`,
-      fix: 'Run: synapse doctor --fix'
+      fix: 'Run: loci doctor --fix'
     };
   }
 
   public isStrict(): boolean {
-    const value = this.safeEnv.SYNAPSE_DOCTOR_STRICT;
+    const value = this.safeEnv.LOCI_DOCTOR_STRICT;
     if (value === undefined || value === null || value === '') return true;
     return String(value).toLowerCase() === 'true';
   }

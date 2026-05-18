@@ -1,8 +1,8 @@
 /**
  * @module engine
- * Synapse Cognitive Engine — the protocol-agnostic core.
+ * Loci Cognitive Engine — the protocol-agnostic core.
  *
- * This is the single public entry point to Synapse's memory, knowledge graph,
+ * This is the single public entry point to Loci's memory, knowledge graph,
  * retrieval, and reasoning capabilities. Everything exported here is usable
  * without any MCP server, CLI, or HTTP context.
  *

@@ -415,7 +415,7 @@ export async function queryTriplesAsOf(
 
   let triples: KgTripleWithNames[];
   if (mode === 'transaction') {
-    // Transaction-time: return every triple Synapse knew at the given
+    // Transaction-time: return every triple Loci knew at the given
     // time, regardless of whether the fact was true in the world. No
     // valid_to interaction — recorded_at is the row's permanent original
     // transaction time, never touched by invalidateTriple.

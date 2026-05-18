@@ -5,10 +5,10 @@ description: Cross-session semantic memory with automatic deduplication, scoped 
 
 # Persistent Memory
 
-Synapse provides **persistent project memory** that survives across sessions, projects, and conversations. Unlike standard context windows that are wiped clean when a chat ends, Synapse memory persists in a local SQLite database, allowing AI agents to build a cumulative understanding of your project.
+Loci provides **persistent project memory** that survives across sessions, projects, and conversations. Unlike standard context windows that are wiped clean when a chat ends, Loci memory persists in a local SQLite database, allowing AI agents to build a cumulative understanding of your project.
 
 :::important The Statelessness Problem
-Modern AI models have massive context windows, but they are still **stateless**. Every new chat is a "blank slate." Synapse breaks this cycle by providing a "hard drive" for AI reasoning.
+Modern AI models have massive context windows, but they are still **stateless**. Every new chat is a "blank slate." Loci breaks this cycle by providing a "hard drive" for AI reasoning.
 :::
 
 ## Key Features
@@ -25,8 +25,8 @@ The "Winner" state of a task is often the most valuable piece of context for the
 - Any new "Gotchas" discovered during the process.
 
 ### 3. Semantic Deduplication
-To prevent "context bloat," Synapse uses **Vector Similarity Analysis** (via `sqlite-vec`). When a new memory is stored:
-- Synapse calculates its cosine similarity against existing records.
+To prevent "context bloat," Loci uses **Vector Similarity Analysis** (via `sqlite-vec`). When a new memory is stored:
+- Loci calculates its cosine similarity against existing records.
 - If a near-identical fact exists, the agent is notified to update the existing memory instead of creating a duplicate.
 
 ### 4. Scoped Isolation (Nests)

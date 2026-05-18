@@ -1,5 +1,5 @@
 /**
- * Point-in-time SQLite backup and restore for the Synapse memory database.
+ * Point-in-time SQLite backup and restore for the Loci memory database.
  *
  * Backup uses SQLite's `VACUUM INTO` SQL command — works on the open DB,
  * produces a clean compacted copy with no WAL baggage.

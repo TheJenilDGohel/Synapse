@@ -1,9 +1,9 @@
 /**
  * Backup CLI subcommands.
  *
- *   synapse backup create [dest]
- *   synapse backup restore <src>
- *   synapse backup list
+ *   loci backup create [dest]
+ *   loci backup restore <src>
+ *   loci backup list
  *
  * @module src/cli/commands/backup
  */
@@ -91,7 +91,7 @@ async function handleRestore(args: string[], opts: GlobalOptions): Promise<void>
   const { positionals } = parseFlags(args, {});
 
   if (!positionals[0]) {
-    writeError('Usage: synapse backup restore <source>', opts.json);
+    writeError('Usage: loci backup restore <source>', opts.json);
     return;
   }
 

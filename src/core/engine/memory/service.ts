@@ -14,7 +14,7 @@ function parseNodeMajor(version: string | undefined): number {
 }
 
 interface MemoryServiceConfig {
-  synapseHome: string;
+  lociHome: string;
   enabled: boolean;
   backend: string;
   dbPath: string;
@@ -31,7 +31,7 @@ interface BackendDetection {
 }
 
 export class MemoryService {
-  synapseHome: string;
+  lociHome: string;
   enabled: boolean;
   backend: string;
   dbPath: string;
@@ -40,7 +40,7 @@ export class MemoryService {
   store: MemoryStore;
 
   constructor({
-    synapseHome,
+    lociHome,
     enabled,
     backend,
     dbPath,
@@ -48,7 +48,7 @@ export class MemoryService {
     consentDone,
     embeddingService
   }: MemoryServiceConfig) {
-    this.synapseHome = synapseHome;
+    this.lociHome = lociHome;
     this.enabled = enabled;
     this.backend = backend;
     this.dbPath = dbPath;
@@ -140,7 +140,7 @@ export class MemoryService {
       db_path: this.dbPath,
       db_exists: fs.existsSync(this.dbPath),
       db_dir: path.dirname(this.dbPath),
-      synapse_home: this.synapseHome,
+      synapse_home: this.lociHome,
       store: storeStatus
     };
   }
@@ -372,7 +372,7 @@ export class MemoryService {
 
   assertEnabled(): void {
     if (!this.enabled) {
-      throw new Error('Local memory is disabled. Re-run synapse setup and opt in to memory.');
+      throw new Error('Local memory is disabled. Re-run loci setup and opt in to memory.');
     }
   }
 

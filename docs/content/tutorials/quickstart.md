@@ -1,11 +1,11 @@
 ---
 title: Quick Start Tutorial
-description: Get your first win with Synapse in 5 minutes.
+description: Get your first win with Loci in 5 minutes.
 ---
 
 # Quick Start Tutorial
 
-Welcome to Synapse! This tutorial will guide you through installing Synapse and using it to "prime" an AI agent with your project's context.
+Welcome to Loci! This tutorial will guide you through installing Loci and using it to "prime" an AI agent with your project's context.
 
 ## Prerequisites
 - Node.js **v22.6.0** or higher.
@@ -13,10 +13,10 @@ Welcome to Synapse! This tutorial will guide you through installing Synapse and 
 
 ## 1. Installation
 
-Install the Synapse CLI globally:
+Install the Loci CLI globally:
 
 ```bash
-npm install -g synapse-cortex
+npm install -g loci-mcp
 ```
 
 ## 2. Workspace Initialization
@@ -24,8 +24,8 @@ npm install -g synapse-cortex
 Navigate to a project you are currently working on and run the setup sequence:
 
 ```bash
-synapse setup
-synapse doctor
+loci setup
+loci doctor
 ```
 
 - **`setup`**: Initializes your local context database.
@@ -33,16 +33,16 @@ synapse doctor
 
 ## 3. Connecting to your AI
 
-Add Synapse to your AI client. For **Claude Desktop**, add this to your configuration file:
+Add Loci to your AI client. For **Claude Desktop**, add this to your configuration file:
 
 ```json
 {
   "mcpServers": {
-    "synapse": {
-      "command": "synapse",
+    "loci": {
+      "command": "loci",
       "env": {
         "MCP_MODE": "stdio",
-        "SYNAPSE_MEMORY_ENABLED": "true"
+        "LOCI_MEMORY_ENABLED": "true"
       }
     }
   }
@@ -63,7 +63,7 @@ Tell the agent something important about your workflow:
 
 > "Remember that for this project, we always use functional components for React and avoid class components."
 
-**What happens:** The agent uses `synapse_memory_manage` to store this rule. In your next session, Synapse will automatically remind the agent of this preference.
+**What happens:** The agent uses `synapse_memory_manage` to store this rule. In your next session, Loci will automatically remind the agent of this preference.
 
 ---
 

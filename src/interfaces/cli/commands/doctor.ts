@@ -5,9 +5,9 @@ import type { GlobalOptions } from '../options.js';
 
 export async function run(args: string[], opts: GlobalOptions): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    process.stdout.write('Synapse Doctor - Diagnostics and setup validation\n\n');
+    process.stdout.write('Loci Doctor - Diagnostics and setup validation\n\n');
     process.stdout.write('Usage:\n');
-    process.stdout.write('  synapse doctor [options]\n\n');
+    process.stdout.write('  loci doctor [options]\n\n');
     process.stdout.write('Options:\n');
     process.stdout.write('  --fix       attempt to fix simple issues (e.g. stale temp dirs)\n');
     process.stdout.write('  --json      output results as JSON\n');
@@ -21,7 +21,7 @@ export async function run(args: string[], opts: GlobalOptions): Promise<void> {
   const isAgent = process.env.AI_AGENT === 'true';
   
   if (!opts.json && !isAgent) {
-    console.log(c.bold('Synapse Doctor'));
+    console.log(c.bold('Loci Doctor'));
     console.log('');
   }
 

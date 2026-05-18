@@ -15,7 +15,7 @@ export function ensureTsx() {
     req.resolve('tsx/esm');
   } catch {
     // tsx not even installed — fatal
-    process.stderr.write('[synapse] fatal: tsx package not found\n');
+    process.stderr.write('[loci] fatal: tsx package not found\n');
     process.exit(1);
   }
 
@@ -32,7 +32,7 @@ export function relaunchWithTsx() {
   const req = createRequire(new URL('../package.json', import.meta.url));
   const tsxEsm = pathToFileURL(req.resolve('tsx/esm')).href;
   // Already relaunched — don't loop
-  if (process.env.__SYNAPSE_TSX_RELAUNCHED === '1') return false;
+  if (process.env.__LOCI_TSX_RELAUNCHED === '1') return false;
 
   try {
     execFileSync(process.execPath, [
@@ -40,7 +40,7 @@ export function relaunchWithTsx() {
       ...process.argv.slice(1)
     ], {
       stdio: 'inherit',
-      env: { ...process.env, __SYNAPSE_TSX_RELAUNCHED: '1' }
+      env: { ...process.env, __LOCI_TSX_RELAUNCHED: '1' }
     });
     process.exit(0);
   } catch (e) {
@@ -56,22 +56,22 @@ export function buildForwardArgv(rest, argv = process.argv) {
   return [argv[0], argv[1], ...rest];
 }
 
-export function buildSynapseCommandArgv(commandArgs = [], metaUrl, argv = process.argv) {
+export function buildLociCommandArgv(commandArgs = [], metaUrl, argv = process.argv) {
   return [
     argv[0],
-    fileURLToPath(new URL('./synapse.js', metaUrl)),
+    fileURLToPath(new URL('./loci.js', metaUrl)),
     ...commandArgs,
     ...argv.slice(2)
   ];
 }
 
 export function printDeprecationWarning({ legacyCommand, replacementCommand, note = '' }) {
-  if (process.env.SYNAPSE_SUPPRESS_DEPRECATION_WARNINGS === 'true') return;
+  if (process.env.LOCI_SUPPRESS_DEPRECATION_WARNINGS === 'true') return;
   const yellow = '\x1b[33m';
   const reset = '\x1b[0m';
   const suffix = note ? ` ${note}` : '';
   process.stderr.write(
-    `${yellow}[synapse] DEPRECATED: Use "${replacementCommand}" instead of "${legacyCommand}".${suffix}${reset}\n`
+    `${yellow}[loci] DEPRECATED: Use "${replacementCommand}" instead of "${legacyCommand}".${suffix}${reset}\n`
   );
 }
 
@@ -83,8 +83,8 @@ export async function forwardDeprecatedCommand({
   note = ''
 }) {
   printDeprecationWarning({ legacyCommand, replacementCommand, note });
-  process.argv = buildSynapseCommandArgv(commandArgs, metaUrl, process.argv);
-  return importRelative('./synapse.js', metaUrl);
+  process.argv = buildLociCommandArgv(commandArgs, metaUrl, process.argv);
+  return importRelative('./loci.js', metaUrl);
 }
 
 export async function importRelative(modulePath, metaUrl) {

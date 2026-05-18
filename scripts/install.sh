@@ -1,6 +1,6 @@
 #!/bin/bash
-# Synapse Universal Installer for Linux & macOS
-# Usage: curl -sSL https://raw.githubusercontent.com/TheJenilDGohel/Synapse/main/scripts/install.sh | bash
+# Loci Universal Installer for Linux & macOS
+# Usage: curl -sSL https://raw.githubusercontent.com/TheJenilDGohel/Loci/main/scripts/install.sh | bash
 
 set -e
 
@@ -11,7 +11,7 @@ GRAY='\033[0;90m'
 NC='\033[0m' # No Color
 
 echo -e ""
-echo -e "  ${CYAN}Synapse Universal Installer${NC}"
+echo -e "  ${CYAN}Loci Universal Installer${NC}"
 echo -e "  ${GRAY}----------------------------${NC}"
 echo -e ""
 
@@ -30,19 +30,19 @@ if [ "$major_version" -lt 22 ]; then
     echo -e " ${GRAY}Note: Node.js 22+ is recommended for full feature support (local memory & vector search).${NC}"
 fi
 
-# 2. Install Synapse
-echo -e "[2/3] Installing Synapse via NPM..."
-if npm install -g synapse-cortex 2>/dev/null; then
+# 2. Install Loci
+echo -e "[2/3] Installing Loci via NPM..."
+if npm install -g loci-mcp 2>/dev/null; then
     echo -e " ${GREEN}Installation successful.${NC}"
 else
     echo -e " ${GRAY}Standard install failed, trying with sudo...${NC}"
-    sudo npm install -g synapse-cortex
+    sudo npm install -g loci-mcp
 fi
 
 # 3. Trigger Onboarding
 echo -e "[3/3] Launching neural link..."
-synapse onboard
+loci onboard
 
 echo -e ""
-echo -e "  ${GREEN}Setup Complete! Type 'synapse' to get started.${NC}"
+echo -e "  ${GREEN}Setup Complete! Type 'loci' to get started.${NC}"
 echo -e ""

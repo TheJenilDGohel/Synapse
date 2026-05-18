@@ -24,7 +24,7 @@ Modernize documentation for humans and AI agents by implementing an "Agent-First
     - Updated `CHANGELOG.md` with a detailed entry for the new beta release, covering CI/CD and Documentation improvements.
 
 ## Impact
-- **Agent Efficiency**: AI agents can now understand the entire Synapse platform in seconds via `llms.txt`.
+- **Agent Efficiency**: AI agents can now understand the entire Loci platform in seconds via `llms.txt`.
 - **Human DX**: Developers have a clearer path from tutorial to technical reference.
 - **Project Transparency**: The public beta status and versioning are now consistently communicated.
 

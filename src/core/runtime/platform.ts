@@ -9,7 +9,7 @@ import path from 'node:path';
  *   like the shell does, so `spawnSync('rg', [...])` fails with ENOENT even
  *   when `rg.exe` is on PATH. We have to ask for the `.exe` (or `.cmd`)
  *   variant explicitly.
- * - npm-installed CLIs (`npm`, `npx`, `synapse`) ship as `.cmd` shims on
+ * - npm-installed CLIs (`npm`, `npx`, `loci`) ship as `.cmd` shims on
  *   Windows. Same problem, same solution.
  *
  * Centralizing this here keeps the platform check in one place instead of
@@ -53,8 +53,8 @@ export const NPM_BIN = isWindows ? 'npm.cmd' : 'npm';
 /** npx binary — `npx.cmd` on Windows. */
 export const NPX_BIN = isWindows ? 'npx.cmd' : 'npx';
 
-/** Local `synapse` CLI — `synapse.cmd` on Windows. */
-export const SYNAPSE_BIN = isWindows ? 'synapse.cmd' : 'synapse';
+/** Local `loci` CLI — `loci.cmd` on Windows. */
+export const LOCI_BIN = isWindows ? 'loci.cmd' : 'loci';
 
 /**
  * Generic helper for any tool that uses the same name+`.cmd` convention

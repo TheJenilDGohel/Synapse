@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildSynapsePaths } from '../runtime/home-layout.js';
+import { buildLociPaths } from '../runtime/home-layout.js';
 
 interface IndexDefaults {
   backend: string;
@@ -34,9 +34,9 @@ export interface MigrationResult {
   backupPath?: string;
 }
 
-function backupFile(configPath: string, synapseHome: string): string {
+function backupFile(configPath: string, lociHome: string): string {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupDir: string = buildSynapsePaths(synapseHome).dirs.backups;
+  const backupDir: string = buildLociPaths(lociHome).dirs.backups;
   fs.mkdirSync(backupDir, { recursive: true });
   const backupPath = path.join(backupDir, `${path.basename(configPath)}.bak.${stamp}`);
   fs.copyFileSync(configPath, backupPath);
@@ -49,8 +49,8 @@ function safeWriteJson(filePath: string, value: unknown): void {
   fs.renameSync(tmp, filePath);
 }
 
-function defaultIndex(synapseHome: string): IndexDefaults {
-  const layout = buildSynapsePaths(synapseHome);
+function defaultIndex(lociHome: string): IndexDefaults {
+  const layout = buildLociPaths(lociHome);
   return {
     backend: 'sqlite-vec',
     dbPath: layout.sqliteDbPath,
@@ -69,8 +69,8 @@ function defaultIndex(synapseHome: string): IndexDefaults {
   };
 }
 
-function defaultMemory(synapseHome: string): MemoryDefaults {
-  const layout = buildSynapsePaths(synapseHome);
+function defaultMemory(lociHome: string): MemoryDefaults {
+  const layout = buildLociPaths(lociHome);
   return {
     enabled: false,
     backend: 'auto',
@@ -80,7 +80,7 @@ function defaultMemory(synapseHome: string): MemoryDefaults {
   };
 }
 
-export function ensureConfigUpgraded({ configPath, synapseHome }: { configPath: string; synapseHome: string }): MigrationResult {
+export function ensureConfigUpgraded({ configPath, lociHome }: { configPath: string; lociHome: string }): MigrationResult {
   if (!configPath || !fs.existsSync(configPath)) {
     return { changed: false, reason: 'missing' };
   }
@@ -105,10 +105,10 @@ export function ensureConfigUpgraded({ configPath, synapseHome }: { configPath: 
   }
 
   if (!parsed.index || typeof parsed.index !== 'object') {
-    parsed.index = defaultIndex(synapseHome);
+    parsed.index = defaultIndex(lociHome);
     changed = true;
   } else {
-    const defaults = defaultIndex(synapseHome) as unknown as Record<string, unknown>;
+    const defaults = defaultIndex(lociHome) as unknown as Record<string, unknown>;
     for (const [k, v] of Object.entries(defaults)) {
       if (parsed.index[k] === undefined || parsed.index[k] === null || parsed.index[k] === '') {
         parsed.index[k] = v;
@@ -123,10 +123,10 @@ export function ensureConfigUpgraded({ configPath, synapseHome }: { configPath: 
   }
 
   if (!parsed.memory || typeof parsed.memory !== 'object') {
-    parsed.memory = defaultMemory(synapseHome);
+    parsed.memory = defaultMemory(lociHome);
     changed = true;
   } else {
-    const defaults = defaultMemory(synapseHome) as unknown as Record<string, unknown>;
+    const defaults = defaultMemory(lociHome) as unknown as Record<string, unknown>;
     for (const [k, v] of Object.entries(defaults)) {
       if (parsed.memory[k] === undefined || parsed.memory[k] === null || parsed.memory[k] === '') {
         parsed.memory[k] = v;
@@ -139,7 +139,7 @@ export function ensureConfigUpgraded({ configPath, synapseHome }: { configPath: 
     return { changed: false, reason: 'up-to-date', version: parsed.version };
   }
 
-  const backupPath = backupFile(configPath, synapseHome);
+  const backupPath = backupFile(configPath, lociHome);
   safeWriteJson(configPath, parsed);
   return {
     changed: true,

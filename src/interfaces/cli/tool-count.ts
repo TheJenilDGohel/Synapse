@@ -1,5 +1,5 @@
 /**
- * Dynamic MCP tool count for Synapse CLI displays.
+ * Dynamic MCP tool count for Loci CLI displays.
  *
  * Counts registerJsonTool() registrations across all tool modules
  * at build time via static analysis. Falls back to manual count
@@ -35,5 +35,5 @@ function countToolRegistrations(): number {
     }
 }
 
-/** Total number of MCP tools registered by Synapse. */
+/** Total number of MCP tools registered by Loci. */
 export const TOOL_COUNT: number = countToolRegistrations();

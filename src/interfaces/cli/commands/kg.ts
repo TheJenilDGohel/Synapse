@@ -2,10 +2,10 @@ import { parseFlags } from '../parse-flags.js';
 /**
  * Knowledge Graph CLI subcommands.
  *
- *   synapse kg add <subject> <predicate> <object> [--valid-from] [--confidence]
- *   synapse kg query <entity> [--direction]
- *   synapse kg timeline <entity>
- *   synapse kg stats
+ *   loci kg add <subject> <predicate> <object> [--valid-from] [--confidence]
+ *   loci kg query <entity> [--direction]
+ *   loci kg timeline <entity>
+ *   loci kg stats
  *
  * @module src/cli/commands/kg
  */
@@ -37,7 +37,7 @@ function createMemoryService(): MemoryService {
     cacheDir: runtime.embeddingCacheDir,
   });
   return new MemoryService({
-    synapseHome: runtime.synapseHome,
+    lociHome: runtime.lociHome,
     enabled: runtime.memoryEnabled,
     backend: runtime.memoryBackend,
     dbPath: runtime.memoryDbPath,
@@ -90,8 +90,8 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
   if (helpRequested) {
     process.stdout.write('Create a subject→predicate→object triple in the knowledge graph.\n\n');
     process.stdout.write('Usage:\n');
-    process.stdout.write('  synapse kg add <subject> <predicate> <object> [flags]\n');
-    process.stdout.write('  synapse kg add --subject <name> --predicate <name> --object <name> [flags]\n\n');
+    process.stdout.write('  loci kg add <subject> <predicate> <object> [flags]\n');
+    process.stdout.write('  loci kg add --subject <name> --predicate <name> --object <name> [flags]\n\n');
     process.stdout.write('Arguments:\n');
     process.stdout.write('  subject       The entity that is the source of the relationship\n');
     process.stdout.write('  predicate     The name of the relationship (e.g., "uses", "depends_on")\n');
@@ -104,8 +104,8 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
     process.stdout.write('  -c, --confidence <num>   Confidence score (0.0-1.0, default: 1.0)\n');
     process.stdout.write('  -h, --help               Show this help\n\n');
     process.stdout.write('Examples:\n');
-    process.stdout.write('  synapse kg add "AuthService" "uses" "JWT"\n');
-    process.stdout.write('  synapse kg add --subject "Gemini" --predicate "testing" --object "Synapse" --confidence 0.9\n');
+    process.stdout.write('  loci kg add "AuthService" "uses" "JWT"\n');
+    process.stdout.write('  loci kg add --subject "Gemini" --predicate "testing" --object "Loci" --confidence 0.9\n');
     return;
   }
 
@@ -118,7 +118,7 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
   if (!subjectName || !predicate || !objectName) {
     const errorMsg = 'Subject, predicate, and object are required. You can provide them as positionals ' +
       'or using --subject, --predicate, and --object flags.\n\n' +
-      'Example: synapse kg add "AuthService" "uses" "JWT"';
+      'Example: loci kg add "AuthService" "uses" "JWT"';
     writeError(errorMsg, opts.json);
     return;
   }
@@ -175,7 +175,7 @@ async function handleQuery(args: string[], opts: GlobalOptions): Promise<void> {
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse kg query <entity> [flags]\n\n');
+    process.stdout.write('Usage: loci kg query <entity> [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -s, --subject <name>    Entity name to query\n');
     process.stdout.write('  -d, --direction <dir>   Search direction: outgoing, incoming, both (default)\n');
@@ -184,7 +184,7 @@ async function handleQuery(args: string[], opts: GlobalOptions): Promise<void> {
 
   const entityName = (flags.subject as string) || positionals.join(' ').trim();
   if (!entityName) {
-    writeError('Entity name is required. Usage: synapse kg query <entity> [--direction outgoing|incoming|both]', opts.json);
+    writeError('Entity name is required. Usage: loci kg query <entity> [--direction outgoing|incoming|both]', opts.json);
     return;
   }
 
@@ -234,13 +234,13 @@ async function handleTimeline(args: string[], opts: GlobalOptions): Promise<void
   const { positionals, helpRequested } = parseFlags(args, {});
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse kg timeline <entity>\n');
+    process.stdout.write('Usage: loci kg timeline <entity>\n');
     return;
   }
 
   const entityName = positionals.join(' ').trim();
   if (!entityName) {
-    writeError('Entity name is required. Usage: synapse kg timeline <entity>', opts.json);
+    writeError('Entity name is required. Usage: loci kg timeline <entity>', opts.json);
     return;
   }
 
@@ -289,7 +289,7 @@ async function handleTimeline(args: string[], opts: GlobalOptions): Promise<void
 async function handleStats(args: string[], opts: GlobalOptions): Promise<void> {
   const { helpRequested } = parseFlags(args, {});
   if (helpRequested) {
-    process.stdout.write('Usage: synapse kg stats\n');
+    process.stdout.write('Usage: loci kg stats\n');
     return;
   }
 

@@ -1,5 +1,5 @@
 /**
- * Consistent output helpers for Synapse CLI commands.
+ * Consistent output helpers for Loci CLI commands.
  *
  * Provides writeJson, writeError, writeSuccess, and writeStatus for
  * uniform machine-readable and human-friendly output.

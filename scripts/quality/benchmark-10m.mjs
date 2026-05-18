@@ -7,7 +7,7 @@ import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 
 /**
- * Benchmark 10M vector scale for Synapse.
+ * Benchmark 10M vector scale for Loci.
  * Generates synthetic vectors to test retrieval performance at scale.
  */
 

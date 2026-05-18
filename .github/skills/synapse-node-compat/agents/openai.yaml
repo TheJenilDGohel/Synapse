@@ -1,4 +1,0 @@
-interface:
-  display_name: "Synapse Node Compat"
-  short_description: "Handle Synapse Node-version compatibility, native deps, and fallback gating"
-  default_prompt: "Use this skill when working on Synapse compatibility across Node versions. Find the exact API boundary first, separate install-time from runtime failures, keep the current newer-Node path stable, and make fallbacks explicit in setup, doctor, and status output."

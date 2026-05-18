@@ -1,6 +1,6 @@
-# Synapse Architectural Overview
+# Loci Architectural Overview
 
-This document outlines the high-level architecture mapped across the `src/` directory. Synapse follows a Domain-Driven, multi-layered architectural approach to strictly separate basic core utilities from business logic and application boundaries.
+This document outlines the high-level architecture mapped across the `src/` directory. Loci follows a Domain-Driven, multi-layered architectural approach to strictly separate basic core utilities from business logic and application boundaries.
 
 ## Top-Level Domains
 
@@ -50,7 +50,7 @@ graph TD
     Update --> Runtime
 ```
 
-Synapse follows three immutable pillars:
+Loci follows three immutable pillars:
 
 1. **`src/core/interfaces/`** (Contracts & Abstractions)
 2. **`src/core/`** (Engine Implementation & Infrastructure)
@@ -84,17 +84,17 @@ The bounded business logic contexts. Each engine domain is as isolated as possib
 - **`/database`**: Co-ordinates low-level SQLite primitives and node:sqlite integration.
 
 ### 3. Runtime & Setup (`src/core/runtime/` & `src/core/setup/`)
-The foundation of Synapse. The Core context manages configurations, environment constraints, early lifecycle events, and overarching data types.
+The foundation of Loci. The Core context manages configurations, environment constraints, early lifecycle events, and overarching data types.
 
 - **`/runtime`**: Environment constraints, feature toggles, SQLite core layout/extensions, and diagnostics.
-- **`/setup`**: Orchestrator utilities for initializing Synapse on first run.
+- **`/setup`**: Orchestrator utilities for initializing Loci on first run.
 - **`/migrations`**: Database schema evolution and configuration migrations.
 
 ### 4. Interfaces (`src/interfaces/`)
-The external boundaries where the outside world interacts with Synapse. These orchestrate the engine domains and consume runtime utilities, acting entirely as wrappers/adapters.
+The external boundaries where the outside world interacts with Loci. These orchestrate the engine domains and consume runtime utilities, acting entirely as wrappers/adapters.
 
 - **`/cli`**: Local human-in-the-loop interaction layers. Responsible for arg parsing, ANSI outputs, spinners, etc.
-- **`/mcp` & `/app`**: Exposes Synapse as a Model Context Protocol (MCP) server for Claude/VSCode to consume autonomously. Holds tool registrations and STDIO/SSE lifecycle routing.
+- **`/mcp` & `/app`**: Exposes Loci as a Model Context Protocol (MCP) server for Claude/VSCode to consume autonomously. Holds tool registrations and STDIO/SSE lifecycle routing.
 - **`/utils`**: High-level interface utilities, including the `McpResponseMapper` for context-optimized tool output.
 
 ---

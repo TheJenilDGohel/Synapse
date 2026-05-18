@@ -20,5 +20,5 @@
     "types": ["node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests", "synapse-docs"]
+  "exclude": ["node_modules", "dist", "tests", "loci-docs"]
 }

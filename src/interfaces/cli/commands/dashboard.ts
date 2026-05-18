@@ -1,5 +1,5 @@
 /**
- * Interactive TUI Dashboard for Synapse.
+ * Interactive TUI Dashboard for Loci.
  * Keys: q quit, r refresh, 1 Memory, 2 KG, 3 Recent, 0/h Overview, ? help
  * Falls back to static render when stdout is not a TTY. --json for machine output.
  * @module src/cli/commands/dashboard
@@ -47,7 +47,7 @@ function createMemoryService(): { svc: MemoryService; runtime: any } {
   });
   return {
     svc: new MemoryService({
-      synapseHome: runtime.synapseHome,
+      lociHome: runtime.lociHome,
       enabled: runtime.memoryEnabled,
       backend: runtime.memoryBackend,
       dbPath: runtime.memoryDbPath,
@@ -95,7 +95,7 @@ const VIEWS = { OVERVIEW: 'overview', MEMORY: 'memory', KG: 'kg', RECENT: 'recen
 type ViewKey = typeof VIEWS[keyof typeof VIEWS];
 
 function renderHeader(W: number, _view: ViewKey, refreshing: boolean): string[] {
-  const title = c.bold('Synapse Dashboard');
+  const title = c.bold('Loci Dashboard');
   const ver = c.dim(`v${SERVER_VERSION}`);
   const refreshLabel = refreshing ? c.green('refreshing...') : c.dim(`\u21bb every 5s`);
   const meta = `${ver}  ${c.gray(c.B.v)}  ${c.dim(`${TOOL_COUNT} tools`)}  ${c.gray(c.B.v)}  ${refreshLabel}`;
@@ -109,7 +109,7 @@ function renderHeader(W: number, _view: ViewKey, refreshing: boolean): string[] 
 }
 
 function renderDisabled(W: number): string[] {
-  return panel('Status', [c.red('Memory is not enabled.'), '', `Run ${c.cyan('synapse setup')} to enable.`], W, c.red);
+  return panel('Status', [c.red('Memory is not enabled.'), '', `Run ${c.cyan('loci setup')} to enable.`], W, c.red);
 }
 
 function renderStatsRow(data: DashboardData, W: number): string[] {

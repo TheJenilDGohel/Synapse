@@ -1,6 +1,6 @@
 /**
  * @module engine/database
- * Database adapter and schema utilities — the SQLite layer of the Synapse engine.
+ * Database adapter and schema utilities — the SQLite layer of the Loci engine.
  *
  * Import from here whenever you need direct database access without server context.
  * These exports are protocol-agnostic: no MCP, no CLI, no HTTP involved.
@@ -10,7 +10,7 @@
  * @example
  *   import { NodeSqliteAdapter, ensureSchema, applySqliteTuning } from './database.js';
  *   import { DatabaseSync } from 'node:sqlite';
- *   const db = new DatabaseSync('/path/to/synapse.db');
+ *   const db = new DatabaseSync('/path/to/loci.db');
  *   const adapter = new NodeSqliteAdapter(db);
  *   await applySqliteTuning(adapter);
  *   await ensureSchema(adapter);

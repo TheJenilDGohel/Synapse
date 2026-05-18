@@ -59,7 +59,7 @@ let _nerEnabled = false;
 
 /**
  * Configure the NER service for entity extraction.
- * Call this once during app initialization when SYNAPSE_NER_ENABLED=true.
+ * Call this once during app initialization when LOCI_NER_ENABLED=true.
  */
 export function configureNER(enabled: boolean, options?: NERServiceOptions): void {
   _nerEnabled = enabled;

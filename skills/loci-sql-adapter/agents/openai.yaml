@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loci SQL Adapter"
+  short_description: "Work on Loci SQLite adapters, migrations, and sqlite-vec loading safely"
+  default_prompt: "Use this skill when editing Loci SQLite-backed retrieval or memory code. Identify direct node:sqlite imports and constructors first, keep current Node 22 behavior stable, isolate adapter-selection changes from schema/query changes, verify sqlite-vec extension loading explicitly, and test retrieval and memory paths separately."

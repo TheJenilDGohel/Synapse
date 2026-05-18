@@ -1,15 +1,15 @@
 ---
 title: Architectural Explanation
-description: Deep dive into the design and principles of Synapse.
+description: Deep dive into the design and principles of Loci.
 ---
 
 # Architectural Explanation
 
-Synapse is designed to solve the **Context Loss** problem in AI-assisted development. This document explains the core concepts and design decisions behind the engine.
+Loci is designed to solve the **Context Loss** problem in AI-assisted development. This document explains the core concepts and design decisions behind the engine.
 
 ## The Three Pillars of Context
 
-Synapse integrates three distinct types of intelligence into a single local-first engine:
+Loci integrates three distinct types of intelligence into a single local-first engine:
 
 1.  **Code Intelligence (The Present)**: Knowing exactly what the code does right now via AST-aware indexing and hybrid search.
 2.  **Persistent Memory (The Intent)**: Remembering *why* decisions were made, based on past developer instructions and task outcomes.
@@ -26,7 +26,7 @@ The codebase is structured into four distinct layers to ensure stability and per
 
 ## Why Local-First?
 
-Synapse performs all parsing, embedding, and indexing strictly on your machine.
+Loci performs all parsing, embedding, and indexing strictly on your machine.
 - **Privacy**: Your code never leaves your local environment.
 - **Speed**: No network latency for search or retrieval.
 - **Reliability**: Works offline and doesn't require expensive API keys for base indexing.
@@ -35,10 +35,10 @@ Synapse performs all parsing, embedding, and indexing strictly on your machine.
 
 Traditional MCP servers provide 50+ granular tools. This often confuses LLMs and wastes tokens on tool discovery. 
 
-Synapse consolidates these into **~14 Power Controllers**. This high-density model allows agents to reason more effectively by providing them with a smaller, more powerful API surface. It also ensures compatibility with clients that have tool-call limits, such as Gemini and Vertex AI.
+Loci consolidates these into **~14 Power Controllers**. This high-density model allows agents to reason more effectively by providing them with a smaller, more powerful API surface. It also ensures compatibility with clients that have tool-call limits, such as Gemini and Vertex AI.
 
 ## Performance Optimization
 
-Synapse is built for large-scale codebases:
+Loci is built for large-scale codebases:
 - **O(N) Scoping**: AST resolution is memoized, allowing for near-instant mapping of even massive source files.
 - **RRF Fusion**: We combine keyword search (BM25) with vector search (Cosine Similarity) using Reciprocal Rank Fusion to ensure the most relevant results are always at the top.

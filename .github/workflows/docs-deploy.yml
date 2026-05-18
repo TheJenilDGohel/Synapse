@@ -27,7 +27,7 @@ jobs:
         working-directory: docs
         run: |
           dart pub get
-          dart pub global run jaspr_cli:jaspr build --dart-define=SITE_BASE_PATH=/Synapse
+          dart pub global run jaspr_cli:jaspr build --dart-define=SITE_BASE_PATH=/Loci
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

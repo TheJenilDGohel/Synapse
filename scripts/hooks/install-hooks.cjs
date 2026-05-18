@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Install Synapse hooks into Claude Code settings.json
+// Install Loci hooks into Claude Code settings.json
 //
 // Usage: node scripts/hooks/install-hooks.js
-//   or:  synapse hooks install
+//   or:  loci hooks install
 //
 // Adds pre-tool and post-tool hooks that auto-retrieve and auto-save
 // memory context during AI coding sessions.
@@ -21,8 +21,8 @@ const PKG_ROOT = path.resolve(__dirname, '..', '..');
 const HOOKS_DIR = path.join(PKG_ROOT, 'scripts', 'hooks');
 const SETTINGS_PATH = path.join(os.homedir(), '.claude', 'settings.json');
 
-const PRE_HOOK = path.join(HOOKS_DIR, 'synapse-pre-tool.cjs');
-const POST_HOOK = path.join(HOOKS_DIR, 'synapse-post-tool.cjs');
+const PRE_HOOK = path.join(HOOKS_DIR, 'loci-pre-tool.cjs');
+const POST_HOOK = path.join(HOOKS_DIR, 'loci-post-tool.cjs');
 
 function readSettings(filePath) {
   try {
@@ -37,7 +37,7 @@ function writeSettings(filePath, settings) {
   fs.writeFileSync(filePath, JSON.stringify(settings, null, 2) + '\n', 'utf8');
 }
 
-function hasSynapseHook(hookArray, scriptName, exactPath) {
+function hasLociHook(hookArray, scriptName, exactPath) {
   if (!Array.isArray(hookArray)) return false;
   return hookArray.some(entry =>
     entry.hooks?.some(h => {
@@ -65,24 +65,24 @@ function installToSettings(settingsPath) {
   let changed = false;
 
   // Pre-tool hook (memory context retrieval + agent_prime SOP enforcement).
-  // Matcher includes mcp__synapse__.* so the hook can observe agent_prime
+  // Matcher includes mcp__loci__.* so the hook can observe agent_prime
   // calls and clear the "session not primed" reminder.
   if (!settings.hooks.PreToolUse) settings.hooks.PreToolUse = [];
   
-  // Clean up stale synapse hooks first if they point to different paths
+  // Clean up stale loci hooks first if they point to different paths
   const otherPathPre = settings.hooks.PreToolUse.filter(e => 
-    e.hooks?.some(h => h.command?.includes('synapse-pre-tool') && !h.command?.includes(PRE_HOOK))
+    e.hooks?.some(h => h.command?.includes('loci-pre-tool') && !h.command?.includes(PRE_HOOK))
   );
   if (otherPathPre.length > 0) {
     settings.hooks.PreToolUse = settings.hooks.PreToolUse.filter(e => 
-      !e.hooks?.some(h => h.command?.includes('synapse-pre-tool'))
+      !e.hooks?.some(h => h.command?.includes('loci-pre-tool'))
     );
     changed = true;
   }
 
-  if (!hasSynapseHook(settings.hooks.PreToolUse, 'synapse-pre-tool', PRE_HOOK)) {
+  if (!hasLociHook(settings.hooks.PreToolUse, 'loci-pre-tool', PRE_HOOK)) {
     settings.hooks.PreToolUse.push({
-      matcher: 'Edit|Write|Bash|MultiEdit|mcp__synapse__.*',
+      matcher: 'Edit|Write|Bash|MultiEdit|mcp__loci__.*',
       hooks: [{
         type: 'command',
         command: hookCommand(PRE_HOOK),
@@ -95,18 +95,18 @@ function installToSettings(settingsPath) {
   // Post-tool hook (outcome capture)
   if (!settings.hooks.PostToolUse) settings.hooks.PostToolUse = [];
 
-  // Clean up stale synapse hooks first if they point to different paths
+  // Clean up stale loci hooks first if they point to different paths
   const otherPathPost = settings.hooks.PostToolUse.filter(e => 
-    e.hooks?.some(h => h.command?.includes('synapse-post-tool') && !h.command?.includes(POST_HOOK))
+    e.hooks?.some(h => h.command?.includes('loci-post-tool') && !h.command?.includes(POST_HOOK))
   );
   if (otherPathPost.length > 0) {
     settings.hooks.PostToolUse = settings.hooks.PostToolUse.filter(e => 
-      !e.hooks?.some(h => h.command?.includes('synapse-post-tool'))
+      !e.hooks?.some(h => h.command?.includes('loci-post-tool'))
     );
     changed = true;
   }
 
-  if (!hasSynapseHook(settings.hooks.PostToolUse, 'synapse-post-tool', POST_HOOK)) {
+  if (!hasLociHook(settings.hooks.PostToolUse, 'loci-post-tool', POST_HOOK)) {
     settings.hooks.PostToolUse.push({
       matcher: 'Bash|Edit|Write|MultiEdit',
       hooks: [{
@@ -128,27 +128,27 @@ function installToSettings(settingsPath) {
 function main() {
   // Verify hook files exist
   if (!fs.existsSync(PRE_HOOK)) {
-    console.error(`[synapse] Hook file not found: ${PRE_HOOK}`);
-    console.error('[synapse] Package may be corrupted. Reinstall with: npm install -g synapse-cortex');
+    console.error(`[loci] Hook file not found: ${PRE_HOOK}`);
+    console.error('[loci] Package may be corrupted. Reinstall with: npm install -g loci-mcp');
     process.exit(1);
   }
 
-  console.log(`[synapse] Package root: ${PKG_ROOT}`);
-  console.log(`[synapse] Hook scripts: ${HOOKS_DIR}`);
+  console.log(`[loci] Package root: ${PKG_ROOT}`);
+  console.log(`[loci] Hook scripts: ${HOOKS_DIR}`);
 
   // Install to global ~/.claude/settings.json
   const globalChanged = installToSettings(SETTINGS_PATH);
   if (globalChanged) {
-    console.log(`[synapse] Installed hooks in ${SETTINGS_PATH}`);
+    console.log(`[loci] Installed hooks in ${SETTINGS_PATH}`);
   } else {
-    console.log('[synapse] Hooks already present in global settings');
+    console.log('[loci] Hooks already present in global settings');
   }
 
   console.log('');
-  console.log('[synapse] Pre-tool hook:  auto memory retrieval before Edit/Write/Bash');
-  console.log('[synapse] Post-tool hook: auto outcome capture after Edit/Write/Bash');
+  console.log('[loci] Pre-tool hook:  auto memory retrieval before Edit/Write/Bash');
+  console.log('[loci] Post-tool hook: auto outcome capture after Edit/Write/Bash');
   console.log('');
-  console.log('[synapse] Check status: synapse hooks status');
+  console.log('[loci] Check status: loci hooks status');
 }
 
 main();

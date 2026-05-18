@@ -1,5 +1,5 @@
 name: docs
-description: Documentation site for Synapse Cortex.
+description: Documentation site for Loci Cortex.
 version: 2026.05.1+beta0
 
 environment:

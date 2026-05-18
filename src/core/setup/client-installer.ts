@@ -60,9 +60,9 @@ interface InstallResult {
   backupPath: string | null;
 }
 
-function buildCodexSynapseBlock(serverConfig: ServerConfig): string {
+function buildCodexLociBlock(serverConfig: ServerConfig): string {
   const lines: string[] = [
-    '[mcp_servers.synapse]',
+    '[mcp_servers.loci]',
     `command = ${serializeTomlString(serverConfig.command)}`
   ];
 
@@ -76,7 +76,7 @@ function buildCodexSynapseBlock(serverConfig: ServerConfig): string {
   const env = isPlainObject(serverConfig.env) ? serverConfig.env : {};
   if (Object.keys(env).length > 0) {
     lines.push('');
-    lines.push('[mcp_servers.synapse.env]');
+    lines.push('[mcp_servers.loci.env]');
     for (const key of Object.keys(env).sort()) {
       lines.push(`${key} = ${serializeTomlString(env[key])}`);
     }
@@ -85,13 +85,13 @@ function buildCodexSynapseBlock(serverConfig: ServerConfig): string {
   return `${lines.join('\n')}\n`;
 }
 
-function upsertCodexSynapseBlock(rawText: string, block: string): string {
+function upsertCodexLociBlock(rawText: string, block: string): string {
   const lines = rawText.split(/\r?\n/);
   const kept: string[] = [];
 
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
-    if (/^\[mcp_servers\.synapse(?:\.[^\]]+)?\]\s*$/.test(line)) {
+    if (/^\[mcp_servers\.loci(?:\.[^\]]+)?\]\s*$/.test(line)) {
       i += 1;
       while (i < lines.length && !/^\[/.test(lines[i])) {
         i += 1;
@@ -121,13 +121,13 @@ function installIntoJsonTarget(target: InstallTarget, serverConfig: ServerConfig
   }
 
   const mcpServers = isPlainObject(parsed.mcpServers) ? parsed.mcpServers : {};
-  const previous = (mcpServers as Record<string, unknown>).synapse;
+  const previous = (mcpServers as Record<string, unknown>).loci;
   const changed = JSON.stringify(previous) !== JSON.stringify(serverConfig);
   const next = {
     ...parsed,
     mcpServers: {
       ...(mcpServers as Record<string, unknown>),
-      synapse: serverConfig
+      loci: serverConfig
     }
   };
 
@@ -146,8 +146,8 @@ function installIntoCodexTarget(target: InstallTarget, serverConfig: ServerConfi
   const existed = fs.existsSync(target.configPath);
   const backupPath = backupFile(target.configPath, backupDir, target.id);
   const rawText = existed ? fs.readFileSync(target.configPath, 'utf8') : '';
-  const block = buildCodexSynapseBlock(serverConfig);
-  const nextText = upsertCodexSynapseBlock(rawText, block);
+  const block = buildCodexLociBlock(serverConfig);
+  const nextText = upsertCodexLociBlock(rawText, block);
   const changed = rawText !== nextText;
 
   fs.writeFileSync(target.configPath, nextText, 'utf8');
@@ -162,7 +162,7 @@ function installIntoCodexTarget(target: InstallTarget, serverConfig: ServerConfi
   };
 }
 
-export function buildSynapseServerConfig({ command, args, env }: { command: string; args?: string[]; env?: Record<string, string> }): ServerConfig {
+export function buildLociServerConfig({ command, args, env }: { command: string; args?: string[]; env?: Record<string, string> }): ServerConfig {
   const config: ServerConfig = {
     command,
     startup_timeout_sec: 30,
@@ -291,12 +291,12 @@ export function detectAiToolTargets({ homeDir = os.homedir() }: { homeDir?: stri
   };
 }
 
-export interface InstallSynapseResult {
+export interface InstallLociResult {
   installed: InstallResult[];
   unsupported: InstallTarget[];
 }
 
-export function installSynapseIntoDetectedClients({
+export function installLociIntoDetectedClients({
   homeDir = os.homedir(),
   serverConfig,
   backupDir
@@ -304,7 +304,7 @@ export function installSynapseIntoDetectedClients({
   homeDir?: string;
   serverConfig: ServerConfig;
   backupDir: string;
-}): InstallSynapseResult {
+}): InstallLociResult {
   const detection = detectAiToolTargets({ homeDir });
   const results: InstallResult[] = [];
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Universal boot loader for Synapse CLI.
+ * Universal boot loader for Loci CLI.
  *
  * Resolves tsx/esm from the package's own node_modules (not CWD),
  * then launches a target ESM bin script with --import tsx/esm.
@@ -35,7 +35,7 @@ function resolveTsxEsm() {
   try {
     return pathToFileURL(req.resolve('tsx/esm')).href;
   } catch {
-    process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse-cortex\n');
+    process.stderr.write('[loci] fatal: tsx not found. Reinstall: npm install -g loci-mcp\n');
     process.exit(1);
   }
 }
@@ -43,12 +43,12 @@ function resolveTsxEsm() {
 /**
  * Launch a target ESM bin script under tsx/esm.
  *
- * @param {string} targetName  filename under `bin/`, e.g. `synapse.js`
+ * @param {string} targetName  filename under `bin/`, e.g. `loci.js`
  * @param {string[]} [forwardArgs] arguments to forward (defaults to process.argv.slice(2))
  */
 function runTarget(targetName, forwardArgs) {
   if (!targetName || typeof targetName !== 'string') {
-    process.stderr.write('[synapse] _boot.runTarget: targetName is required\n');
+    process.stderr.write('[loci] _boot.runTarget: targetName is required\n');
     process.exit(1);
   }
   const tsxEsmPath = resolveTsxEsm();

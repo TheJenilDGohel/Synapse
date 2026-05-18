@@ -5,28 +5,28 @@ description: Frequently asked questions, performance tips, and architectural pro
 
 # FAQ & Insights
 
-Understand the tradeoffs, performance characteristics, and common questions about Synapse.
+Understand the tradeoffs, performance characteristics, and common questions about Loci.
 
 ## Frequently Asked Questions
 
-### 1. Is Synapse a replacement for my AI model?
-No. Synapse is **infrastructure**. It is a specialized transmission layer that provides your existing AI model (via MCP) with the project context it needs to reason accurately.
+### 1. Is Loci a replacement for my AI model?
+No. Loci is **infrastructure**. It is a specialized transmission layer that provides your existing AI model (via MCP) with the project context it needs to reason accurately.
 
 ### 2. Where is my data stored?
-All data—code indexes, persistent memories, and knowledge graph triples—is stored in a local SQLite database on your machine. By default, this is located at `~/.synapse/storage/synapse.db`.
+All data—code indexes, persistent memories, and knowledge graph triples—is stored in a local SQLite database on your machine. By default, this is located at `~/.loci/storage/loci.db`.
 
-### 3. Does Synapse send my code to the cloud?
-**No.** Synapse is strictly local-first. We do not have a cloud backend, we do not collect telemetry, and we do not use external APIs for indexing or retrieval.
+### 3. Does Loci send my code to the cloud?
+**No.** Loci is strictly local-first. We do not have a cloud backend, we do not collect telemetry, and we do not use external APIs for indexing or retrieval.
 
 ### 4. Which AI clients are supported?
-Synapse works with any client that supports the **Model Context Protocol (MCP)**. This includes:
+Loci works with any client that supports the **Model Context Protocol (MCP)**. This includes:
 - **Claude Desktop** & **Claude Code**
 - **Cursor** & **Windsurf**
 - **Cline** & **Continue**
 - **Gemini CLI**
 
-### 5. How does Synapse handle very large codebases?
-Synapse uses `sqlite-vec` for high-performance vector search and `ripgrep` for ultra-fast lexical search. It uses AST-aware chunking to ensure that even in large files, only the relevant functions are surfaced to the AI.
+### 5. How does Loci handle very large codebases?
+Loci uses `sqlite-vec` for high-performance vector search and `ripgrep` for ultra-fast lexical search. It uses AST-aware chunking to ensure that even in large files, only the relevant functions are surfaced to the AI.
 
 ## Pros & Cons
 
@@ -45,7 +45,7 @@ Synapse uses `sqlite-vec` for high-performance vector search and `ripgrep` for u
 ## Performance Tips
 
 ### 1. Optimize Your Index
-If indexing is slow, ensure that your `.gitignore` is up to date. Synapse respects ignore rules and won't waste time indexing `node_modules`, `dist`, or other build artifacts.
+If indexing is slow, ensure that your `.gitignore` is up to date. Loci respects ignore rules and won't waste time indexing `node_modules`, `dist`, or other build artifacts.
 
 ### 2. Use `agent_prime`
 Instead of letting your AI agent hunt for context with dozens of small tool calls, instruct it to use `agent_prime` once at the start of a task. This rehydrates the most important context in a single round-trip.

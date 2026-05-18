@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loci MCP"
+  short_description: "Install and use Loci MCP tools for local repo retrieval"
+  default_prompt: "Use Loci MCP by intent: start with server_status or health for runtime validation, use search_files for module discovery, search_code for exact strings, search_hybrid for concept lookup, get_symbol/find_usages for code navigation, and read_file for confirmation. If semantic retrieval quality matters, check embed_status and index_status. If memory is enabled and the task is non-trivial, prefer task_context before deeper analysis. After any meaningful fix, decision, review finding, reusable workflow discovery, or user preference discovery, prefer capture_outcome with a durable summary and file links, then consider memory_suggest_relations for graph linking. Use update_status before proposing update_self."

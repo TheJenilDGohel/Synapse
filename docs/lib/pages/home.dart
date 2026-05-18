@@ -29,13 +29,13 @@ class Home extends StatelessComponent {
           ]),
           p(classes: 'hero-lead', [
             text(
-              'Synapse bridges the gap between biological intent and synthetic reasoning. A local-first context engine powered by temporal knowledge and persistent memory.',
+              'Loci bridges the gap between biological intent and synthetic reasoning. A local-first context engine powered by temporal knowledge and persistent memory.',
             ),
           ]),
           div(classes: 'hero-btns', [
             DocsLink(to: '/intro', classes: 'btn-elite btn-primary', child: text('Get Started')),
             a(
-              href: 'https://github.com/TheJenilDGohel/synapse',
+              href: 'https://github.com/TheJenilDGohel/loci',
               classes: 'btn-elite btn-secondary',
               [text('GitHub')],
             ),

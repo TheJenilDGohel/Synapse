@@ -45,7 +45,7 @@ let _classifierEnabled = false;
 
 /**
  * Configure the memory classifier for auto-typing.
- * Call this once during app initialization when SYNAPSE_CLASSIFIER_ENABLED=true.
+ * Call this once during app initialization when LOCI_CLASSIFIER_ENABLED=true.
  */
 export function configureClassifier(enabled: boolean, options?: { model?: string; cacheDir?: string; confidenceThreshold?: number }): void {
   _classifierEnabled = enabled;

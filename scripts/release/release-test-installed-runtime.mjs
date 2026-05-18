@@ -81,7 +81,7 @@ function buildDefaultConfig(overrides = {}) {
   const reportDir = path.join(root, 'reports');
   const versionLabel = overrides.versionLabel || 'installed-runtime';
   const slug = String(versionLabel).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'installed-runtime';
-  const synapseHome = path.join(os.homedir(), '.synapse');
+  const lociHome = path.join(os.homedir(), '.loci');
   return {
     root,
     projectPath: root,
@@ -89,15 +89,15 @@ function buildDefaultConfig(overrides = {}) {
     searchFileQuery: 'README',
     searchCodeQuery: 'synapse_list_roots',
     reportDir,
-    markdownReportPath: overrides.markdownReportPath || path.join(reportDir, `synapse-${slug}-release-test-report.md`),
-    jsonReportPath: overrides.jsonReportPath || path.join(reportDir, `synapse-${slug}-release-test-report.json`),
-    reportTitle: `Synapse ${overrides.versionLabel || 'Installed Runtime'} Release Test Report`,
-    configPath: path.join(synapseHome, 'config', 'synapse.config.json'),
-    dbPath: path.join(synapseHome, 'data', 'synapse.db'),
-    indexPath: path.join(synapseHome, 'data', 'synapse.index.json'),
-    runtimeLabel: overrides.runtimeLabel || 'globally installed `synapse`',
+    markdownReportPath: overrides.markdownReportPath || path.join(reportDir, `loci-${slug}-release-test-report.md`),
+    jsonReportPath: overrides.jsonReportPath || path.join(reportDir, `loci-${slug}-release-test-report.json`),
+    reportTitle: `Loci ${overrides.versionLabel || 'Installed Runtime'} Release Test Report`,
+    configPath: path.join(lociHome, 'config', 'loci.config.json'),
+    dbPath: path.join(lociHome, 'data', 'loci.db'),
+    indexPath: path.join(lociHome, 'data', 'loci.index.json'),
+    runtimeLabel: overrides.runtimeLabel || 'globally installed `loci`',
     versionLabel: overrides.versionLabel || 'installed-runtime',
-    command: overrides.command || 'synapse'
+    command: overrides.command || 'loci'
   };
 }
 
@@ -107,20 +107,20 @@ export async function runInstalledRuntimeReleaseTest(options = {}) {
   const config = buildDefaultConfig(options);
   fs.mkdirSync(config.reportDir, { recursive: true });
 
-  const tempReleaseHome = fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-release-runtime-'));
-  const tempMemoryDb = path.join(tempReleaseHome, 'synapse.memory.db');
-  const tempIndexDb = path.join(tempReleaseHome, 'synapse.db');
-  const tempIndexJson = path.join(tempReleaseHome, 'synapse.index.json');
+  const tempReleaseHome = fs.mkdtempSync(path.join(os.tmpdir(), 'loci-release-runtime-'));
+  const tempMemoryDb = path.join(tempReleaseHome, 'loci.memory.db');
+  const tempIndexDb = path.join(tempReleaseHome, 'loci.db');
+  const tempIndexJson = path.join(tempReleaseHome, 'loci.index.json');
   const env = {
     ...process.env,
     MCP_MODE: 'stdio',
-    SYNAPSE_CONFIG: config.configPath,
-    SYNAPSE_INDEX_BACKEND: 'sqlite-vec',
-    SYNAPSE_DB_PATH: tempIndexDb,
-    SYNAPSE_INDEX_PATH: tempIndexJson,
-    SYNAPSE_MEMORY_ENABLED: 'true',
-    SYNAPSE_MEMORY_BACKEND: 'auto',
-    SYNAPSE_MEMORY_DB_PATH: tempMemoryDb
+    LOCI_CONFIG: config.configPath,
+    LOCI_INDEX_BACKEND: 'sqlite-vec',
+    LOCI_DB_PATH: tempIndexDb,
+    LOCI_INDEX_PATH: tempIndexJson,
+    LOCI_MEMORY_ENABLED: 'true',
+    LOCI_MEMORY_BACKEND: 'auto',
+    LOCI_MEMORY_DB_PATH: tempMemoryDb
   };
 
   let transport;
@@ -147,7 +147,7 @@ export async function runInstalledRuntimeReleaseTest(options = {}) {
       stderrOutput += chunk.toString('utf8');
     });
     const nextClient = new Client({
-      name: 'synapse-release-smoke',
+      name: 'loci-release-smoke',
       version: '2026.5.0'
     }, {
       capabilities: {}
@@ -575,7 +575,7 @@ export async function runInstalledRuntimeReleaseTest(options = {}) {
       runtime_label: config.runtimeLabel,
       version_label: config.versionLabel,
       installed_runtime: {
-        name: initialize?.name || 'synapse',
+        name: initialize?.name || 'loci',
         version: initialize?.version || 'unknown'
       },
       summary: {

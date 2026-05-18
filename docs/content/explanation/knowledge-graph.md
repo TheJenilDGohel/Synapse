@@ -5,7 +5,7 @@ description: A temporal entity-triple store with multi-hop traversal and time-tr
 
 # Temporal Knowledge Graph
 
-The Synapse Knowledge Graph is a **temporal entity-triple store** built on local SQLite. It allows AI agents to record, query, and reason about architectural facts, module relationships, and decisions—not just as they are *now*, but as they were *at any point in history*.
+The Loci Knowledge Graph is a **temporal entity-triple store** built on local SQLite. It allows AI agents to record, query, and reason about architectural facts, module relationships, and decisions—not just as they are *now*, but as they were *at any point in history*.
 
 :::tip Knowledge is More Than Memory
 While **[Persistent Memory](memory)** stores facts as semantic blobs (vectors), the Knowledge Graph stores **structured relationships** (triples). This enables complex multi-hop reasoning that vector search alone cannot achieve.
@@ -19,7 +19,7 @@ Every fact in the graph is stored as a **Subject → Predicate → Object** trip
 - **Predicate**: The relationship (e.g., `depends_on`).
 - **Object**: The target entity (e.g., `PostgreSQL`).
 
-Triples in Synapse are **immutable**. When a relationship changes (e.g., migrating a database), we don't delete the old record; we invalidate it and add a new one. This preserves the "ancestry" of your codebase.
+Triples in Loci are **immutable**. When a relationship changes (e.g., migrating a database), we don't delete the old record; we invalidate it and add a new one. This preserves the "ancestry" of your codebase.
 
 ## Key Capabilities
 
@@ -31,11 +31,11 @@ AI agents can follow relationships recursively to analyze the "Blast Radius" of 
 > *"Which modules will be affected if I change the 'User' database schema?"*
 
 ### 3. Integrated Branching
-Just like Git, Synapse supports **KG Branches**. You can record experimental architectural changes in a branch without affecting the main "Source of Truth" graph.
+Just like Git, Loci supports **KG Branches**. You can record experimental architectural changes in a branch without affecting the main "Source of Truth" graph.
 
 ## Graph Power Tools
 
-In Synapse v2026.5.0, we provide two unified controllers that handle all graph operations:
+In Loci v2026.5.0, we provide two unified controllers that handle all graph operations:
 
 | Tool | Action | Use Case |
 | :--- | :--- | :--- |
@@ -48,7 +48,7 @@ In Synapse v2026.5.0, we provide two unified controllers that handle all graph o
 
 ## Real-World Workflow: Tracking an ADR
 
-When making an Architectural Decision (ADR), Synapse turns it into a living part of the graph:
+When making an Architectural Decision (ADR), Loci turns it into a living part of the graph:
 
 1. **Register**: Use `synapse_kg_manage(action="add_entity")` for `ADR-007`.
 2. **Link**: Use `add_triple` to connect `ADR-007` to every affected module.

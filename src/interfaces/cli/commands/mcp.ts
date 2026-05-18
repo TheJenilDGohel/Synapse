@@ -2,9 +2,9 @@ import { parseFlags } from '../parse-flags.js';
 /**
  * MCP lifecycle CLI subcommands.
  *
- *   synapse mcp start     -- Start MCP server (stdio mode)
- *   synapse mcp status    -- Show MCP server status and health
- *   synapse mcp config    -- Output ready-to-paste MCP client config JSON
+ *   loci mcp start     -- Start MCP server (stdio mode)
+ *   loci mcp status    -- Show MCP server status and health
+ *   loci mcp config    -- Output ready-to-paste MCP client config JSON
  *
  * @module src/cli/commands/mcp
  */
@@ -17,8 +17,8 @@ import type { VerbDef } from '../help.js';
 import { writeError as sharedWriteError } from '../output.js';
 import { buildRuntimeConfig } from '../../../core/runtime/config.js';
 import {
-  resolveSynapseHome,
-  buildSynapsePaths
+  resolveLociHome,
+  buildLociPaths
 } from '../../../core/runtime/home-layout.js';
 import { SERVER_NAME, SERVER_VERSION } from '../../../core/runtime/version.js';
 import type { GlobalOptions } from '../options.js';
@@ -94,8 +94,8 @@ async function handleStatus(_args: string[], opts: GlobalOptions): Promise<void>
     return;
   }
 
-  const synapseHome: string = runtime.synapseHome;
-  const paths = buildSynapsePaths(synapseHome);
+  const lociHome: string = runtime.lociHome;
+  const paths = buildLociPaths(lociHome);
 
   // Check if config file exists
   const configExists = fs.existsSync(paths.configPath);
@@ -143,7 +143,7 @@ async function handleStatus(_args: string[], opts: GlobalOptions): Promise<void>
       cacheDir: runtime.embeddingCacheDir,
     },
     ripgrep: runtime.hasRipgrep,
-    synapseHome,
+    lociHome,
   };
 
   if (opts.json) {
@@ -156,7 +156,7 @@ async function handleStatus(_args: string[], opts: GlobalOptions): Promise<void>
 
   process.stdout.write(`  Server:          ${SERVER_NAME} v${SERVER_VERSION}\n`);
   process.stdout.write(`  Mode:            ${runtime.mcpMode}\n`);
-  process.stdout.write(`  Home:            ${synapseHome}\n`);
+  process.stdout.write(`  Home:            ${lociHome}\n`);
   process.stdout.write('\n');
 
   process.stdout.write('  Config\n');
@@ -196,8 +196,8 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
     raw: { alias: 'r', type: 'boolean' },
   });
 
-  const synapseHome = resolveSynapseHome();
-  const paths = buildSynapsePaths(synapseHome);
+  const lociHome = resolveLociHome();
+  const paths = buildLociPaths(lociHome);
 
   // If a snippet file already exists on disk, read and output it
   if (fs.existsSync(paths.snippetPath) && !flags.raw) {
@@ -224,7 +224,7 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
   // Generate the config -- same shape as client-installer.js uses
   const serverConfig = {
     command: 'npx',
-    args: ['-y', 'synapse@latest'],
+    args: ['-y', 'loci@latest'],
     startup_timeout_sec: 30,
     env: {},
   };
@@ -236,12 +236,12 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
     if (opts.json) {
       writeJson({
         method: 'cli',
-        command: 'claude mcp add synapse -- npx -y synapse@latest',
-        note: 'Run this command in your terminal to add Synapse to Claude Code.',
+        command: 'claude mcp add loci -- npx -y loci@latest',
+        note: 'Run this command in your terminal to add Loci to Claude Code.',
       });
     } else {
       process.stdout.write('Claude Code uses the `claude mcp add` command:\n\n');
-      process.stdout.write('  claude mcp add synapse -- npx -y synapse@latest\n\n');
+      process.stdout.write('  claude mcp add loci -- npx -y loci@latest\n\n');
       process.stdout.write('Run this in your terminal. No JSON config needed.\n');
     }
     return;
@@ -250,7 +250,7 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
   // Default: generic mcpServers JSON block
   const output = {
     mcpServers: {
-      synapse: serverConfig,
+      loci: serverConfig,
     },
   };
 
@@ -261,7 +261,7 @@ async function handleConfig(args: string[], opts: GlobalOptions): Promise<void> 
     process.stdout.write(JSON.stringify(output, null, 2) + '\n');
     process.stdout.write('\nPaste this into your AI client\'s MCP server configuration.\n');
     process.stdout.write('Supported clients: Cursor, Windsurf, Gemini CLI, Kiro, and others.\n');
-    process.stdout.write('\nFor Claude Code, use: synapse mcp config --client claude\n');
+    process.stdout.write('\nFor Claude Code, use: loci mcp config --client claude\n');
   }
 }
 

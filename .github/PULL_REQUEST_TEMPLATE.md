@@ -1,5 +1,5 @@
 <!--
-Thanks for contributing to Synapse!
+Thanks for contributing to Loci!
 Please fill out this template to help us review your PR.
 -->
 
@@ -28,7 +28,7 @@ Please fill out this template to help us review your PR.
 - [ ] `npm run lint` is clean
 - [ ] `npm run check` (tsc) is clean
 - [ ] Manually tested the change end-to-end
-- [ ] Updated `skills/synapse/SKILL.md` if any tool changed
+- [ ] Updated `skills/loci/SKILL.md` if any tool changed
 - [ ] Updated `CHANGELOG.md` under `## [Unreleased]`
 
 ## Backwards compatibility

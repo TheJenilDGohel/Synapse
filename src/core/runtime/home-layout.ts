@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-export interface SynapsePaths {
+export interface LociPaths {
   home: string;
   dirs: {
     config: string;
@@ -46,15 +46,15 @@ export interface WritableModelCacheResult {
 
 export interface MigrationResult {
   changed: boolean;
-  paths: SynapsePaths;
+  paths: LociPaths;
 }
 
-export function resolveSynapseHome(env: Record<string, string | undefined> = process.env as Record<string, string | undefined>): string {
-  return path.resolve(env.SYNAPSE_HOME || path.join(os.homedir(), '.synapse'));
+export function resolveLociHome(env: Record<string, string | undefined> = process.env as Record<string, string | undefined>): string {
+  return path.resolve(env.LOCI_HOME || path.join(os.homedir(), '.loci'));
 }
 
-export function buildSynapsePaths(synapseHome: string): SynapsePaths {
-  const home = path.resolve(synapseHome);
+export function buildLociPaths(lociHome: string): LociPaths {
+  const home = path.resolve(lociHome);
   const configDir = path.join(home, 'config');
   const dataDir = path.join(home, 'data');
   const cacheDir = path.join(home, 'cache');
@@ -71,17 +71,17 @@ export function buildSynapsePaths(synapseHome: string): SynapsePaths {
       vendor: vendorDir,
       sqliteVecVendor: path.join(vendorDir, 'sqlite-vec')
     },
-    configPath: path.join(configDir, 'synapse.config.json'),
-    legacyConfigPath: path.join(home, 'synapse.config.json'),
+    configPath: path.join(configDir, 'loci.config.json'),
+    legacyConfigPath: path.join(home, 'loci.config.json'),
     legacyCompatConfigPath: path.join(home, 'config.json'),
-    snippetPath: path.join(configDir, 'mcp.synapse.json'),
-    legacySnippetPath: path.join(home, 'mcp.synapse.json'),
-    sqliteDbPath: path.join(dataDir, 'synapse.db'),
-    legacySqliteDbPath: path.join(home, 'synapse.db'),
-    jsonIndexPath: path.join(dataDir, 'synapse.index.json'),
-    legacyJsonIndexPath: path.join(home, 'synapse.index.json'),
-    memoryDbPath: path.join(dataDir, 'synapse.memory.db'),
-    legacyMemoryDbPath: path.join(home, 'synapse.memory.db'),
+    snippetPath: path.join(configDir, 'mcp.loci.json'),
+    legacySnippetPath: path.join(home, 'mcp.loci.json'),
+    sqliteDbPath: path.join(dataDir, 'loci.db'),
+    legacySqliteDbPath: path.join(home, 'loci.db'),
+    jsonIndexPath: path.join(dataDir, 'loci.index.json'),
+    legacyJsonIndexPath: path.join(home, 'loci.index.json'),
+    memoryDbPath: path.join(dataDir, 'loci.memory.db'),
+    legacyMemoryDbPath: path.join(home, 'loci.memory.db'),
     updateStatusPath: path.join(cacheDir, 'update-status.json'),
     legacyUpdateStatusPath: path.join(home, 'update-status.json')
   };
@@ -97,28 +97,28 @@ function sanitizeOwnerToken(input: unknown): string {
 
 function writeProbeFile(dirPath: string): void {
   fs.mkdirSync(dirPath, { recursive: true });
-  const probe = path.join(dirPath, `.synapse-cache-probe-${process.pid}-${Date.now()}`);
+  const probe = path.join(dirPath, `.loci-cache-probe-${process.pid}-${Date.now()}`);
   fs.writeFileSync(probe, 'ok', 'utf8');
   fs.rmSync(probe, { force: true });
 }
 
 export interface ResolveWritableModelCacheDirOptions {
   preferredDir?: string;
-  synapseHome?: string;
+  lociHome?: string;
   env?: Record<string, string | undefined>;
 }
 
 export function resolveWritableModelCacheDir(
-  { preferredDir, synapseHome, env = process.env as Record<string, string | undefined> }: ResolveWritableModelCacheDirOptions = {}
+  { preferredDir, lociHome, env = process.env as Record<string, string | undefined> }: ResolveWritableModelCacheDirOptions = {}
 ): WritableModelCacheResult {
-  const preferred = path.resolve(preferredDir || path.join(resolveSynapseHome(env), 'cache'));
+  const preferred = path.resolve(preferredDir || path.join(resolveLociHome(env), 'cache'));
   const uid = typeof process.getuid === 'function' ? process.getuid() : null;
   const owner = Number.isInteger(uid) ? `uid-${uid}` : sanitizeOwnerToken(env.USER || env.USERNAME || 'user');
-  const fallbackBase = path.join(os.tmpdir(), `synapse-models-${owner}`);
-  const fallbackShared = path.join(os.tmpdir(), 'synapse-models');
+  const fallbackBase = path.join(os.tmpdir(), `loci-models-${owner}`);
+  const fallbackShared = path.join(os.tmpdir(), 'loci-models');
   const candidateEntries: Array<{ path: string; source: string } | null> = [
     { path: preferred, source: 'preferred' },
-    synapseHome ? { path: path.join(path.resolve(synapseHome), 'cache'), source: 'synapse-home' } : null,
+    lociHome ? { path: path.join(path.resolve(lociHome), 'cache'), source: 'loci-home' } : null,
     { path: fallbackBase, source: 'tmp-user' },
     { path: fallbackShared, source: 'tmp-shared' }
   ];
@@ -188,14 +188,14 @@ function moveSqliteFamily(baseSource: string, baseTarget: string): boolean {
 
 export interface ResolveConfigPathOptions {
   env?: Record<string, string | undefined>;
-  synapseHome?: string;
+  lociHome?: string;
 }
 
-export function resolveConfigPath({ env = process.env as Record<string, string | undefined>, synapseHome }: ResolveConfigPathOptions = {}): string {
-  const home = synapseHome || resolveSynapseHome(env);
-  const paths = buildSynapsePaths(home);
-  if (env.SYNAPSE_CONFIG) {
-    const explicit = path.resolve(env.SYNAPSE_CONFIG);
+export function resolveConfigPath({ env = process.env as Record<string, string | undefined>, lociHome }: ResolveConfigPathOptions = {}): string {
+  const home = lociHome || resolveLociHome(env);
+  const paths = buildLociPaths(home);
+  if (env.LOCI_CONFIG) {
+    const explicit = path.resolve(env.LOCI_CONFIG);
     if (fs.existsSync(explicit)) return explicit;
     if (
       explicit === paths.legacyConfigPath ||
@@ -210,8 +210,8 @@ export function resolveConfigPath({ env = process.env as Record<string, string |
   return paths.configPath;
 }
 
-export function migrateSynapseHomeLayout(synapseHome: string): MigrationResult {
-  const paths = buildSynapsePaths(synapseHome);
+export function migrateLociHomeLayout(lociHome: string): MigrationResult {
+  const paths = buildLociPaths(lociHome);
   fs.mkdirSync(paths.home, { recursive: true });
   fs.mkdirSync(paths.dirs.config, { recursive: true });
   fs.mkdirSync(paths.dirs.data, { recursive: true });
@@ -232,7 +232,7 @@ export function migrateSynapseHomeLayout(synapseHome: string): MigrationResult {
   const entries = fs.readdirSync(paths.home, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.isFile()) continue;
-    if (!entry.name.startsWith('synapse.config.json.bak.')) continue;
+    if (!entry.name.startsWith('loci.config.json.bak.')) continue;
     moved = moveIfNeeded(
       path.join(paths.home, entry.name),
       path.join(paths.dirs.backups, entry.name)

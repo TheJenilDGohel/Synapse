@@ -1,4 +1,4 @@
-# Release Plan: Synapse v0.0.1-beta.4
+# Release Plan: Loci v0.0.1-beta.4
 
 ## 🎯 Primary Objective
 Maximize token efficiency and context compression to provide AI agents with more high-signal data in fewer tokens.
@@ -21,7 +21,7 @@ Maximize token efficiency and context compression to provide AI agents with more
     - Secured `Backup` service against SQL injection.
 - [x] **Documentation & Health:**
     - Added Cache Fallback troubleshooting to `README.md`.
-    - Updated `synapse doctor` with enhanced writable path checks.
+    - Updated `loci doctor` with enhanced writable path checks.
 
 ## 🚀 Next Milestone: Adaptive Indexing & Multi-Root Intelligence (v0.0.1-beta.5)
 We will focus on scale and multi-repo support:

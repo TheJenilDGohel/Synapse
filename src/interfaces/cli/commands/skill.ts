@@ -2,9 +2,9 @@ import { parseFlags } from '../parse-flags.js';
 /**
  * Skill CLI subcommands.
  *
- *   synapse skill install [--force] [--project] [--user] [--dest PATH]
- *   synapse skill list
- *   synapse skill remove <name> [-f|--force]
+ *   loci skill install [--force] [--project] [--user] [--dest PATH]
+ *   loci skill list
+ *   loci skill remove <name> [-f|--force]
  *
  * @module src/cli/commands/skill
  */
@@ -20,7 +20,7 @@ import { writeError as sharedWriteError } from '../output.js';
 // Lazy-loaded from scripts/runtime — outside rootDir, computed path prevents tsc from analyzing it
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const SKILL_SCRIPT = path.resolve(__dirname, '..', '..', '..', '..', 'scripts', 'runtime', 'install-synapse-skill.mjs');
+const SKILL_SCRIPT = path.resolve(__dirname, '..', '..', '..', '..', 'scripts', 'runtime', 'install-loci-skill.mjs');
 let _skillModule: {
   listBundledSkillDirs: () => string[];
   getKnownToolSkillDirs: (home: string) => string[];
@@ -35,7 +35,7 @@ async function getSkillModule() {
 }
 import type { GlobalOptions } from '../options.js';
 
-const SKILL_METADATA_FILE = '.synapse-skill.json';
+const SKILL_METADATA_FILE = '.loci-skill.json';
 
 const VERBS: VerbDef[] = [
   { name: 'install', desc: 'Install bundled skills to AI clients' },
@@ -201,7 +201,7 @@ async function handleList(_args: string[], opts: GlobalOptions): Promise<void> {
 
   if (installed.length === 0) {
     process.stdout.write('No skills installed.\n');
-    process.stdout.write('Run `synapse skill install` to install bundled skills.\n');
+    process.stdout.write('Run `loci skill install` to install bundled skills.\n');
     return;
   }
 
@@ -242,7 +242,7 @@ async function handleRemove(args: string[], opts: GlobalOptions): Promise<void> 
 
   const name = positionals[0];
   if (!name) {
-    writeError('Skill name is required. Usage: synapse skill remove <name> [-f|--force]', opts.json);
+    writeError('Skill name is required. Usage: loci skill remove <name> [-f|--force]', opts.json);
     return;
   }
 

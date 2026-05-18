@@ -5,15 +5,15 @@ description: Hybrid BM25 + vector search, surgical AST-aware chunking, and preci
 
 # Code Intelligence
 
-Synapse gives your AI agent **elite code understanding**—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with surgical AST parsing, Synapse surfaces the most relevant context with extreme precision.
+Loci gives your AI agent **elite code understanding**—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with surgical AST parsing, Loci surfaces the most relevant context with extreme precision.
 
 :::tip Precision Retrieval
-Most code search tools force a choice between exact text matching *or* semantic similarity. Synapse does both, fusing the results via **Reciprocal Rank Fusion (RRF)** to ensure your AI gets the right code every time.
+Most code search tools force a choice between exact text matching *or* semantic similarity. Loci does both, fusing the results via **Reciprocal Rank Fusion (RRF)** to ensure your AI gets the right code every time.
 :::
 
 ## The Hybrid Search Engine
 
-Synapse runs a **Hybrid Rank Fusion** algorithm that combines the strengths of lexical and semantic retrieval in a single query via `search_hybrid`.
+Loci runs a **Hybrid Rank Fusion** algorithm that combines the strengths of lexical and semantic retrieval in a single query via `search_hybrid`.
 
 | Strategy | Engine | Best For... |
 | :--- | :--- | :--- |
@@ -29,7 +29,7 @@ search_hybrid({ query: "validate user permissions" })
 
 ## Surgical AST-Aware Chunking
 
-Traditional tools split code at arbitrary line limits, often severing functions in half. Synapse uses **Abstract Syntax Tree (AST)** parsing (via `tree-sitter`) to index code at its natural boundaries.
+Traditional tools split code at arbitrary line limits, often severing functions in half. Loci uses **Abstract Syntax Tree (AST)** parsing (via `tree-sitter`) to index code at its natural boundaries.
 
 Every chunk is:
 - **Atomic**: A complete function, class, or method. Never a fragment.
@@ -38,7 +38,7 @@ Every chunk is:
 
 ## Symbol Resolution Suite
 
-Synapse builds a comprehensive, cross-linked symbol index for your workspace, allowing agents to navigate code like a senior developer.
+Loci builds a comprehensive, cross-linked symbol index for your workspace, allowing agents to navigate code like a senior developer.
 
 | Tool | Capability | Use Case |
 | :--- | :--- | :--- |
@@ -50,7 +50,7 @@ Synapse builds a comprehensive, cross-linked symbol index for your workspace, al
 
 ## Why it Matters for AI Agents
 
-Standard RAG (Retrieval-Augmented Generation) often fails because it misses the structural relationships in code. Synapse's **Code Intelligence** layer ensures that when an agent asks for context, it receives:
+Standard RAG (Retrieval-Augmented Generation) often fails because it misses the structural relationships in code. Loci's **Code Intelligence** layer ensures that when an agent asks for context, it receives:
 1. The **correct logic** (via Hybrid Search).
 2. The **complete structure** (via AST-Aware Chunking).
 3. The **related symbols** (via Symbol Resolution).

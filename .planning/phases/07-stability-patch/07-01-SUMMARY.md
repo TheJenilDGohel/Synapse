@@ -14,6 +14,6 @@
   - Removed it from `quality:deps` ignores to ensure it's tracked as a production dependency.
 
 ## Verification Results
-- `node bin/synapse.cjs skill list`: SUCCESS (Found 60 installed skills on Windows).
+- `node bin/loci.cjs skill list`: SUCCESS (Found 60 installed skills on Windows).
 - `npm run build:check`: SUCCESS (after adding `src/types/huggingface.d.ts`).
-- `node bin/synapse.cjs selftest`: SUCCESS for Skills component.
+- `node bin/loci.cjs selftest`: SUCCESS for Skills component.

@@ -22,12 +22,12 @@ export function startStalenessMonitor(
       const staleness = await vectorIndex.checkStaleness();
       if (!staleness.stale) return;
       log(
-        `[synapse-sweep] index stale (${staleness.stale_count}/${staleness.total_indexed} files changed) — re-indexing\n`
+        `[loci-sweep] index stale (${staleness.stale_count}/${staleness.total_indexed} files changed) — re-indexing\n`
       );
       await vectorIndex.indexProject({ allRoots: true, force: false });
     } catch (err: unknown) {
       const error = err as { message?: string };
-      log(`[synapse-sweep] error: ${error?.message || err}\n`);
+      log(`[loci-sweep] error: ${error?.message || err}\n`);
     } finally {
       running = false;
     }

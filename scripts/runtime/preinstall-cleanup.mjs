@@ -2,7 +2,7 @@
 
 /**
  * Preinstall cleanup — removes blockers that cause errors during global install:
- *   1. Stale npm temp dirs (.synapse-<hash>) → ENOTEMPTY on retry
+ *   1. Stale npm temp dirs (.loci-<hash>) → ENOTEMPTY on retry
  *   2. Symlinked package entry (from `npm link`) → ENOTDIR because npm tries to
  *      rename the entry to a temp dir and a symlink is not a directory
  *
@@ -17,7 +17,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 
-const PKG_NAME = 'synapse-cortex';
+const PKG_NAME = 'loci-mcp';
 const isWindows = process.platform === 'win32';
 const NPM_BIN = isWindows ? 'npm.cmd' : 'npm';
 

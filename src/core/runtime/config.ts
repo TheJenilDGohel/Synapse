@@ -5,9 +5,9 @@ import { spawnSync } from 'node:child_process';
 import { ensureConfigUpgraded } from '../migrations/config-migrator.js';
 import { RG_BIN, canonicalizePath } from './platform.js';
 import {
-  migrateSynapseHomeLayout,
+  migrateLociHomeLayout,
   resolveConfigPath as resolveDefaultConfigPath,
-  resolveSynapseHome,
+  resolveLociHome,
   resolveWritableModelCacheDir
 } from './home-layout.js';
 import type { WritableModelCacheResult } from './home-layout.js';
@@ -169,7 +169,7 @@ interface ConfigFileParsed {
 }
 
 function parseConfigFileRoots(configPath: string | undefined): RootEntry[] {
-  const resolvedPath = path.resolve(configPath || 'synapse.config.json');
+  const resolvedPath = path.resolve(configPath || 'loci.config.json');
   if (!fs.existsSync(resolvedPath)) return [];
 
   let parsed: ConfigFileParsed;
@@ -232,7 +232,7 @@ interface ConfigFileSettings {
 }
 
 function parseConfigFileSettings(configPath: string | undefined): ConfigFileSettings {
-  const resolvedPath = path.resolve(configPath || 'synapse.config.json');
+  const resolvedPath = path.resolve(configPath || 'loci.config.json');
   if (!fs.existsSync(resolvedPath)) return {};
 
   let parsed: Record<string, unknown>;
@@ -283,11 +283,11 @@ function parseConfigFileSettings(configPath: string | undefined): ConfigFileSett
   };
 }
 
-function resolveRoots({ projectRoots, synapseConfigPath }: { projectRoots: string | undefined; synapseConfigPath: string }): RootEntry[] {
+function resolveRoots({ projectRoots, lociConfigPath }: { projectRoots: string | undefined; lociConfigPath: string }): RootEntry[] {
   const envRoots = parseProjectRootsEnv(projectRoots);
   if (envRoots.length > 0) return envRoots;
 
-  const fileRoots = parseConfigFileRoots(synapseConfigPath);
+  const fileRoots = parseConfigFileRoots(lociConfigPath);
   if (fileRoots.length > 0) return fileRoots;
 
   const cwd = path.resolve(process.cwd());
@@ -304,7 +304,7 @@ function detectRipgrep(): boolean {
 }
 
 export interface RuntimeConfig {
-  synapseHome: string;
+  lociHome: string;
   mcpMode: string;
   disableConsoleOutput: boolean;
   rgTimeoutMs: number;
@@ -358,41 +358,41 @@ export function buildRuntimeConfig(
   env: Record<string, string | undefined> = process.env as Record<string, string | undefined>,
   testMocks?: { sqliteVecModule?: any }
 ): RuntimeConfig {
-  const synapseHome = resolveSynapseHome(env);
+  const lociHome = resolveLociHome(env);
   const mcpMode = (env.MCP_MODE || 'stdio').toLowerCase();
-  const layout = migrateSynapseHomeLayout(synapseHome).paths;
-  const configPath = resolveDefaultConfigPath({ env, synapseHome });
+  const layout = migrateLociHomeLayout(lociHome).paths;
+  const configPath = resolveDefaultConfigPath({ env, lociHome });
   const migration = ensureConfigUpgraded({
     configPath: path.resolve(configPath),
-    synapseHome
+    lociHome
   });
   if (migration.changed && migration.backupPath) {
     process.stderr.write(
-      `[synapse-config] migrated to version ${migration.version}; backup: ${migration.backupPath}\n`
+      `[loci-config] migrated to version ${migration.version}; backup: ${migration.backupPath}\n`
     );
   }
   const fileSettings = parseConfigFileSettings(configPath);
   const embeddingCachePreferred = path.resolve(
-    env.SYNAPSE_EMBED_CACHE_DIR || fileSettings.embeddingCacheDir || layout.dirs.cache
+    env.LOCI_EMBED_CACHE_DIR || fileSettings.embeddingCacheDir || layout.dirs.cache
   );
   const rerankerCachePreferred = path.resolve(
-    env.SYNAPSE_RERANKER_CACHE_DIR || fileSettings.rerankerCacheDir || layout.dirs.cache
+    env.LOCI_RERANKER_CACHE_DIR || fileSettings.rerankerCacheDir || layout.dirs.cache
   );
   const embeddingCacheResolved = resolveWritableModelCacheDir({
     preferredDir: embeddingCachePreferred,
-    synapseHome,
+    lociHome,
     env
   });
   const rerankerCacheResolved = resolveWritableModelCacheDir({
     preferredDir: rerankerCachePreferred,
-    synapseHome,
+    lociHome,
     env
   });
 
   if (embeddingCacheResolved.fallbackUsed) {
     const reason = embeddingCacheResolved.preferredFailure?.message || 'preferred cache path not writable';
     process.stderr.write(
-      `[synapse-config] info: embedding cache using fallback path\n` +
+      `[loci-config] info: embedding cache using fallback path\n` +
       `  preferred: ${embeddingCacheResolved.preferredPath}\n` +
       `  resolved: ${embeddingCacheResolved.path}\n` +
       `  reason: ${reason}\n`
@@ -401,134 +401,134 @@ export function buildRuntimeConfig(
   if (rerankerCacheResolved.fallbackUsed) {
     const reason = rerankerCacheResolved.preferredFailure?.message || 'preferred cache path not writable';
     process.stderr.write(
-      `[synapse-config] info: reranker cache using fallback path\n` +
+      `[loci-config] info: reranker cache using fallback path\n` +
       `  preferred: ${rerankerCacheResolved.preferredPath}\n` +
       `  resolved: ${rerankerCacheResolved.path}\n` +
       `  reason: ${reason}\n`
     );
   }
   const configuredSqliteVecExtensionPath = parseStringEnv(
-    env.SYNAPSE_SQLITE_VEC_EXTENSION,
+    env.LOCI_SQLITE_VEC_EXTENSION,
     fileSettings.sqliteVecExtensionPath || ''
   );
   const detectedSqliteVecExtension = configuredSqliteVecExtensionPath
     ? null
     : findSqliteVecExtensionPath({
-      synapseHome,
+      lociHome,
       env,
       sqliteVecModule: testMocks?.sqliteVecModule
     });
 
   return {
-    synapseHome,
+    lociHome,
     mcpMode,
     disableConsoleOutput: parseBoolean(env.DISABLE_CONSOLE_OUTPUT, false),
-    rgTimeoutMs: parseIntEnv(env.SYNAPSE_RG_TIMEOUT_MS, 15000),
-    autoProjectSplit: parseBoolean(env.SYNAPSE_AUTO_PROJECT_SPLIT, true),
-    maxAutoProjects: parseIntEnv(env.SYNAPSE_MAX_AUTO_PROJECTS, 120),
-    forceSplitChildren: parseBoolean(env.SYNAPSE_FORCE_SPLIT_CHILDREN, false),
-    indexBackend: parseStringEnv(env.SYNAPSE_INDEX_BACKEND, fileSettings.backend || 'sqlite-vec'),
+    rgTimeoutMs: parseIntEnv(env.LOCI_RG_TIMEOUT_MS, 15000),
+    autoProjectSplit: parseBoolean(env.LOCI_AUTO_PROJECT_SPLIT, true),
+    maxAutoProjects: parseIntEnv(env.LOCI_MAX_AUTO_PROJECTS, 120),
+    forceSplitChildren: parseBoolean(env.LOCI_FORCE_SPLIT_CHILDREN, false),
+    indexBackend: parseStringEnv(env.LOCI_INDEX_BACKEND, fileSettings.backend || 'sqlite-vec'),
     vectorIndexPath: path.resolve(
-      env.SYNAPSE_INDEX_PATH || fileSettings.indexPath || layout.jsonIndexPath
+      env.LOCI_INDEX_PATH || fileSettings.indexPath || layout.jsonIndexPath
     ),
     sqliteDbPath: path.resolve(
-      env.SYNAPSE_DB_PATH || fileSettings.dbPath || layout.sqliteDbPath
+      env.LOCI_DB_PATH || fileSettings.dbPath || layout.sqliteDbPath
     ),
     sqliteVecExtensionPath: configuredSqliteVecExtensionPath || detectedSqliteVecExtension?.path || '',
     sqliteVecExtensionSource: configuredSqliteVecExtensionPath
       ? 'configured'
       : detectedSqliteVecExtension?.source || 'missing',
-    sqliteVecModule: parseStringEnv(env.SYNAPSE_SQLITE_VEC_MODULE, fileSettings.sqliteVecModule || 'vec0'),
+    sqliteVecModule: parseStringEnv(env.LOCI_SQLITE_VEC_MODULE, fileSettings.sqliteVecModule || 'vec0'),
     vectorChunkLines: parseIntEnv(
-      env.SYNAPSE_VECTOR_CHUNK_LINES,
+      env.LOCI_VECTOR_CHUNK_LINES,
       fileSettings.chunkLines || 60
     ),
     vectorChunkOverlap: parseIntEnv(
-      env.SYNAPSE_VECTOR_CHUNK_OVERLAP,
+      env.LOCI_VECTOR_CHUNK_OVERLAP,
       fileSettings.chunkOverlap || 15
     ),
     vectorMaxTermsPerChunk: parseIntEnv(
-      env.SYNAPSE_VECTOR_MAX_TERMS,
+      env.LOCI_VECTOR_MAX_TERMS,
       fileSettings.maxTermsPerChunk || 80
     ),
     vectorMaxIndexedFiles: parseIntEnv(
-      env.SYNAPSE_VECTOR_MAX_FILES,
+      env.LOCI_VECTOR_MAX_FILES,
       fileSettings.maxIndexedFiles || DEFAULT_MAX_INDEX_FILES
     ),
     embeddingProvider: parseStringEnv(
-      env.SYNAPSE_EMBED_PROVIDER,
+      env.LOCI_EMBED_PROVIDER,
       fileSettings.embeddingProvider || 'huggingface'
     ),
     embeddingModel: parseStringEnv(
-      env.SYNAPSE_EMBED_MODEL,
+      env.LOCI_EMBED_MODEL,
       fileSettings.embeddingModel || 'sentence-transformers/all-MiniLM-L6-v2'
     ),
     embeddingCacheDir: embeddingCacheResolved.path,
     embeddingCacheStatus: embeddingCacheResolved,
     embeddingDimensions: parseIntEnv(
-      env.SYNAPSE_EMBED_DIMS,
+      env.LOCI_EMBED_DIMS,
       fileSettings.embeddingDimensions || 384
     ),
     rerankerProvider: parseStringEnv(
-      env.SYNAPSE_RERANKER_PROVIDER,
+      env.LOCI_RERANKER_PROVIDER,
       fileSettings.rerankerProvider || 'huggingface'
     ),
     rerankerModel: parseStringEnv(
-      env.SYNAPSE_RERANKER_MODEL,
+      env.LOCI_RERANKER_MODEL,
       fileSettings.rerankerModel || 'cross-encoder/ms-marco-MiniLM-L-6-v2'
     ),
     rerankerCacheDir: rerankerCacheResolved.path,
     rerankerCacheStatus: rerankerCacheResolved,
-    updatePackageName: parseStringEnv(env.SYNAPSE_UPDATE_PACKAGE, 'synapse'),
+    updatePackageName: parseStringEnv(env.LOCI_UPDATE_PACKAGE, 'loci'),
     updateCheckIntervalMinutes: parseIntEnvClamped(
-      env.SYNAPSE_UPDATE_CHECK_INTERVAL_MINUTES,
+      env.LOCI_UPDATE_CHECK_INTERVAL_MINUTES,
       60,
       15,
       1440
     ),
     updateFailureBackoffMinutes: parseIntEnvClamped(
-      env.SYNAPSE_UPDATE_FAILURE_BACKOFF_MINUTES,
+      env.LOCI_UPDATE_FAILURE_BACKOFF_MINUTES,
       15,
       5,
       240
     ),
     indexSweepIntervalMinutes: parseIntEnvClamped(
-      env.SYNAPSE_INDEX_SWEEP_INTERVAL_MINUTES,
+      env.LOCI_INDEX_SWEEP_INTERVAL_MINUTES,
       mcpMode === 'stdio' ? 0 : 5,
       0,
       1440
     ),
     healthMonitorIntervalMinutes: parseIntEnvClamped(
-      env.SYNAPSE_HEALTH_MONITOR_INTERVAL_MINUTES,
+      env.LOCI_HEALTH_MONITOR_INTERVAL_MINUTES,
       30,
       0,
       1440
     ),
     extraProjectMarkers: new Set(
-      (env.SYNAPSE_EXTRA_PROJECT_MARKERS || '')
+      (env.LOCI_EXTRA_PROJECT_MARKERS || '')
         .split(',')
         .map((x) => x.trim())
         .filter(Boolean)
     ),
-    memoryEnabled: parseBoolean(env.SYNAPSE_MEMORY_ENABLED, fileSettings.memoryEnabled ?? true),
-    memoryBackend: parseStringEnv(env.SYNAPSE_MEMORY_BACKEND, fileSettings.memoryBackend || 'auto'),
+    memoryEnabled: parseBoolean(env.LOCI_MEMORY_ENABLED, fileSettings.memoryEnabled ?? true),
+    memoryBackend: parseStringEnv(env.LOCI_MEMORY_BACKEND, fileSettings.memoryBackend || 'auto'),
     memoryDbPath: path.resolve(
-      env.SYNAPSE_MEMORY_DB_PATH || fileSettings.memoryDbPath || layout.memoryDbPath
+      env.LOCI_MEMORY_DB_PATH || fileSettings.memoryDbPath || layout.memoryDbPath
     ),
-    memoryAutoCapture: parseBoolean(env.SYNAPSE_MEMORY_AUTO_CAPTURE, fileSettings.memoryAutoCapture ?? true),
-    memoryConsentDone: parseBoolean(env.SYNAPSE_MEMORY_CONSENT_DONE, fileSettings.memoryConsentDone ?? true),
-    nerEnabled: parseBoolean(env.SYNAPSE_NER_ENABLED, fileSettings.nerEnabled ?? false),
-    nerModel: parseStringEnv(env.SYNAPSE_NER_MODEL, fileSettings.nerModel || 'Xenova/bert-base-NER'),
-    nerConfidenceThreshold: parseIntEnv(env.SYNAPSE_NER_CONFIDENCE, fileSettings.nerConfidenceThreshold ?? 75) / 100,
-    classifierEnabled: parseBoolean(env.SYNAPSE_CLASSIFIER_ENABLED, fileSettings.classifierEnabled ?? false),
-    classifierModel: parseStringEnv(env.SYNAPSE_CLASSIFIER_MODEL, fileSettings.classifierModel || 'Xenova/nli-deberta-v3-small'),
-    classifierConfidenceThreshold: parseIntEnv(env.SYNAPSE_CLASSIFIER_CONFIDENCE, fileSettings.classifierConfidenceThreshold ?? 35) / 100,
-    enrichmentEnabled: parseBoolean(env.SYNAPSE_ENRICHMENT_ENABLED, fileSettings.enrichmentEnabled ?? false),
-    enrichmentModel: parseStringEnv(env.SYNAPSE_ENRICHMENT_MODEL, fileSettings.enrichmentModel || 'Qwen/Qwen2.5-Coder-1.5B-Instruct'),
-    enrichmentDevice: parseStringEnv(env.SYNAPSE_ENRICHMENT_DEVICE, fileSettings.enrichmentDevice || 'webgpu'),
+    memoryAutoCapture: parseBoolean(env.LOCI_MEMORY_AUTO_CAPTURE, fileSettings.memoryAutoCapture ?? true),
+    memoryConsentDone: parseBoolean(env.LOCI_MEMORY_CONSENT_DONE, fileSettings.memoryConsentDone ?? true),
+    nerEnabled: parseBoolean(env.LOCI_NER_ENABLED, fileSettings.nerEnabled ?? false),
+    nerModel: parseStringEnv(env.LOCI_NER_MODEL, fileSettings.nerModel || 'Xenova/bert-base-NER'),
+    nerConfidenceThreshold: parseIntEnv(env.LOCI_NER_CONFIDENCE, fileSettings.nerConfidenceThreshold ?? 75) / 100,
+    classifierEnabled: parseBoolean(env.LOCI_CLASSIFIER_ENABLED, fileSettings.classifierEnabled ?? false),
+    classifierModel: parseStringEnv(env.LOCI_CLASSIFIER_MODEL, fileSettings.classifierModel || 'Xenova/nli-deberta-v3-small'),
+    classifierConfidenceThreshold: parseIntEnv(env.LOCI_CLASSIFIER_CONFIDENCE, fileSettings.classifierConfidenceThreshold ?? 35) / 100,
+    enrichmentEnabled: parseBoolean(env.LOCI_ENRICHMENT_ENABLED, fileSettings.enrichmentEnabled ?? false),
+    enrichmentModel: parseStringEnv(env.LOCI_ENRICHMENT_MODEL, fileSettings.enrichmentModel || 'Qwen/Qwen2.5-Coder-1.5B-Instruct'),
+    enrichmentDevice: parseStringEnv(env.LOCI_ENRICHMENT_DEVICE, fileSettings.enrichmentDevice || 'webgpu'),
     roots: resolveRoots({
       projectRoots: env.PROJECT_ROOTS,
-      synapseConfigPath: configPath
+      lociConfigPath: configPath
     }),
     hasRipgrep: detectRipgrep()
   };

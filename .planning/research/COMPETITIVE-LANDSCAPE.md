@@ -1,11 +1,11 @@
 # Competitive Landscape: AI Memory & Code Intelligence
 
-**Project:** Synapse
+**Project:** Loci
 **Researched:** 2025-05-22
 
 ## Executive Summary
 
-The AI developer ecosystem is shifting from **Vector-based RAG** to **Structural Knowledge Graphs**. The 2025 standard is "Local-First" and "MCP-Native," driven by the need for privacy and deep architectural awareness. Synapse sits at the intersection of three previously siloed domains: Persistent Personal Memory, Temporal Knowledge Graphs, and AST-aware Code Search.
+The AI developer ecosystem is shifting from **Vector-based RAG** to **Structural Knowledge Graphs**. The 2025 standard is "Local-First" and "MCP-Native," driven by the need for privacy and deep architectural awareness. Loci sits at the intersection of three previously siloed domains: Persistent Personal Memory, Temporal Knowledge Graphs, and AST-aware Code Search.
 
 ---
 
@@ -46,9 +46,9 @@ Developers are moving toward these patterns for three reasons:
 
 ---
 
-## Critical Gaps (Synapse Opportunities)
+## Critical Gaps (Loci Opportunities)
 
-Synapse can win by implementing these 4 "Rock Solid" features missing in the current landscape:
+Loci can win by implementing these 4 "Rock Solid" features missing in the current landscape:
 
 1.  **Automated Entity Resolution (Code-to-Fact):** Automatically linking a GitHub Issue memory to a specific AST function node.
 2.  **Hybrid Graph-RAG Queries:** A single MCP tool that allows an agent to ask: "What did we decide about the Auth logic, and show me the functions involved." (Combines Memory + Code Search).

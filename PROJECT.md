@@ -1,9 +1,9 @@
-# Synapse
+# Loci
 
 Bridge context for AI agents via Persistent Memory, Knowledge Graph, and Semantic Code Search.
 
 ## Core Value
-Synapse provides a unified context layer for AI agents, integrating semantic code intelligence, temporal knowledge, and persistent memory into a single high-performance, local-first platform.
+Loci provides a unified context layer for AI agents, integrating semantic code intelligence, temporal knowledge, and persistent memory into a single high-performance, local-first platform.
 
 ## Strategic Objective: Unified Agentic Context Layer
 Move beyond a collection of tools to a "Unified Brain" that understands the intersection of code, intent, and time.

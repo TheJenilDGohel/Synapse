@@ -1,16 +1,16 @@
 ---
 title: Advanced Configuration
-description: Tuning Synapse for performance, custom models, and environment isolation.
+description: Tuning Loci for performance, custom models, and environment isolation.
 ---
 
 # Advanced Configuration
 
-Synapse is designed to be "zero-config" for most users, but power users can tune every aspect of the engine via environment variables or the `synapse.config.json` file.
+Loci is designed to be "zero-config" for most users, but power users can tune every aspect of the engine via environment variables or the `loci.config.json` file.
 
 ## Configuration Methods
 
 1.  **Environment Variables**: Highest priority. Best for ephemeral CI/CD settings.
-2.  **`synapse.config.json`**: Located at `~/.synapse/config/synapse.config.json`. Best for persistent local machine settings.
+2.  **`loci.config.json`**: Located at `~/.loci/config/loci.config.json`. Best for persistent local machine settings.
 
 ---
 
@@ -18,25 +18,25 @@ Synapse is designed to be "zero-config" for most users, but power users can tune
 
 | Variable | Default | Description |
 |:---|:---|:---|
-| `SYNAPSE_INDEX_BACKEND` | `sqlite-vec` | The vector search backend. Use `json` for systems without native extension support. |
-| `SYNAPSE_VECTOR_CHUNK_LINES` | `60` | Number of lines per code chunk. |
-| `SYNAPSE_VECTOR_MAX_FILES` | `20000` | Maximum number of files to index per project. |
-| `SYNAPSE_RG_TIMEOUT_MS` | `15000` | Timeout for Ripgrep text searches. |
+| `LOCI_INDEX_BACKEND` | `sqlite-vec` | The vector search backend. Use `json` for systems without native extension support. |
+| `LOCI_VECTOR_CHUNK_LINES` | `60` | Number of lines per code chunk. |
+| `LOCI_VECTOR_MAX_FILES` | `20000` | Maximum number of files to index per project. |
+| `LOCI_RG_TIMEOUT_MS` | `15000` | Timeout for Ripgrep text searches. |
 
 ### Tuning Chunks
-If your codebase has very large files, consider increasing `SYNAPSE_VECTOR_CHUNK_LINES` to `100` to provide more context per semantic hit.
+If your codebase has very large files, consider increasing `LOCI_VECTOR_CHUNK_LINES` to `100` to provide more context per semantic hit.
 
 ---
 
 ## 2. Models & Embeddings
 
-Synapse uses HuggingFace-compatible models running locally via `@huggingface/transformers`.
+Loci uses HuggingFace-compatible models running locally via `@huggingface/transformers`.
 
 | Variable | Default | Description |
 |:---|:---|:---|
-| `SYNAPSE_EMBED_MODEL` | `all-MiniLM-L6-v2` | The model used for generating code embeddings. |
-| `SYNAPSE_RERANKER_MODEL` | `ms-marco-MiniLM-L-6-v2` | The model used for RRF cross-encoding. |
-| `SYNAPSE_EMBED_CACHE_DIR` | `~/.synapse/cache` | Where model weights are stored. |
+| `LOCI_EMBED_MODEL` | `all-MiniLM-L6-v2` | The model used for generating code embeddings. |
+| `LOCI_RERANKER_MODEL` | `ms-marco-MiniLM-L-6-v2` | The model used for RRF cross-encoding. |
+| `LOCI_EMBED_CACHE_DIR` | `~/.loci/cache` | Where model weights are stored. |
 
 ### Using a Custom Model
 To use a different model, update your config:
@@ -56,9 +56,9 @@ To use a different model, update your config:
 
 | Variable | Default | Description |
 |:---|:---|:---|
-| `SYNAPSE_MEMORY_ENABLED` | `true` | Toggle the persistent memory system. |
-| `SYNAPSE_MEMORY_AUTO_CAPTURE` | `true` | Automatically capture git commits and file edits as events. |
-| `SYNAPSE_NER_ENABLED` | `false` | Enable local Named Entity Recognition for auto-triple generation. |
+| `LOCI_MEMORY_ENABLED` | `true` | Toggle the persistent memory system. |
+| `LOCI_MEMORY_AUTO_CAPTURE` | `true` | Automatically capture git commits and file edits as events. |
+| `LOCI_NER_ENABLED` | `false` | Enable local Named Entity Recognition for auto-triple generation. |
 
 ---
 
@@ -82,4 +82,4 @@ This allows the agent to use `list_roots` and `list_projects` to navigate betwee
 ## 5. Security & Isolation
 
 - **`DISABLE_CONSOLE_OUTPUT`**: Set to `true` to suppress all stdout/stderr, useful for embedded MCP environments.
-- **`SYNAPSE_DB_PATH`**: Redirect the main SQLite database to a secure or encrypted volume.
+- **`LOCI_DB_PATH`**: Redirect the main SQLite database to a secure or encrypted volume.

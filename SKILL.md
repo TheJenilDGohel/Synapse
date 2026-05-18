@@ -1,6 +1,6 @@
-# Synapse Agent Skill
+# Loci Agent Skill
 
-Operational guidance for AI agents interacting with a Synapse-equipped workspace.
+Operational guidance for AI agents interacting with a Loci-equipped workspace.
 
 ## Context Injection Workflow
 1. **Prime**: Always call `synapse_agent_prime` at the start of a task to rehydrate context.

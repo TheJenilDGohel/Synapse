@@ -2,11 +2,11 @@ import { parseFlags } from '../parse-flags.js';
 /**
  * Memory CLI subcommands.
  *
- *   synapse memory add <content> [flags]
- *   synapse memory search <query> [flags]
- *   synapse memory list [flags]
- *   synapse memory show <id>
- *   synapse memory delete <id> [-f|--force]
+ *   loci memory add <content> [flags]
+ *   loci memory search <query> [flags]
+ *   loci memory list [flags]
+ *   loci memory show <id>
+ *   loci memory delete <id> [-f|--force]
  *
  * @module src/cli/commands/memory
  */
@@ -85,7 +85,7 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory add <content> [flags]\n\n');
+    process.stdout.write('Usage: loci memory add <content> [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -t, --type <kind>       Memory kind (default: knowledge)\n');
     process.stdout.write('  -i, --importance <0-100> Importance score (default: 50)\n');
@@ -97,7 +97,7 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
 
   const content = positionals.join(' ').trim();
   if (!content) {
-    writeError('Content is required. Usage: synapse memory add "your content" [--type decision] [--importance 80]', opts.json);
+    writeError('Content is required. Usage: loci memory add "your content" [--type decision] [--importance 80]', opts.json);
     return;
   }
 
@@ -139,7 +139,7 @@ async function handleSearch(args: string[], opts: GlobalOptions): Promise<void> 
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory search <query> [flags]\n\n');
+    process.stdout.write('Usage: loci memory search <query> [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -l, --limit <num>       Max results (default: 10)\n');
     process.stdout.write('  -n, --nest <name>       Filter by nest\n');
@@ -150,7 +150,7 @@ async function handleSearch(args: string[], opts: GlobalOptions): Promise<void> 
 
   const query = positionals.join(' ').trim();
   if (!query) {
-    writeError('Query is required. Usage: synapse memory search "your query" [--limit 10]', opts.json);
+    writeError('Query is required. Usage: loci memory search "your query" [--limit 10]', opts.json);
     return;
   }
 
@@ -192,7 +192,7 @@ async function handleList(args: string[], opts: GlobalOptions): Promise<void> {
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory list [flags]\n\n');
+    process.stdout.write('Usage: loci memory list [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -l, --limit <num>       Max entries (default: 20)\n');
     process.stdout.write('  -k, --kind <type>       Filter by kind\n');
@@ -252,13 +252,13 @@ async function handleShow(args: string[], opts: GlobalOptions): Promise<void> {
   const { positionals, helpRequested } = parseFlags(args, {});
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory show <id>\n');
+    process.stdout.write('Usage: loci memory show <id>\n');
     return;
   }
 
   const id = positionals[0];
   if (!id) {
-    writeError('Memory ID is required. Usage: synapse memory show <id>', opts.json);
+    writeError('Memory ID is required. Usage: loci memory show <id>', opts.json);
     return;
   }
 
@@ -311,13 +311,13 @@ async function handleDelete(args: string[], opts: GlobalOptions): Promise<void> 
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory delete <id> [-f|--force]\n');
+    process.stdout.write('Usage: loci memory delete <id> [-f|--force]\n');
     return;
   }
 
   const id = positionals[0];
   if (!id) {
-    writeError('Memory ID is required. Usage: synapse memory delete <id> [-f|--force]', opts.json);
+    writeError('Memory ID is required. Usage: loci memory delete <id> [-f|--force]', opts.json);
     return;
   }
 
@@ -343,7 +343,7 @@ async function handlePrime(args: string[], opts: GlobalOptions): Promise<void> {
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory prime "your task" [flags]\n\n');
+    process.stdout.write('Usage: loci memory prime "your task" [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -t, --task <text>       The task to rehydrate context for\n');
     process.stdout.write('  -p, --project <path>    Project root path\n');
@@ -352,7 +352,7 @@ async function handlePrime(args: string[], opts: GlobalOptions): Promise<void> {
 
   const task = (flags.task as string) || positionals.join(' ').trim();
   if (!task) {
-    writeError('Task is required. Usage: synapse memory prime "your task"', opts.json);
+    writeError('Task is required. Usage: loci memory prime "your task"', opts.json);
     return;
   }
 
@@ -369,7 +369,7 @@ async function handlePrime(args: string[], opts: GlobalOptions): Promise<void> {
   if (opts.json) {
     writeJson(result);
   } else {
-    process.stdout.write(`\n${c.bold('Synapse Agent Prime')}\n`);
+    process.stdout.write(`\n${c.bold('Loci Agent Prime')}\n`);
     process.stdout.write(`${'='.repeat(60)}\n`);
     process.stdout.write(`Task: ${result.task}\n\n`);
 
@@ -416,7 +416,7 @@ async function handleContext(args: string[], opts: GlobalOptions): Promise<void>
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory context [flags]\n\n');
+    process.stdout.write('Usage: loci memory context [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -t, --task <text>       Task description\n');
     process.stdout.write('  -q, --query <text>      Search query\n');
@@ -457,7 +457,7 @@ async function handleOutcome(args: string[], opts: GlobalOptions): Promise<void>
   });
 
   if (helpRequested) {
-    process.stdout.write('Usage: synapse memory outcome [flags]\n\n');
+    process.stdout.write('Usage: loci memory outcome [flags]\n\n');
     process.stdout.write('Flags:\n');
     process.stdout.write('  -t, --task <text>       Task name/ID (required)\n');
     process.stdout.write('  -s, --summary <text>    Brief outcome summary (required)\n');
