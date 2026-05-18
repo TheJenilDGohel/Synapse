@@ -7,10 +7,6 @@
 /build/
 
 # Miscellaneous
-build_err.txt
-build_log.txt
-build_output.txt
-serve_log*.txt
 *.class
 *.log
 *.pyc

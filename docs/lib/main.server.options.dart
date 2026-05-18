@@ -5,14 +5,9 @@
 // Generated with jaspr_builder
 
 import 'package:jaspr/server.dart';
-import 'package:docs/components/callout.dart' as _callout;
-import 'package:docs/components/code_block.dart' as _code_block;
-import 'package:docs/components/header.dart' as _header;
-import 'package:docs/components/search.dart' as _search;
-import 'package:docs/components/tools_list.dart' as _tools_list;
-import 'package:docs/components/version_switcher.dart' as _version_switcher;
-import 'package:docs/constants/theme.dart' as _theme;
 import 'package:jaspr_content/components/theme_toggle.dart' as _theme_toggle;
+import 'package:loci_docs/components/search.dart' as _search;
+import 'package:loci_docs/components/tools_list.dart' as _tools_list;
 
 /// Default [ServerOptions] for use with your Jaspr project.
 ///
@@ -33,18 +28,11 @@ import 'package:jaspr_content/components/theme_toggle.dart' as _theme_toggle;
 ServerOptions get defaultServerOptions => ServerOptions(
   clientId: 'main.client.dart.js',
   clients: {
-    _search.Search: ClientTarget<_search.Search>('search'),
-    _tools_list.ToolsList: ClientTarget<_tools_list.ToolsList>('tools_list'),
     _theme_toggle.ThemeToggle: ClientTarget<_theme_toggle.ThemeToggle>(
       'jaspr_content:theme_toggle',
     ),
+    _search.Search: ClientTarget<_search.Search>('search'),
+    _tools_list.ToolsList: ClientTarget<_tools_list.ToolsList>('tools_list'),
   },
-  styles: () => [
-    ..._theme.styles,
-    ..._callout.Callout.styles,
-    ..._code_block.CodeBlock.styles,
-    ..._header.Header.styles,
-    ..._version_switcher.VersionSwitcher.styles,
-    ..._theme_toggle.ThemeToggleState.styles,
-  ],
+  styles: () => [..._theme_toggle.ThemeToggleState.styles],
 );

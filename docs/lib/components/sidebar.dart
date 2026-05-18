@@ -51,7 +51,7 @@ class Sidebar extends StatelessComponent {
   ) {
     return div(
       classes: 'nav-group',
-      styles: Styles.raw({'animation': 'enter-stagger 0.4s ease-out ${index * 0.1}s both'}),
+      attributes: {'style': 'animation: enter-stagger 0.4s ease-out ${index * 0.1}s both'},
       [
         h3([Component.text(title)]),
         ul([
