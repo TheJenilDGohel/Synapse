@@ -1,19 +1,19 @@
-# Milestone State: v0.1.0 Jaspr Documentation Site
+# Milestone State: M2 - Adaptive Indexing & Multi-Root Intelligence
 
 ## 📊 Summary
-- **Total Phases**: 12
-- **Completed**: 12
-- **Active**: None
-- **Remaining**: 0
+- **Total Phases**: 7
+- **Completed**: 0
+- **Active**: S01, S03
+- **Remaining**: 7
 
 ## 📍 Current Position
-**Phase**: Milestone Complete
-**Task**: All documentation transformation and CI/CD optimization tasks finished.
-**Branch**: `beta`
+**Phase**: Strategy Refined
+**Task**: Pivot from Watcher to Optimized Staleness Monitor.
+**Branch**: `main`
 
 ## 🛠️ Branching Strategy (Active)
-- **Pattern**: `beta` -> `main`
-- **Quality Gates**: PASS (Parallel CI/CD implemented).
+- **Pattern**: `feature/m2-*` -> `main`
+- **Quality Gates**: PASS (Parallel CI/CD).
 
 ## 🛑 Blockers
 - None.
