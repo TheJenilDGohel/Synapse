@@ -1,5 +1,5 @@
 // src/cli/ansi.ts
-// Shared ANSI terminal utility for Synapse CLI scripts.
+// Shared ANSI terminal utility for Loci CLI scripts.
 // All color/symbol/box output is guarded by NO_COLOR env var and TTY detection.
 // NO new runtime deps — uses built-in ANSI escape codes only.
 

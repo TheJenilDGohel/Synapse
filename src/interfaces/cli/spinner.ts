@@ -1,5 +1,5 @@
 /**
- * Thin ora spinner wrapper for Synapse CLI.
+ * Thin ora spinner wrapper for Loci CLI.
  *
  * Auto-disables in non-TTY environments and when NO_COLOR is set.
  * Returns an ora instance with .succeed(), .fail(), .stop() etc.

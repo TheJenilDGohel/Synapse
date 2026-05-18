@@ -1,11 +1,11 @@
 ---
 title: Using AI Memory
-description: How to effectively use Synapse's persistent memory to build long-term AI context.
+description: How to effectively use Loci's persistent memory to build long-term AI context.
 ---
 
 # Using AI Memory
 
-Synapse's **Persistent Memory** pillar allows your AI agent to learn from every interaction. This guide covers how to teach your agent, manage memories, and ensure high-quality recall.
+Loci's **Persistent Memory** pillar allows your AI agent to learn from every interaction. This guide covers how to teach your agent, manage memories, and ensure high-quality recall.
 
 ## Teaching Your Agent
 
@@ -36,7 +36,7 @@ If you work on multiple unrelated projects or domains, use **Nests** to isolate 
 
 To keep your memory context high-signal, follow these practices:
 
-1. **Semantic Deduplication**: Synapse automatically checks for duplicates when you call `memory_store`. If a similar fact exists, it will suggest updating the existing one instead of creating a new one.
+1. **Semantic Deduplication**: Loci automatically checks for duplicates when you call `memory_store`. If a similar fact exists, it will suggest updating the existing one instead of creating a new one.
 2. **Reviewing Stale Memories**: Use `memory_list(status="stale")` to find memories that might be outdated. Use `memory_update` or `memory_delete` to keep the store clean.
 3. **Linking to Code**: Use `memory_add_relation` to link a memory to a specific file or symbol. This ensures that the memory is retrieved whenever that part of the code is being worked on.
 

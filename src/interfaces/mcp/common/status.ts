@@ -306,7 +306,7 @@ const HELP_RULES: TaskRule[] = [
       t('synapse_health', 'Compact health smoke check'),
       t('synapse_usage_guide', 'Best-practice guidance from the server')],
     workflow: ['1. Run server_status to check runtime health.', '2. If issues, run health for a compact diagnostic.', '3. Call usage_guide for embedded best practices.'],
-    tip: 'Most setup issues are resolved by: npm install -g synapse && synapse setup && synapse doctor.' },
+    tip: 'Most setup issues are resolved by: npm install -g loci && loci setup && loci doctor.' },
   { pattern: /\b(nest|branch|organize|taxonomy|hierarchy|tree)\b/i, type: 'taxonomy',
     tools: [t('synapse_memory_query', 'Full hierarchy view (action: nest_tree)'),
       t('synapse_memory_query', 'List top-level nests (action: nest_list)'),
@@ -403,7 +403,7 @@ export function buildUsageGuide(): UsageGuide {
       'If updates.is_outdated=true in server status, ask user for approval and then call update_self with approved_by_user=true.'
     ],
     quality_playbook: [
-      'Never answer from memory when a Synapse tool can verify the claim.',
+      'Never answer from memory when a Loci tool can verify the claim.',
       'For bug/debug tasks: run both search({ action: "code" }) and search({ action: "hybrid" }).',
       'If results are empty, retry with synonyms and then use search({ action: "code", use_regex: true }).',
       'Always cite concrete file paths and line ranges after reading files before conclusions.'

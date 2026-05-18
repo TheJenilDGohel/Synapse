@@ -63,7 +63,7 @@ export function createServices(runtime: any): { embeddingService: EmbeddingServi
     cacheDir: runtime.embeddingCacheDir,
   });
   const memoryService = new MemoryService({
-    synapseHome: runtime.synapseHome,
+    lociHome: runtime.lociHome,
     enabled: true,
     backend: runtime.memoryBackend,
     dbPath: runtime.memoryDbPath,
@@ -406,7 +406,7 @@ export function checkFileSearch(): CheckResult {
 export function checkSkills(): CheckResult {
   try {
     const homeDir = os.homedir();
-    const SKILL_META = '.synapse-skill.json';
+    const SKILL_META = '.loci-skill.json';
 
     const knownDirs = [
       path.join(homeDir, '.agents', 'skills'),
@@ -449,7 +449,7 @@ export function checkSkills(): CheckResult {
       return {
         name: 'Skills',
         status: 'warn',
-        detail: 'not installed (run: synapse skill install)',
+        detail: 'not installed (run: loci skill install)',
       };
     }
 
@@ -474,17 +474,17 @@ export function checkHooks(): CheckResult {
       return {
         name: 'Hooks',
         status: 'fail',
-        detail: 'not installed (run: synapse hooks install)',
+        detail: 'not installed (run: loci hooks install)',
       };
     }
 
     const settings: any = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     const hooks = settings.hooks || {};
     const preHooks = (hooks.PreToolUse || []).filter(
-      (e: any) => e.hooks?.some((h: any) => h.command?.includes('synapse'))
+      (e: any) => e.hooks?.some((h: any) => h.command?.includes('loci'))
     );
     const postHooks = (hooks.PostToolUse || []).filter(
-      (e: any) => e.hooks?.some((h: any) => h.command?.includes('synapse'))
+      (e: any) => e.hooks?.some((h: any) => h.command?.includes('loci'))
     );
 
     const count = preHooks.length + postHooks.length;
@@ -492,7 +492,7 @@ export function checkHooks(): CheckResult {
       return {
         name: 'Hooks',
         status: 'fail',
-        detail: 'not installed (run: synapse hooks install)',
+        detail: 'not installed (run: loci hooks install)',
       };
     }
 
@@ -505,7 +505,7 @@ export function checkHooks(): CheckResult {
     return {
       name: 'Hooks',
       status: 'fail',
-      detail: 'not installed (run: synapse hooks install)',
+      detail: 'not installed (run: loci hooks install)',
     };
   }
 }

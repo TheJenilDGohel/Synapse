@@ -16,7 +16,7 @@ Features users expect in any modern memory/search solution.
 
 ## Differentiators
 
-Features that set Synapse apart from basic RAG.
+Features that set Loci apart from basic RAG.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|

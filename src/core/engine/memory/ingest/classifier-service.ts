@@ -5,9 +5,9 @@
  * without requiring the caller to specify a type.
  * 
  * Uses Xenova/nli-deberta-v3-small (~140MB) for zero-shot classification.
- * Lazy-loaded on first use; opt-in via config: SYNAPSE_CLASSIFIER_ENABLED=true.
+ * Lazy-loaded on first use; opt-in via config: LOCI_CLASSIFIER_ENABLED=true.
  * 
- * @see https://github.com/TheJenilDGohel/synapse/issues/68
+ * @see https://github.com/TheJenilDGohel/loci/issues/68
  */
 
 /** Valid auto-classification categories for memories */

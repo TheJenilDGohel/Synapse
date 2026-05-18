@@ -1,11 +1,11 @@
 import { parseFlags } from '../parse-flags.js';
 /**
- * Guided first-run onboarding wizard for Synapse.
+ * Guided first-run onboarding wizard for Loci.
  *
  * Wraps setup + skill install + hooks install + doctor into
  * one beautiful, step-by-step flow with box drawing and ANSI colors.
  *
- * Usage: synapse onboard
+ * Usage: loci onboard
  *
  * @module src/cli/commands/onboard
  */
@@ -150,7 +150,7 @@ function detectEnvironment(): DetectedEnvironment {
 /* ------------------------------------------------------------------ */
 
 function runSetup(quiet: boolean): boolean {
-  const setupScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'setup-synapse.mjs');
+  const setupScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'setup-loci.mjs');
   const args: string[] = ['--yes'];
   if (quiet) args.push('--quiet');
 
@@ -165,7 +165,7 @@ function runSetup(quiet: boolean): boolean {
 }
 
 function runSkillInstall(): boolean {
-  const skillScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'install-synapse-skill.mjs');
+  const skillScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'install-loci-skill.mjs');
   const result = spawnSync(process.execPath, [...process.execArgv, skillScript, '--force', '--quiet'], {
     stdio: 'ignore',
     encoding: 'utf8',
@@ -187,7 +187,7 @@ function runHooksInstall(): boolean {
 }
 
 function runDoctor(): boolean {
-  const doctorScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-synapse.mjs');
+  const doctorScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-loci.mjs');
   const result = spawnSync(process.execPath, [doctorScript, '--quiet'], {
     stdio: 'ignore',
     encoding: 'utf8',
@@ -205,11 +205,11 @@ function runPriorityBoost(): boolean {
   ];
 
   const directive = `
-# Synapse Priority Directive
+# Loci Priority Directive
 
-Synapse is your primary context and memory layer.
-- Before starting a task, ALWAYS recall relevant memories using \`/synapse:recall\`.
-- If you learn something significant, ALWAYS use \`/synapse:remember\`.
+Loci is your primary context and memory layer.
+- Before starting a task, ALWAYS recall relevant memories using \`/loci:recall\`.
+- If you learn something significant, ALWAYS use \`/loci:remember\`.
 - Maintain the architectural integrity described in the project's knowledge base.
 `.trim();
 
@@ -222,7 +222,7 @@ Synapse is your primary context and memory layer.
         created += 1;
       } else {
         const content = fs.readFileSync(filePath, 'utf8');
-        if (!content.includes('Synapse Priority Directive')) {
+        if (!content.includes('Loci Priority Directive')) {
           fs.appendFileSync(filePath, `\n${directive}\n`, 'utf8');
           created += 1;
         }
@@ -244,7 +244,7 @@ async function runOnboard(): Promise<void> {
 
   // Welcome
   writeLines(box([
-    `${c.bold('Welcome to Synapse')}  ${c.gray(`v${SERVER_VERSION}`)}`,
+    `${c.bold('Welcome to Loci')}  ${c.gray(`v${SERVER_VERSION}`)}`,
     c.italic(c.gray('Local-first AI memory & code retrieval')),
     '',
     `Let's get you set up in under a minute.`,
@@ -292,7 +292,7 @@ async function runOnboard(): Promise<void> {
   else setupSpinner.fail('Setup encountered issues');
   resultLine(setupOk, setupOk
     ? 'Configuration and databases initialized'
-    : c.red('Setup encountered issues — run `synapse setup` manually'));
+    : c.red('Setup encountered issues — run `loci setup` manually'));
 
   // Step 3: Install skills
   stepHeader(3, totalSteps, 'Installing skills to AI clients...');
@@ -305,7 +305,7 @@ async function runOnboard(): Promise<void> {
       ? `Skills installed to ${c.cyan(String(env.clientCount))} AI client(s)`
       : 'Skills bundled (no AI clients detected)');
   } else {
-    resultLine(false, c.yellow('Skill install had warnings — run `synapse skill install` to retry'));
+    resultLine(false, c.yellow('Skill install had warnings — run `loci skill install` to retry'));
   }
 
   // Step 4: Install hooks
@@ -317,7 +317,7 @@ async function runOnboard(): Promise<void> {
     else hookSpinner.fail('Hook install had issues');
     resultLine(hooksOk, hooksOk
       ? 'Memory hooks active in Claude Code'
-      : c.yellow('Hook install had issues — run `synapse hooks install`'));
+      : c.yellow('Hook install had issues — run `loci hooks install`'));
   } else {
     resultLine(false, c.dim('Claude Code not detected — skipping hooks'));
   }
@@ -325,7 +325,7 @@ async function runOnboard(): Promise<void> {
   // Step 5: Doctor
   stepHeader(5, totalSteps, 'Verifying installation...');
   const doctorSpinner = startSpinner('Running health checks...');
-  const doctorScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-synapse.mjs');
+  const doctorScript = path.join(PROJECT_ROOT, 'scripts', 'runtime', 'doctor-loci.mjs');
   const doctorResult = spawnSync(process.execPath, [...process.execArgv, doctorScript, '--json'], {
     stdio: 'pipe',
     encoding: 'utf8',
@@ -349,10 +349,10 @@ async function runOnboard(): Promise<void> {
     resultLine(true, 'All health checks passed');
   } else if (doctorOk) {
     doctorSpinner.warn('Operational with warnings');
-    resultLine(true, c.yellow('Operational (non-critical checks need attention — run `synapse doctor` for details)'));
+    resultLine(true, c.yellow('Operational (non-critical checks need attention — run `loci doctor` for details)'));
   } else {
     doctorSpinner.fail('Critical checks failed');
-    resultLine(false, c.red('Some critical checks failed — run `synapse doctor` to diagnose'));
+    resultLine(false, c.red('Some critical checks failed — run `loci doctor` to diagnose'));
   }
 
   // Step 6: Priority Boost
@@ -369,14 +369,14 @@ async function runOnboard(): Promise<void> {
 
   if (isAgent) {
     writeLines([
-      allOk ? '✓ Synapse ready.' : '! Synapse partially configured.',
+      allOk ? '✓ Loci ready.' : '! Loci partially configured.',
       `${TOOL_COUNT} MCP tools active.`
     ]);
   } else {
     writeLines(box([
       allOk
-        ? (doctorHealthy ? `${c.green(c.B.check)} ${c.bold('Synapse is ready!')}` : `${c.yellow('!')} ${c.bold('Synapse is operational')}`)
-        : `${c.red('!')} ${c.bold('Synapse is partially configured')}`,
+        ? (doctorHealthy ? `${c.green(c.B.check)} ${c.bold('Loci is ready!')}` : `${c.yellow('!')} ${c.bold('Loci is operational')}`)
+        : `${c.red('!')} ${c.bold('Loci is partially configured')}`,
       '',
       `${c.green(c.B.check)} ${c.dim(`${TOOL_COUNT} MCP tools available`)}`,
       env.clientCount > 0
@@ -385,12 +385,12 @@ async function runOnboard(): Promise<void> {
       env.claudeCode
         ? `${c.green(c.B.check)} ${c.dim('Memory hooks active in Claude Code')}`
         : `${c.yellow(c.B.circle)} ${c.dim('Claude Code hooks skipped')}`,
-      !doctorHealthy && doctorOk ? `${c.yellow('!')} ${c.dim('Some optional dependencies missing (run `synapse doctor`)')}` : '',
+      !doctorHealthy && doctorOk ? `${c.yellow('!')} ${c.dim('Some optional dependencies missing (run `loci doctor`)')}` : '',
       '',
       c.bold('Try these commands:'),
-      `  ${c.cyan('/synapse:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
-      `  ${c.cyan('/synapse:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
-      `  ${c.cyan('/synapse:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
+      `  ${c.cyan('/loci:recall')}    ${c.gray(c.B.arrow)} ${c.dim('recall memories for a task')}`,
+      `  ${c.cyan('/loci:remember')}  ${c.gray(c.B.arrow)} ${c.dim('save something to memory')}`,
+      `  ${c.cyan('/loci:fact')}      ${c.gray(c.B.arrow)} ${c.dim('add a knowledge graph fact')}`,
     ].filter(Boolean), { padding: 1 }));
   }
 
@@ -404,7 +404,7 @@ async function runOnboard(): Promise<void> {
 export async function run(args: string[], _opts: GlobalOptions): Promise<void> {
   const { helpRequested } = parseFlags(args, {});
   if (helpRequested) {
-    process.stdout.write('Usage: synapse onboard\n\n');
+    process.stdout.write('Usage: loci onboard\n\n');
     process.stdout.write('Starts the guided first-run onboarding wizard to set up configuration,\n');
     process.stdout.write('install skills, and verify system health.\n');
     return;

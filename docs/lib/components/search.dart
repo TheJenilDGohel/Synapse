@@ -17,7 +17,7 @@ class _SearchState extends State<Search> {
   String _query = '';
 
   final List<({String title, String path, String description})> _pages = [
-    (title: 'Introduction', path: '/intro', description: 'Synapse Core: The local-first context layer.'),
+    (title: 'Introduction', path: '/intro', description: 'Loci Core: The local-first context layer.'),
     (title: 'Quick Start', path: '/tutorials/quickstart', description: 'Get running in 5 minutes.'),
     (title: 'Installation', path: '/how-to/install', description: 'System requirements and setup.'),
     (title: 'Configuration', path: '/how-to/configuration', description: 'Environment and JSON tuning.'),
@@ -28,7 +28,7 @@ class _SearchState extends State<Search> {
     (title: 'Knowledge Graph', path: '/explanation/knowledge-graph', description: 'Temporal relationship tracking.'),
     (title: 'Power Controllers', path: '/reference/tools', description: 'Full MCP tool-call documentation.'),
     (title: 'CLI Reference', path: '/reference/cli', description: 'Commands and syntax.'),
-    (title: 'Community', path: '/community', description: 'The Synapse neural network.'),
+    (title: 'Community', path: '/community', description: 'The Loci neural network.'),
   ];
 
   void _toggle() {
@@ -75,7 +75,7 @@ class _SearchState extends State<Search> {
                   input(
                     type: InputType.text,
                     classes: 'search-input',
-                    attributes: {'placeholder': 'Search Synapse...', 'autofocus': ''},
+                    attributes: {'placeholder': 'Search Loci...', 'autofocus': ''},
                     events: {
                       'input': (e) => setState(() => _query = (e.target as dynamic).value),
                     },

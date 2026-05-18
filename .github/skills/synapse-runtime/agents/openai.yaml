@@ -1,4 +1,0 @@
-interface:
-  display_name: "Synapse MCP Runtime"
-  short_description: "Work on Synapse setup, doctor, startup, and installed-package runtime behavior"
-  default_prompt: "Use this skill when editing Synapse runtime entry points. Reproduce the issue on the narrowest surface first, inspect import timing and fallback boundaries, keep setup and doctor output concrete, and validate both source-tree and installed-package behavior before concluding."

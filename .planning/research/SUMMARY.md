@@ -1,4 +1,4 @@
-# Research Summary: Synapse Competitive Analysis
+# Research Summary: Loci Competitive Analysis
 
 **Domain:** Agent Memory & Code Intelligence
 **Researched:** 2025-05-22
@@ -8,13 +8,13 @@
 
 The competitive landscape for AI agents has moved beyond simple chat history. We are entering the era of **Structural Intelligence**, where agents must understand the relationships between people (Memory), logic (AST), and time (Temporal Graph). 
 
-The primary competition (Mem0, Zep) is rapidly moving from pure vector search to hybrid Graph-RAG. However, they remain largely "General Purpose" or "Cloud-First." Synapse's opportunity lies in being the **definitive local-first MCP server** that specializes in the developer workflow, linking the *human intent* (Memory) directly to the *code structure* (AST).
+The primary competition (Mem0, Zep) is rapidly moving from pure vector search to hybrid Graph-RAG. However, they remain largely "General Purpose" or "Cloud-First." Loci's opportunity lies in being the **definitive local-first MCP server** that specializes in the developer workflow, linking the *human intent* (Memory) directly to the *code structure* (AST).
 
 ## Key Findings
 
 **Stack:** Local-first SQLite (Vector), Tree-sitter (AST), and incremental graph logic via MCP.
 **Architecture:** A Federated Brain pattern where semantic facts, relational graph edges, and temporal timestamps are unified by a single query engine.
-**Critical Pitfall:** "AST Bloat"—trying to index every token. Synapse must focus on high-level structures (Functions/Classes) to remain performant locally.
+**Critical Pitfall:** "AST Bloat"—trying to index every token. Loci must focus on high-level structures (Functions/Classes) to remain performant locally.
 
 ## Implications for Roadmap
 

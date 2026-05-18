@@ -1,6 +1,6 @@
-# Synapse Cortex Documentation
+# Loci Cortex Documentation
 
-This directory contains the Jaspr documentation site for Synapse Cortex.
+This directory contains the Jaspr documentation site for Loci Cortex.
 
 ## Running the project
 

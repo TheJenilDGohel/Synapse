@@ -4,9 +4,9 @@
  * Lazy-loads Xenova/bert-base-NER via @huggingface/transformers (already a dependency).
  * Follows the same lazy-loading pattern as EmbeddingService.
  * 
- * Opt-in via config: SYNAPSE_NER_ENABLED=true
+ * Opt-in via config: LOCI_NER_ENABLED=true
  * 
- * @see https://github.com/TheJenilDGohel/synapse/issues/67
+ * @see https://github.com/TheJenilDGohel/loci/issues/67
  */
 import type { ExtractedEntity } from '../types/index.js';
 
@@ -34,7 +34,7 @@ interface AggregatedNERResult {
   end: number;
 }
 
-/** Map NER entity groups to Synapse entity types */
+/** Map NER entity groups to Loci entity types */
 const ENTITY_GROUP_MAP: Record<string, string> = {
   'PER': 'person',
   'ORG': 'organization',

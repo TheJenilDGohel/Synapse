@@ -1,7 +1,7 @@
 # Research: MCP Tool Consolidation (Phase 10)
 
 ## Objective
-Reduce the total number of MCP tools exposed by Synapse to minimize token overhead and cognitive load for AI agents, without sacrificing functionality or quality.
+Reduce the total number of MCP tools exposed by Loci to minimize token overhead and cognitive load for AI agents, without sacrificing functionality or quality.
 
 ## Current Tool Inventory
 

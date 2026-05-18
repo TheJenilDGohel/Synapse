@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'synapse-publint-'));
+const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'loci-publint-'));
 const npmCache = path.join(os.tmpdir(), '.npm-cache');
 const isWindows = process.platform === 'win32';
 const NPM_BIN = isWindows ? 'npm.cmd' : 'npm';

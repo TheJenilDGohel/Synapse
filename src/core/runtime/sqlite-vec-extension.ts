@@ -84,7 +84,7 @@ function detectGlobalNpmRoot(spawn: SpawnFn = spawnSync as unknown as SpawnFn): 
 }
 
 export interface FindSqliteVecExtensionPathOptions {
-  synapseHome?: string;
+  lociHome?: string;
   env?: Record<string, string | undefined>;
   cwd?: string;
   spawn?: SpawnFn;
@@ -92,7 +92,7 @@ export interface FindSqliteVecExtensionPathOptions {
 }
 
 export function findSqliteVecExtensionPath({
-  synapseHome,
+  lociHome,
   env = process.env as Record<string, string | undefined>,
   cwd = process.cwd(),
   spawn = spawnSync as unknown as SpawnFn,
@@ -115,9 +115,9 @@ export function findSqliteVecExtensionPath({
   const binaryNames = getPlatformBinaryNames();
   const globalRoot = detectGlobalNpmRoot(spawn);
   const candidateDirs = [
-    ...splitSearchDirs(env.SYNAPSE_SQLITE_VEC_SEARCH_DIRS),
-    synapseHome ? path.join(path.resolve(synapseHome), 'vendor', 'sqlite-vec') : '',
-    synapseHome ? path.join(path.resolve(synapseHome), 'vendor', 'sqlite-vec', 'node_modules', 'sqlite-vec') : '',
+    ...splitSearchDirs(env.LOCI_SQLITE_VEC_SEARCH_DIRS),
+    lociHome ? path.join(path.resolve(lociHome), 'vendor', 'sqlite-vec') : '',
+    lociHome ? path.join(path.resolve(lociHome), 'vendor', 'sqlite-vec', 'node_modules', 'sqlite-vec') : '',
     path.join(path.resolve(cwd), 'node_modules', 'sqlite-vec'),
     globalRoot ? path.join(globalRoot, 'sqlite-vec') : ''
   ]
@@ -133,7 +133,7 @@ export function findSqliteVecExtensionPath({
       return {
         path: found,
         source: dirPath.includes(`${path.sep}vendor${path.sep}sqlite-vec`)
-          ? 'synapse-vendor'
+          ? 'loci-vendor'
           : dirPath.includes(`${path.sep}node_modules${path.sep}sqlite-vec`)
             ? 'node-modules'
             : 'search-dir'
@@ -145,7 +145,7 @@ export function findSqliteVecExtensionPath({
 }
 
 export interface EnsureSqliteVecExtensionOptions {
-  synapseHome?: string;
+  lociHome?: string;
   env?: Record<string, string | undefined>;
   cwd?: string;
   installIfMissing?: boolean;
@@ -154,7 +154,7 @@ export interface EnsureSqliteVecExtensionOptions {
 }
 
 export function ensureSqliteVecExtension({
-  synapseHome,
+  lociHome,
   env = process.env as Record<string, string | undefined>,
   cwd = process.cwd(),
   installIfMissing = true,
@@ -162,7 +162,7 @@ export function ensureSqliteVecExtension({
   sqliteVecModule = sqliteVec
 }: EnsureSqliteVecExtensionOptions = {}): SqliteVecEnsureResult {
   const existing = findSqliteVecExtensionPath({
-    synapseHome,
+    lociHome,
     env,
     cwd,
     spawn,
@@ -187,7 +187,7 @@ export function ensureSqliteVecExtension({
     };
   }
 
-  const vendorRoot = path.join(path.resolve(synapseHome || path.join(os.homedir(), '.synapse')), 'vendor', 'sqlite-vec');
+  const vendorRoot = path.join(path.resolve(lociHome || path.join(os.homedir(), '.loci')), 'vendor', 'sqlite-vec');
   fs.mkdirSync(vendorRoot, { recursive: true });
 
   let installResult: SpawnSyncReturns<string>;
@@ -219,7 +219,7 @@ export function ensureSqliteVecExtension({
   }
 
   const installed = findSqliteVecExtensionPath({
-    synapseHome,
+    lociHome,
     env,
     cwd,
     spawn,

@@ -32,7 +32,7 @@ class Header extends StatelessComponent {
           div(classes: 'logo-mark', [
             div(classes: 'pulse-dot', []),
           ]),
-          h2([text('Synapse')]),
+          h2([text('Loci')]),
           const VersionSwitcher(),
         ]),
       ]),
@@ -41,7 +41,7 @@ class Header extends StatelessComponent {
         div(classes: 'header-actions', [
           ThemeToggle(),
           a(
-            href: 'https://github.com/TheJenilDGohel/synapse',
+            href: 'https://github.com/TheJenilDGohel/loci',
             target: Target.blank,
             classes: 'github-btn',
             [

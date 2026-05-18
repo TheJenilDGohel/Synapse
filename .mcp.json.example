@@ -1,17 +1,17 @@
 {
   "mcpServers": {
-    "synapse": {
+    "loci": {
       "command": "npx",
       "args": [
         "-y",
-        "synapse"
+        "loci"
       ],
       "env": {
         "MCP_MODE": "stdio",
-        "SYNAPSE_CONFIG": "/Users/you/.synapse/synapse.config.json",
-        "SYNAPSE_INDEX_BACKEND": "sqlite-vec",
-        "SYNAPSE_DB_PATH": "/Users/you/.synapse/synapse.db",
-        "SYNAPSE_INDEX_PATH": "/Users/you/.synapse/synapse.index.json"
+        "LOCI_CONFIG": "/Users/you/.loci/loci.config.json",
+        "LOCI_INDEX_BACKEND": "sqlite-vec",
+        "LOCI_DB_PATH": "/Users/you/.loci/loci.db",
+        "LOCI_INDEX_PATH": "/Users/you/.loci/loci.index.json"
       }
     }
   }

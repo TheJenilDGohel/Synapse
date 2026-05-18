@@ -26,8 +26,8 @@ export async function run(args: string[], opts: GlobalOptions): Promise<void> {
   if (!handler) {
     process.stdout.write([
       '',
-      `  synapse hooks ${c.cyan('install')}    Install Claude Code hooks for auto memory retrieval/capture`,
-      `  synapse hooks ${c.cyan('status')}     Show installed hook status`,
+      `  loci hooks ${c.cyan('install')}    Install Claude Code hooks for auto memory retrieval/capture`,
+      `  loci hooks ${c.cyan('status')}     Show installed hook status`,
       '',
     ].join('\n'));
     return;
@@ -39,7 +39,7 @@ async function handleInstall(): Promise<void> {
   const installerPath = path.join(HOOKS_DIR, 'install-hooks.cjs');
   if (!fs.existsSync(installerPath)) {
     writeError(`Hook installer not found at ${installerPath}`);
-    writeError('Package may be corrupted. Reinstall with: npm install -g synapse-cortex');
+    writeError('Package may be corrupted. Reinstall with: npm install -g loci-mcp');
     process.exitCode = 1;
     return;
   }
@@ -64,22 +64,22 @@ async function handleStatus(): Promise<void> {
     const settings: Record<string, unknown> = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     const hooks = (settings.hooks || {}) as Record<string, Array<{ hooks?: Array<{ command?: string }> }>>;
     const preHooks = (hooks.PreToolUse || []).filter(
-      (e) => e.hooks?.some((h) => h.command?.includes('synapse'))
+      (e) => e.hooks?.some((h) => h.command?.includes('loci'))
     );
     const postHooks = (hooks.PostToolUse || []).filter(
-      (e) => e.hooks?.some((h) => h.command?.includes('synapse'))
+      (e) => e.hooks?.some((h) => h.command?.includes('loci'))
     );
 
     const preInstalled = preHooks.length > 0;
     const postInstalled = postHooks.length > 0;
 
-    process.stdout.write(`\n  ${c.bold('Synapse Claude Code Hooks')}\n\n`);
+    process.stdout.write(`\n  ${c.bold('Loci Claude Code Hooks')}\n\n`);
     process.stdout.write(`  Pre-tool (memory retrieval):  ${preInstalled ? c.green('INSTALLED') : c.red('NOT INSTALLED')}\n`);
     process.stdout.write(`  Post-tool (outcome capture):  ${postInstalled ? c.green('INSTALLED') : c.red('NOT INSTALLED')}\n`);
     process.stdout.write(`  Settings file: ${c.dim(settingsPath)}\n\n`);
 
     if (!preInstalled || !postInstalled) {
-      process.stdout.write('  Run: synapse hooks install\n\n');
+      process.stdout.write('  Run: loci hooks install\n\n');
     }
 
     // Verify hook scripts exist at referenced paths
@@ -91,13 +91,13 @@ async function handleStatus(): Promise<void> {
           const exists = fs.existsSync(scriptPath);
           if (!exists) {
             process.stdout.write(`  ${symbol.warn()} ${c.yellow('WARNING')}: Hook script missing: ${scriptPath}\n`);
-            process.stdout.write(`  Run: ${c.cyan('synapse hooks install')}\n\n`);
+            process.stdout.write(`  Run: ${c.cyan('loci hooks install')}\n\n`);
           }
         }
       }
     }
   } catch {
     process.stdout.write(`\n  No Claude Code settings found at ${settingsPath}\n`);
-    process.stdout.write('  Run: synapse hooks install\n\n');
+    process.stdout.write('  Run: loci hooks install\n\n');
   }
 }

@@ -6,7 +6,7 @@
 
 ## Summary
 
-The Synapse platform currently exposes 76 MCP tools. While functionally rich, this large toolset imposes a significant "context tax" on every interaction. Each tool definition (name, description, and JSON schema for parameters) consumes tokens. At an estimated average of 200 tokens per tool, the total overhead is approximately **15,200 tokens**.
+The Loci platform currently exposes 76 MCP tools. While functionally rich, this large toolset imposes a significant "context tax" on every interaction. Each tool definition (name, description, and JSON schema for parameters) consumes tokens. At an estimated average of 200 tokens per tool, the total overhead is approximately **15,200 tokens**.
 
 This overhead reduces the available "effective context" for task history, code analysis, and complex reasoning. For models with 32k-128k context windows, this is a non-trivial percentage (12% to 47%) of the total capacity.
 
@@ -83,7 +83,7 @@ Based on an audit of `src/interfaces/mcp/tools/*.ts`:
 **What:** Only load tools relevant to the detected project type.
 **Example:** If no Knowledge Graph database is initialized or configured, don't load KG tools.
 
-## Recommended Architectural Path: "Synapse Dynamic Tooling"
+## Recommended Architectural Path: "Loci Dynamic Tooling"
 
 ### Phase 1: Immediate Bundling (The "Controller" Pattern)
 Refactor high-count categories into multi-purpose tools.
@@ -98,7 +98,7 @@ Modify the server to return a minimal list of tools by default.
 - When the agent sees a capability it needs in the index, it calls `synapse_load_tools(category: 'kg')`.
 
 ### Phase 3: Profile-Based Initialization
-Allow the user to specify a `tool_profile` in `synapse.json` or `.env`.
+Allow the user to specify a `tool_profile` in `loci.json` or `.env`.
 - `minimal`: Core + Retrieval.
 - `standard`: Core + Retrieval + Memory.
 - `full`: Everything.

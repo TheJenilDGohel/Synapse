@@ -1,11 +1,11 @@
 ---
 title: Power Controller Reference
-description: Detailed technical reference for Synapse MCP tools with JSON schemas and examples.
+description: Detailed technical reference for Loci MCP tools with JSON schemas and examples.
 ---
 
 # Power Controller Reference
 
-Synapse uses a **Power Controller** model. Instead of dozens of granular tools, we provide high-density controllers that handle complex logic in a single turn.
+Loci uses a **Power Controller** model. Instead of dozens of granular tools, we provide high-density controllers that handle complex logic in a single turn.
 
 ## 1. Memory Management (`synapse_memory_manage`)
 Handles the lifecycle of agent memories, workspace events, and workflow rules.

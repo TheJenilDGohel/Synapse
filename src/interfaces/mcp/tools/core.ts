@@ -139,7 +139,7 @@ export function registerCoreTools({
     'synapse_discovery',
     {
       title: 'Discovery',
-      description: 'Discover and activate specialized Synapse tools. Use this when the core toolset is insufficient for your task.',
+      description: 'Discover and activate specialized Loci tools. Use this when the core toolset is insufficient for your task.',
       inputSchema: z.object({
         activate_category: z.string().optional().describe('Activate all tools in a category (e.g., "Memory Management")'),
         activate_tool: z.string().optional().describe('Activate a specific tool by name')

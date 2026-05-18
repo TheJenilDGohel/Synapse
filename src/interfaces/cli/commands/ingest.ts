@@ -3,9 +3,9 @@ import type { FlagSchema } from '../parse-flags.js';
 /**
  * Ingest CLI subcommand.
  *
- *   synapse ingest <file> [--format markdown|json] [--nest <n>] [--branch <b>] [--agent-id <id>]
+ *   loci ingest <file> [--format markdown|json] [--nest <n>] [--branch <b>] [--agent-id <id>]
  *
- * Ingests a conversation file into Synapse memory with auto-format detection.
+ * Ingests a conversation file into Loci memory with auto-format detection.
  *
  * @module src/cli/commands/ingest
  */
@@ -40,7 +40,7 @@ function createMemoryService(): MemoryService {
     cacheDir: runtime.embeddingCacheDir,
   });
   return new MemoryService({
-    synapseHome: runtime.synapseHome,
+    lociHome: runtime.lociHome,
     enabled: runtime.memoryEnabled,
     backend: runtime.memoryBackend,
     dbPath: runtime.memoryDbPath,
@@ -95,7 +95,7 @@ export async function run(args: string[], opts: GlobalOptions): Promise<void> {
   if (!target || target === 'help' || target === '--help' || target === '-h') {
     const lines = [
       '',
-      '  synapse ingest <file> [options]',
+      '  loci ingest <file> [options]',
       '',
       '  Ingest a conversation file into memory with auto-format detection.',
       '',

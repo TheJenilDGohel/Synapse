@@ -1,11 +1,11 @@
 ---
-title: How to Install and Configure Synapse
-description: Detailed steps for setting up Synapse across different platforms and clients.
+title: How to Install and Configure Loci
+description: Detailed steps for setting up Loci across different platforms and clients.
 ---
 
-# How to Install and Configure Synapse
+# How to Install and Configure Loci
 
-This guide provides detailed instructions for installing Synapse and configuring it for various AI development environments.
+This guide provides detailed instructions for installing Loci and configuring it for various AI development environments.
 
 ## System Requirements
 
@@ -20,19 +20,19 @@ This guide provides detailed instructions for installing Synapse and configuring
 Install the package via npm:
 
 ```bash
-npm install -g synapse-cortex
+npm install -g loci-mcp
 ```
 
 ## Step 2: Local Project Setup
 
-Synapse maintains a local database for each project. Run this command in your project root:
+Loci maintains a local database for each project. Run this command in your project root:
 
 ```bash
-synapse setup
+loci setup
 ```
 
 This will:
-1. Create a `~/.synapse` directory for global configuration.
+1. Create a `~/.loci` directory for global configuration.
 2. Initialize a local SQLite database for the current workspace.
 3. Link the necessary native vector extensions.
 
@@ -41,7 +41,7 @@ This will:
 Always run the doctor command after a new installation or update:
 
 ```bash
-synapse doctor
+loci doctor
 ```
 
 ## Step 4: Client Configuration
@@ -53,8 +53,8 @@ synapse doctor
 ```json
 {
   "mcpServers": {
-    "synapse": {
-      "command": "synapse",
+    "loci": {
+      "command": "loci",
       "env": {
         "MCP_MODE": "stdio"
       }
@@ -65,13 +65,13 @@ synapse doctor
 
 ### Cursor / Windsurf / Cline
 1. Open the MCP settings in your client.
-2. Add a new server named `synapse`.
-3. Set the type to `command` and the command to `synapse`.
+2. Add a new server named `loci`.
+3. Set the type to `command` and the command to `loci`.
 
-## Step 5: Updating Synapse
+## Step 5: Updating Loci
 
 To pull the latest improvements and migrations:
 
 ```bash
-synapse upgrade
+loci upgrade
 ```

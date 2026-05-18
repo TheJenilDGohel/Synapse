@@ -1,10 +1,10 @@
-# Synapse Universal Installer for Windows
-# Usage: irm https://raw.githubusercontent.com/TheJenilDGohel/Synapse/main/scripts/install.ps1 | iex
+# Loci Universal Installer for Windows
+# Usage: irm https://raw.githubusercontent.com/TheJenilDGohel/Loci/main/scripts/install.ps1 | iex
 
 $ErrorActionPreference = 'Stop'
 
 Write-Host ""
-Write-Host "  Synapse Universal Installer" -ForegroundColor Cyan
+Write-Host "  Loci Universal Installer" -ForegroundColor Cyan
 Write-Host "  ----------------------------" -ForegroundColor Gray
 Write-Host ""
 
@@ -23,14 +23,14 @@ if ($majorVersion -lt 22) {
     Write-Host " Note: Node.js 22+ is recommended for full feature support (local memory & vector search)." -ForegroundColor Gray
 }
 
-# 2. Install Synapse
-Write-Host "[2/3] Installing Synapse via NPM..."
-npm install -g synapse-cortex
+# 2. Install Loci
+Write-Host "[2/3] Installing Loci via NPM..."
+npm install -g loci-mcp
 
 # 3. Trigger Onboarding
 Write-Host "[3/3] Launching neural link..."
-synapse onboard
+loci onboard
 
 Write-Host ""
-Write-Host "  Setup Complete! Type 'synapse' to get started." -ForegroundColor Green
+Write-Host "  Setup Complete! Type 'loci' to get started." -ForegroundColor Green
 Write-Host ""

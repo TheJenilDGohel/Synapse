@@ -16,7 +16,7 @@ try {
   console.log(`Created tarball: ${tarballName}`);
 
   // Create a temporary directory
-  tempDir = mkdtempSync(join(tmpdir(), 'synapse-cortex-test-'));
+  tempDir = mkdtempSync(join(tmpdir(), 'loci-mcp-test-'));
   console.log(`Created temporary directory: ${tempDir}`);
 
   // Move the tarball to the temp directory cross-platform
@@ -34,16 +34,16 @@ try {
 
   console.log('Testing CLI commands...');
 
-  // The installed binary should be in node_modules/.bin/synapse
+  // The installed binary should be in node_modules/.bin/loci
   // We will run a basic command like --help or similar if it exists, or just verify it runs without crashing immediately.
-  // Because synapse is an MCP server, it expects stdio. So we will run it with timeout or look at `--help` if supported.
+  // Because loci is an MCP server, it expects stdio. So we will run it with timeout or look at `--help` if supported.
 
-  // Actually, bin/synapse.cjs does not seem to have a --help flag natively, it starts the server.
-  // Let's check synapse-doctor or other commands that exit cleanly.
+  // Actually, bin/loci.cjs does not seem to have a --help flag natively, it starts the server.
+  // Let's check loci-doctor or other commands that exit cleanly.
 
   const bins = [
-    'synapse doctor',
-    'synapse --help'
+    'loci doctor',
+    'loci --help'
   ];
 
   for (const bin of bins) {
@@ -54,7 +54,7 @@ try {
       console.log(`✓ ${bin} ran successfully.`);
     } catch (err) {
       console.log(`Command ${bin} failed, but this might be expected if setup is not done. Allowing script to pass if failure is due to config missing.`);
-      // We check if it's the expected exit code for synapse-doctor (it exits with 1 if config missing)
+      // We check if it's the expected exit code for loci-doctor (it exits with 1 if config missing)
       if (err.status !== 1) {
         console.error(`✗ ${bin} failed with unexpected status: ${err.status}`);
         throw err;

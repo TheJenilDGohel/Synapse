@@ -314,7 +314,7 @@ export class AstChunker {
     const warning = this.treeSitterUnavailable
       ? `AST chunking is disabled because optional package "${TREE_SITTER_PACKAGE}" is unavailable. Install optional tree-sitter dependencies or use line-based fallback chunking.`
       : (missingDependencies.length > 0
-        ? `AST chunking is partially degraded because optional parser packages are unavailable: ${missingDependencies.join(', ')}. Synapse will continue with line-based fallback chunking for affected languages.`
+        ? `AST chunking is partially degraded because optional parser packages are unavailable: ${missingDependencies.join(', ')}. Loci will continue with line-based fallback chunking for affected languages.`
         : null);
 
     return {

@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
-synapse.config.json
-.mcp.synapse.json
-.synapse/
+loci.config.json
+.mcp.loci.json
+.loci/
 .npm-cache/
 node_modules/

@@ -15,7 +15,7 @@ export class CoreServiceRegistry implements IServiceRegistry {
       const runtime = buildRuntimeConfig();
       const embedding = this.getEmbedding();
       this._memory = new MemoryService({
-        synapseHome: runtime.synapseHome,
+        lociHome: runtime.lociHome,
         enabled: runtime.memoryEnabled,
         backend: runtime.memoryBackend,
         dbPath: runtime.memoryDbPath,

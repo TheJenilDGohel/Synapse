@@ -1,6 +1,6 @@
 # Technology Stack: AI Memory & Knowledge Graphs
 
-**Project:** Synapse
+**Project:** Loci
 **Researched:** 2025-05-22
 
 ## Recommended Stack (Ecosystem Standard)
@@ -15,7 +15,7 @@
 ### Protocol & Interoperability
 | Technology | Purpose | Rationale |
 |------------|---------|-----------|
-| **MCP (Model Context Protocol)** | Agent Communication | Allows Synapse to work instantly with Claude Code, Cursor, and Windsurf. |
+| **MCP (Model Context Protocol)** | Agent Communication | Allows Loci to work instantly with Claude Code, Cursor, and Windsurf. |
 | **JSON-RPC** | Transport | Underlying protocol for MCP; lightweight and standard. |
 
 ### Supporting Libraries

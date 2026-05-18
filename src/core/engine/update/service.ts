@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildSynapsePaths } from '../../runtime/index.js';
+import { buildLociPaths } from '../../runtime/index.js';
 import {
   parseIsoTime,
   compareVersions,
@@ -59,7 +59,7 @@ export interface CommandAvailability {
 }
 
 export interface UpdateServiceOptions {
-  synapseHome: string;
+  lociHome: string;
   packageName: string;
   currentVersion: string;
   checkIntervalMinutes: number;
@@ -68,7 +68,7 @@ export interface UpdateServiceOptions {
 }
 
 export class UpdateService {
-  synapseHome: string;
+  lociHome: string;
   packageName: string;
   currentVersion: string;
   checkIntervalMinutes: number;
@@ -77,20 +77,20 @@ export class UpdateService {
   cachePath: string;
 
   constructor({
-    synapseHome,
+    lociHome,
     packageName,
     currentVersion,
     checkIntervalMinutes,
     failureBackoffMinutes,
     commandRunner = defaultRunner
   }: UpdateServiceOptions) {
-    this.synapseHome = synapseHome;
+    this.lociHome = lociHome;
     this.packageName = packageName;
     this.currentVersion = currentVersion;
     this.checkIntervalMinutes = checkIntervalMinutes;
     this.failureBackoffMinutes = failureBackoffMinutes;
     this.commandRunner = commandRunner;
-    this.cachePath = (buildSynapsePaths(synapseHome) as { updateStatusPath: string }).updateStatusPath;
+    this.cachePath = (buildLociPaths(lociHome) as { updateStatusPath: string }).updateStatusPath;
   }
 
   normalizeStatusRecord(status: Partial<UpdateStatus> | null): UpdateStatus {
@@ -136,7 +136,7 @@ export class UpdateService {
     if (!cache?.last_checked_at) return true;
     if (!cache.latest_version) return true;
     // Invalidate when the running binary has moved past what the cache knew.
-    // e.g. user upgrades Synapse 0.0.3 -> 0.1.0 locally; the cache still
+    // e.g. user upgrades Loci 0.0.3 -> 0.1.0 locally; the cache still
     // carries latest_version=0.0.3 from before the upgrade and would otherwise
     // surface a stale "latest" that predates the installed binary.
     if (cache.current_version && cache.current_version !== this.currentVersion) return true;
@@ -350,7 +350,7 @@ export class UpdateService {
         ok: false,
         skipped: true,
         reason: 'approval_required',
-        message: 'User approval is required. Ask: "Synapse has a newer version. Update now?"'
+        message: 'User approval is required. Ask: "Loci has a newer version. Update now?"'
       };
     }
 

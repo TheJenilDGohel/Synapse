@@ -38,8 +38,8 @@ function buildOutputPaths({ root = process.cwd(), versionLabel, markdownPath, js
   const reportDir = path.join(root, 'reports');
   return {
     reportDir,
-    markdownPath: markdownPath || path.join(reportDir, `synapse-${slug}-exit-criteria.md`),
-    jsonPath: jsonPath || path.join(reportDir, `synapse-${slug}-exit-criteria.json`)
+    markdownPath: markdownPath || path.join(reportDir, `loci-${slug}-exit-criteria.md`),
+    jsonPath: jsonPath || path.join(reportDir, `loci-${slug}-exit-criteria.json`)
   };
 }
 
@@ -59,14 +59,14 @@ function fileContainsAll(filePath, patterns) {
   return patterns.every((pattern) => pattern.test(text));
 }
 
-function hasCodexSynapseBlock(rawText) {
-  return /^\[mcp_servers\.synapse\]$/m.test(rawText);
+function hasCodexLociBlock(rawText) {
+  return /^\[mcp_servers\.loci\]$/m.test(rawText);
 }
 
-function hasJsonSynapseEntry(rawText) {
+function hasJsonLociEntry(rawText) {
   if (!rawText.trim()) return false;
   const parsed = JSON.parse(rawText);
-  return !!parsed?.mcpServers?.synapse;
+  return !!parsed?.mcpServers?.loci;
 }
 
 function verifySupportedClientTargets({ homeDir = os.homedir() } = {}) {
@@ -77,8 +77,8 @@ function verifySupportedClientTargets({ homeDir = os.homedir() } = {}) {
     let error = null;
 
     try {
-      if (target.kind === 'toml') configured = hasCodexSynapseBlock(rawText);
-      if (target.kind === 'json') configured = hasJsonSynapseEntry(rawText);
+      if (target.kind === 'toml') configured = hasCodexLociBlock(rawText);
+      if (target.kind === 'json') configured = hasJsonLociEntry(rawText);
     } catch (caught) {
       error = caught?.message || String(caught);
     }
@@ -111,7 +111,7 @@ function loadReleaseReport({ reportPath, versionLabel }) {
   }
 
   const slug = slugify(versionLabel);
-  const resolved = path.join(process.cwd(), 'reports', `synapse-${slug}-release-test-report.json`);
+  const resolved = path.join(process.cwd(), 'reports', `loci-${slug}-release-test-report.json`);
   return {
     path: resolved,
     report: readJson(resolved)
@@ -166,7 +166,7 @@ export function evaluateExitCriteria({
       : `Missing JSON report: ${reportPath}`
   ));
 
-  const cacheGuidance = fileContainsAll(readmePath, [/Cache fallback is informational/i, /synapse setup --skip-model-download=true/, /Cache fallback is acceptable/i, /SYNAPSE_EMBED_CACHE_DIR/]);
+  const cacheGuidance = fileContainsAll(readmePath, [/Cache fallback is informational/i, /loci setup --skip-model-download=true/, /Cache fallback is acceptable/i, /LOCI_EMBED_CACHE_DIR/]);
   criteria.push(criterion(
     'cache_behavior',
     'Default cache path behavior is understood and either fixed or clearly documented.',
@@ -188,7 +188,7 @@ export function evaluateExitCriteria({
 
   const clientVerification = supportedClients?.allConfigured === true;
   const clientSummary = supportedClients
-    ? `${supportedClients.configuredCount}/${supportedClients.presentCount} supported real configs currently include Synapse`
+    ? `${supportedClients.configuredCount}/${supportedClients.presentCount} supported real configs currently include Loci`
     : 'No supported client verification data was provided.';
   criteria.push(criterion(
     'supported_client_auto_install',
@@ -227,7 +227,7 @@ export const __test_evaluateExitCriteria = evaluateExitCriteria;
 
 function renderMarkdown({ versionLabel, reportPath, evaluation, supportedClients }) {
   return [
-    `# Synapse ${versionLabel || 'Installed Runtime'} Exit Criteria`,
+    `# Loci ${versionLabel || 'Installed Runtime'} Exit Criteria`,
     '',
     `Date: ${new Date().toISOString()}`,
     '',
@@ -246,9 +246,9 @@ function renderMarkdown({ versionLabel, reportPath, evaluation, supportedClients
     '## Supported Client Verification',
     '',
     `- Present supported configs: ${supportedClients.presentCount}`,
-    `- Configured with Synapse: ${supportedClients.configuredCount}`,
+    `- Configured with Loci: ${supportedClients.configuredCount}`,
     '',
-    ...supportedClients.items.map((item) => `- ${item.tool}: ${item.configured ? 'configured' : 'missing Synapse entry'} (${item.configPath})${item.error ? ` [error: ${item.error}]` : ''}`),
+    ...supportedClients.items.map((item) => `- ${item.tool}: ${item.configured ? 'configured' : 'missing Loci entry'} (${item.configPath})${item.error ? ` [error: ${item.error}]` : ''}`),
     '',
     '## Report Input',
     '',

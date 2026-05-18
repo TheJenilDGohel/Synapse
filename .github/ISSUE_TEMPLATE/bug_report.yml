@@ -1,19 +1,19 @@
 name: Bug Report
-description: Report a bug or unexpected behavior in Synapse
+description: Report a bug or unexpected behavior in Loci
 title: "[Bug]: "
 labels: ["bug", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a bug! Please run `synapse doctor --verbose` and paste the output below.
+        Thanks for reporting a bug! Please run `loci doctor --verbose` and paste the output below.
 
   - type: textarea
     id: description
     attributes:
       label: Describe the bug
       description: Clear and concise description of what the bug is.
-      placeholder: When I run `synapse memory add`, it fails with...
+      placeholder: When I run `loci memory add`, it fails with...
     validations:
       required: true
 
@@ -23,8 +23,8 @@ body:
       label: Steps to reproduce
       description: Minimal commands to reproduce the issue
       placeholder: |
-        1. Run `synapse setup`
-        2. Run `synapse memory add --title "test"`
+        1. Run `loci setup`
+        2. Run `loci memory add --title "test"`
         3. See error
     validations:
       required: true
@@ -41,7 +41,7 @@ body:
     id: doctor
     attributes:
       label: Doctor output
-      description: Run `synapse doctor --verbose` and paste the full output here
+      description: Run `loci doctor --verbose` and paste the full output here
       render: shell
     validations:
       required: true
@@ -49,7 +49,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: Synapse version
+      label: Loci version
       placeholder: 0.2.0
     validations:
       required: true
@@ -103,5 +103,5 @@ body:
       options:
         - label: I have searched existing issues and confirmed this is not a duplicate
           required: true
-        - label: I have run `synapse doctor` and included the output
+        - label: I have run `loci doctor` and included the output
           required: true

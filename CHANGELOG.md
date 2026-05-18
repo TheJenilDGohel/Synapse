@@ -1,14 +1,18 @@
-<!-- cspell:ignore synapse SYNAPSE reranker RERANKER SARIF stopword optimised prefiltering -->
+<!-- cspell:ignore loci SYNAPSE reranker RERANKER SARIF stopword optimised prefiltering -->
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [Rebrand] Synapse → Loci — Project renamed to Loci (loci-mcp on npm).
+CLI command is now `loci`. Config lives at ~/.loci/.
+All SYNAPSE_* env vars renamed to LOCI_*. No functional changes.
 
 ## [2026.05.1-beta.0] - 2026-05-15
 
 ### 📚 Documentation (Diátaxis & Agent-First)
 - **Agent-First Layer**: Added `llms.txt` and `SKILL.md` for rapid context ingestion by AI agents (GEO).
 - **Diátaxis Restructure**: Completely reorganized documentation into focused categories: Tutorials, How-to Guides, Reference, and Explanation.
-- **Neural Branding**: Refined documentation content to reflect Synapse's bio-inspired architecture.
+- **Neural Branding**: Refined documentation content to reflect Loci's bio-inspired architecture.
 
 ### ⚡ CI/CD Optimization
 - **Parallelization**: Refactored GitHub Actions to run 7 quality jobs in parallel, reducing fast-path feedback to < 2 minutes.
@@ -85,7 +89,7 @@ All notable changes to this project will be documented in this file.
 ## [0.0.1-beta.1] - 2026.5.03
 
 ### 🔄 Redistribution & Sync
-- **Package Rename**: Official redistribution as `synapse-cortex` on npm.
+- **Package Rename**: Official redistribution as `loci-mcp` on npm.
 - **CI/CD Stabilization**: Synchronized version markers and release tags for automated distribution.
 
 ## [0.0.1-beta] - 2026.5.03
@@ -98,7 +102,7 @@ All notable changes to this project will be documented in this file.
 ### 🧠 Intelligence & Core
 - **Restored Services**: Fully recovered `NERService` and `ClassifierService` for on-device entity extraction.
 - **Skill Optimization**: Bundled skills now auto-adapt to 9+ AI clients (Cursor, Windsurf, Claude, etc.).
-- **Health Diagnostics**: Upgraded `synapse doctor` with 9 comprehensive health checks.
+- **Health Diagnostics**: Upgraded `loci doctor` with 9 comprehensive health checks.
 
 ### 📖 Documentation & UX
 - **Consolidated Truth**: `README.md` is now the single source of truth for the project.

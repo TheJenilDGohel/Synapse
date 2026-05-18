@@ -1,5 +1,5 @@
 /**
- * Subcommand router for Synapse CLI.
+ * Subcommand router for Loci CLI.
  *
  * Routes noun-verb pairs to handler modules and falls back to the
  * legacy flat-command map for backward compatibility.
@@ -35,8 +35,8 @@ const NOUN_MODULES: Map<string, string> = new Map([
 
 /** flat command -> script path (relative to bin/) */
 const LEGACY_MODULES: Map<string, string> = new Map([
-  ['task-context', '../scripts/memory/task-context-synapse.mjs'],
-  ['capture-outcome', '../scripts/memory/capture-outcome-synapse.mjs'],
+  ['task-context', '../scripts/memory/task-context-loci.mjs'],
+  ['capture-outcome', '../scripts/memory/capture-outcome-loci.mjs'],
 ]);
 
 /* ------------------------------------------------------------------ */

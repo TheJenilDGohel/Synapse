@@ -96,7 +96,7 @@ export interface ToolResponseOptions {
 }
 
 export interface ToolResponsePayload {
-  __synapse_tool_response: true;
+  __loci_tool_response: true;
   data: unknown;
   meta: Record<string, unknown> | null;
   note: string;
@@ -106,7 +106,7 @@ export interface ToolResponsePayload {
 
 export function createToolResponse(data: unknown, { meta = null, note = '', resourceLinks }: ToolResponseOptions = {}): ToolResponsePayload {
   const payload: ToolResponsePayload = {
-    __synapse_tool_response: true,
+    __loci_tool_response: true,
     data,
     meta,
     note
@@ -125,7 +125,7 @@ interface NormalizedPayload {
 }
 
 function normalizeToolResponsePayload(result: unknown): NormalizedPayload {
-  if (result && typeof result === 'object' && (result as ToolResponsePayload).__synapse_tool_response) {
+  if (result && typeof result === 'object' && (result as ToolResponsePayload).__loci_tool_response) {
     const payload = result as ToolResponsePayload;
     return {
       data: payload.data,
@@ -164,7 +164,7 @@ export function toolResult(
   responseFormat: string = 'json',
   markdownTitle: string = 'Result',
   resourceLinks?: ResourceLink[],
-  synapseHome?: string
+  lociHome?: string
 ): ToolResult {
   const normalized = normalizeToolResponsePayload(result);
   const { data, meta, note } = normalized;
@@ -186,8 +186,8 @@ export function toolResult(
   text = collapseRepetitiveLines(text);
 
   // Phase 41-B4: tee large output
-  if (synapseHome) {
-    const teed = teeLargeOutput(text, { synapseHome });
+  if (lociHome) {
+    const teed = teeLargeOutput(text, { lociHome });
     text = teed.content;
     if (teed.resourceLink) {
       effectiveLinks.push(teed.resourceLink);
@@ -244,10 +244,10 @@ export function buildRipgrepHelpMessage(): string {
   }
 
   return [
-    'ripgrep (rg) is required by synapse for fast code search.',
+    'ripgrep (rg) is required by loci for fast code search.',
     install,
     'If rg is installed but MCP still fails, set PATH in your MCP client env.',
-    'Run doctor for detailed checks: synapse doctor'
+    'Run doctor for detailed checks: loci doctor'
   ].join(' ');
 }
 
@@ -284,7 +284,7 @@ export type RegisterJsonToolFn = (
   handler: ToolHandler
 ) => void;
 
-export function createJsonToolRegistrar(server: McpServer, responseFormatSchema: z.ZodTypeAny, synapseHome?: string): RegisterJsonToolFn {
+export function createJsonToolRegistrar(server: McpServer, responseFormatSchema: z.ZodTypeAny, lociHome?: string): RegisterJsonToolFn {
   const registrar = function registerJsonTool(
     names: string | string[],
     { title, description, inputSchema, annotations, markdownTitle, outputSchema, level = ToolLevel.ADVANCED, category = 'General' }: ToolDefinition,
@@ -323,7 +323,7 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
       annotations
     };
 
-    // Register with internal Synapse registry
+    // Register with internal Loci registry
     toolRegistry.register({
       name: canonical,
       definition: toolOptions,
@@ -333,7 +333,7 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
         const toolArgs = { ...incoming };
         delete toolArgs.response_format;
         const data = await handler(toolArgs, extra);
-        return toolResult(data, responseFormat, markdownTitle || title, undefined, synapseHome);
+        return toolResult(data, responseFormat, markdownTitle || title, undefined, lociHome);
       },
       level,
       category

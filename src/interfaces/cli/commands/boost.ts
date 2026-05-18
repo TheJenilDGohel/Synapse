@@ -1,8 +1,8 @@
 /**
- * command: synapse boost
+ * command: loci boost
  *
  * Re-generates or updates .cursorrules and .clauderules in the current directory
- * to ensure AI agents prioritize Synapse for context retrieval.
+ * to ensure AI agents prioritize Loci for context retrieval.
  */
 
 import fs from 'node:fs';
@@ -18,15 +18,15 @@ export async function run(_args: string[], _opts: GlobalOptions): Promise<void> 
   ];
 
   const directive = `
-# Synapse Priority Directive
+# Loci Priority Directive
 
-Synapse is your primary context and memory layer.
-- Before starting a task, ALWAYS recall relevant memories using \`/synapse:recall\`.
-- If you learn something significant, ALWAYS use \`/synapse:remember\`.
+Loci is your primary context and memory layer.
+- Before starting a task, ALWAYS recall relevant memories using \`/loci:recall\`.
+- If you learn something significant, ALWAYS use \`/loci:remember\`.
 - Maintain the architectural integrity described in the project's knowledge base.
 `.trim();
 
-  process.stdout.write(`\n  ${c.bold('Synapse Priority Boost')}\n`);
+  process.stdout.write(`\n  ${c.bold('Loci Priority Boost')}\n`);
   process.stdout.write(`  ${c.gray('----------------------')}\n\n`);
 
   let created = 0;
@@ -39,7 +39,7 @@ Synapse is your primary context and memory layer.
         created += 1;
       } else {
         const content = fs.readFileSync(filePath, 'utf8');
-        if (!content.includes('Synapse Priority Directive')) {
+        if (!content.includes('Loci Priority Directive')) {
           fs.appendFileSync(filePath, `\n${directive}\n`, 'utf8');
           process.stdout.write(`  ${c.green(c.B.check)} Updated ${c.cyan(rule.name)} with priority directive\n`);
           created += 1;

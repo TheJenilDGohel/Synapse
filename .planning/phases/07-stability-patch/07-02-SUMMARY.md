@@ -22,5 +22,5 @@
   - Added `src/types/huggingface.d.ts` to fix TypeScript declaration errors.
 
 ## Verification Results
-- `node bin/synapse.cjs memory list`: SUCCESS (No more "undefined" property errors).
-- `node bin/synapse.cjs selftest`: SUCCESS (All core components passed: Memory CRUD, KG, Taxonomy, AST chunking).
+- `node bin/loci.cjs memory list`: SUCCESS (No more "undefined" property errors).
+- `node bin/loci.cjs selftest`: SUCCESS (All core components passed: Memory CRUD, KG, Taxonomy, AST chunking).

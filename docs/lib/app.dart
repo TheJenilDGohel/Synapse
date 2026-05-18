@@ -14,7 +14,7 @@ class App extends StatelessComponent {
       routes: [
         Route(
           path: '/',
-          title: 'Synapse | Home',
+          title: 'Loci | Home',
           builder: (context, state) => const Home(),
         ),
         for (var routes in contentRoutes) ...routes,

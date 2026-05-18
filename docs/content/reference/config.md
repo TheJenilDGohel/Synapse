@@ -1,11 +1,11 @@
 ---
 title: Configuration Reference
-description: Detailed guide to Synapse environment variables and configuration files.
+description: Detailed guide to Loci environment variables and configuration files.
 ---
 
 # Configuration Reference
 
-Synapse can be configured via environment variables or a JSON configuration file. By default, it looks for a config file at `~/.synapse/config/synapse.config.json`.
+Loci can be configured via environment variables or a JSON configuration file. By default, it looks for a config file at `~/.loci/config/loci.config.json`.
 
 ## Environment Variables
 
@@ -13,20 +13,20 @@ Use these variables to override default behavior, especially when running in con
 
 | Variable | Description | Default |
 |:---|:---|:---|
-| `SYNAPSE_HOME` | Root directory for all Synapse data (logs, database, cache). | `~/.synapse` |
-| `SYNAPSE_CONFIG` | Absolute path to a custom `synapse.config.json`. | `$SYNAPSE_HOME/config/...` |
-| `SYNAPSE_MEMORY_ENABLED` | Enable or disable the persistent memory pillar. | `true` |
-| `SYNAPSE_DB_PATH` | Path to the main SQLite database. | `$SYNAPSE_HOME/storage/synapse.db` |
+| `LOCI_HOME` | Root directory for all Loci data (logs, database, cache). | `~/.loci` |
+| `LOCI_CONFIG` | Absolute path to a custom `loci.config.json`. | `$LOCI_HOME/config/...` |
+| `LOCI_MEMORY_ENABLED` | Enable or disable the persistent memory pillar. | `true` |
+| `LOCI_DB_PATH` | Path to the main SQLite database. | `$LOCI_HOME/storage/loci.db` |
 | `PROJECT_ROOTS` | Semicolon-separated list of roots to index. Format: `label=path;path2`. | Current Directory |
-| `SYNAPSE_EMBED_CACHE_DIR`| Directory where local embedding models are stored. | `$SYNAPSE_HOME/cache` |
-| `SYNAPSE_RERANKER_CACHE_DIR`| Directory where reranker models are stored. | `$SYNAPSE_HOME/cache` |
-| `SYNAPSE_INDEX_BACKEND` | The storage backend for the code index: `sqlite-vec` or `json`.| `sqlite-vec` |
+| `LOCI_EMBED_CACHE_DIR`| Directory where local embedding models are stored. | `$LOCI_HOME/cache` |
+| `LOCI_RERANKER_CACHE_DIR`| Directory where reranker models are stored. | `$LOCI_HOME/cache` |
+| `LOCI_INDEX_BACKEND` | The storage backend for the code index: `sqlite-vec` or `json`.| `sqlite-vec` |
 | `DISABLE_CONSOLE_OUTPUT`| Suppress all non-essential console logging. | `false` |
 | `MCP_MODE` | Communication mode: `stdio` (default) or `sse`. | `stdio` |
 
 ## Configuration File Schema
 
-The `synapse.config.json` file allows for fine-grained control over indexing and memory behavior.
+The `loci.config.json` file allows for fine-grained control over indexing and memory behavior.
 
 ```json
 {
@@ -52,10 +52,10 @@ The `synapse.config.json` file allows for fine-grained control over indexing and
 ### Index Settings
 - **`chunkLines`**: Maximum number of lines in a single code chunk. High values provide more context but consume more tokens.
 - **`chunkOverlap`**: Number of overlapping lines between chunks to ensure semantic continuity.
-- **`maxIndexedFiles`**: Safety limit for the number of files Synapse will index in a single root.
+- **`maxIndexedFiles`**: Safety limit for the number of files Loci will index in a single root.
 
 ### Memory Settings
-- **`autoCapture`**: When enabled, Synapse will automatically log significant events (like tool usage) to the background event log.
+- **`autoCapture`**: When enabled, Loci will automatically log significant events (like tool usage) to the background event log.
 - **`enabled`**: Master switch for the persistent memory system.
 
 ## Performance Tuning
@@ -63,8 +63,8 @@ The `synapse.config.json` file allows for fine-grained control over indexing and
 For very large codebases, you may want to increase the indexing limits:
 
 ```bash
-export SYNAPSE_VECTOR_MAX_FILES=50000
-export SYNAPSE_RG_TIMEOUT_MS=30000
+export LOCI_VECTOR_MAX_FILES=50000
+export LOCI_RG_TIMEOUT_MS=30000
 ```
 
 ---

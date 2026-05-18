@@ -37,7 +37,7 @@ import {
 import { MemoryWorkflowService } from '../../core/engine/index.js';
 
 export function registerAppTools(server: any, runtime: any, services: any): void {
-  const registerJsonTool = createJsonToolRegistrar(server, RESPONSE_FORMAT_SCHEMA, runtime.synapseHome);
+  const registerJsonTool = createJsonToolRegistrar(server, RESPONSE_FORMAT_SCHEMA, runtime.lociHome);
   const buildServerStatus = createServerStatusBuilder({
     serverName: SERVER_NAME,
     serverVersion: SERVER_VERSION,

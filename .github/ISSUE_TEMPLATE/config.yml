@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security Vulnerability
-    url: https://github.com/TheJenilDGohel/synapse/security/advisories/new
+    url: https://github.com/TheJenilDGohel/loci/security/advisories/new
     about: Please report security vulnerabilities privately via GitHub Security Advisories, NOT public issues.
   - name: Documentation
-    url: https://TheJenilDGohel.github.io/synapse/
+    url: https://TheJenilDGohel.github.io/loci/
     about: Read the full documentation site
   - name: Discussion
-    url: https://github.com/TheJenilDGohel/synapse/discussions
+    url: https://github.com/TheJenilDGohel/loci/discussions
     about: Ask questions and discuss ideas with the community

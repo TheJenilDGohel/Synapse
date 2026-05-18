@@ -1,7 +1,7 @@
 # Documentation Deep Dive Summary
 
 ## Goal
-Elevate Synapse documentation to "Elite" standards by adding technical depth, concrete JSON examples, and specialized guidance for both human power users and AI agents.
+Elevate Loci documentation to "Elite" standards by adding technical depth, concrete JSON examples, and specialized guidance for both human power users and AI agents.
 
 ## Status: COMPLETED
 **Date:** 2026-05-15
@@ -17,10 +17,10 @@ Elevate Synapse documentation to "Elite" standards by adding technical depth, co
 ### 2. Core Concepts (Deep Dive)
 - **Temporal KG**: Explained the mechanics of triple tracking and `as_of` time-travel querying.
 - **Memory Nests**: Detailed the isolation strategy using Nests and Branches to prevent context sprawl.
-- **Unified Logic**: Defined how Synapse couples code, intent, and relationships into a single layer.
+- **Unified Logic**: Defined how Loci couples code, intent, and relationships into a single layer.
 
 ### 3. Advanced Configuration
-- **Performance Tuning**: Created a guide for environment variables and `synapse.config.json`.
+- **Performance Tuning**: Created a guide for environment variables and `loci.config.json`.
 - **Custom Models**: Documented how to swap local embedding and reranker models.
 - **Multi-Root**: Instructions for defining project boundaries in monorepos.
 
@@ -39,4 +39,4 @@ Elevate Synapse documentation to "Elite" standards by adding technical depth, co
 - `llms.txt` (Technical Expansion)
 
 ## Impact
-Synapse now possesses "Tier 1" documentation that provides a clear, high-signal path for every user segment: from the "5-minute win" beginner to the agent-building systems engineer.
+Loci now possesses "Tier 1" documentation that provides a clear, high-signal path for every user segment: from the "5-minute win" beginner to the agent-building systems engineer.

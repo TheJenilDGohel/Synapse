@@ -1,4 +1,4 @@
-# Synapse Milestone Roadmap: v2026.5.0 Stable Release
+# Loci Milestone Roadmap: v2026.5.0 Stable Release
 
 ## 🎯 Milestone Goal
 Stabilize the core engine, optimize tool context usage, and harden the architecture for final stable release.

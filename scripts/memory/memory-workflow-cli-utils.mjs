@@ -11,15 +11,15 @@ export function hasHelpFlag(argv = process.argv.slice(2)) {
 }
 
 export function printTaskContextHelp() {
-  console.log(c.bold('Synapse task-context helper'));
+  console.log(c.bold('Loci task-context helper'));
   console.log('');
   console.log(c.bold('Usage:'));
-  console.log(`  synapse task-context ${c.cyan('--task')} "investigate issue" ${c.cyan('--project-path')} "/abs/project"`);
-  console.log(`  synapse task-context ${c.cyan('--query')} "search terms" ${c.cyan('--root-path')} "/abs/root"`);
-  console.log(`  synapse task-context ${c.cyan('--json')} '{"task":"investigate issue"}'`);
+  console.log(`  loci task-context ${c.cyan('--task')} "investigate issue" ${c.cyan('--project-path')} "/abs/project"`);
+  console.log(`  loci task-context ${c.cyan('--query')} "search terms" ${c.cyan('--root-path')} "/abs/root"`);
+  console.log(`  loci task-context ${c.cyan('--json')} '{"task":"investigate issue"}'`);
   console.log('');
   console.log(c.dim('Compatibility alias (deprecated):'));
-  console.log(c.dim('  synapse-task-context'));
+  console.log(c.dim('  loci-task-context'));
   console.log('');
   console.log(c.bold('Options:'));
   console.log(`  ${c.cyan('--task')}=<text>            task description`);
@@ -35,14 +35,14 @@ export function printTaskContextHelp() {
 }
 
 export function printCaptureOutcomeHelp() {
-  console.log(c.bold('Synapse capture-outcome helper'));
+  console.log(c.bold('Loci capture-outcome helper'));
   console.log('');
   console.log(c.bold('Usage:'));
-  console.log(`  synapse capture-outcome ${c.cyan('--task')} "fix issue" ${c.cyan('--status')} completed ${c.cyan('--summary')} "what changed"`);
-  console.log(`  synapse capture-outcome ${c.cyan('--json')} '{"task":"fix issue","summary":"what changed"}'`);
+  console.log(`  loci capture-outcome ${c.cyan('--task')} "fix issue" ${c.cyan('--status')} completed ${c.cyan('--summary')} "what changed"`);
+  console.log(`  loci capture-outcome ${c.cyan('--json')} '{"task":"fix issue","summary":"what changed"}'`);
   console.log('');
   console.log(c.dim('Compatibility alias (deprecated):'));
-  console.log(c.dim('  synapse-capture-outcome'));
+  console.log(c.dim('  loci-capture-outcome'));
   console.log('');
   console.log(c.bold('Options:'));
   console.log(`  ${c.cyan('--task')}=<text>             task title`);
@@ -132,7 +132,7 @@ export async function createMemoryWorkflow() {
   installRuntimeWarningFilter();
   const runtime = buildRuntimeConfig(process.env);
   const memory = new MemoryService({
-    synapseHome: runtime.synapseHome,
+    lociHome: runtime.lociHome,
     enabled: runtime.memoryEnabled,
     backend: runtime.memoryBackend,
     dbPath: runtime.memoryDbPath,

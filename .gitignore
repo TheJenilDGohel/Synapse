@@ -2,11 +2,11 @@ node_modules/
 .npm-cache/
 dist/
 *.tsbuildinfo
-.synapse/
-.mcp.synapse.json
-.mcp.synapse.*.json
+.loci/
+.mcp.loci.json
+.mcp.loci.*.json
 .mcp.json
-synapse.config.json
+loci.config.json
 /CLAUDE.md
 /.clauderules
 /.cursorrules

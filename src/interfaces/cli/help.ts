@@ -1,5 +1,5 @@
 /**
- * Premium CLI help renderer for Synapse.
+ * Premium CLI help renderer for Loci.
  *
  * Uses raw ANSI escape codes — no chalk dependency.
  * Respects NO_COLOR and FORCE_COLOR environment variables.
@@ -108,17 +108,17 @@ export function printHelp(): void {
   const lines: string[] = [];
 
   lines.push('');
-  lines.push(`  ${c.bold('Synapse')} ${c.cyan(`v${SERVER_VERSION}`)} ${c.gray(BOX.h.repeat(2))} ${c.dim('Bridging Context. Helping AI do the job.')}`);
+  lines.push(`  ${c.bold('Loci')} ${c.cyan(`v${SERVER_VERSION}`)} ${c.gray(BOX.h.repeat(2))} ${c.dim('Bridging Context. Helping AI do the job.')}`);
   lines.push('');
   lines.push(boxTop(W));
-  lines.push(boxLine(`${c.bold('Synapse')}  ${c.gray(`v${SERVER_VERSION}`)}  ${c.badge('MCP')}`, W));
+  lines.push(boxLine(`${c.bold('Loci')}  ${c.gray(`v${SERVER_VERSION}`)}  ${c.badge('MCP')}`, W));
   lines.push(boxLine(`${c.italic(c.gray('The Transmission Layer for persistent AI context and memory'))}`, W));
   lines.push(boxLine('', W));
   lines.push(boxLine(`${c.green(BOX.check)} ${c.dim(`${TOOL_COUNT} MCP tools`)}  ${c.cyan(BOX.dot)} ${c.dim('Local-first')}  ${c.magenta('◇')} ${c.dim('Bridging Context')}`, W));
   lines.push(boxBottom(W));
   lines.push('');
 
-  lines.push(`  ${c.bold('USAGE')}  ${c.gray('synapse <command> [options]')}`);
+  lines.push(`  ${c.bold('USAGE')}  ${c.gray('loci <command> [options]')}`);
   lines.push('');
 
   for (const cat of CATEGORIES) {
@@ -149,17 +149,17 @@ export function printHelp(): void {
   lines.push(separator());
   lines.push('');
   lines.push(`  ${c.bold('EXAMPLES')}`);
-  lines.push(`    ${c.cyan('synapse memory add')} ${c.gray('--content "JWT with refresh tokens" --kind decision')}`);
-  lines.push(`    ${c.cyan('synapse memory search')} ${c.gray('--query "authentication"')}`);
-  lines.push(`    ${c.cyan('synapse kg add')} ${c.gray('--subject "AuthService" --predicate "uses" --object "JWT"')}`);
-  lines.push(`    ${c.cyan('synapse selftest')} ${c.gray('--json')}`);
-  lines.push(`    ${c.cyan('synapse dashboard')}`);
+  lines.push(`    ${c.cyan('loci memory add')} ${c.gray('--content "JWT with refresh tokens" --kind decision')}`);
+  lines.push(`    ${c.cyan('loci memory search')} ${c.gray('--query "authentication"')}`);
+  lines.push(`    ${c.cyan('loci kg add')} ${c.gray('--subject "AuthService" --predicate "uses" --object "JWT"')}`);
+  lines.push(`    ${c.cyan('loci selftest')} ${c.gray('--json')}`);
+  lines.push(`    ${c.cyan('loci dashboard')}`);
   lines.push('');
 
   lines.push(separator());
   lines.push('');
-  lines.push(`  ${c.gray('Quick start:')}  ${c.cyan('synapse setup')} ${c.gray(BOX.arrow)} ${c.cyan('synapse doctor')} ${c.gray(BOX.arrow)} ${c.cyan('synapse hooks install')}`);
-  lines.push(`  ${c.gray('Docs:')}         ${c.blue('https://TheJenilDGohel.github.io/synapse/')}`);
+  lines.push(`  ${c.gray('Quick start:')}  ${c.cyan('loci setup')} ${c.gray(BOX.arrow)} ${c.cyan('loci doctor')} ${c.gray(BOX.arrow)} ${c.cyan('loci hooks install')}`);
+  lines.push(`  ${c.gray('Docs:')}         ${c.blue('https://TheJenilDGohel.github.io/loci/')}`);
   lines.push('');
 
   process.stdout.write(lines.join('\n') + '\n');
@@ -176,7 +176,7 @@ export interface VerbDef {
 export function printSubcommandHelp(noun: string, verbs: VerbDef[]): void {
   const lines: string[] = [];
   lines.push('');
-  lines.push(`  ${c.bold(c.cyan('synapse ' + noun))} ${c.gray('<command> [options]')}`);
+  lines.push(`  ${c.bold(c.cyan('loci ' + noun))} ${c.gray('<command> [options]')}`);
   lines.push('');
   for (const v of verbs) {
     const nameStr = c.cyan(v.name);

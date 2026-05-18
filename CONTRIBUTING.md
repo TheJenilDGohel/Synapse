@@ -1,10 +1,10 @@
-# Contributing to Synapse MCP
+# Contributing to Loci MCP
 
 ## Getting Started
 
 ```bash
-git clone https://github.com/TheJenilDGohel/synapse.git
-cd synapse
+git clone https://github.com/TheJenilDGohel/loci.git
+cd loci
 npm install
 npm run setup
 npm run doctor
@@ -12,7 +12,7 @@ npm run doctor
 
 ## Development
 
-Synapse is written in TypeScript. The runtime uses `tsx` for development execution and `tsc` for type checking and builds.
+Loci is written in TypeScript. The runtime uses `tsx` for development execution and `tsc` for type checking and builds.
 
 **Type-check all source files:**
 ```bash
@@ -46,7 +46,7 @@ npm run install:skill
 
 ## Project Structure
 
-Synapse follows a strictly decoupled, layered architecture:
+Loci follows a strictly decoupled, layered architecture:
 
 - **Core (`src/core/`)**: System fundamentals, engine logic (Memory, Retrieval, Update), infrastructure, and setup.
 - **Interfaces (`src/interfaces/`)**: External boundaries (CLI, MCP, App) that orchestrate core domains.
@@ -58,13 +58,13 @@ For a detailed breakdown, see the [Architecture Overview](./ARCHITECTURE.md).
 ### Adding or modifying a tool
 
 Tools are registered in `src/interfaces/mcp/tools/*.ts`. Each tool needs:
-- A canonical name (`synapse_*`)
+- A canonical name (`loci_*`)
 - Zod input schema
 - Handler returning plain data
 
 ### Updating the skill
 
-The skill at `skills/synapse/SKILL.md` is the source of truth for AI agent behavior. After editing it, sync to your local installation:
+The skill at `skills/loci/SKILL.md` is the source of truth for AI agent behavior. After editing it, sync to your local installation:
 ```bash
 npm run install:skill
 ```
@@ -73,7 +73,7 @@ npm run install:skill
 
 - Keep PRs focused — one concern per PR.
 - Run `npm run quality` before opening a PR.
-- Update `skills/synapse/SKILL.md` if you add or change any tool.
+- Update `skills/loci/SKILL.md` if you add or change any tool.
 - Maintainers handle versioning; do not bump the version in your PR.
 
 ## Reporting Issues
@@ -81,12 +81,12 @@ npm run install:skill
 Open an issue with:
 - Node.js version (`node --version`)
 - Platform (macOS/Linux/Windows)
-- Output of `synapse doctor`
+- Output of `loci doctor`
 - Clear steps to reproduce
 
 ## Publishing (Maintainers Only)
 
-Synapse auto-publishes to npm via GitHub Actions when the version in `package.json` is updated on the main branch.
+Loci auto-publishes to npm via GitHub Actions when the version in `package.json` is updated on the main branch.
 
 **Manual release commands:**
 ```bash

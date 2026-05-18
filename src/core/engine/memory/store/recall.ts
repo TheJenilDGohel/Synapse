@@ -148,7 +148,7 @@ export async function recall(adapter: Adapter, {
 
   const terms = splitTerms(query);
   const maxRecallCount = rows.reduce<number>((max, row) => Math.max(max, Number(row.recall_count) || 0), 0);
-  const usageWeightRaw = Number(process.env.SYNAPSE_MEMORY_USAGE_WEIGHT || '1.5');
+  const usageWeightRaw = Number(process.env.LOCI_MEMORY_USAGE_WEIGHT || '1.5');
   const usageWeight = Number.isFinite(usageWeightRaw) ? Math.max(0, usageWeightRaw) : 1.5;
   const ranked: Array<{ score: number; entry: MemoryEntry }> = rows
     .map((row) => {

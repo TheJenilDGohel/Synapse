@@ -1,6 +1,6 @@
 ---
 title: Managing Knowledge
-description: How to build and query the Synapse Knowledge Graph for architectural intelligence.
+description: How to build and query the Loci Knowledge Graph for architectural intelligence.
 ---
 
 # Managing Knowledge
@@ -16,7 +16,7 @@ The graph is composed of **Entities** (the nouns) and **Triples** (the relations
 
 ## The Unified Controllers
 
-In Synapse v2026.5.0, all graph mutations and queries are handled by two "Power Tools":
+In Loci v2026.5.0, all graph mutations and queries are handled by two "Power Tools":
 
 ### 1. `synapse_kg_manage`
 Use this tool to add or delete entities and triples. It supports batching and markdown ingestion.
@@ -36,14 +36,14 @@ The agent will call `synapse_kg_query` with the `traverse` action to find all do
 
 ## Temporal Awareness (Time-Travel)
 
-Every fact in Synapse is timestamped. You can query the graph as it existed at any point in history using the `as_of` parameter.
+Every fact in Loci is timestamped. You can query the graph as it existed at any point in history using the `as_of` parameter.
 
 - **`synapse_kg_query(action="get_state", as_of="2024-05-01")`**: See the architecture as it was on May 1st.
 - **`synapse_kg_query(action="timeline", entity_name="AuthService")`**: See every change ever recorded for that service.
 
 ## Use Case: Tracking Decisions (ADRs)
 
-Synapse is the ideal place to store **Architectural Decision Records (ADRs)**.
+Loci is the ideal place to store **Architectural Decision Records (ADRs)**.
 
 1. **Store the ADR**: Record the full text of the decision in [Persistent Memory](memory).
 2. **Link to the Graph**: Create a triple linking the ADR entity to the affected code modules.
