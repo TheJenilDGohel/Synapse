@@ -57,6 +57,7 @@ void main() {
         script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js'),
         script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js'),
         script(src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js'),
+        link(rel: 'stylesheet', href: publicPath('styles.css')),
       ],
       body: ContentApp.custom(
         loaders: [FilesystemLoader('content')],
