@@ -6,8 +6,8 @@
 
 import 'package:jaspr/server.dart';
 import 'package:jaspr_content/components/theme_toggle.dart' as _theme_toggle;
-import 'package:loci_docs/components/search.dart' as _search;
-import 'package:loci_docs/components/tools_list.dart' as _tools_list;
+import 'package:synapse_docs/components/search.dart' as _search;
+import 'package:synapse_docs/components/tools_list.dart' as _tools_list;
 
 /// Default [ServerOptions] for use with your Jaspr project.
 ///

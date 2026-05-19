@@ -15,12 +15,12 @@ class App extends StatelessComponent {
       routes: [
         Route(
           path: '/',
-          title: 'Loci | Home',
+          title: 'Synapse | Home',
           builder: (context, state) => const Home(),
         ),
         Route(
           path: '/about',
-          title: 'Loci | Community',
+          title: 'Synapse | Community',
           builder: (context, state) => const About(),
         ),
         for (var routes in contentRoutes) ...routes,

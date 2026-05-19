@@ -120,7 +120,7 @@ export function buildInstallCommand(packageName: string, version: string): Insta
 }
 
 export function buildSkillSyncCommand(): InstallCommand {
-  const binary = process.platform === 'win32' ? 'loci.cmd' : 'loci';
+  const binary = process.platform === 'win32' ? 'synapse.cmd' : 'synapse';
   return { command: binary, args: ['install', 'skills', '--force'] };
 }
 

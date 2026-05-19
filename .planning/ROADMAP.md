@@ -1,5 +1,5 @@
 <<<<<<< Updated upstream
-# Loci Milestone Roadmap: v2026.5.0 Stable Release
+# Synapse Milestone Roadmap: v2026.5.0 Stable Release
 =======
 # Synapse Milestone Roadmap: M2 - Adaptive Indexing & Multi-Root Intelligence
 >>>>>>> Stashed changes

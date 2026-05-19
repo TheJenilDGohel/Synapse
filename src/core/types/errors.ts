@@ -1,32 +1,32 @@
 /**
- * Base class for all Loci-specific errors.
+ * Base class for all Synapse-specific errors.
  */
-export class LociError extends Error {
+export class SynapseError extends Error {
   constructor(message: string, public readonly code: string, public readonly details?: any) {
     super(message);
-    this.name = 'LociError';
+    this.name = 'SynapseError';
   }
 }
 
-export class DatabaseError extends LociError {
+export class DatabaseError extends SynapseError {
   constructor(message: string, details?: any) {
     super(message, 'DATABASE_ERROR', details);
   }
 }
 
-export class ValidationError extends LociError {
+export class ValidationError extends SynapseError {
   constructor(message: string, details?: any) {
     super(message, 'VALIDATION_ERROR', details);
   }
 }
 
-export class NotFoundError extends LociError {
+export class NotFoundError extends SynapseError {
   constructor(message: string, details?: any) {
     super(message, 'NOT_FOUND', details);
   }
 }
 
-export class CapacityError extends LociError {
+export class CapacityError extends SynapseError {
   constructor(message: string, details?: any) {
     super(message, 'CAPACITY_EXCEEDED', details);
   }

@@ -1,4 +1,4 @@
-/** Shared types for the Loci memory subsystem. */
+/** Shared types for the Synapse memory subsystem. */
 export * from './adapter.js';
 export * from './entries.js';
 export * from './events.js';

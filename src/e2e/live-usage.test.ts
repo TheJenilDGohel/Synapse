@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
 
 test('E2E Live Usage: MCP Server initializes and responds', async () => {
-  const binPath = resolve(process.cwd(), 'bin/loci.cjs');
+  const binPath = resolve(process.cwd(), 'bin/synapse.cjs');
 
   const serverProcess = spawn('node', [binPath, 'start'], {
     stdio: ['pipe', 'pipe', 'pipe'],

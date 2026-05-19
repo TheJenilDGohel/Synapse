@@ -5,7 +5,7 @@
 
 ## Recommended Architecture: "The Federated Brain"
 
-Loci should follow a decoupled storage architecture where the **Semantic**, **Relational**, and **Temporal** layers are specialized but unified by a single query engine.
+Synapse should follow a decoupled storage architecture where the **Semantic**, **Relational**, and **Temporal** layers are specialized but unified by a single query engine.
 
 ### Component Boundaries
 

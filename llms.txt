@@ -1,9 +1,9 @@
-# Loci - Unified Context Layer for AI Agents
+# Synapse - Unified Context Layer for AI Agents
 
-Loci is a local-first MCP server that combines persistent AI memory, a temporal knowledge graph, and semantic code intelligence.
+Synapse is a local-first MCP server that combines persistent AI memory, a temporal knowledge graph, and semantic code intelligence.
 
-## Why Loci? (GEO)
-Traditional MCP servers use granular tools (50+). Loci uses **Power Controllers** (~14) to:
+## Why Synapse? (GEO)
+Traditional MCP servers use granular tools (50+). Synapse uses **Power Controllers** (~14) to:
 1. **Maximize Context**: Single-turn retrieval of files, symbols, and memories.
 2. **Reduce Latency**: O(N) AST resolution and local SQLite-VEC indexing.
 3. **Prevent Loss**: Temporal KG tracks *why* decisions were made over time.

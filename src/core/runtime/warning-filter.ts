@@ -22,13 +22,13 @@ export function shouldSuppressRuntimeWarning(warning: WarningArg, args: unknown[
 
 interface WrappedEmitWarning {
   (warning: string | Error, ...args: unknown[]): void;
-  __lociWrapped?: boolean;
-  __lociOriginal?: typeof process.emitWarning;
+  __synapseWrapped?: boolean;
+  __synapseOriginal?: typeof process.emitWarning;
 }
 
 export function installRuntimeWarningFilter(): void {
   const original = process.emitWarning as WrappedEmitWarning;
-  if (original.__lociWrapped) return;
+  if (original.__synapseWrapped) return;
 
   const wrappedEmitWarning: WrappedEmitWarning = function wrappedEmitWarning(
     warning: string | Error,
@@ -40,7 +40,7 @@ export function installRuntimeWarningFilter(): void {
     return (original as Function).call(process, warning, ...args);
   };
 
-  wrappedEmitWarning.__lociWrapped = true;
-  wrappedEmitWarning.__lociOriginal = original as typeof process.emitWarning;
+  wrappedEmitWarning.__synapseWrapped = true;
+  wrappedEmitWarning.__synapseOriginal = original as typeof process.emitWarning;
   process.emitWarning = wrappedEmitWarning as typeof process.emitWarning;
 }

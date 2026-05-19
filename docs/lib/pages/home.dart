@@ -19,25 +19,25 @@ class Home extends StatelessComponent {
           div(classes: 'hero-badge-row', [
             span(classes: 'badge-neural', [
               div(classes: 'pulse-ring', []),
-              text('SYNAPTIC V2 CORE'),
+              Component.text('SYNAPTIC V2 CORE'),
             ]),
-            span(classes: 'badge-version', [text(stableVersion)]),
+            span(classes: 'badge-version', [Component.text(stableVersion)]),
           ]),
           h1([
-            text('The Unified Context Layer for '),
-            span(classes: 'text-gradient', [text('AI Agents')]),
+            Component.text('The Unified Context Layer for '),
+            span(classes: 'text-gradient', [Component.text('AI Agents')]),
           ]),
           p(classes: 'hero-lead', [
-            text(
-              'Loci bridges the gap between biological intent and synthetic reasoning. A local-first context engine powered by temporal knowledge and persistent memory.',
+            Component.text(
+              'Synapse bridges the gap between biological intent and synthetic reasoning. A local-first context engine powered by temporal knowledge and persistent memory.',
             ),
           ]),
           div(classes: 'hero-btns', [
-            DocsLink(to: '/intro', classes: 'btn-elite btn-primary', child: text('Get Started')),
+            DocsLink(to: '/intro', classes: 'btn-elite btn-primary', child: Component.text('Get Started')),
             a(
-              href: 'https://github.com/TheJenilDGohel/loci',
+              href: 'https://github.com/TheJenilDGohel/synapse',
               classes: 'btn-elite btn-secondary',
-              [text('GitHub')],
+              [Component.text('GitHub')],
             ),
           ]),
         ]),

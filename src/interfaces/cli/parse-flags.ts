@@ -1,5 +1,5 @@
 /**
- * Shared CLI flag parser for all loci subcommands.
+ * Shared CLI flag parser for all synapse subcommands.
  * Supports --key value, --key=value, -k value, --boolean, and positional args.
  */
 

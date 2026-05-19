@@ -40,7 +40,7 @@ export function collapseRepetitiveLines(text: string): string {
 }
 
 export interface TeeOptions {
-  lociHome: string;
+  synapseHome: string;
   maxChars?: number;
 }
 
@@ -58,7 +58,7 @@ export function teeLargeOutput(
     return { content: text };
   }
 
-  const logDir = path.join(options.lociHome, 'logs', 'raw-output');
+  const logDir = path.join(options.synapseHome, 'logs', 'raw-output');
   try {
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });

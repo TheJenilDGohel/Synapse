@@ -23,9 +23,9 @@ class Card extends StatelessComponent {
       classes: 'custom-card ${onTap != null ? 'clickable' : ''}',
       events: onTap != null ? {'click': (e) => onTap!()} : {},
       [
-        if (icon != null) div(classes: 'card-icon', [text(icon!)]),
-        h3([text(title)]),
-        p([text(description)]),
+        if (icon != null) div(classes: 'card-icon', [Component.text(icon!)]),
+        h3([Component.text(title)]),
+        p([Component.text(description)]),
         if (child != null) child!,
         div(classes: 'card-glint', []),
       ],

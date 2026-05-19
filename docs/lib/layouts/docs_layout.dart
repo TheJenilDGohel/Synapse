@@ -32,10 +32,10 @@ class DocsLayoutWrapper extends StatelessComponent {
         const Header(),
         if (currentTrack == 'beta')
           div(classes: 'beta-banner', [
-            span(classes: 'beta-tag', [text('BETA')]),
-            text(' You are viewing the documentation for the upcoming '),
-            strong([text(betaVersion)]),
-            text(' release.'),
+            span(classes: 'beta-tag', [Component.text('BETA')]),
+            Component.text(' You are viewing the documentation for the upcoming '),
+            strong([Component.text(betaVersion)]),
+            Component.text(' release.'),
           ]),
         main_(classes: 'layout-content', [
           div(classes: 'content-inner', [

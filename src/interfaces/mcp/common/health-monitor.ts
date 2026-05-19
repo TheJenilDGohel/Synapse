@@ -191,7 +191,7 @@ export function startHealthMonitor(
 
       if (report.actions.length > 0 || report.issues.length > 0) {
         log(
-          `[loci-health] ${report.ok ? 'ok' : 'degraded'}` +
+          `[synapse-health] ${report.ok ? 'ok' : 'degraded'}` +
           (report.issues.length ? ` issues=[${report.issues.join(',')}]` : '') +
           (report.actions.length ? ` actions=[${report.actions.join(',')}]` : '') +
           '\n'
@@ -202,7 +202,7 @@ export function startHealthMonitor(
       report.issues.push('monitor_error');
       report.warnings.push(error?.message || String(err));
       report.ok = false;
-      log(`[loci-health] error: ${error?.message || err}\n`);
+      log(`[synapse-health] error: ${error?.message || err}\n`);
     } finally {
       running = false;
       lastReport = report;

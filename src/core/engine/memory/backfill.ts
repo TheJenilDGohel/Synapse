@@ -1,5 +1,5 @@
 /**
- * Filesystem project scanner + backfill for Loci.
+ * Filesystem project scanner + backfill for Synapse.
  * Scans a directory tree (up to 2 levels deep) for project markers,
  * and creates seed memory entries for projects with zero existing memories.
  */

@@ -60,7 +60,7 @@ async function createVectorIndex(
     } catch (error: any) {
       setActiveBackend('json');
       process.stderr.write(
-        `[loci-index] sqlite-vec unavailable on this Node runtime; falling back to json backend. ` +
+        `[synapse-index] sqlite-vec unavailable on this Node runtime; falling back to json backend. ` +
         `reason=${error?.code || error?.message || 'unknown'}\n`
       );
     }
@@ -132,14 +132,14 @@ export async function createServices(runtime: any): Promise<AppServices> {
     symbolIndex: symbolIndex as any
   });
   const updates = new UpdateService({
-    lociHome: runtime.lociHome,
+    synapseHome: runtime.synapseHome,
     packageName: runtime.updatePackageName,
     currentVersion: SERVER_VERSION,
     checkIntervalMinutes: runtime.updateCheckIntervalMinutes,
     failureBackoffMinutes: runtime.updateFailureBackoffMinutes
   });
   const memory = new MemoryService({
-    lociHome: runtime.lociHome,
+    synapseHome: runtime.synapseHome,
     enabled: runtime.memoryEnabled,
     backend: runtime.memoryBackend,
     dbPath: runtime.memoryDbPath,

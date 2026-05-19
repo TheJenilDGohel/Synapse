@@ -9,8 +9,8 @@
  * If no version is provided, reads from package.json.
  *
  * Creates:
- *   - loci-docs/docs/versions/<version>/overview.md (snapshot summary)
- *   - loci-docs/docs/releases/<version>.md (release notes from CHANGELOG)
+ *   - synapse-docs/docs/versions/<version>/overview.md (snapshot summary)
+ *   - synapse-docs/docs/releases/<version>.md (release notes from CHANGELOG)
  *
  * Run this as part of every version bump workflow.
  */
@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..', '..');
-const DOCS_ROOT = path.join(ROOT, 'loci-docs', 'docs');
+const DOCS_ROOT = path.join(ROOT, 'synapse-docs', 'docs');
 
 function getVersion() {
   const arg = process.argv[2];
@@ -110,7 +110,7 @@ function main() {
         '### Upgrade',
         '',
         '```bash',
-        `npm install -g loci@${version}`,
+        `npm install -g synapse@${version}`,
         '```',
       ].join('\n');
 

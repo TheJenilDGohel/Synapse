@@ -7,14 +7,14 @@ export default [
       'node_modules/**',
       'dist/**',
       '.npm-cache/**',
-      '.loci/**',
+      '.synapse/**',
       '.claude/**',
       '.claude-flow/**',
       'coverage/**',
       'build/**',
       'docs/**',
       '**/.dart_tool/**',
-      'loci-docs/build/**'
+      'synapse-docs/build/**'
     ]
   },
   js.configs.recommended,
