@@ -20,7 +20,7 @@ This guide provides detailed instructions for installing Synapse and configuring
 Install the package via npm:
 
 ```bash
-npm install -g synapse-mcp
+npm install -g synapse-cortex
 ```
 
 ## Step 2: Local Project Setup

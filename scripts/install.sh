@@ -32,11 +32,11 @@ fi
 
 # 2. Install Synapse
 echo -e "[2/3] Installing Synapse via NPM..."
-if npm install -g synapse-mcp 2>/dev/null; then
+if npm install -g synapse-cortex 2>/dev/null; then
     echo -e " ${GREEN}Installation successful.${NC}"
 else
     echo -e " ${GRAY}Standard install failed, trying with sudo...${NC}"
-    sudo npm install -g synapse-mcp
+    sudo npm install -g synapse-cortex
 fi
 
 # 3. Trigger Onboarding

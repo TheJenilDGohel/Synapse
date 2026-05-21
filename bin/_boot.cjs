@@ -34,10 +34,11 @@ const req = createRequire(resolve(pkgDir, 'package.json'));
 function resolveTsxEsm() {
   try {
     return pathToFileURL(req.resolve('tsx/esm')).href;
-  } catch {
-    process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse-mcp\n');
-    process.exit(1);
+  if (!hasTsx) {
+      process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse-cortex\n');
+      process.exit(1);
   }
+
 }
 
 /**

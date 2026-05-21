@@ -21,7 +21,7 @@ Yes, for the following reasons:
 3. **Synergy**: Synapse already extracts a "project tree" (`synapse_project_tree`) and "summarizes projects" (`synapse_summarize_project`). Extending this to a "file tree structure" (PageIndex-like) would bridge the gap between file-level and symbol-level navigation.
 
 ### Implementation Strategy for Prototype
-To prototype this in `synapse-mcp`, we can create a new tool: `synapse_pageindex_tree`.
+To prototype this in `synapse-cortex`, we can create a new tool: `synapse_pageindex_tree`.
 - **Target**: Parse a Markdown/Text file, generate a structured TOC (Table of Contents) using Markdown headers or AST symbols.
 - **Node Navigation**: Create a tool `synapse_pageindex_read_node` to allow the LLM to read a specific node's content based on its ID.
 - **Testing**: Test the LLM's ability to retrieve information accurately using tree navigation vs `synapse_search_hybrid`.

@@ -16,7 +16,7 @@ try {
   console.log(`Created tarball: ${tarballName}`);
 
   // Create a temporary directory
-  tempDir = mkdtempSync(join(tmpdir(), 'synapse-mcp-test-'));
+  tempDir = mkdtempSync(join(tmpdir(), 'synapse-cortex-test-'));
   console.log(`Created temporary directory: ${tempDir}`);
 
   // Move the tarball to the temp directory cross-platform

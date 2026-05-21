@@ -324,7 +324,7 @@ export class DiagnosticService {
     }
 
     const entries = fs.readdirSync(nodeModulesDir);
-    const stalePrefix = '.synapse-mcp-';
+    const stalePrefix = '.synapse-cortex-';
     const stale = entries.filter((e) => e.startsWith(stalePrefix));
 
     if (stale.length === 0) {

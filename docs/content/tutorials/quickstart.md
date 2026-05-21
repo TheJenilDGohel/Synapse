@@ -16,7 +16,7 @@ Welcome to Synapse! This tutorial will guide you through installing Synapse and 
 Install the Synapse CLI globally:
 
 ```bash
-npm install -g synapse-mcp
+npm install -g synapse-cortex
 ```
 
 ## 2. Workspace Initialization

@@ -3,7 +3,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Rebrand] Synapse → Synapse — Project renamed to Synapse (synapse-mcp on npm).
+## [Rebrand] Synapse → Synapse — Project renamed to Synapse (synapse-cortex on npm).
 CLI command is now `synapse`. Config lives at ~/.synapse/.
 All SYNAPSE_* env vars renamed to SYNAPSE_*. No functional changes.
 
@@ -89,7 +89,7 @@ All SYNAPSE_* env vars renamed to SYNAPSE_*. No functional changes.
 ## [0.0.1-beta.1] - 2026.5.03
 
 ### 🔄 Redistribution & Sync
-- **Package Rename**: Official redistribution as `synapse-mcp` on npm.
+- **Package Rename**: Official redistribution as `synapse-cortex` on npm.
 - **CI/CD Stabilization**: Synchronized version markers and release tags for automated distribution.
 
 ## [0.0.1-beta] - 2026.5.03
