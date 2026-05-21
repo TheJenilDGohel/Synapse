@@ -21,6 +21,8 @@ class _SearchState extends State<Search> {
     (title: 'Quick Start', path: '/tutorials/quickstart', description: 'Get running in 5 minutes.'),
     (title: 'Installation', path: '/how-to/install', description: 'System requirements and setup.'),
     (title: 'Configuration', path: '/how-to/configuration', description: 'Environment and JSON tuning.'),
+    (title: 'Managing Memory', path: '/how-to/memory', description: 'How to query, prune, and persist memory.'),
+    (title: 'Knowledge Graph Guide', path: '/how-to/kg', description: 'Using entity-relationship and temporal graph tools.'),
     (title: 'Core Concepts', path: '/explanation/concepts', description: 'How the neural context engine works.'),
     (title: 'Architecture', path: '/explanation/architecture', description: 'Internal layers and data flow.'),
     (title: 'Code Intelligence', path: '/explanation/code-intelligence', description: 'AST-aware semantic search.'),
@@ -28,7 +30,10 @@ class _SearchState extends State<Search> {
     (title: 'Knowledge Graph', path: '/explanation/knowledge-graph', description: 'Temporal relationship tracking.'),
     (title: 'Power Controllers', path: '/reference/tools', description: 'Full MCP tool-call documentation.'),
     (title: 'CLI Reference', path: '/reference/cli', description: 'Commands and syntax.'),
-    (title: 'Community', path: '/community', description: 'The Synapse neural network.'),
+    (title: 'Config Options', path: '/reference/config', description: 'Configuration options guide.'),
+    (title: 'Community Hub', path: '/community', description: 'Connect with developers using and improving Synapse.'),
+    (title: 'Contributing', path: '/contributing', description: 'Guidelines for contributing to Synapse.'),
+    (title: 'FAQ', path: '/faq', description: 'Frequently asked questions, performance tips, and architectural tradeoffs.'),
   ];
 
   void _toggle() {
@@ -42,9 +47,9 @@ class _SearchState extends State<Search> {
   Component build(BuildContext context) {
     var filteredPages = _pages
         .where(
-          (p) =>
-              p.title.toLowerCase().contains(_query.toLowerCase()) ||
-              p.description.toLowerCase().contains(_query.toLowerCase()),
+          (pg) =>
+              pg.title.toLowerCase().contains(_query.toLowerCase()) ||
+              pg.description.toLowerCase().contains(_query.toLowerCase()),
         )
         .toList();
 
@@ -55,8 +60,8 @@ class _SearchState extends State<Search> {
           'click': (e) => _toggle(),
         },
         [
-          span([text('Search documentation...')]),
-          Component.element(tag: 'kbd', children: [text('⌘K')]),
+          span([Component.text('Search documentation...')]),
+          Component.element(tag: 'kbd', children: [Component.text('⌘K')]),
         ],
       ),
 
@@ -83,7 +88,7 @@ class _SearchState extends State<Search> {
                 ]),
                 div(classes: 'search-results', [
                   if (filteredPages.isEmpty)
-                    div(classes: 'no-results', [text('No results for "$_query"')])
+                    div(classes: 'no-results', [Component.text('No results for "$_query"')])
                   else
                     for (var page in filteredPages)
                       a(
@@ -97,8 +102,8 @@ class _SearchState extends State<Search> {
                           },
                         },
                         [
-                          div(classes: 'item-title', [text(page.title)]),
-                          div(classes: 'item-desc', [text(page.description)]),
+                          div(classes: 'item-title', [Component.text(page.title)]),
+                          div(classes: 'item-desc', [Component.text(page.description)]),
                         ],
                       ),
                 ]),

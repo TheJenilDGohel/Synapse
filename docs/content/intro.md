@@ -8,15 +8,15 @@ keywords: AI, Agents, MCP, Semantic Search, Knowledge Graph
 
 **Synapse** is the transmission layer for AI project context.
 
-:::warning Public Beta
+<callout type="warning" title="Public Beta">
 Synapse is currently in a public beta cycle (**v2026.05.1-beta.0**). We are rapidly refining the engine and Power Controller schemas.
-:::
+</callout>
 
 It provides coding assistants and automation agents with a reliable, bio-inspired system for **persistent memory**, **temporal knowledge graphs**, and **semantic code intelligence**—all running entirely on your machine.
 
-:::tip The Synaptic Principle
+<callout type="tip" title="The Synaptic Principle">
 In biology, a synapse is the gap where intelligence passes from one neuron to another. Synapse is that gap in the AI stack: we ensure the "signal" of architectural intent reaches your agent with zero friction.
-:::
+</callout>
 
 ## The Problem: Context Decay
 

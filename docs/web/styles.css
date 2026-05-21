@@ -748,7 +748,7 @@ a:hover { opacity: 0.8; }
   color: var(--text-color);
 }
 
-.search-item:hover {
+.search-item:hover, .search-item.active {
   background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
   opacity: 1;
 }

@@ -116,7 +116,7 @@ export class SqliteVecIndexService {
     workspace,
     dbPath,
     sqliteVecExtensionPath,
-    sqliteVecModule = 'vec1',
+    sqliteVecModule = 'vec0',
     chunkLines,
     chunkOverlap,
     maxTermsPerChunk,

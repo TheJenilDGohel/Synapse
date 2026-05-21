@@ -3,6 +3,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Rebrand] Synapse → Synapse — Project renamed to Synapse (synapse-cortex on npm).
+CLI command is now `synapse`. Config lives at ~/.synapse/.
+All SYNAPSE_* env vars renamed to SYNAPSE_*. No functional changes.
+
 ## [2026.05.1-beta.0] - 2026-05-15
 
 ### 📚 Documentation (Diátaxis & Agent-First)

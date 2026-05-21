@@ -2,7 +2,6 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_content/components/theme_toggle.dart';
 
-import '../constants/theme.dart';
 import 'search.dart';
 import 'version_switcher.dart';
 
@@ -32,7 +31,7 @@ class Header extends StatelessComponent {
           div(classes: 'logo-mark', [
             div(classes: 'pulse-dot', []),
           ]),
-          h2([text('Synapse')]),
+          h2([Component.text('Synapse')]),
           const VersionSwitcher(),
         ]),
       ]),
@@ -46,7 +45,7 @@ class Header extends StatelessComponent {
             classes: 'github-btn',
             [
               img(src: 'https://cdn.simpleicons.org/github/f8fafc', width: 20, height: 20, alt: 'GitHub'),
-              span([text('Star')]),
+              span([Component.text('Star')]),
             ],
           ),
         ]),

@@ -7,9 +7,9 @@ description: A temporal entity-triple store with multi-hop traversal and time-tr
 
 The Synapse Knowledge Graph is a **temporal entity-triple store** built on local SQLite. It allows AI agents to record, query, and reason about architectural facts, module relationships, and decisions—not just as they are *now*, but as they were *at any point in history*.
 
-:::tip Knowledge is More Than Memory
+<callout type="tip" title="Knowledge is More Than Memory">
 While **[Persistent Memory](memory)** stores facts as semantic blobs (vectors), the Knowledge Graph stores **structured relationships** (triples). This enables complex multi-hop reasoning that vector search alone cannot achieve.
-:::
+</callout>
 
 ## The Triple Model
 

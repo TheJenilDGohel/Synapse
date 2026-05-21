@@ -1,7 +1,7 @@
 <h1 align="center">Synapse</h1>
 
 <p align="center">
-  <strong>The Unified Context Layer for AI Agents.</strong>
+  <strong>The memory palace for AI agents.</strong>
 </p>
 
 <p align="center">
@@ -14,17 +14,32 @@
   <a href="https://github.com/TheJenilDGohel/Synapse/releases"><img src="https://img.shields.io/github/v/release/TheJenilDGohel/Synapse?color=2dd4bf&label=release&style=flat-square" alt="latest release"></a>
   <a href="https://www.npmjs.com/package/synapse-cortex"><img src="https://img.shields.io/npm/v/synapse-cortex?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/Synapse?color=2dd4bf&style=flat-square" alt="license"></a>
-  <a href="https://github.com/TheJenilDGohel/Synapse/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/Synapse/ci.yml?branch=main&label=quality&style=flat-square" alt="quality status"></a>
+  <a href="https://github.com/TheJenilDGohel/Synapse/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/Synapse/ci.yml?branch=beta&label=quality&style=flat-square" alt="quality status"></a>
   <a href="https://github.com/TheJenilDGohel/Synapse/security/advisories"><img src="https://img.shields.io/badge/security-monitored-2dd4bf?style=flat-square" alt="security monitored"></a>
 </p>
 
 ---
 
-## ⚡ Overview
+## 🏛️ The Philosophy: The Memory Palace
 
-AI coding agents often fail due to a **loss of context**: they lack awareness of past architectural decisions, the history of breaking changes, or lessons learned from previous iterations.
+In ancient Greece, orators memorized entire speeches using a technique called the
+**Method of Synapse** — the memory palace. They would mentally walk through a familiar
+place, anchoring each idea to a specific location. To recall, they simply walked the
+path again.
 
-**Synapse** eliminates this context signal loss. By operating as the transmission layer between your codebase and your AI agent, Synapse ensures your AI has exactly the intelligence it needs to do its job.
+Every great mind needs a place where knowledge lives.
+
+AI agents today are orators without a palace. Every session starts from nothing —
+no memory of past decisions, no map of the codebase, no record of what was tried
+and why it failed. The context is lost. The signal dies.
+
+**Synapse is the memory palace for your AI agents.**
+
+We give every piece of knowledge a place: a code symbol, an architectural decision,
+a lesson learned, a dependency relationship. Your agent walks the palace and finds
+exactly what it needs — every time, across every session, entirely on your machine.
+
+*Intelligence lives in its place.*
 
 ## ✨ Enterprise-Grade Capabilities
 
@@ -49,6 +64,20 @@ Synapse offers an unprecedented feature set compared to specialized servers.
 | **MCP Tool Model** | **Power Controllers** | Granular | Granular | Granular |
 
 *(Note: Synapse uses a high-density "Power Controller" model with ~14 tools that replace 74+ granular ones, maximizing context efficiency for LLM reasoning).*
+
+## 📁 Data & Storage
+
+> Cache fallback is informational; Cache fallback is acceptable.
+> For non-interactive setup: synapse setup --skip-model-download=true
+> To force cache path: set SYNAPSE_EMBED_CACHE_DIR=path/to/dir
+
+Synapse is local-first. All your data stays on your machine.
+
+- **Storage Location**: By default, Synapse stores its databases and configuration in `~/.synapse/` (e.g., `C:\Users\<User>\.synapse\` on Windows).
+- **Cache Fallback**: If the primary storage path is unwritable, Synapse will attempt to fall back to the system's temporary directory as a "safe mode" measure.
+- **Portability**: You can specify a custom configuration path using the `SYNAPSE_CONFIG` environment variable.
+
+---
 
 ## 🚀 Quick Start
 

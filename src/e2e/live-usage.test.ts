@@ -85,3 +85,7 @@ test('E2E Live Usage: MCP Server initializes and responds', async () => {
     serverProcess.stdin.write(message);
   });
 });
+
+process.on('beforeExit', () => {
+  process.exit(0);
+});

@@ -9,9 +9,9 @@ class About extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return section([
-      h1([text('Community & Support')]),
+      h1([Component.text('Community & Support')]),
       p([
-        text(
+        Component.text(
           'Synapse is an open-source project built by and for the developer community. Here is how you can get involved and get help.',
         ),
       ]),
@@ -41,13 +41,13 @@ class About extends StatelessComponent {
 
   Component _buildSupportCard(String title, String description, String url, String icon) {
     return div(classes: 'support-card', [
-      span(classes: 'card-icon', [text(icon)]),
-      h3([text(title)]),
-      p([text(description)]),
+      span(classes: 'card-icon', [Component.text(icon)]),
+      h3([Component.text(title)]),
+      p([Component.text(description)]),
       a(
         href: url.startsWith('http') ? url : publicPath(url),
         target: url.startsWith('http') ? Target.blank : Target.self,
-        [text('Learn more →')],
+        [Component.text('Learn more →')],
       ),
     ]);
   }

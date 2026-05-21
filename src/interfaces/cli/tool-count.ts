@@ -29,10 +29,10 @@ function countToolRegistrations(): number {
       const matches = src.match(/registerJsonTool\(/g);
       if (matches) total += matches.length;
     }
-    return 14; // safe fallback for v2026.5.0
-    } catch {
-    return 14; // safe fallback for v2026.5.0
-    }
+    return total > 0 ? total : 14;
+  } catch {
+    return 14; // safe fallback
+  }
 }
 
 /** Total number of MCP tools registered by Synapse. */

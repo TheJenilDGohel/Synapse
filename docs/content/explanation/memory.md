@@ -7,9 +7,9 @@ description: Cross-session semantic memory with automatic deduplication, scoped 
 
 Synapse provides **persistent project memory** that survives across sessions, projects, and conversations. Unlike standard context windows that are wiped clean when a chat ends, Synapse memory persists in a local SQLite database, allowing AI agents to build a cumulative understanding of your project.
 
-:::important The Statelessness Problem
+<callout type="info" title="The Statelessness Problem">
 Modern AI models have massive context windows, but they are still **stateless**. Every new chat is a "blank slate." Synapse breaks this cycle by providing a "hard drive" for AI reasoning.
-:::
+</callout>
 
 ## Key Features
 

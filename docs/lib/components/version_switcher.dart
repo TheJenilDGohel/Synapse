@@ -1,7 +1,6 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import '../constants/site.dart';
-import '../constants/theme.dart';
 
 class VersionSwitcher extends StatelessComponent {
   const VersionSwitcher({super.key});
@@ -11,24 +10,24 @@ class VersionSwitcher extends StatelessComponent {
     return div(classes: 'version-switcher', [
       div(classes: 'version-dropdown', [
         span(classes: 'active-version', [
-          text(currentTrack == 'beta' ? betaVersion : stableVersion),
-          span(classes: 'chevron', [text('▼')]),
+          Component.text(currentTrack == 'beta' ? betaVersion : stableVersion),
+          span(classes: 'chevron', [Component.text('▼')]),
         ]),
         ul(classes: 'dropdown-menu', [
           li([
             a(href: '#', classes: currentTrack == 'stable' ? 'active' : '', [
               div(classes: 'version-info', [
-                span(classes: 'version-label', [text('Stable')]),
-                span(classes: 'version-number', [text(stableVersion)]),
+                span(classes: 'version-label', [Component.text('Stable')]),
+                span(classes: 'version-number', [Component.text(stableVersion)]),
               ]),
             ]),
           ]),
           li([
             a(href: '#', classes: currentTrack == 'beta' ? 'active' : '', [
               div(classes: 'version-info', [
-                span(classes: 'version-label', [text('Beta')]),
-                span(classes: 'version-number', [text(betaVersion)]),
-                span(classes: 'current-badge', [text('Active Beta')]),
+                span(classes: 'version-label', [Component.text('Beta')]),
+                span(classes: 'version-number', [Component.text(betaVersion)]),
+                span(classes: 'current-badge', [Component.text('Active Beta')]),
               ]),
             ]),
           ]),

@@ -1,17 +1,12 @@
 {
   "mcpServers": {
     "synapse": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "synapse"
-      ],
+      "command": "synapse",
       "env": {
         "MCP_MODE": "stdio",
-        "SYNAPSE_CONFIG": "/Users/you/.synapse/synapse.config.json",
+        "SYNAPSE_CONFIG": "~/.synapse/config/synapse.config.json",
         "SYNAPSE_INDEX_BACKEND": "sqlite-vec",
-        "SYNAPSE_DB_PATH": "/Users/you/.synapse/synapse.db",
-        "SYNAPSE_INDEX_PATH": "/Users/you/.synapse/synapse.index.json"
+        "SYNAPSE_MEMORY_ENABLED": "true"
       }
     }
   }

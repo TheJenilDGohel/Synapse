@@ -73,14 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.1"
-  build_modules:
-    dependency: transitive
-    description:
-      name: build_modules
-      sha256: "63c56d2663da4bba51c56825169a5356dd8401240241217c8eba711b2e12be5c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.12"
   build_runner:
     dependency: "direct dev"
     description:
@@ -93,10 +85,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_web_compilers
-      sha256: "8a8a3d18b6b341df6dc61a65beaabc89fcd7c68dc10b02777fc31a35ffb6efa4"
+      sha256: "3bc2bb8c72e571618847b7b2f835a78492a99ce44b55d53274a7d41aab076441"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.19"
+    version: "4.5.1"
   built_collection:
     dependency: transitive
     description:
@@ -301,18 +293,18 @@ packages:
     dependency: "direct main"
     description:
       name: jaspr
-      sha256: "3fc388e9c114b5febe8f4678c34332f27c652882e4ec06c293c0350075af8e76"
+      sha256: "0a27800a0ae8c9f5c606c278d29ce535bfddde00932aa2b56a67c2b0bd86fd80"
       url: "https://pub.dev"
     source: hosted
-    version: "0.23.0"
+    version: "0.23.1"
   jaspr_builder:
     dependency: "direct dev"
     description:
       name: jaspr_builder
-      sha256: "9f5be7e7f78af33083aac109b8e2c92369f6acd5993c1a2dfecd75a30f9e8d72"
+      sha256: "1b591b686dde54fec4f23dbe3cce5493545c4ee303325ab371d2de916e808d3f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.23.0"
+    version: "0.23.1"
   jaspr_content:
     dependency: "direct main"
     description:
@@ -333,10 +325,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: cb09e7dac6210041fad964ed7fbee004f14258b4eca4040f72d1234062ace4c8
+      sha256: "2a743920d81b7910627f68ee2c9ac1fc0bfee32b9fc3403587d7c6791ca12f80"
       url: "https://pub.dev"
     source: hosted
-    version: "4.11.0"
+    version: "4.12.0"
   lints:
     dependency: "direct dev"
     description:
@@ -362,7 +354,7 @@ packages:
     source: hosted
     version: "1.3.0"
   markdown:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: markdown
       sha256: ee85086ad7698b42522c6ad42fe195f1b9898e4d974a1af4576c1a3a176cada9

@@ -61,13 +61,13 @@ class _ToolsListState extends State<ToolsListContent> {
   @override
   Component build(BuildContext context) {
     if (_error != null) {
-      return div(classes: 'tools-container error-box', [text(_error!)]);
+      return div(classes: 'tools-container error-box', [Component.text(_error!)]);
     }
 
     if (_tools == null) {
       return div(classes: 'tools-container loading-container', [
         div(classes: 'spinner', []),
-        text(' Discovering tools...'),
+        Component.text(' Discovering tools...'),
       ]);
     }
 
@@ -79,18 +79,18 @@ class _ToolsListState extends State<ToolsListContent> {
     return div(classes: 'tools-container', [
       for (var category in categories.keys)
         div(classes: 'tool-category', [
-          h2([text(category)]),
+          h2([Component.text(category)]),
           div(classes: 'tool-grid', [
             for (var tool in categories[category]!)
               div(classes: 'tool-card', [
                 div(classes: 'tool-header', [
-                  code([text(tool.name)]),
+                  code([Component.text(tool.name)]),
                 ]),
-                p([text(tool.description)]),
+                p([Component.text(tool.description)]),
                 if (tool.parameters.isNotEmpty)
                   div(classes: 'tool-params', [
-                    span([text('Parameters: ')]),
-                    for (var param in tool.parameters) span(classes: 'param-badge', [text(param)]),
+                    span([Component.text('Parameters: ')]),
+                    for (var param in tool.parameters) span(classes: 'param-badge', [Component.text(param)]),
                   ]),
               ]),
           ]),

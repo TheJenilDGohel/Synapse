@@ -7,9 +7,9 @@ description: Hybrid BM25 + vector search, surgical AST-aware chunking, and preci
 
 Synapse gives your AI agent **elite code understanding**—not just keyword matching, but structural comprehension of your entire codebase. By fusing two retrieval strategies with surgical AST parsing, Synapse surfaces the most relevant context with extreme precision.
 
-:::tip Precision Retrieval
+<callout type="tip" title="Precision Retrieval">
 Most code search tools force a choice between exact text matching *or* semantic similarity. Synapse does both, fusing the results via **Reciprocal Rank Fusion (RRF)** to ensure your AI gets the right code every time.
-:::
+</callout>
 
 ## The Hybrid Search Engine
 

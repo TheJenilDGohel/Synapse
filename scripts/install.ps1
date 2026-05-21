@@ -25,7 +25,7 @@ if ($majorVersion -lt 22) {
 
 # 2. Install Synapse
 Write-Host "[2/3] Installing Synapse via NPM..."
-npm install -g synapse-cortex
+npm install -g synapse-mcp
 
 # 3. Trigger Onboarding
 Write-Host "[3/3] Launching neural link..."

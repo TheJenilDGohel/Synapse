@@ -43,7 +43,8 @@
     "skills",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    ".mcp.json.example"
   ],
   "engines": {
     "node": ">=18.0.0"
@@ -81,7 +82,7 @@
     "release:beta": "npm publish --tag beta",
     "release:latest": "npm publish",
     "docs:dev": "cd docs && jaspr serve",
-    "docs:build": "cd docs && jaspr build --dart-define=SITE_BASE_PATH=/Synapse",
+    "docs:build": "cd docs && jaspr build --dart-define=SITE_BASE_PATH=/synapse",
     "docs:preview": "cd docs && jaspr serve --release",
     "docs:deploy": "npm run docs:build && firebase deploy --only hosting",
     "bump:version": "node scripts/release/bump-version.mjs && node scripts/release/sync-versions.mjs",
