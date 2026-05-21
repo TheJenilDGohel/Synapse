@@ -1,19 +1,13 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for Synapse
-title: "[Feature]: "
-labels: ["enhancement", "triage"]
+description: Suggest a new tool, capability, or improvement
+title: "feat: "
+labels: ["type: feature", "status: needs-triage"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for suggesting a new feature! Please describe the problem you're trying to solve, not just the solution.
-
   - type: textarea
     id: problem
     attributes:
       label: What problem does this solve?
-      description: Describe the user need or pain point
-      placeholder: When I'm working with Synapse in Cursor, I can't...
+      description: Describe the pain point. What can't you do today?
     validations:
       required: true
 
@@ -21,7 +15,7 @@ body:
     id: solution
     attributes:
       label: Proposed solution
-      description: How would you like this to work?
+      description: What would you like to happen?
     validations:
       required: true
 
@@ -29,35 +23,19 @@ body:
     id: alternatives
     attributes:
       label: Alternatives considered
-      description: What other approaches did you think about?
+      description: What else did you consider? Why is this the right approach?
 
   - type: dropdown
-    id: scope
+    id: area
     attributes:
-      label: Scope
+      label: Which area does this touch?
       options:
-        - New MCP tool
-        - New CLI command
-        - Existing tool enhancement
-        - Performance improvement
+        - Memory Engine
+        - Knowledge Graph Engine
+        - Code Intelligence Engine
+        - CLI
+        - MCP Server
         - Documentation
-        - Developer experience
-        - Other
+        - Infrastructure / CI
     validations:
       required: true
-
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional context
-      description: Use cases, screenshots, links to similar features in other tools
-
-  - type: checkboxes
-    id: checks
-    attributes:
-      label: Pre-submission checks
-      options:
-        - label: I have searched existing issues and discussions
-          required: true
-        - label: This aligns with Synapse's local-first, zero-cloud philosophy
-          required: true

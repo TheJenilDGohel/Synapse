@@ -1,97 +1,64 @@
-# Contributing to Synapse MCP
+# Contributing to Synapse
 
-## Getting Started
+Thank you for your interest in contributing to Synapse! This guide will help you get started with local development and our contribution workflow.
 
-```bash
-git clone https://github.com/TheJenilDGohel/synapse.git
-cd synapse
-npm install
-npm run setup
-npm run doctor
-```
+## 🚀 Getting Started
 
-## Development
+1. **Clone the repo:**
+   ```bash
+   git clone https://github.com/TheJenilDGohel/Synapse.git
+   cd synapse
+   ```
 
-Synapse is written in TypeScript. The runtime uses `tsx` for development execution and `tsc` for type checking and builds.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-**Type-check all source files:**
-```bash
-npm run check
-```
+3. **Initialize local environment:**
+   ```bash
+   npm run setup
+   npm run doctor
+   ```
 
-**Build TypeScript to JavaScript:**
-```bash
-npm run build
-```
+## 🛠️ Development Workflow
 
-**Run tests:**
-```bash
-npm test
-```
+### Useful Commands
 
-**Run full code quality pipeline (lint, coverage, cycles, deps, package, audit):**
-```bash
-npm run quality
-```
+| Command | Description |
+|:---|:---|
+| `npm start` | Start the MCP server locally (via `tsx`) |
+| `npm run check` | Run TypeScript type-checking |
+| `npm run quality` | Full suite: Lint, Coverage, Cycles, Deps, Package check |
+| `npm test` | Run unit tests |
+| `npm run test:e2e` | Run end-to-end integration tests |
+| `npm run install:skill` | Sync the `synapse` skill to your local AI clients |
 
-**Start the MCP server locally (uses tsx):**
-```bash
-npm start
-```
+### Branching Policy
 
-**Install/update the bundled skill locally:**
-```bash
-npm run install:skill
-```
+Always create a branch for your work:
+- `feat/description` for new features.
+- `fix/description` for bug fixes.
+- `docs/description` for documentation only.
+- `chore/description` for build/CI/tooling updates.
 
-## Project Structure
+### Commit Message Format
 
-Synapse follows a strictly decoupled, layered architecture:
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat: add hybrid search capability`
+- `fix: resolve crash in AST parser`
+- `docs: update quickstart instructions`
+- `chore: bump dependencies`
 
-- **Core (`src/core/`)**: System fundamentals, engine logic (Memory, Retrieval, Update), infrastructure, and setup.
-- **Interfaces (`src/interfaces/`)**: External boundaries (CLI, MCP, App) that orchestrate core domains.
+## 📬 Pull Request Process
 
-For a detailed breakdown, see the [Architecture Overview](./ARCHITECTURE.md).
+1. **Self-Check**: Ensure `npm run quality` passes locally.
+2. **Atomic Commits**: Keep changes focused and commits descriptive.
+3. **Update Docs**: If you change a tool or behavior, update the relevant `.md` files in `docs/` and the skill in `skills/synapse/SKILL.md`.
+4. **Open PR**: Fill out the PR template completely.
+5. **Review**: At least one maintainer must approve the PR.
+6. **Merge**: Once CI passes and approval is granted, the PR will be squash-merged into `main`.
 
-## Making Changes
+## ⚖️ Code of Conduct
 
-### Adding or modifying a tool
-
-Tools are registered in `src/interfaces/mcp/tools/*.ts`. Each tool needs:
-- A canonical name (`synapse_*`)
-- Zod input schema
-- Handler returning plain data
-
-### Updating the skill
-
-The skill at `skills/synapse/SKILL.md` is the source of truth for AI agent behavior. After editing it, sync to your local installation:
-```bash
-npm run install:skill
-```
-
-## Pull Request Guidelines
-
-- Keep PRs focused — one concern per PR.
-- Run `npm run quality` before opening a PR.
-- Update `skills/synapse/SKILL.md` if you add or change any tool.
-- Maintainers handle versioning; do not bump the version in your PR.
-
-## Reporting Issues
-
-Open an issue with:
-- Node.js version (`node --version`)
-- Platform (macOS/Linux/Windows)
-- Output of `synapse doctor`
-- Clear steps to reproduce
-
-## Publishing (Maintainers Only)
-
-Synapse auto-publishes to npm via GitHub Actions when the version in `package.json` is updated on the main branch.
-
-**Manual release commands:**
-```bash
-npm run check
-npm test
-npm publish --access public              # stable
-npm publish --access public --tag beta   # prerelease
-```
+By participating in this project, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.md).

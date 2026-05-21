@@ -2,29 +2,34 @@
 
 ## Supported Versions
 
+We provide security updates for the following versions:
+
 | Version | Supported |
 |---------|-----------|
-| latest (npm `latest` tag) | Yes |
-| beta (npm `beta` tag) | Best effort |
-| older | No |
+| Latest (npm `latest` tag) | ✅ Yes |
+| Beta (npm `beta` tag) | ⚠️ Best effort |
+| < 2026.05.1 | ❌ No |
 
 ## Reporting a Vulnerability
 
-Please **do not** open a public GitHub issue for security vulnerabilities.
+**Please do not open a public GitHub issue for security vulnerabilities.**
 
-Report vulnerabilities privately via [GitHub Security Advisories](https://github.com/TheJenilDGohel/synapse/security/advisories/new).
+Report vulnerabilities privately via [GitHub Security Advisories](https://github.com/TheJenilDGohel/Synapse/security/advisories/new).
 
-Include:
-- A description of the vulnerability and its potential impact
-- Steps to reproduce
-- Any suggested fix (optional)
+### Our Commitment
+- **Acknowledgment**: Within 48 hours.
+- **Initial Triage**: Within 5 business days.
+- **Remediation**: We aim to release a patch within 14 days for confirmed critical vulnerabilities.
 
-You will receive a response within 7 days. If the issue is confirmed, a fix will be released as soon as possible and you will be credited in the release notes (unless you prefer to remain anonymous).
+### Required Information
+- A description of the vulnerability and its potential impact.
+- Steps to reproduce or a proof-of-concept (PoC).
+- Any suggested fix (optional).
 
-## Scope
+## Security Architecture
 
-Synapse MCP is a **read-only** local tool — it does not transmit data externally and holds no credentials. The primary attack surface is:
-
-- Path traversal outside configured roots
-- Command injection via search parameters passed to ripgrep
-- Unsafe handling of untrusted file content during indexing
+Synapse is a **local-first** tool. It holds no credentials and makes no outbound network requests during runtime. 
+The primary attack surfaces monitored are:
+1. **Path Traversal**: Prevention of access to files outside configured root directories.
+2. **Command Injection**: Sanitization of inputs passed to the underlying `ripgrep` binary.
+3. **Malicious Content**: Safe handling of untrusted file content during the indexing and AST parsing phases.
