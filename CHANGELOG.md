@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file.
 - **Documentation 2.0**: Full Diátaxis restructuring with an Agent-First context layer (`llms.txt`, `SKILL.md`).
 - **Distribution Stability**: Included `.mcp.json.example` in the package for easier client configuration.
 
+## [2026.05.1-beta.1] - 2026-05-21
+
+### 🛠️ Core & Engine
+- **AST Chunking Fix**: Resolved a critical regression where mismatching `tree-sitter` versions caused a `TypeError` during language initialization. Upgraded core `tree-sitter` to `^0.25.0`.
+
 ## [2026.05.1-beta.0] - 2026-05-15
 
 ### 📚 Documentation (Diátaxis & Agent-First)
