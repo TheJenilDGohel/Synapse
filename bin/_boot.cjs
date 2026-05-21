@@ -34,11 +34,10 @@ const req = createRequire(resolve(pkgDir, 'package.json'));
 function resolveTsxEsm() {
   try {
     return pathToFileURL(req.resolve('tsx/esm')).href;
-  if (!hasTsx) {
-      process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse-cortex\n');
-      process.exit(1);
+  } catch (error) {
+    process.stderr.write('[synapse] fatal: tsx not found. Reinstall: npm install -g synapse-cortex\n');
+    process.exit(1);
   }
-
 }
 
 /**
@@ -53,7 +52,7 @@ function runTarget(targetName, forwardArgs) {
     process.exit(1);
   }
   const tsxEsmPath = resolveTsxEsm();
-  const scriptPath = resolve(__dirname, targetName);
+  const scriptPath = pathToFileURL(resolve(__dirname, targetName)).href;
   const args = Array.isArray(forwardArgs) ? forwardArgs : process.argv.slice(2);
 
   const result = spawnSync(

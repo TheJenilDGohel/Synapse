@@ -88,5 +88,5 @@ export async function forwardDeprecatedCommand({
 }
 
 export async function importRelative(modulePath, metaUrl) {
-  return import(new URL(modulePath, metaUrl));
+  return import(new URL(modulePath, metaUrl).href);
 }
