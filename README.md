@@ -65,6 +65,20 @@ Synapse offers an unprecedented feature set compared to specialized servers.
 
 *(Note: Synapse uses a high-density "Power Controller" model with ~14 tools that replace 74+ granular ones, maximizing context efficiency for LLM reasoning).*
 
+## 📁 Data & Storage
+
+> Cache fallback is informational; Cache fallback is acceptable.
+> For non-interactive setup: synapse setup --skip-model-download=true
+> To force cache path: set SYNAPSE_EMBED_CACHE_DIR=path/to/dir
+
+Synapse is local-first. All your data stays on your machine.
+
+- **Storage Location**: By default, Synapse stores its databases and configuration in `~/.synapse/` (e.g., `C:\Users\<User>\.synapse\` on Windows).
+- **Cache Fallback**: If the primary storage path is unwritable, Synapse will attempt to fall back to the system's temporary directory as a "safe mode" measure.
+- **Portability**: You can specify a custom configuration path using the `SYNAPSE_CONFIG` environment variable.
+
+---
+
 ## 🚀 Quick Start
 
 Get up and running in seconds. Synapse integrates seamlessly into any MCP-compatible environment.
