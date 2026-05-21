@@ -3,9 +3,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Rebrand] Synapse → Synapse — Project renamed to Synapse (synapse-cortex on npm).
-CLI command is now `synapse`. Config lives at ~/.synapse/.
-All SYNAPSE_* env vars renamed to SYNAPSE_*. No functional changes.
+## [2026.05.1] - 2026-05-21
+
+### 🚀 Stable Release
+- **Initial CalVer Release**: Transitioned from SemVer to Calendar Versioning (`YYYY.MM.Patch`).
+- **Identity Unification**: Consolidated branding as **Synapse** (published as `synapse-cortex` on npm).
+- **Windows Core Hardening**: Fixed ESM loader issues, file locking bugs in `synapse doctor`, and SQLite-vec syntax errors on Windows.
+- **Power Controllers**: Finalized the consolidation of 72+ granular tools into 14 high-density MCP Power Controllers for maximum token efficiency.
+- **Documentation 2.0**: Full Diátaxis restructuring with an Agent-First context layer (`llms.txt`, `SKILL.md`).
+- **Distribution Stability**: Included `.mcp.json.example` in the package for easier client configuration.
 
 ## [2026.05.1-beta.0] - 2026-05-15
 
