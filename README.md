@@ -85,7 +85,7 @@ Get up and running in seconds. Synapse integrates seamlessly into any MCP-compat
 
 ```bash
 # 1. Install globally
-npm install -g synapse-mcp
+npm install -g synapse-cortex
 
 # 2. Setup workspace and local dependencies (ripgrep, sqlite-vec)
 synapse setup
