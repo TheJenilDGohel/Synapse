@@ -291,25 +291,23 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
     handler: ToolHandler
   ): void {
     const canonical = Array.isArray(names) ? names[0] : names;
-    let schema: any;
+    let schema: any = inputSchema;
 
-    if (inputSchema instanceof z.ZodType) {
-      if (inputSchema.constructor.name === 'ZodDiscriminatedUnion') {
-        const du = inputSchema as any;
+    // Robustly extend schema with response_format, avoiding instanceof issues
+    // between different zod versions.
+    try {
+      if (schema && typeof (schema as any).extend === 'function') {
+        schema = (schema as any).extend({ response_format: responseFormatSchema });
+      } else if (schema && (schema as any).constructor?.name === 'ZodDiscriminatedUnion') {
+        const du = schema as any;
         schema = z.discriminatedUnion(
           du._def.discriminator,
-          du._def.options.map((opt: any) => (opt instanceof z.ZodObject ? opt.extend({ response_format: responseFormatSchema }) : opt)) as any
+          du._def.options.map((opt: any) => (typeof opt.extend === 'function' ? opt.extend({ response_format: responseFormatSchema }) : opt)) as any
         );
-      } else if (inputSchema instanceof z.ZodObject) {
-        schema = inputSchema.extend({ response_format: responseFormatSchema });
-      } else {
-        schema = inputSchema;
       }
-    } else {
-      schema = {
-        ...inputSchema,
-        response_format: responseFormatSchema
-      };
+    } catch {
+      // Fallback: if extension fails, use original schema
+      schema = inputSchema;
     }
 
     const toolOptions = {
