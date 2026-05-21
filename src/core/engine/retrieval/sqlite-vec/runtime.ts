@@ -111,7 +111,11 @@ export function ensureSqliteVecTable(service: SqliteVecServiceLike): void {
       service.db.exec('DROP TABLE IF EXISTS vec_chunks');
     }
     service.db.exec(`CREATE VIRTUAL TABLE IF NOT EXISTS vec_chunks USING ${getVecTableDefinition(service)}`);
-    service.db.exec('CREATE INDEX IF NOT EXISTS vec_chunks_embedding_idx ON vec_chunks(embedding) USING ivf8');
+    try {
+      service.db.exec('CREATE INDEX IF NOT EXISTS vec_chunks_embedding_idx ON vec_chunks(embedding) USING ivf8');
+    } catch {
+      // ivf8 might fail on some platforms/versions, non-critical for basic operation
+    }
     service.sqliteVecTableReady = true;
     service.sqliteVecTableError = '';
   } catch (error) {
