@@ -99,6 +99,13 @@ The external boundaries where the outside world interacts with Synapse. These or
 
 ---
 
+### Cloud Disclaimer & External Services
+Synapse is **100% local-first**. No project data, code embeddings, or agent memories ever leave your machine.
+- **Firebase**: Used exclusively for hosting the static documentation site. No runtime communication exists between the Synapse engine and Firebase.
+- **HuggingFace**: Models are downloaded once during `synapse setup` and run locally via `@huggingface/transformers`. No runtime API calls are made to HuggingFace.
+
+---
+
 ### Development Principles
 
 - **Downwards Isolation**: `interfaces/` depends on `core/interfaces/`. `engine/` implements `core/interfaces/`. `core/` depends on `runtime/`. `runtime/` depends on nothing inside the project.

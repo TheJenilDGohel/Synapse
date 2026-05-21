@@ -259,7 +259,7 @@ export class DiagnosticService {
     const synapseHome = resolveSynapseHome(this.safeEnv);
     const defaultCache = buildSynapsePaths(synapseHome).dirs.cache;
     
-    // Minimalistic parsing to avoid dependency on complex config service here
+    // Simple parsing to avoid dependency on complex config service here
     let configEmbeddingCache = '';
     let configRerankerCache = '';
     try {

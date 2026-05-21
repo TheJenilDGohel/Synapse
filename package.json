@@ -1,6 +1,6 @@
 {
   "name": "synapse-cortex",
-  "version": "2026.05.1-beta.1",
+  "version": "2026.05.2",
   "license": "MIT",
   "author": "Jenil",
   "keywords": [
@@ -26,7 +26,7 @@
     "access": "public"
   },
   "type": "module",
-  "description": "The only MCP server combining semantic code search, temporal knowledge graph, and persistent AI memory. 74 tools, zero cloud, pure SQLite. Alternative to Mem0, GitNexus, Graphiti.",
+  "description": "Powerful, self-contained AI context layer. Combines persistent memory, temporal knowledge graph, and hybrid code search into one local engine. Zero cloud, 100% private.",
   "bin": {
     "synapse": "bin/synapse.cjs",
     "synapse-upgrade": "bin/synapse-upgrade.cjs",
@@ -84,7 +84,7 @@
     "docs:dev": "cd docs && jaspr serve",
     "docs:build": "cd docs && jaspr build --dart-define=SITE_BASE_PATH=/synapse",
     "docs:preview": "cd docs && jaspr serve --release",
-    "docs:deploy": "npm run docs:build && firebase deploy --only hosting",
+    "docs:deploy": "npm run docs:build && firebase deploy --only hosting --config docs/firebase.json",
     "bump:version": "node scripts/release/bump-version.mjs && node scripts/release/sync-versions.mjs",
     "bump:beta": "node scripts/release/bump-version.mjs --beta && node scripts/release/sync-versions.mjs"
   },

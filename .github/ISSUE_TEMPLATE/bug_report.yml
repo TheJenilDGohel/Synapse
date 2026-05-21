@@ -1,19 +1,19 @@
 name: Bug Report
-description: Report a bug or unexpected behavior in Synapse
-title: "[Bug]: "
-labels: ["bug", "triage"]
+description: Something is broken or behaving unexpectedly
+title: "bug: "
+labels: ["type: bug", "status: needs-triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a bug! Please run `synapse doctor --verbose` and paste the output below.
+        Thanks for taking the time to file a bug report. Please fill out all sections.
 
   - type: textarea
     id: description
     attributes:
-      label: Describe the bug
-      description: Clear and concise description of what the bug is.
-      placeholder: When I run `synapse memory add`, it fails with...
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: "When I run `synapse setup`, it crashes with..."
     validations:
       required: true
 
@@ -21,11 +21,11 @@ body:
     id: reproduction
     attributes:
       label: Steps to reproduce
-      description: Minimal commands to reproduce the issue
-      placeholder: |
-        1. Run `synapse setup`
-        2. Run `synapse memory add --title "test"`
-        3. See error
+      description: Exact steps to reproduce the issue.
+      value: |
+        1. 
+        2. 
+        3. 
     validations:
       required: true
 
@@ -33,24 +33,28 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      description: What did you expect to happen?
+      description: What should have happened?
     validations:
       required: true
 
   - type: textarea
-    id: doctor
+    id: environment
     attributes:
-      label: Doctor output
-      description: Run `synapse doctor --verbose` and paste the full output here
+      label: Environment
+      description: Run `synapse doctor` and paste the output here.
       render: shell
     validations:
       required: true
 
-  - type: input
-    id: version
+  - type: dropdown
+    id: os
     attributes:
-      label: Synapse version
-      placeholder: 0.2.0
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows (WSL)
+        - Windows (native)
     validations:
       required: true
 
@@ -58,50 +62,14 @@ body:
     id: node-version
     attributes:
       label: Node.js version
-      placeholder: "22.16.0 (run `node --version`)"
+      placeholder: "e.g. 20.11.0"
     validations:
       required: true
 
-  - type: dropdown
-    id: platform
+  - type: input
+    id: synapse-version
     attributes:
-      label: Platform
-      options:
-        - Linux
-        - macOS (Intel)
-        - macOS (Apple Silicon)
-        - Windows
-        - WSL
+      label: synapse-cortex version
+      placeholder: "e.g. 2026.05.1"
     validations:
       required: true
-
-  - type: dropdown
-    id: client
-    attributes:
-      label: AI client (if applicable)
-      multiple: true
-      options:
-        - Claude Code
-        - Cursor
-        - Windsurf
-        - Cline
-        - Continue
-        - Other
-        - N/A (CLI only)
-
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant logs
-      description: Paste any error messages or stack traces
-      render: shell
-
-  - type: checkboxes
-    id: checks
-    attributes:
-      label: Pre-submission checks
-      options:
-        - label: I have searched existing issues and confirmed this is not a duplicate
-          required: true
-        - label: I have run `synapse doctor` and included the output
-          required: true
