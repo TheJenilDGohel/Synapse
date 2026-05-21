@@ -58,7 +58,7 @@ Synapse follows three immutable pillars:
 
 ---
 
-### 1. Hardened Foundations (v0.0.1-beta.3)
+### 1. Hardened Foundations (v2026.05.1-beta.0)
 
 #### 1.1 Dependency Inversion (DIP)
 All external entrypoints (CLI, MCP) now depend exclusively on the **Contract Layer** (`src/core/interfaces/services.ts`). This allows for:
