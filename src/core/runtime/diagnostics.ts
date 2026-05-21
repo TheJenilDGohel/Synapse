@@ -346,7 +346,9 @@ export class DiagnosticService {
         id: 'global_stale_temp',
         ok: false,
         detail: `Partially cleaned: ${removed}/${stale.length} temp dirs removed`,
-        fix: 'Manually remove remaining dirs or run with sudo.'
+        fix: process.platform === 'win32'
+          ? 'Close all running AI clients (Cursor, Windsurf, Claude) and Synapse instances, then retry. Files like vec0.dll may be locked.'
+          : 'Manually remove remaining dirs or run with sudo.'
       };
     }
 
