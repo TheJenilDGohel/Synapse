@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 CLI command is now `synapse`. Config lives at ~/.synapse/.
 All SYNAPSE_* env vars renamed to SYNAPSE_*. No functional changes.
 
+## [2026.05.1-beta.1] - 2026-05-21
+
+### 🛠️ Core & Engine
+- **AST Chunking Fix**: Resolved a critical regression where mismatching `tree-sitter` versions caused a `TypeError` during language initialization. Upgraded core `tree-sitter` to `^0.25.0`.
+
 ## [2026.05.1-beta.0] - 2026-05-15
 
 ### 📚 Documentation (Diátaxis & Agent-First)
