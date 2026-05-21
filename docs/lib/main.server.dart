@@ -43,13 +43,13 @@ void main() {
         meta(name: 'robots', content: 'index, follow'),
         // OpenGraph
         meta(attributes: {'property': 'og:title', 'content': 'Synapse | Unified Context Layer for AI Agents'}),
-        meta(attributes: {'property': 'og:description', 'content': 'The only MCP server combining semantic code search, temporal knowledge graph, and persistent AI memory. 74 tools, zero cloud, pure SQLite.'}),
+        meta(attributes: {'property': 'og:description', 'content': 'Powerful, self-contained AI context layer combining semantic code search, temporal knowledge graph, and persistent memory into one local MCP server.'}),
         meta(attributes: {'property': 'og:type', 'content': 'website'}),
         meta(attributes: {'property': 'og:url', 'content': 'https://thejenildgohel.github.io/Synapse/'}),
         // Twitter Card
         meta(name: 'twitter:card', content: 'summary_large_image'),
         meta(name: 'twitter:title', content: 'Synapse | Unified Context Layer for AI Agents'),
-        meta(name: 'twitter:description', content: 'The minimalist transmission layer for AI context. Zero cloud. Local-first. Pure SQLite.'),
+        meta(name: 'twitter:description', content: 'Powerful, self-contained context layer for AI agents. Zero cloud. Local-first. Pure SQLite.'),
 
         link(
           rel: 'stylesheet',

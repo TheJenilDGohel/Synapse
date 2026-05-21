@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  A production-ready MCP server combining <b>persistent AI memory</b>, <b>temporal knowledge graph</b>, and <b>semantic code intelligence</b> into a single, high-performance local engine.
+  A <b>powerful, self-contained AI context layer</b> combining <b>persistent memory</b>, <b>temporal knowledge graphs</b>, and <b>hybrid code intelligence</b> into a single local engine.
   <br/>
-  <b>Zero cloud. Local-first. Pure SQLite.</b>
+  <b>100% Local. Zero Cloud. Private by Design.</b>
 </p>
 
 <p align="center">
@@ -15,73 +15,67 @@
   <a href="https://www.npmjs.com/package/synapse-cortex"><img src="https://img.shields.io/npm/v/synapse-cortex?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/Synapse?color=2dd4bf&style=flat-square" alt="license"></a>
   <a href="https://github.com/TheJenilDGohel/Synapse/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/Synapse/ci.yml?branch=beta&label=quality&style=flat-square" alt="quality status"></a>
-  <a href="https://github.com/TheJenilDGohel/Synapse/security/advisories"><img src="https://img.shields.io/badge/security-monitored-2dd4bf?style=flat-square" alt="security monitored"></a>
 </p>
 
 ---
 
-## 🏛️ The Philosophy: The Memory Palace
+## 🏛️ The Philosophy: Intelligence in its Place
 
-In ancient Greece, orators memorized entire speeches using a technique called the
-**Method of Synapse** — the memory palace. They would mentally walk through a familiar
-place, anchoring each idea to a specific location. To recall, they simply walked the
-path again.
-
-Every great mind needs a place where knowledge lives.
-
-AI agents today are orators without a palace. Every session starts from nothing —
-no memory of past decisions, no map of the codebase, no record of what was tried
-and why it failed. The context is lost. The signal dies.
+AI agents today are orators without a palace. Every session starts from nothing — no memory of past decisions, no map of the codebase, no record of what failed. The signal dies, and you pay the "context tax" every time you re-explain your project.
 
 **Synapse is the memory palace for your AI agents.**
 
-We give every piece of knowledge a place: a code symbol, an architectural decision,
-a lesson learned, a dependency relationship. Your agent walks the palace and finds
-exactly what it needs — every time, across every session, entirely on your machine.
+We give every piece of knowledge a place: a code symbol, an architectural decision, a lesson learned, a dependency relationship. Your agent walks the palace and finds exactly what it needs — entirely on your machine.
 
-*Intelligence lives in its place.*
+---
 
-## ✨ Enterprise-Grade Capabilities
+## 👀 See It In Action
 
-Every other MCP server forces a choice between memory **or** code intelligence. Synapse is the first to deliver a unified solution operating securely on your machine:
+### 1. Persistent Agent Memory
+*Stop re-explaining your architecture.*
+- **Without Synapse:** "I don't have context from our previous session about the auth refactor."
+- **With Synapse:** [Agent recalls decision] "Based on our choice last week to use **JWT with refresh token rotation**, here is the implementation..."
 
-- **Code Intelligence**: Hybrid BM25+vector search, AST-aware chunking, and advanced symbol tracking (definitions, usages, and callers) ensure your AI understands architectural intent, not just string matching.
-- **Temporal Knowledge Graph**: A sophisticated entity-triple store with multi-hop traversal and time-travel querying (`as_of`). Track architectural facts, dependencies, and decisions as they evolve over time.
-- **Persistent Agent Memory**: Enable long-term recall across sessions with semantic deduplication and agent-scoped isolation. Your AI remembers what you taught it, forever.
+### 2. Hybrid Code Intelligence
+*Find what `grep` misses.*
+- **Query:** "find where we handle rate limiting errors"
+- **Synapse:** Beyond literal matches, Synapse finds the `rate_limit_exceeded` handler, the retry middleware, and the circuit breaker logic using combined BM25 and vector search.
 
-## 📊 The Synapse Advantage
+### 3. Temporal Knowledge Graph
+*Time-travel through your project's evolution.*
+- **Query:** Full dependency graph of `AuthService` **as it existed on 2025-01-01**.
+- **Synapse:** Uses `as_of` temporal queries to reconstruct historical project states, tracking facts and decisions as they evolve.
 
-Synapse offers an unprecedented feature set compared to specialized servers.
+---
 
-| Feature | **Synapse** | Mem0 | GitNexus | CodeGraphContext |
-|:---|:---:|:---:|:---:|:---:|
-| **Persistent AI Memory** | **✅** | ✅ | ❌ | ❌ |
-| **Knowledge Graph** | **✅** | ❌ | Code-only | ✅ |
-| **Semantic Code Search** | **✅** | ❌ | ✅ | ✅ |
-| **AST-aware Chunking** | **✅** | ❌ | ✅ | ❌ |
-| **Temporal Time-Travel** | **✅** | ❌ | ❌ | ❌ |
-| **Local-first / No Cloud** | **✅** | Hybrid | ✅ | ✅ |
-| **MCP Tool Model** | **Power Controllers** | Granular | Granular | Granular |
+## ✨ Core Capabilities
 
-*(Note: Synapse uses a high-density "Power Controller" model with ~14 tools that replace 74+ granular ones, maximizing context efficiency for LLM reasoning).*
+Synapse is the only MCP server combining temporal time-travel queries with persistent AI memory and hybrid code search in a single local SQLite database.
 
-## 📁 Data & Storage
+- **Temporal Knowledge Graph**: A sophisticated entity-triple store with multi-hop traversal and **time-travel querying** (`as_of`). Track architectural facts and dependencies as they evolve.
+- **Persistent Agent Memory**: Long-term recall across sessions with semantic deduplication and **agent-scoped isolation**. Perfect for multi-agent workflows.
+- **Semantic Code Intelligence**: Hybrid BM25+vector search, AST-aware chunking, and advanced symbol tracking (definitions, usages, and callers).
+- **Performance Optimized**: Optimized AST parsing using `WeakMap` memoization (reduced resolution complexity from **O(N²)** to **O(N)**).
 
-> Cache fallback is informational; Cache fallback is acceptable.
-> For non-interactive setup: synapse setup --skip-model-download=true
-> To force cache path: set SYNAPSE_EMBED_CACHE_DIR=path/to/dir
+---
 
-Synapse is local-first. All your data stays on your machine.
+## 🛠️ Focused Tool Suites
 
-- **Storage Location**: By default, Synapse stores its databases and configuration in `~/.synapse/` (e.g., `C:\Users\<User>\.synapse\` on Windows).
-- **Cache Fallback**: If the primary storage path is unwritable, Synapse will attempt to fall back to the system's temporary directory as a "safe mode" measure.
-- **Portability**: You can specify a custom configuration path using the `SYNAPSE_CONFIG` environment variable.
+Synapse tools are organized into focused suites. Instead of a menu of 70+ granular options, agents invoke the right suite for their specific workflow:
+
+- **📂 Workspace & Discovery**: Navigate files, generate project summaries, and read code with bounded scopes.
+- **🔍 Search & Intelligence**: Execute hybrid semantic searches and look up precise AST symbols.
+- **🧠 Memory & Recall**: Store, retrieve, and deduplicate contextual knowledge across sessions.
+- **🌐 Knowledge Graph**: Traverse and manage temporal entity relationships.
+- **🤖 Agent Context**: Prime your agent with project-specific "lessons" and capture task outcomes for future recall.
 
 ---
 
 ## 🚀 Quick Start
 
-Get up and running in seconds. Synapse integrates seamlessly into any MCP-compatible environment.
+Get up and running in seconds. 
+
+> **Note:** The npm package is named `synapse-cortex`, but the CLI command it installs is `synapse`.
 
 ```bash
 # 1. Install globally
@@ -94,20 +88,16 @@ synapse setup
 synapse doctor
 ```
 
-### Client Configuration
-
-Add Synapse to your AI client configuration (e.g., Claude Desktop, Cursor, Windsurf, Cline).
+### Client Configuration (MCP)
+Add Synapse to your AI client (Claude Desktop, Cursor, Windsurf, etc.):
 
 ```json
 {
   "mcpServers": {
     "synapse": {
       "command": "synapse",
-      "startup_timeout_sec": 30,
+      "args": ["start"],
       "env": {
-        "MCP_MODE": "stdio",
-        "SYNAPSE_CONFIG": "~/.synapse/config/synapse.config.json",
-        "SYNAPSE_INDEX_BACKEND": "sqlite-vec",
         "SYNAPSE_MEMORY_ENABLED": "true"
       }
     }
@@ -115,31 +105,34 @@ Add Synapse to your AI client configuration (e.g., Claude Desktop, Cursor, Winds
 }
 ```
 
-## 🛠️ Comprehensive Tool Suites
+---
 
-Synapse exposes high-density **Power Controllers**, compatible with Gemini and Claude:
+## ⚖️ Why Synapse?
 
-- **Workspace & Discovery**: Navigate files, generate project summaries, and read code with bounded scopes (`synapse_workspace_manage`).
-- **Search & Code Intelligence**: Execute hybrid searches and look up precise AST symbols (`synapse_search`, `synapse_symbol_query`).
-- **Memory & Recall**: Store, retrieve, and deduplicate contextual knowledge across sessions (`synapse_memory_manage`, `synapse_memory_query`).
-- **Knowledge Graph**: Traverse and manage temporal entity relationships (`synapse_kg_manage`, `synapse_kg_query`).
-- **Agent Context**: Prime your agent, teach lessons, and capture task outcomes (`synapse_agent_prime`, `synapse_memory_manage`).
+| Feature | Synapse | Cloud-based Alternatives |
+|:---|:---:|:---:|
+| **Privacy** | 100% Local. No data leaves your machine. | Data processed/stored in the cloud. |
+| **Persistence** | Cross-session memory & temporal tracking. | Often limited to single-session context. |
+| **Intelligence** | AST-aware + Hybrid Search. | Often limited to string matching or basic RAG. |
+| **Cost** | Free (Self-hosted). | Monthly subscriptions or per-token fees. |
+| **Tradeoff** | Requires local resources (RAM/CPU). | Lightweight local footprint. |
 
-## 🛡️ Enterprise Security & Reliability
+*Self-reported comparison as of May 2026 — contributions welcome.*
 
-Built for production environments where privacy and stability are non-negotiable:
+---
+
+## 🛡️ Security & Privacy
 
 - **Zero-Cloud Privacy**: All code parsing, embeddings, and database operations happen strictly on your machine.
+- **No Telemetry**: We do not track your usage, queries, or code.
 - **Local-First Speed**: Powered by pure SQLite with native vector extensions (`sqlite-vec`) for blazing-fast retrieval.
-- **Continuous Validation**: Monitored via continuous CodeQL static analysis and OIDC Trusted Publishing provenance.
+
+---
 
 ## 🤝 Community & Support
 
-Join us in building the ultimate context engine for AI agents!
-
-- **[Documentation](https://TheJenilDGohel.github.io/Synapse/)** — Full guides and reference.
-- **[Contributing](./CONTRIBUTING.md)** — We welcome PRs, bug reports, and new ideas.
-- **[Security](./SECURITY.md)** — Report vulnerabilities securely.
+- **[Documentation](https://thejenildgohel.github.io/Synapse/)** — *Note: Our documentation site is hosted on Firebase; the Synapse runtime itself is 100% local.*
+- **[Contributing](./CONTRIBUTING.md)** — We welcome PRs and bug reports.
 - **[Changelog](./CHANGELOG.md)** — See what's new.
 
 ---

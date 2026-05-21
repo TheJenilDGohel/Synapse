@@ -112,9 +112,9 @@ export function printHelp(): void {
   lines.push('');
   lines.push(boxTop(W));
   lines.push(boxLine(`${c.bold('Synapse')}  ${c.gray(`v${SERVER_VERSION}`)}  ${c.badge('MCP')}`, W));
-  lines.push(boxLine(`${c.italic(c.gray('The Transmission Layer for persistent AI context and memory'))}`, W));
+  lines.push(boxLine(`${c.italic(c.gray('Self-contained context layer for AI agents'))}`, W));
   lines.push(boxLine('', W));
-  lines.push(boxLine(`${c.green(BOX.check)} ${c.dim(`${TOOL_COUNT} MCP tools`)}  ${c.cyan(BOX.dot)} ${c.dim('Local-first')}  ${c.magenta('◇')} ${c.dim('Bridging Context')}`, W));
+  lines.push(boxLine(`${c.green(BOX.check)} ${c.dim(`Stable Release`)}  ${c.cyan(BOX.dot)} ${c.dim('Local-first')}  ${c.magenta('◇')} ${c.dim('Bridging Context')}`, W));
   lines.push(boxBottom(W));
   lines.push('');
 
