@@ -52,7 +52,7 @@ function runTarget(targetName, forwardArgs) {
     process.exit(1);
   }
   const tsxEsmPath = resolveTsxEsm();
-  const scriptPath = pathToFileURL(resolve(__dirname, targetName)).href;
+  const scriptPath = resolve(__dirname, targetName);
   const args = Array.isArray(forwardArgs) ? forwardArgs : process.argv.slice(2);
 
   const result = spawnSync(

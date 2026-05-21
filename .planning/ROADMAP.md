@@ -9,7 +9,7 @@ Expand Synapse's reach and responsiveness by optimizing background adaptive inde
 
 ## 🏁 Slices
 
-- [ ] **S01: Optimize Staleness Monitor** `risk:low` `depends:[]`
+- [x] **S01: Optimize Staleness Monitor** `risk:low` `depends:[]`
   > After this: The existing `Staleness Monitor` is more efficient, using hash-based checks to trigger delta-indexing without full project scans.
 - [ ] **S02: Incremental Delta-Indexing** `risk:high` `depends:[S01]`
   > After this: Detection of a stale file triggers an incremental re-index of *only* that file, visible in the `synapse_system_manage` index status.
