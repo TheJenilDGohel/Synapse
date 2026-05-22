@@ -3,8 +3,6 @@ import { MemoryHooks } from '../../../core/engine/index.js';
 import {
   READ_ONLY_ANNOTATIONS,
   WRITE_ANNOTATIONS,
-  IDEMPOTENT_WRITE_ANNOTATIONS,
-  DESTRUCTIVE_ANNOTATIONS,
   ToolLevel
 } from '../common/tool-utils.js';
 import type { RegisterJsonToolFn } from '../common/tool-utils.js';
