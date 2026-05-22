@@ -1,39 +1,40 @@
-# Synapse
+# Project Vision & Status
 
-Bridge context for AI agents via Persistent Memory, Knowledge Graph, and Semantic Code Search.
+## 🌌 Vision
 
-## Core Value
-Synapse provides a unified context layer for AI agents, integrating semantic code intelligence, temporal knowledge, and persistent memory into a single high-performance, local-first platform.
+**Synapse is the self-contained AI context layer.**
 
-## Strategic Objective: Unified Agentic Context Layer
-Move beyond a collection of tools to a "Unified Brain" that understands the intersection of code, intent, and time.
+Modern AI coding agents (Claude Desktop, Cursor, Windsurf) are incredibly capable, but they suffer from **session amnesia** and **shallow context**. They rely on literal `grep` searches or blind workspace scans that waste tokens and miss architectural intent.
 
-**Rock Solid Features (Implemented):**
-- **Automated Entity Resolution**: Automatically link developer memories/decisions to specific AST function nodes and classes.
-- **Hybrid Graph-RAG**: Single-query retrieval combining semantic code search with relationship-aware memory (`synapse_search`).
-- **Temporal Knowledge "Rewind"**: Capability to view the codebase state and developer intent at any point in history (`synapse_kg_query`).
-- **Power Controllers**: Consolidated 72+ granular tools into ~14 high-density controllers for maximum context efficiency.
-- **CalVer Standard**: Transitioned to `YYYY.MM.Patch` versioning for better release synchronization.
+Synapse solves this by providing a unified, local-first MCP server that gives your AI agent:
+1. **Persistent Memory**: To remember decisions, preferences, and mistakes across sessions.
+2. **Knowledge Graph**: To understand the structural relationships and evolution of your codebase.
+3. **Hybrid Code Intelligence**: To find code based on semantic meaning, not just exact string matches.
+4. **Proactive Intelligence**: To predict what context the agent needs before it even asks, and warn it of historical failure patterns before it writes bad code.
 
-## Current Milestone: v0.1.0 Jaspr Documentation Site
+Synapse is strictly **zero-cloud** and **100% private**, powered entirely by a local SQLite database on your machine.
 
-**Goal:** Build a modern, high-performance documentation site using Jaspr (Dart) for GitHub Pages.
+---
 
-**Target features:**
-- **Jaspr Foundation**: Static site generation for GitHub Pages.
-- **Modern Docs UI/UX**: Premium aesthetic with sidebar, search, and responsive layout.
-- **Content Porting**: Migrate technical docs to the new framework.
-- **GitHub Actions**: Automated deployment to GitHub Pages.
+## 📅 Versioning (CalVer)
 
-## Mission
-To eliminate context "signal loss" in AI-assisted development by providing agents with a rich, historical, and semantically-aware view of the entire codebase and project history.
+Synapse uses Calendar Versioning (**CalVer**) in the format `YYYY.MM.PATCH[-beta.N]`.
+This reflects our commitment to predictable, time-boxed delivery cycles.
 
-## Pillars
-- **Code Intelligence**: AST-aware chunking and semantic search.
-- **Temporal Knowledge Graph**: Relationship tracking with history ("time-travel").
-- **Persistent AI Memory**: Long-term memory with agent/task isolation (Nests).
+- Current Stable: **v2026.05.4**
+- Active Development Branch: `beta`
 
-## Evolution
+---
 
-This project evolves through continuous refinement of the context layer, expanding symbol coverage, and deepening temporal relationship tracking.
+## 📍 Current Status
 
+We have just completed the stabilization of the **v2026.05.x** baseline and are actively executing **Milestone M2: Adaptive Indexing & Multi-Root Intelligence**.
+
+### Recently Shipped (v2026.05.4)
+- **The Intelligence & Prevention Suite**: Introduced Dead Reckoning, the Immune System, and the Pre-Mortem engine to shift Synapse from reactive retrieval to proactive reasoning.
+- **N+1 Optimization**: Eliminated critical bottlenecks in the `sqlite-vec` indexer, enabling blazing-fast workspace scans.
+- **Clean Architecture Migration**: Fully decoupled the core cognitive engine (`src/core/engine`) from the delivery mechanisms (`src/interfaces`), enforcing strict SOLID principles.
+
+### Active Priorities (M2)
+- **S02: Incremental Delta-Indexing**: Moving away from full-workspace scans to precise, event-driven delta updates.
+- **S03: Multi-Root Intelligence**: Enabling Synapse to seamlessly bridge context across monorepos and loosely coupled multi-project workspaces.

@@ -1,31 +1,12 @@
 <h1 align="center">Synapse</h1>
 
 <p align="center">
-  <strong>The memory palace for AI agents.</strong>
+  <strong>The self-contained AI context layer.</strong>
 </p>
 
 <p align="center">
-  A <b>powerful, self-contained AI context layer</b> combining <b>persistent memory</b>, <b>temporal knowledge graphs</b>, and <b>hybrid code intelligence</b> into a single local engine.
-  <br/>
-  <b>100% Local. Zero Cloud. Private by Design.</b>
+  A <b>powerful, local-first MCP server</b> combining <b>persistent memory</b>, <b>temporal knowledge graphs</b>, and <b>hybrid code intelligence</b> into a single SQLite engine. Zero cloud. 100% private.
 </p>
-
-<p align="center">
-  <a href="https://github.com/TheJenilDGohel/Synapse/releases"><img src="https://img.shields.io/github/v/release/TheJenilDGohel/Synapse?color=2dd4bf&label=release&style=flat-square" alt="latest release"></a>
-  <a href="https://www.npmjs.com/package/synapse-cortex"><img src="https://img.shields.io/npm/v/synapse-cortex?color=2dd4bf&label=npm&style=flat-square" alt="npm version"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/TheJenilDGohel/Synapse?color=2dd4bf&style=flat-square" alt="license"></a>
-  <a href="https://github.com/TheJenilDGohel/Synapse/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TheJenilDGohel/Synapse/ci.yml?branch=beta&label=quality&style=flat-square" alt="quality status"></a>
-</p>
-
----
-
-## 🏛️ The Philosophy: Intelligence in its Place
-
-AI agents today are orators without a palace. Every session starts from nothing — no memory of past decisions, no map of the codebase, no record of what failed. The signal dies, and you pay the "context tax" every time you re-explain your project.
-
-**Synapse is the memory palace for your AI agents.**
-
-We give every piece of knowledge a place: a code symbol, an architectural decision, a lesson learned, a dependency relationship. Your agent walks the palace and finds exactly what it needs — entirely on your machine.
 
 ---
 
@@ -64,30 +45,6 @@ kg_query --entity "AuthService"
 
 ---
 
-## ✨ Core Capabilities
-
-Synapse is the only MCP server combining temporal time-travel queries with persistent AI memory and hybrid code search in a single local SQLite database.
-
-- **Temporal Knowledge Graph**: A sophisticated entity-triple store with multi-hop traversal and **time-travel querying** (`as_of`). Track architectural facts and dependencies as they evolve.
-- **Persistent Agent Memory**: Long-term recall across sessions with semantic deduplication and **agent-scoped isolation**. Perfect for multi-agent workflows.
-- **Semantic Code Intelligence**: Hybrid BM25+vector search, AST-aware chunking, and advanced symbol tracking (definitions, usages, and callers).
-- **Performance Optimized**: Optimized AST parsing using `WeakMap` memoization (reduced resolution complexity from **O(N²)** to **O(N)**).
-
----
-
-## 🛠️ Focused Tool Suites
-
-Synapse tools are organized into focused suites. Instead of a menu of 70+ granular options, agents invoke the right suite for their specific workflow:
-
-- **📂 Workspace & Discovery**: Navigate files, generate project summaries, and read code with bounded scopes.
-- **🔍 Search & Intelligence**: Execute hybrid semantic searches and look up precise AST symbols.
-- **🧠 Memory & Recall**: Store, retrieve, and deduplicate contextual knowledge across sessions.
-- **🌐 Knowledge Graph**: Traverse and manage temporal entity relationships.
-- **🤖 Agent Context**: Prime your agent with project-specific "lessons" and capture task outcomes for future recall.
-- **🧠 Intelligence & Prevention**: Proactively predict context needs (`context_predict`, `session_end`), match mistake patterns to prevent regressions (`immune_record_mistake`, `immune_scan`, `immune_list`, `immune_dismiss`, `immune_history`), and analyze architectural failure modes (`premortem_analyze`, `premortem_record_outcome`, `premortem_add_pattern`, `premortem_library`).
-
----
-
 ## 🚀 Quick Start
 
 Get up and running in seconds.
@@ -114,10 +71,10 @@ Add Synapse to your AI client (Claude Desktop, Cursor, Windsurf, etc.):
 {
   "mcpServers": {
     "synapse": {
-      "command": "synapse",
-      "args": ["start"],
+      "command": "npx",
+      "args": ["-y", "synapse-cortex", "mcp", "start"],
       "env": {
-        "SYNAPSE_MEMORY_ENABLED": "true"
+        "PROJECT_ROOTS": "/path/to/your/project"
       }
     }
   }
@@ -126,36 +83,55 @@ Add Synapse to your AI client (Claude Desktop, Cursor, Windsurf, etc.):
 
 ---
 
-## ⚖️ Why Synapse?
+## ✨ Core Capabilities
 
-| Feature | Synapse | Cloud-based Alternatives |
-|:---|:---:|:---:|
-| **Privacy** | 100% Local. No data leaves your machine. | Data processed/stored in the cloud. |
-| **Persistence** | Cross-session memory & temporal tracking. | Often limited to single-session context. |
-| **Intelligence** | AST-aware + Hybrid Search. | Often limited to string matching or basic RAG. |
-| **Cost** | Free (Self-hosted). | Monthly subscriptions or per-token fees. |
-| **Tradeoff** | Requires local resources (RAM/CPU). | Lightweight local footprint. |
+Synapse exposes 6 consolidated "Power Suites" to your AI agent, enforcing strict SOLID and Clean Architecture principles underneath.
 
-*Self-reported comparison as of May 2026 — contributions welcome.*
+### 1. Persistent Memory
+Store facts, decisions, and preferences that survive between sessions.
+- `synapse_memory_manage` - Store, update, and merge memory fragments.
+- `synapse_memory_query` - Recall context, find related facts, and view history.
+
+### 2. Temporal Knowledge Graph
+Map the evolution of your software architecture.
+- `synapse_kg_manage` - Add or invalidate entities and relationship triples.
+- `synapse_kg_query` - Traverse the graph, find bridges, and time-travel to past states.
+
+### 3. Hybrid Code Intelligence
+Find code by meaning, not just exact text.
+- `synapse_search` - Fused BM25 (lexical) and Vector (semantic) search over AST chunks.
+- `synapse_symbol` - Instantly resolve definitions, callers, and interface implementations.
+
+### 4. Intelligence & Prevention
+Proactively predict context, prevent recurring mistakes, and analyze architectural risks.
+- `context_predict` - Predict context needed for the current session.
+- `immune_record_mistake` / `immune_scan` - Teach Synapse about a bug so it never happens again.
+- `premortem_analyze` - Analyze how an architectural approach has historically failed.
+
+### 5. Workspace Operations
+- `synapse_workspace_manage` - Safely read, explore, and summarize local project structures.
+
+### 6. System Lifecycle
+- `synapse_core` - Manage the MCP server lifecycle, health checks, and global settings.
 
 ---
 
-## 🛡️ Security & Privacy
+## 🏗️ Architecture
 
-- **Zero-Cloud Privacy**: All code parsing, embeddings, and database operations happen strictly on your machine.
-- **No Telemetry**: We do not track your usage, queries, or code.
-- **Local-First Speed**: Powered by pure SQLite with native vector extensions (`sqlite-vec`) for blazing-fast retrieval.
+Synapse is built on a **Clean Architecture** model, ensuring 100% local privacy and deep separation of concerns.
 
----
+- **Zero Cloud / Local-First**: All data, embeddings, and relationships are stored in a local SQLite database (`~/.synapse/`). No telemetry, no external API calls.
+- **Dependency Inversion**: The core cognitive engine (`src/core/engine`) is entirely decoupled from the MCP and CLI delivery mechanisms (`src/interfaces`).
+- **High Performance**: Leverages `sqlite-vec` for blazing-fast vector similarity search and `ripgrep` for ultra-fast lexical filtering.
 
-## 🤝 Community & Support
-
-- **[Documentation](https://thejenildgohel.github.io/Synapse/)** — *Note: Our documentation site is hosted on Firebase; the Synapse runtime itself is 100% local.*
-- **[Contributing](./CONTRIBUTING.md)** — We welcome PRs and bug reports.
-- **[Changelog](./CHANGELOG.md)** — See what's new.
+For full details, read [ARCHITECTURE.md](./ARCHITECTURE.md) and [PROJECT.md](./PROJECT.md).
 
 ---
 
-<div align="center">
-  <strong>Code intelligence. Knowledge graph. AI memory. One server. Your machine.</strong>
-</div>
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) and [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+## 📄 License
+
+MIT License. See [LICENSE](./LICENSE) for details.

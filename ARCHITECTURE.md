@@ -1,114 +1,76 @@
 # Synapse Architectural Overview
 
-This document outlines the high-level architecture mapped across the `src/` directory. Synapse follows a Domain-Driven, multi-layered architectural approach to strictly separate basic core utilities from business logic and application boundaries.
+This document outlines the architectural principles and design patterns driving Synapse. The project strictly adheres to **Clean Architecture** and **SOLID** principles, ensuring that core business logic remains entirely decoupled from delivery mechanisms (like MCP or CLI) and infrastructure details (like specific SQLite drivers).
 
-## Top-Level Domains
+## 🏛️ Clean Architecture Layers
 
-```mermaid
-graph TD
-    subgraph "Interface Layer (src/interfaces/)"
-        CLI["CLI (/cli)"]
-        MCP["MCP Server (/mcp)"]
-        App["App Logic (/app)"]
-        Utils["Utils (/utils)"]
-    end
+Synapse is structured into concentric layers. Dependencies point **inwards** only. Outer layers can depend on inner layers, but inner layers know nothing about the outside.
 
-    subgraph "Contract Layer (src/core/interfaces/)"
-        Services["Service Interfaces (services.ts)"]
-    end
+### 1. Core Domain (`src/core/engine/`)
+The innermost layer contains the fundamental business rules and cognitive operations of Synapse.
+- **Memory Domain**: Persistent fact storage, knowledge graph traversal, and taxonomy mapping.
+- **Retrieval Domain**: Hybrid search (BM25 + Vector), AST chunking, and symbol resolution.
+- **Intelligence Domain**: Dead Reckoning predictions, Immune System pattern matching, and Pre-Mortem risk analysis.
 
-    subgraph "Engine Layer (src/core/engine/)"
-        Memory["Memory (/memory)"]
-        Retrieval["Retrieval (/retrieval)"]
-        Workspace["Workspace (/workspace)"]
-        UnifiedFind["Unified Find (/unified-find)"]
-        Update["Update (/update)"]
-    end
+*Rule: This layer imports nothing from `src/interfaces/`. It operates purely on raw data adapters and domain types.*
 
-    subgraph "Core Layer (src/core/)"
-        Runtime["Runtime (/runtime)"]
-        Migrations["Migrations (/migrations)"]
-        Setup["Setup (/setup)"]
-        Types["Types (/types)"]
-    end
+### 2. Infrastructure & Contracts (`src/core/interfaces/` & `src/core/runtime/`)
+This layer defines the contracts (Interfaces) that the Core Domain uses to interact with the outside world, and the concrete implementations of those contracts.
+- **Service Registry**: `IServiceRegistry` acts as the central Dependency Injection (DI) container.
+- **Adapters**: The `Adapter` interface abstracts away the underlying SQLite implementation (`node:sqlite` vs `better-sqlite3`), allowing the engine to run without knowing the exact database driver.
 
-    CLI --> Services
-    MCP --> Services
-    App --> Services
-    
-    Services -.-> Memory
-    Services -.-> Retrieval
-    Services -.-> Workspace
-    Services -.-> UnifiedFind
+### 3. Delivery Mechanisms (`src/interfaces/`)
+The outermost layer is responsible for translating user or agent intent into core domain operations.
+- **MCP (`src/interfaces/mcp/`)**: Maps Model Context Protocol JSON-RPC calls to Core Engine operations. Normalizes responses (e.g., applying `terse` or `compact` filters to save tokens).
+- **CLI (`src/interfaces/cli/`)**: Provides human-readable terminal commands mapping to the exact same Core Engine operations as MCP.
 
-    Memory --> Runtime
-    Retrieval --> Runtime
-    Workspace --> Runtime
-    UnifiedFind --> Memory
-    UnifiedFind --> Retrieval
+---
 
-    Update --> Runtime
+## 📐 SOLID Principles in Practice
+
+Synapse enforces SOLID principles to maintain a highly maintainable, 100% local-first codebase:
+
+### 1. Single Responsibility Principle (SRP)
+Every module and class has exactly one reason to change. 
+- `MemoryStore.ts` only orchestrates memory sub-services. It does not parse ASTs.
+- `AstChunker.ts` only extracts code signatures. It does not write to the database.
+
+### 2. Open/Closed Principle (OCP)
+The system is open for extension but closed for modification.
+- **MCP Tools**: Adding a new MCP tool does not require changing the Core Engine. You simply register a new tool definition in `src/interfaces/mcp/tools/` that calls existing engine methods.
+- **Intelligence Engines**: The `IPredictionEngine` and `IImmuneSystem` contracts allow us to swap out prediction logic entirely without touching the CLI or MCP routers.
+
+### 3. Liskov Substitution Principle (LSP)
+Interfaces are strictly adhered to, allowing implementations to be swapped transparently.
+- The `Adapter` interface guarantees that the engine can run against `NodeSqliteAdapter` or any future `WasmSqliteAdapter` without breaking changes, provided they fulfill the contract.
+
+### 4. Interface Segregation Principle (ISP)
+Clients are not forced to depend on interfaces they do not use.
+- The `IServiceRegistry` exposes specific getters (`getMemory()`, `getSearch()`, `getPreMortem()`). Tools only request the specific services they need rather than relying on a monolithic god-object.
+
+### 5. Dependency Inversion Principle (DIP)
+High-level modules do not depend on low-level modules. Both depend on abstractions.
+- The `MemoryWorkflowService` (a high-level orchestrator) does not instantiate the SQLite database. Instead, it receives an `IMemoryService` abstraction injected via its constructor.
+
+---
+
+## 📦 Directory Structure
+
+```text
+src/
+├── core/
+│   ├── engine/          # [DOMAIN] Core logic (Memory, Retrieval, Intelligence)
+│   ├── interfaces/      # [CONTRACTS] DIP Interfaces (IServiceRegistry, Adapter)
+│   ├── runtime/         # [INFRA] Configuration, Service instantiation, Health
+│   └── storage/         # [INFRA] SQLite schemas and migrations
+├── interfaces/
+│   ├── cli/             # [DELIVERY] Command-line interface
+│   ├── mcp/             # [DELIVERY] Model Context Protocol server
+│   └── app/             # [DELIVERY] Entrypoints and service wiring
+└── types/               # Global TypeScript definitions
 ```
 
-Synapse follows three immutable pillars:
-
-1. **`src/core/interfaces/`** (Contracts & Abstractions)
-2. **`src/core/`** (Engine Implementation & Infrastructure)
-3. **`src/interfaces/`** (Entrypoints & I/O)
-
----
-
-### 1. Hardened Foundations (v2026.05.1-beta.0)
-
-#### 1.1 Dependency Inversion (DIP)
-All external entrypoints (CLI, MCP) now depend exclusively on the **Contract Layer** (`src/core/interfaces/services.ts`). This allows for:
-- **Testability**: Easy mocking of core services.
-- **Flexibility**: Implementation swapping without touching the interface layer.
-- **Stability**: Elimination of "God Object" dependencies and circular imports.
-
-#### 1.2 DSA & Performance Optimization
-- **AST Parsing**: Implemented `WeakMap`-based memoization for AST node lookups. The complexity of resolving scope paths has been reduced from **O(N²)** to **O(N)** amortized, ensuring ultra-fast indexing of large codebases.
-- **Power Controllers**: Centralized 72+ granular MCP tools into ~14 high-density "Power Controllers" using flat JSON objects. This architectural shift ensures **Gemini/Vertex AI compatibility** while maximizing context window efficiency for all LLMs.
-- **Response Mapping**: Centralized tool I/O via `McpResponseMapper` ensures consistent, token-optimized responses across all controllers.
-
----
-
-### 2. Core Engine (`src/core/engine/`)
-The bounded business logic contexts. Each engine domain is as isolated as possible and handles a specific part of the AI brain's logic.
-
-- **`/memory`**: The intelligent persistent knowledge graph logic, split internally between `store`, `temporal`, `backfill`, `audit`, etc.
-- **`/retrieval`**: Handles code search, text embeddings, BM25 indexing, and vector similarity querying.
-- **`/workspace`**: Directory lifecycle management and project boundaries.
-- **`/update`**: Over-the-air update mechanisms to pull new CLI versions via npm.
-- **`/unified-find`**: Highly advanced search synthesis across memory, retrieval, and temporal layers.
-- **`/database`**: Co-ordinates low-level SQLite primitives and node:sqlite integration.
-
-### 3. Runtime & Setup (`src/core/runtime/` & `src/core/setup/`)
-The foundation of Synapse. The Core context manages configurations, environment constraints, early lifecycle events, and overarching data types.
-
-- **`/runtime`**: Environment constraints, feature toggles, SQLite core layout/extensions, and diagnostics.
-- **`/setup`**: Orchestrator utilities for initializing Synapse on first run.
-- **`/migrations`**: Database schema evolution and configuration migrations.
-
-### 4. Interfaces (`src/interfaces/`)
-The external boundaries where the outside world interacts with Synapse. These orchestrate the engine domains and consume runtime utilities, acting entirely as wrappers/adapters.
-
-- **`/cli`**: Local human-in-the-loop interaction layers. Responsible for arg parsing, ANSI outputs, spinners, etc.
-- **`/mcp` & `/app`**: Exposes Synapse as a Model Context Protocol (MCP) server for Claude/VSCode to consume autonomously. Holds tool registrations and STDIO/SSE lifecycle routing.
-- **`/utils`**: High-level interface utilities, including the `McpResponseMapper` for context-optimized tool output.
-
----
-
-### Cloud Disclaimer & External Services
-Synapse is **100% local-first**. No project data, code embeddings, or agent memories ever leave your machine.
-- **Firebase**: Used exclusively for hosting the static documentation site. No runtime communication exists between the Synapse engine and Firebase.
-- **HuggingFace**: Models are downloaded once during `synapse setup` and run locally via `@huggingface/transformers`. No runtime API calls are made to HuggingFace.
-
----
-
-### Development Principles
-
-- **Downwards Isolation**: `interfaces/` depends on `core/interfaces/`. `engine/` implements `core/interfaces/`. `core/` depends on `runtime/`. `runtime/` depends on nothing inside the project.
-- **Explicit Contracts**: No "any" casts or direct engine instantiation in tools. Always use the `CoreServiceRegistry` and the defined interfaces.
-- **No Side-by-Side Sprawl**: Features are kept structurally flat inside their specific domains. Single-file exports or barrel files are preferred over heavily nested monolithic files.
-- **Barrel Files**: High-complexity directories like `src/core/engine/memory` expose external APIs solely via an `index.ts`.
+## 🔒 Security & Privacy (Local-First)
+Synapse's architecture guarantees zero data exfiltration. 
+- **No Network Requests**: The core engine contains absolutely no outbound HTTP requests (unless explicitly configured to hit a local LLM for embeddings).
+- **SQLite Isolation**: All context is stored in a local `.synapse/` folder within the user's home directory.
