@@ -8,6 +8,7 @@ import {
   scoreScopeMatch,
   deserializeEntry
 } from '../utils/index.js';
+import { cosineSimilarity, cosineToUnitScore } from '../../retrieval/core/relevance.js';
 import { extractEntities } from '../ingest/ingest.js';
 import { normalizeEntityId } from '../knowledge-graph/kg.js';
 import type { Adapter, MemoryEntryRow, RecallInput, RecallResult, RecallResultItem, MemoryEntry, RelatedFact } from '../types/index.js';
@@ -74,31 +75,33 @@ function computeUsageBoost(row: MemoryEntryRow, maxRecallCount: number, usageWei
   return usageBase * (0.5 + 0.5 * recencyBias) * usageWeight;
 }
 
-export async function recall(adapter: Adapter, {
-  query,
-  projectPath,
-  topic,
-  feature,
-  branchName,
-  rootPath,
-  kind,
-  nest,
-  branch,
-  agentId,
-  actorId,
-  tags,
-  limit = 10
-}: RecallInput): Promise<RecallResult> {
+export async function recall(
+  adapter: Adapter,
+  {
+    query,
+    projectPath,
+    topic,
+    feature,
+    branchName,
+    rootPath,
+    kind,
+    nest,
+    branch,
+    agentId,
+    actorId,
+    tags,
+    limit = 10
+  }: RecallInput,
+  embeddingService: EmbeddingService | null = null
+): Promise<RecallResult> {
   const safeLimit = clampInt(limit, 10, 1, 50);
   const filters: string[] = ['status = ?'];
   const params: unknown[] = ['active'];
 
   if (agentId) {
-    // Agent sees own memories + global memories (agent_id = '')
     filters.push("(agent_id = ? OR agent_id = '')");
     params.push(agentId);
   } else {
-    // No agent specified -- only show global memories
     filters.push("agent_id = ''");
   }
 
@@ -123,12 +126,10 @@ export async function recall(adapter: Adapter, {
     params.push(branch);
   }
   if (actorId) {
-    // ACTOR-03: exact-match filter — not a scope-broadening rule like agentId
     filters.push('actor_id = ?');
     params.push(actorId);
   }
   if (tags && tags.length > 0) {
-    // Require ALL specified tags to be present (AND semantics)
     for (const tag of tags) {
       filters.push(
         `EXISTS (SELECT 1 FROM JSON_EACH(tags_json) WHERE JSON_EACH.value = ?)`
@@ -147,6 +148,8 @@ export async function recall(adapter: Adapter, {
   );
 
   const terms = splitTerms(query);
+  const queryEmbedding = (embeddingService?.isEnabled?.() && query) ? await embeddingService.embed(query) : null;
+  
   const maxRecallCount = rows.reduce<number>((max, row) => Math.max(max, Number(row.recall_count) || 0), 0);
   const usageWeightRaw = Number(process.env.SYNAPSE_MEMORY_USAGE_WEIGHT || '1.5');
   const usageWeight = Number.isFinite(usageWeightRaw) ? Math.max(0, usageWeightRaw) : 1.5;
@@ -162,15 +165,28 @@ export async function recall(adapter: Adapter, {
         row.tags_json
       ].join('\n').toLowerCase();
 
-      let score = row.importance / 100;
-      score += scoreTokenOverlap(terms, searchTerms) * 6;
+      let lexicalScore = row.importance / 100;
+      lexicalScore += scoreTokenOverlap(terms, searchTerms) * 6;
       for (const term of terms) {
-        if (row.title.toLowerCase().includes(term)) score += 5;
-        if (row.summary.toLowerCase().includes(term)) score += 3;
-        if (row.content.toLowerCase().includes(term)) score += 1.5;
-        if (haystack.includes(term)) score += 1;
+        if (row.title.toLowerCase().includes(term)) lexicalScore += 5;
+        if (row.summary.toLowerCase().includes(term)) lexicalScore += 3;
+        if (row.content.toLowerCase().includes(term)) lexicalScore += 1.5;
+        if (haystack.includes(term)) lexicalScore += 1;
       }
-      if (terms.length > 1 && textContainsAllTerms(`${row.title} ${row.summary}`, terms)) score += 3;
+      if (terms.length > 1 && textContainsAllTerms(`${row.title} ${row.summary}`, terms)) lexicalScore += 3;
+      
+      let semanticScore = 0;
+      if (queryEmbedding && row.embedding_json) {
+        try {
+          const emb = JSON.parse(row.embedding_json);
+          if (Array.isArray(emb)) {
+            const similarity = cosineSimilarity(queryEmbedding, emb);
+            semanticScore = cosineToUnitScore(similarity) * 15; // Higher weight for semantic matches
+          }
+        } catch { /* ignore */ }
+      }
+
+      let score = lexicalScore + semanticScore;
       score += scoreScopeMatch(row, {
         root_path: rootPath,
         project_path: projectPath,
@@ -184,7 +200,6 @@ export async function recall(adapter: Adapter, {
       if (row.kind === 'preference') score += 0.25;
       if (row.kind === 'feedback') score += 2.0;
 
-      // Feature 12: auto-decay based on age and recall frequency
       const ageDays = (Date.now() - new Date(row.created_at).getTime()) / (1000 * 60 * 60 * 24);
       const recallFactor = Math.min(1, ((row.recall_count || 0) + 1) / 3);
       const recencyFactor = 1 / (1 + ageDays / 90);
@@ -196,7 +211,7 @@ export async function recall(adapter: Adapter, {
         entry: deserializeEntry(row)
       };
     })
-    .filter((item, index) => item.score > 0 && hasStrongQuerySignal(rows[index], terms, query))
+    .filter((item, index) => item.score > 0.1 && (terms.length === 0 || hasStrongQuerySignal(rows[index], terms, query) || item.score > 5))
     .sort((a, b) => b.score - a.score)
     .slice(0, safeLimit);
 

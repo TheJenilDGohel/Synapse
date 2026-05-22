@@ -59,9 +59,9 @@ export async function traverseGraph(
         JOIN reachable r ON t.subject_id = r.entity_id
         WHERE r.depth < ?
           AND t.valid_to IS NULL
+          AND r.path NOT LIKE '%' || t.object_id || '%'
           ${predicateClause}
       )
-      CYCLE entity_id SET is_cycle USING node_path
       SELECT DISTINCT r.entity_id, r.depth, r.path,
              e.name, e.entity_type
       FROM reachable r
@@ -81,9 +81,9 @@ export async function traverseGraph(
         JOIN reachable r ON t.object_id = r.entity_id
         WHERE r.depth < ?
           AND t.valid_to IS NULL
+          AND r.path NOT LIKE '%' || t.subject_id || '%'
           ${predicateClause}
       )
-      CYCLE entity_id SET is_cycle USING node_path
       SELECT DISTINCT r.entity_id, r.depth, r.path,
              e.name, e.entity_type
       FROM reachable r
@@ -103,9 +103,9 @@ export async function traverseGraph(
         JOIN reachable r ON (t.subject_id = r.entity_id OR t.object_id = r.entity_id)
         WHERE r.depth < ?
           AND t.valid_to IS NULL
+          AND r.path NOT LIKE '%' || CASE WHEN t.subject_id = r.entity_id THEN t.object_id ELSE t.subject_id END || '%'
           ${predicateClause}
       )
-      CYCLE entity_id SET is_cycle USING node_path
       SELECT DISTINCT r.entity_id, r.depth, r.path,
              e.name, e.entity_type
       FROM reachable r

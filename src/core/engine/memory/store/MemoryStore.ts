@@ -265,7 +265,7 @@ export class MemoryStore {
     await this.init();
     const hookResult = await this.hooks.emit('before:recall', args);
     if (hookResult.cancelled) return { cancelled: true, reason: hookResult.reason };
-    const result = await recallFn(this.adapter!, hookResult.payload as RecallInput);
+    const result = await recallFn(this.adapter!, hookResult.payload as RecallInput, this.embeddingService);
     await this.hooks.emit('after:recall', result);
     return result;
   }

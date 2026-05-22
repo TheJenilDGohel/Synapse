@@ -238,6 +238,26 @@ export async function storeEntry(store: MemoryStoreLike, input: StoreEntryInput)
   const id = generateMemoryId();
   const createdAt = nowIso();
 
+  // CONFLICT-01: Proactive conflict detection/invalidation
+  const conflictKeywords = ['migrated off', 'replaced', 'instead of', 'deprecated', 'no longer'];
+  const hasConflictSignal = conflictKeywords.some(k => content.toLowerCase().includes(k));
+  
+  if (hasConflictSignal) {
+    const candidates = await checkDuplicate(store.adapter, store.embeddingService, content, {
+      threshold: 0.65, // Lower threshold for identifying related facts to invalidate
+      nest,
+      branch,
+      projectPath: scope.project_path
+    });
+    
+    if (candidates.isDuplicate && candidates.match) {
+      await store.adapter.run(
+        "UPDATE memory_entries SET status = 'superseded', updated_at = ? WHERE id = ?",
+        [createdAt, candidates.match.id]
+      );
+    }
+  }
+
   await store.adapter.transaction(async (ad) => {
     await ad.run(
       `INSERT INTO memory_entries(

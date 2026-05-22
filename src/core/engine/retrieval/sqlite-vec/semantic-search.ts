@@ -94,7 +94,7 @@ export async function semanticSearch(
       vecRows = db.prepare(
         `SELECT c.file_path, c.start_line, c.end_line, c.preview, v.distance, c.enrichment_json
          FROM vec_chunks v
-         JOIN chunks c ON c.rowid = v.chunk_rowid
+         JOIN chunks c ON c.rowid = v.rowid
          WHERE v.embedding MATCH ? AND k = ${k}${probesClause}
            AND (${baseScope.where})
          ORDER BY v.distance ASC

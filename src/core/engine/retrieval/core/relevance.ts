@@ -15,7 +15,10 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 export function cosineToUnitScore(cosine: number): number {
-  return Math.max(0, Math.min(1, (cosine + 1) / 2));
+  const c = Math.max(0, Math.min(1, cosine));
+  // Power-scaling (squaring) penalizes weak matches and prevents
+  // hallucinated high confidence for unrelated queries.
+  return Math.pow(c, 2);
 }
 
 export function bm25Idf(totalDocs: number, docFreq: number): number {

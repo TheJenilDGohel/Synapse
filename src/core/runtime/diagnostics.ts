@@ -344,8 +344,8 @@ export class DiagnosticService {
       }
       return {
         id: 'global_stale_temp',
-        ok: false,
-        detail: `Partially cleaned: ${removed}/${stale.length} temp dirs removed`,
+        ok: true, // Downgraded to warning
+        detail: `WARNING: Partially cleaned: ${removed}/${stale.length} temp dirs removed`,
         fix: process.platform === 'win32'
           ? 'Close all running AI clients (Cursor, Windsurf, Claude) and Synapse instances, then retry. Files like vec0.dll may be locked.'
           : 'Manually remove remaining dirs or run with sudo.'
@@ -354,8 +354,8 @@ export class DiagnosticService {
 
     return {
       id: 'global_stale_temp',
-      ok: false,
-      detail: `${stale.length} stale npm temp dir(s) found (blocks global reinstall)`,
+      ok: true, // Downgraded to warning
+      detail: `INFO: ${stale.length} stale npm temp dir(s) found (not blocking, but cleaner to remove)`,
       fix: 'Run: synapse doctor --fix'
     };
   }

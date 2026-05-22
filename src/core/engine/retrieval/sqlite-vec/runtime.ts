@@ -134,7 +134,7 @@ export function syncSqliteVecRowsFromChunks(service: SqliteVecServiceLike): void
     for (const row of rows) {
       const key = normalizeVecPrimaryKey(row.rowid);
       service.db.prepare(
-        'INSERT OR REPLACE INTO vec_chunks(chunk_rowid, embedding) VALUES (?, ?)'
+        'INSERT OR REPLACE INTO vec_chunks(rowid, embedding) VALUES (?, ?)'
       ).run(key, row.embedding_json);
     }
   });

@@ -123,11 +123,12 @@ async function handleAdd(args: string[], opts: GlobalOptions): Promise<void> {
 
   const mem = result.memory;
   process.stdout.write(`Created memory ${mem.id}\n`);
-  process.stdout.write(`  Title: ${mem.title}\n`);
-  process.stdout.write(`  Kind: ${mem.kind}\n`);
+  process.stdout.write(`  Title:      ${mem.title}\n`);
+  process.stdout.write(`  Kind:       ${mem.kind}\n`);
   process.stdout.write(`  Importance: ${mem.importance}\n`);
-  if (mem.nest) process.stdout.write(`  Nest: ${mem.nest}\n`);
-  if (mem.branch) process.stdout.write(`  Branch: ${mem.branch}\n`);
+  process.stdout.write(`  Content:    ${truncate(mem.content, 120)}\n`);
+  if (mem.nest) process.stdout.write(`  Nest:       ${mem.nest}\n`);
+  if (mem.branch) process.stdout.write(`  Branch:     ${mem.branch}\n`);
 }
 
 async function handleSearch(args: string[], opts: GlobalOptions): Promise<void> {
