@@ -5,3 +5,4 @@ export { registerRetrievalTools } from './retrieval.js';
 export { registerGraphTools } from './graph-tools.js';
 export { registerSymbolTools } from './symbol-tools.js';
 export { registerPageIndexTools } from './pageindex/tools.js';
+export { registerIntelligenceTools } from './intelligence-tools.js';

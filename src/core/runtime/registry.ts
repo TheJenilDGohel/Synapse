@@ -1,7 +1,10 @@
-import { IServiceRegistry, IMemoryService, IEmbeddingService, ISearchService } from '../interfaces/services.js';
+import { IServiceRegistry, IMemoryService, IEmbeddingService, ISearchService, IPredictionEngine, IImmuneSystem, IPreMortemEngine } from '../interfaces/services.js';
 import { MemoryService } from '../engine/memory/service.js';
 import { EmbeddingService } from '../engine/retrieval/embedding/service.js';
 import { SearchService } from '../engine/retrieval/search/service.js';
+import { DeadReckoningEngine } from '../engine/intelligence/prediction.js';
+import { ImmuneSystemEngine } from '../engine/intelligence/immune.js';
+import { PreMortemEngine } from '../engine/intelligence/premortem.js';
 import { buildRuntimeConfig, IGNORE_DIRS, TEXT_EXTENSIONS, PROJECT_MARKER_FILES, PROJECT_HINT_DIRS, DEFAULT_MAX_FILE_BYTES } from './config.js';
 import { WorkspaceService } from '../engine/workspace/service.js';
 
@@ -9,6 +12,9 @@ export class CoreServiceRegistry implements IServiceRegistry {
   private _memory: IMemoryService | null = null;
   private _embedding: IEmbeddingService | null = null;
   private _search: ISearchService | null = null;
+  private _prediction: IPredictionEngine | null = null;
+  private _immuneSystem: IImmuneSystem | null = null;
+  private _preMortem: IPreMortemEngine | null = null;
 
   getMemory(): IMemoryService {
     if (!this._memory) {
@@ -65,6 +71,27 @@ export class CoreServiceRegistry implements IServiceRegistry {
       }) as any;
     }
     return this._search!;
+  }
+
+  getPrediction(): IPredictionEngine {
+    if (!this._prediction) {
+      this._prediction = new DeadReckoningEngine(this.getMemory(), (this.getMemory() as any).store?.adapter);
+    }
+    return this._prediction;
+  }
+
+  getImmuneSystem(): IImmuneSystem {
+    if (!this._immuneSystem) {
+      this._immuneSystem = new ImmuneSystemEngine(this.getMemory(), (this.getMemory() as any).store?.adapter);
+    }
+    return this._immuneSystem;
+  }
+
+  getPreMortem(): IPreMortemEngine {
+    if (!this._preMortem) {
+      this._preMortem = new PreMortemEngine(this.getMemory(), this.getImmuneSystem(), (this.getMemory() as any).store?.adapter);
+    }
+    return this._preMortem;
   }
 }
 

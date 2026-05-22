@@ -229,6 +229,15 @@ interface ConfigFileSettings {
   enrichmentEnabled?: boolean;
   enrichmentModel?: string;
   enrichmentDevice?: string;
+  // Intelligence
+  deadReckoningEnabled?: boolean;
+  deadReckoningMinConfidence?: number;
+  deadReckoningMaxFiles?: number;
+  immuneSystemEnabled?: boolean;
+  immuneSystemAutoScan?: boolean;
+  immuneSystemMinSeverity?: string;
+  premortemEnabled?: boolean;
+  premortemMaxFailureModes?: number;
 }
 
 function parseConfigFileSettings(configPath: string | undefined): ConfigFileSettings {
@@ -246,6 +255,10 @@ function parseConfigFileSettings(configPath: string | undefined): ConfigFileSett
 
   const index = (parsed.index && typeof parsed.index === 'object' ? parsed.index : {}) as Record<string, unknown>;
   const memory = (parsed.memory && typeof parsed.memory === 'object' ? parsed.memory : {}) as Record<string, unknown>;
+  const intelligence = (parsed.intelligence && typeof parsed.intelligence === 'object' ? parsed.intelligence : {}) as Record<string, any>;
+  const deadReckoning = (intelligence.dead_reckoning && typeof intelligence.dead_reckoning === 'object' ? intelligence.dead_reckoning : {}) as Record<string, any>;
+  const immuneSystem = (intelligence.immune_system && typeof intelligence.immune_system === 'object' ? intelligence.immune_system : {}) as Record<string, any>;
+  const premortem = (intelligence.premortem && typeof intelligence.premortem === 'object' ? intelligence.premortem : {}) as Record<string, any>;
 
   return {
     backend: typeof index.backend === 'string' ? index.backend : undefined,
@@ -279,7 +292,15 @@ function parseConfigFileSettings(configPath: string | undefined): ConfigFileSett
     classifierConfidenceThreshold: Number.isFinite(memory.classifierConfidenceThreshold) ? memory.classifierConfidenceThreshold as number : undefined,
     enrichmentEnabled: typeof index.enrichmentEnabled === 'boolean' ? index.enrichmentEnabled : undefined,
     enrichmentModel: typeof index.enrichmentModel === 'string' ? index.enrichmentModel : undefined,
-    enrichmentDevice: typeof index.enrichmentDevice === 'string' ? index.enrichmentDevice : undefined
+    enrichmentDevice: typeof index.enrichmentDevice === 'string' ? index.enrichmentDevice : undefined,
+    deadReckoningEnabled: typeof deadReckoning.enabled === 'boolean' ? deadReckoning.enabled : undefined,
+    deadReckoningMinConfidence: Number.isFinite(deadReckoning.min_confidence) ? deadReckoning.min_confidence as number : undefined,
+    deadReckoningMaxFiles: Number.isFinite(deadReckoning.max_predicted_files) ? deadReckoning.max_predicted_files as number : undefined,
+    immuneSystemEnabled: typeof immuneSystem.enabled === 'boolean' ? immuneSystem.enabled : undefined,
+    immuneSystemAutoScan: typeof immuneSystem.auto_scan_on_read === 'boolean' ? immuneSystem.auto_scan_on_read : undefined,
+    immuneSystemMinSeverity: typeof immuneSystem.min_severity === 'string' ? immuneSystem.min_severity : undefined,
+    premortemEnabled: typeof premortem.enabled === 'boolean' ? premortem.enabled : undefined,
+    premortemMaxFailureModes: Number.isFinite(premortem.max_failure_modes) ? premortem.max_failure_modes as number : undefined
   };
 }
 
@@ -352,6 +373,15 @@ export interface RuntimeConfig {
   enrichmentDevice: string;
   roots: RootEntry[];
   hasRipgrep: boolean;
+  // Intelligence
+  deadReckoningEnabled: boolean;
+  deadReckoningMinConfidence: number;
+  deadReckoningMaxFiles: number;
+  immuneSystemEnabled: boolean;
+  immuneSystemAutoScan: boolean;
+  immuneSystemMinSeverity: string;
+  premortemEnabled: boolean;
+  premortemMaxFailureModes: number;
 }
 
 export function buildRuntimeConfig(
@@ -530,7 +560,15 @@ export function buildRuntimeConfig(
       projectRoots: env.PROJECT_ROOTS,
       synapseConfigPath: configPath
     }),
-    hasRipgrep: detectRipgrep()
+    hasRipgrep: detectRipgrep(),
+    deadReckoningEnabled: parseBoolean(env.SYNAPSE_DEAD_RECKONING_ENABLED, fileSettings.deadReckoningEnabled ?? true),
+    deadReckoningMinConfidence: parseIntEnv(env.SYNAPSE_DEAD_RECKONING_MIN_CONFIDENCE, (fileSettings.deadReckoningMinConfidence ?? 0.5) * 100) / 100,
+    deadReckoningMaxFiles: parseIntEnv(env.SYNAPSE_DEAD_RECKONING_MAX_FILES, fileSettings.deadReckoningMaxFiles ?? 5),
+    immuneSystemEnabled: parseBoolean(env.SYNAPSE_IMMUNE_SYSTEM_ENABLED, fileSettings.immuneSystemEnabled ?? true),
+    immuneSystemAutoScan: parseBoolean(env.SYNAPSE_IMMUNE_SYSTEM_AUTO_SCAN, fileSettings.immuneSystemAutoScan ?? false),
+    immuneSystemMinSeverity: parseStringEnv(env.SYNAPSE_IMMUNE_SYSTEM_MIN_SEVERITY, fileSettings.immuneSystemMinSeverity || 'medium'),
+    premortemEnabled: parseBoolean(env.SYNAPSE_PREMORTEM_ENABLED, fileSettings.premortemEnabled ?? true),
+    premortemMaxFailureModes: parseIntEnv(env.SYNAPSE_PREMORTEM_MAX_MODES, fileSettings.premortemMaxFailureModes ?? 8)
   };
 }
 

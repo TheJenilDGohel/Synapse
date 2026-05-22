@@ -84,6 +84,7 @@ Synapse tools are organized into focused suites. Instead of a menu of 70+ granul
 - **🧠 Memory & Recall**: Store, retrieve, and deduplicate contextual knowledge across sessions.
 - **🌐 Knowledge Graph**: Traverse and manage temporal entity relationships.
 - **🤖 Agent Context**: Prime your agent with project-specific "lessons" and capture task outcomes for future recall.
+- **🧠 Intelligence & Prevention**: Proactively predict context needs (`context_predict`, `session_end`), match mistake patterns to prevent regressions (`immune_record_mistake`, `immune_scan`, `immune_list`, `immune_dismiss`, `immune_history`), and analyze architectural failure modes (`premortem_analyze`, `premortem_record_outcome`, `premortem_add_pattern`, `premortem_library`).
 
 ---
 

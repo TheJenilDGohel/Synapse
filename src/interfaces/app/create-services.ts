@@ -15,7 +15,10 @@ import {
   SymbolIndexService,
   MemoryService,
   WorkspaceService,
-  UpdateService
+  UpdateService,
+  DeadReckoningEngine,
+  ImmuneSystemEngine,
+  PreMortemEngine
 } from '../../core/engine/index.js';
 
 function createWorkspace(runtime: any, astChunker: AstChunker): WorkspaceService {
@@ -84,6 +87,9 @@ export interface AppServices {
   search: SearchService;
   updates: UpdateService;
   memory: MemoryService;
+  prediction?: DeadReckoningEngine;
+  immuneSystem?: ImmuneSystemEngine;
+  preMortem?: PreMortemEngine;
   getActiveIndexBackend: () => string;
   getLastHealthReport?: () => any;
 }
@@ -168,12 +174,32 @@ export async function createServices(runtime: any): Promise<AppServices> {
     });
   }
 
+  let prediction: DeadReckoningEngine | undefined;
+  let immuneSystem: ImmuneSystemEngine | undefined;
+  let preMortem: PreMortemEngine | undefined;
+
+  const dbAdapter = (memory as any).store?.adapter;
+  if (dbAdapter) {
+    if (runtime.deadReckoningEnabled) {
+      prediction = new DeadReckoningEngine(memory as any, dbAdapter);
+    }
+    if (runtime.immuneSystemEnabled) {
+      immuneSystem = new ImmuneSystemEngine(memory as any, dbAdapter);
+    }
+    if (runtime.premortemEnabled) {
+      preMortem = new PreMortemEngine(memory as any, immuneSystem as any, dbAdapter);
+    }
+  }
+
   return {
     workspace,
     vectorIndex,
     search,
     updates,
     memory,
+    prediction,
+    immuneSystem,
+    preMortem,
     getActiveIndexBackend: () => activeIndexBackend
   };
 }

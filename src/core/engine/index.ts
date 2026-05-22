@@ -52,6 +52,11 @@ export {
   UpdateService
 } from './retrieval.js';
 
+// Intelligence & Prevention
+export { DeadReckoningEngine } from './intelligence/prediction.js';
+export { ImmuneSystemEngine } from './intelligence/immune.js';
+export { PreMortemEngine } from './intelligence/premortem.js';
+
 // Runtime & Infrastructure — diagnostics, health, setup
 export { DiagnosticService } from '../runtime/diagnostics.js';
 export type { DoctorCheckResult, DoctorReport } from '../runtime/diagnostics.js';

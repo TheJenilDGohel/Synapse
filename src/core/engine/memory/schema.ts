@@ -1,6 +1,6 @@
 import type { Adapter } from './types/index.js';
 
-export const SCHEMA_VERSION = 13;
+export const SCHEMA_VERSION = 16;
 
 export async function ensureSchema(adapter: Adapter): Promise<void> {
   await adapter.exec(`

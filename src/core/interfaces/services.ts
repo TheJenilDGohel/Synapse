@@ -195,6 +195,122 @@ export interface IUpdateService {
 }
 
 /**
+ * Intelligence & Prevention Services
+ */
+
+export interface SessionSignal {
+  currentFile?: string;
+  recentFiles: string[];
+  recentTools: string[];
+  activeSymbols: string[];
+  sessionStartedAt: Date;
+}
+
+export interface PredictedContext {
+  confidence: number;
+  memoryEntries: string[];
+  kgEntities: string[];
+  relatedFiles: string[];
+  rationale: string;
+  predictedAt: Date;
+}
+
+export interface IPredictionEngine {
+  predictContext(signal: SessionSignal): Promise<PredictedContext>;
+  recordSessionOutcome(
+    signal: SessionSignal,
+    predicted: PredictedContext,
+    actualFilesTouched: string[]
+  ): Promise<void>;
+}
+
+export type MistakeCategory =
+  | 'race_condition'
+  | 'memory_leak'
+  | 'unhandled_promise'
+  | 'n_plus_one_query'
+  | 'missing_error_boundary'
+  | 'improper_cache_invalidation'
+  | 'circular_dependency'
+  | 'missing_null_check'
+  | 'architectural_coupling'
+  | 'performance_regression'
+  | 'custom';
+
+export interface MistakePattern {
+  id: string;
+  category: MistakeCategory;
+  title: string;
+  description: string;
+  codeSignature: string;
+  languages: string[];
+  triggeredBy: string[];
+  resolution: string;
+  firstEncountered: Date;
+  timesTriggered: number;
+  sourceFile?: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface ImmuneWarning {
+  patternId: string;
+  title: string;
+  severity: MistakePattern['severity'];
+  message: string;
+  originalContext: string;
+  resolution: string;
+  confidence: number;
+  matchedIn: string;
+}
+
+export interface IImmuneSystem {
+  recordMistake(pattern: Omit<MistakePattern, 'id' | 'firstEncountered' | 'timesTriggered'>): Promise<string>;
+  scanForPatterns(code: string, language: string, filePath: string): Promise<ImmuneWarning[]>;
+  listPatterns(category?: MistakeCategory): Promise<MistakePattern[]>;
+  dismissWarning(patternId: string, reason: string): Promise<void>;
+  getMistakeHistory(): Promise<{ pattern: MistakePattern; triggeredCount: number }[]>;
+}
+
+export interface ArchitecturalProposal {
+  description: string;
+  technologies: string[];
+  pattern: string;
+  affectedEntities?: string[];
+  context?: string;
+}
+
+export interface FailureMode {
+  title: string;
+  description: string;
+  likelihood: 'low' | 'medium' | 'high';
+  severity: 'low' | 'medium' | 'high' | 'catastrophic';
+  source: 'your_history' | 'pattern_library' | 'technology_specific';
+  sourceDetail: string;
+  mitigation: string;
+  detectedAt?: string;
+}
+
+export interface PreMortemReport {
+  proposal: ArchitecturalProposal;
+  failureModes: FailureMode[];
+  historicalPrecedents: {
+    decision: string;
+    outcome: string;
+    date: Date;
+    entityId: string;
+  }[];
+  recommendation: 'proceed' | 'proceed_with_caution' | 'reconsider';
+  recommendationRationale: string;
+  generatedAt: Date;
+}
+
+export interface IPreMortemEngine {
+  analyze(proposal: ArchitecturalProposal): Promise<PreMortemReport>;
+  getPatternLibrary(pattern: string): Promise<FailureMode[]>;
+  addToPatternLibrary(failure: Omit<FailureMode, 'source'> & { technology: string }): Promise<void>;
+}
+
+/**
  * Registry for all core services.
  */
 export interface IServiceRegistry {
@@ -206,4 +322,7 @@ export interface IServiceRegistry {
   getVectorIndex?(): IVectorIndexService;
   getUpdate?(): IUpdateService;
   getMemoryWorkflow?(): IMemoryWorkflowService;
+  getPrediction?(): IPredictionEngine;
+  getImmuneSystem?(): IImmuneSystem;
+  getPreMortem?(): IPreMortemEngine;
 }

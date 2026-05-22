@@ -240,6 +240,106 @@ export async function runMigrations({ adapter, getMeta }: MigrationContext): Pro
         }
         await ad.exec(`CREATE INDEX IF NOT EXISTS idx_memory_entries_actor_id ON memory_entries(actor_id)`);
       }
+    },
+    {
+      version: 14,
+      migrate: async (ad) => {
+        // Feature 1 - Dead Reckoning Context Engine
+        await ad.exec(`
+          CREATE TABLE IF NOT EXISTS file_cooccurrence (
+            file_a         TEXT NOT NULL,
+            file_b         TEXT NOT NULL,
+            session_count  INTEGER DEFAULT 1,
+            last_seen      INTEGER NOT NULL,
+            PRIMARY KEY (file_a, file_b)
+          );
+        `);
+        await ad.exec(`
+          CREATE TABLE IF NOT EXISTS session_patterns (
+            id             TEXT PRIMARY KEY,
+            files_touched  TEXT NOT NULL,
+            tools_called   TEXT NOT NULL,
+            session_date   INTEGER NOT NULL,
+            duration_ms    INTEGER
+          );
+        `);
+        await ad.exec(`CREATE INDEX IF NOT EXISTS idx_cooccurrence_file_a ON file_cooccurrence(file_a);`);
+        await ad.exec(`CREATE INDEX IF NOT EXISTS idx_cooccurrence_last_seen ON file_cooccurrence(last_seen);`);
+      }
+    },
+    {
+      version: 15,
+      migrate: async (ad) => {
+        // Feature 2 - Immune System
+        await ad.exec(`
+          CREATE TABLE IF NOT EXISTS mistake_patterns (
+            id               TEXT PRIMARY KEY,
+            category         TEXT NOT NULL,
+            title            TEXT NOT NULL,
+            description      TEXT NOT NULL,
+            code_signature   TEXT NOT NULL,
+            languages        TEXT NOT NULL,
+            triggered_by     TEXT NOT NULL,
+            resolution       TEXT NOT NULL,
+            first_encountered INTEGER NOT NULL,
+            times_triggered  INTEGER DEFAULT 0,
+            source_file      TEXT,
+            severity         TEXT NOT NULL DEFAULT 'medium',
+            embedding        BLOB,
+            dismissed        INTEGER DEFAULT 0,
+            dismissed_reason TEXT
+          );
+        `);
+        await ad.exec(`
+          CREATE TABLE IF NOT EXISTS immune_warnings_log (
+            id           TEXT PRIMARY KEY,
+            pattern_id   TEXT NOT NULL,
+            fired_at     INTEGER NOT NULL,
+            file_path    TEXT NOT NULL,
+            confidence   REAL NOT NULL,
+            dismissed    INTEGER DEFAULT 0,
+            FOREIGN KEY (pattern_id) REFERENCES mistake_patterns(id)
+          );
+        `);
+        await ad.exec(`
+          CREATE VIRTUAL TABLE IF NOT EXISTS mistake_patterns_fts 
+          USING fts5(title, description, code_signature, resolution);
+        `);
+      }
+    },
+    {
+      version: 16,
+      migrate: async (ad) => {
+        // Feature 3 - Pre-Mortem Engine
+        await ad.exec(`
+          CREATE TABLE IF NOT EXISTS failure_pattern_library (
+            id           TEXT PRIMARY KEY,
+            technology   TEXT,
+            pattern      TEXT,
+            title        TEXT NOT NULL,
+            description  TEXT NOT NULL,
+            likelihood   TEXT NOT NULL,
+            severity     TEXT NOT NULL,
+            mitigation   TEXT NOT NULL,
+            source_url   TEXT,
+            embedding    BLOB,
+            created_at   INTEGER NOT NULL,
+            is_builtin   INTEGER DEFAULT 0
+          );
+        `);
+        await ad.exec(`
+          CREATE TABLE IF NOT EXISTS premortem_reports (
+            id             TEXT PRIMARY KEY,
+            proposal_json  TEXT NOT NULL,
+            report_json    TEXT NOT NULL,
+            created_at     INTEGER NOT NULL,
+            outcome        TEXT,
+            outcome_notes  TEXT
+          );
+        `);
+        await ad.exec(`CREATE INDEX IF NOT EXISTS idx_fpl_technology ON failure_pattern_library(technology);`);
+        await ad.exec(`CREATE INDEX IF NOT EXISTS idx_fpl_pattern ON failure_pattern_library(pattern);`);
+      }
     }
   ];
 

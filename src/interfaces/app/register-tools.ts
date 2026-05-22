@@ -32,7 +32,8 @@ import {
   registerRetrievalTools,
   registerGraphTools,
   registerSymbolTools,
-  registerPageIndexTools
+  registerPageIndexTools,
+  registerIntelligenceTools
 } from '../mcp/index.js';
 import { MemoryWorkflowService } from '../../core/engine/index.js';
 
