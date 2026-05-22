@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --no-fund
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+
       - name: Sync versions across README and docs
         run: node scripts/release/sync-versions.mjs
 

@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --no-fund
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+
       - name: Run ${{ matrix.check }}
         run: |
           if [ "${{ matrix.check }}" == "coverage" ]; then
