@@ -7,11 +7,21 @@ Versioning: [CalVer](https://calver.org/) — `YYYY.MM.PATCH[-beta.N]`
 
 ## [Unreleased]
 
-## [2026.05.3-beta.0] - 2026-05-22
+## [2026.05.4] - 2026-05-22
 
 ### Changed
-- **Beta Development Cycle**: Transitioned to the next development cycle for Milestone M2.
-- **Milestone Pivot**: Focused on Adaptive Indexing (S02) and Multi-Root Intelligence (S03).
+- **Technical Positioning Overhaul**: Replaced all 'minimalist' branding with 'self-contained' and 'local-first' to accurately reflect the powerful technical engine.
+- **Documentation 2.1**: Added concrete 'See It In Action' demonstration to README.
+
+### Fixed
+- **N+1 Query Resolution**: Optimized the `SqliteVecIndexService` to pre-fetch file signatures in bulk, significantly improving indexing speed in large workspaces.
+- **CI/CD Reliability**: Fixed a critical hang in the release pipeline by ensuring `ripgrep` is installed in the Ubuntu runner environment.
+- **Code Health**: Removed several unused imports and constants across the engine and tool suites.
+
+### Added
+- **Multi-Root Preparation**: Initial infrastructure for Milestone M2 (Adaptive Indexing & Multi-Root Discovery).
+
+## [2026.05.3-beta.0] - 2026-05-22
 
 ## [2026.05.2] - 2026-05-21
 
