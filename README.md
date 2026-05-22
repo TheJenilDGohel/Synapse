@@ -29,22 +29,38 @@ We give every piece of knowledge a place: a code symbol, an architectural decisi
 
 ---
 
-## 👀 See It In Action
+## ⚡ See It In Action
 
-### 1. Persistent Agent Memory
-*Stop re-explaining your architecture.*
-- **Without Synapse:** "I don't have context from our previous session about the auth refactor."
-- **With Synapse:** [Agent recalls decision] "Based on our choice last week to use **JWT with refresh token rotation**, here is the implementation..."
+**Without Synapse — the AI starts from zero every session:**
+> **User:** "Refactor the auth service like we decided last week"  
+> **AI:** "I don't have context from previous sessions. Could you remind me what was decided?"
 
-### 2. Hybrid Code Intelligence
-*Find what `grep` misses.*
-- **Query:** "find where we handle rate limiting errors"
-- **Synapse:** Beyond literal matches, Synapse finds the `rate_limit_exceeded` handler, the retry middleware, and the circuit breaker logic using combined BM25 and vector search.
+**With Synapse — the AI picks up exactly where you left off:**
+> **User:** "Refactor the auth service like we decided last week"  
+> **AI:** *[recalls stored decision]* "Based on the architectural decision recorded on May 14th to migrate from session tokens to JWT with refresh-token rotation, here's the refactor for AuthService..."
 
-### 3. Temporal Knowledge Graph
-*Time-travel through your project's evolution.*
-- **Query:** Full dependency graph of `AuthService` **as it existed on 2025-01-01**.
-- **Synapse:** Uses `as_of` temporal queries to reconstruct historical project states, tracking facts and decisions as they evolve.
+**Code search that understands intent, not just strings:**
+```bash
+# grep finds: nothing (no literal "rate limit" in the handler name)
+grep -r "rate limit handler" ./src
+
+# Synapse hybrid search finds: the actual implementation
+# → RateLimitMiddleware.ts (semantic: rate limiting logic)
+# → CircuitBreaker.ts (semantic: failure threshold handling)
+# → RetryPolicy.ts (semantic: backoff on limit exceeded)
+```
+
+**Knowledge graph with time-travel:**
+```bash
+# What did AuthService depend on 3 months ago?
+kg_as_of --entity "AuthService" --timestamp "2025-02-01"
+# → Redis (session store), PostgreSQL (user table)
+
+# What does it depend on now?
+kg_query --entity "AuthService"
+# → PostgreSQL (user table), JWT issuer (new)
+# Redis dependency was invalidated on 2025-03-15
+```
 
 ---
 
@@ -73,13 +89,15 @@ Synapse tools are organized into focused suites. Instead of a menu of 70+ granul
 
 ## 🚀 Quick Start
 
-Get up and running in seconds. 
+Get up and running in seconds.
 
-> **Note:** The npm package is named `synapse-cortex`, but the CLI command it installs is `synapse`.
+> **Note:** This is `synapse-cortex` by **TheJenilDGohel** — the MCP server for persistent AI memory + knowledge graph + code intelligence.
+> npm: [https://www.npmjs.com/package/synapse-cortex](https://www.npmjs.com/package/synapse-cortex)
 
 ```bash
 # 1. Install globally
-npm install -g synapse-cortex
+npm install -g synapse-cortex          # latest stable
+npm install -g synapse-cortex@beta     # latest beta
 
 # 2. Setup workspace and local dependencies (ripgrep, sqlite-vec)
 synapse setup

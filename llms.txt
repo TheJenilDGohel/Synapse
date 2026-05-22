@@ -22,4 +22,4 @@ Traditional MCP servers use granular tools (50+). Synapse uses **Power Controlle
 - **as_of**: Time-travel querying in KG for historical context.
 
 ## Versioning
-CalVer: 2026.05.1-beta.0 (Branch: beta)
+CalVer: 2026.05.3-beta.0 (Branch: beta)

@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-# Synapse Milestone Roadmap: v2026.5.0 Stable Release
-=======
 # Synapse Milestone Roadmap: M2 - Adaptive Indexing & Multi-Root Intelligence
->>>>>>> Stashed changes
 
 ## 🎯 Milestone Goal
 Expand Synapse's reach and responsiveness by optimizing background adaptive indexing and synthesizing context across multiple project roots.

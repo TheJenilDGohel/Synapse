@@ -7,11 +7,11 @@ Versioning: [CalVer](https://calver.org/) — `YYYY.MM.PATCH[-beta.N]`
 
 ## [Unreleased]
 
-### Added
-- Professional CI/CD pipeline with GitHub Actions.
-- Branch protection for `main` branch.
-- Standardized GitHub Issue and PR templates.
-- npm OIDC provenance for secure publishing.
+## [2026.05.3-beta.0] - 2026-05-22
+
+### Changed
+- **Beta Development Cycle**: Transitioned to the next development cycle for Milestone M2.
+- **Milestone Pivot**: Focused on Adaptive Indexing (S02) and Multi-Root Intelligence (S03).
 
 ## [2026.05.2] - 2026-05-21
 
