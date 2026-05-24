@@ -125,6 +125,20 @@ Synapse is built on a **Clean Architecture** model, ensuring 100% local privacy 
 - **High Performance**: Leverages `sqlite-vec` for blazing-fast vector similarity search and `ripgrep` for ultra-fast lexical filtering.
 - **Graceful Resilience (Lite Mode)**: Heavyweight native dependencies are optional. If native vector extensions or deep-learning runtimes fail to install (common in restricted or offline environments), Synapse automatically enters **Lite Mode**, maintaining full Knowledge Graph and Lexical (ripgrep) search capabilities.
 
+## ⚖️ Why Synapse? (Competitive Edge)
+
+Synapse is purpose-built for **developers using AI coding agents** in long-running projects.
+
+| Feature | Synapse | Mem0 | Zep / Graphiti |
+| :--- | :--- | :--- | :--- |
+| **Privacy** | 100% Local (SQLite) | Cloud-first | Cloud/Docker |
+| **Code Search** | Hybrid (AST + Vec) | ❌ | ❌ |
+| **Temporal KG** | Bi-temporal (kg_as_of) | ❌ | ✅ |
+| **Setup Time** | < 30s (zero-conf) | Instant (but Cloud) | Minutes (Docker) |
+| **Moat** | The *intersection* of local-first privacy, code intelligence, and temporal knowledge. | Large-scale generic AI memory. | Enterprise-scale graph memory. |
+
+**Choose Synapse if:** You are a solo developer or security-conscious team using Claude Code, Cursor, or Windsurf and want your AI to "remember" your architectural decisions and code context week-over-week without sending data to a third-party memory cloud.
+
 For full details, read [ARCHITECTURE.md](./ARCHITECTURE.md) and [PROJECT.md](./PROJECT.md).
 
 ---
