@@ -201,6 +201,7 @@ export class MemoryStore {
     await ensureMemorySchema(this.adapter!);
     await runMemoryMigrations({
       adapter: this.adapter!,
+      dbPath: this.dbPath,
       getMeta: (key: string) => this.getMeta(key),
       setMeta: (key: string, value: string) => this.setMeta(key, value)
     });

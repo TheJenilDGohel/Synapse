@@ -69,5 +69,6 @@ export interface MigrationSpec {
 export interface MigrationContext {
   adapter: Adapter;
   getMeta: (key: string) => Promise<string | null>;
-  setMeta?: (key: string, value: string) => Promise<void>;
+  setMeta: (key: string, value: string) => Promise<void>;
+  dbPath?: string;
 }

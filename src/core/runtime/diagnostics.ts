@@ -124,7 +124,12 @@ export class DiagnosticService {
       fix = 'Install ripgrep: sudo apt-get install ripgrep';
     }
 
-    return { id: 'ripgrep', ok: false, detail: 'ripgrep (rg) missing', fix };
+    return { 
+      id: 'ripgrep', 
+      ok: true, // Downgraded to warning for Lite Mode
+      detail: 'WARNING: ripgrep (rg) missing. Code search will be slower (Lite Mode).', 
+      fix 
+    };
   }
 
   public async checkSdkImport(): Promise<DoctorCheckResult> {
@@ -137,7 +142,7 @@ export class DiagnosticService {
     } catch (error: any) {
       return {
         id: 'sdk_import',
-        ok: false,
+        ok: false, // This is a hard failure, MCP SDK is required
         detail: `MCP SDK import failed: ${error?.code || error?.message || 'unknown error'}`,
         fix: 'If running from source, run npm install. If using npx package, reinstall and retry.'
       };
@@ -247,11 +252,11 @@ export class DiagnosticService {
 
     return {
       id: 'sqlite_vec_extension',
-      ok: false,
+      ok: true, // Downgraded to warning for Lite Mode
       detail: configuredPath
-        ? `sqlite-vec backend selected but configured vec0 path is missing: ${configuredPath}`
-        : 'sqlite-vec backend selected but vec0 native extension is not configured',
-      fix: 'Run synapse setup again so Synapse can install/configure sqlite-vec, or set SYNAPSE_SQLITE_VEC_EXTENSION to the vec0 shared library path.'
+        ? `INFO: sqlite-vec configured path missing: ${configuredPath}. Semantic search disabled (Lite Mode).`
+        : 'INFO: sqlite-vec native extension missing. Semantic search disabled (Lite Mode).',
+      fix: 'To enable semantic features, install build tools and run synapse setup again.'
     };
   }
 
@@ -366,6 +371,53 @@ export class DiagnosticService {
     return String(value).toLowerCase() === 'true';
   }
 
+  public async checkSchemaVersion(): Promise<DoctorCheckResult> {
+    const configPath = this.resolveConfigPath();
+    let dbPath = '';
+    
+    if (fs.existsSync(configPath)) {
+      try {
+        const parsed = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        dbPath = parsed?.memory?.dbPath || '';
+      } catch { /* ignore */ }
+    }
+
+    if (!dbPath) {
+      const synapseHome = resolveSynapseHome(this.safeEnv);
+      dbPath = path.join(synapseHome, 'synapse.db');
+    }
+
+    if (!fs.existsSync(dbPath)) {
+      return { id: 'schema_version', ok: true, detail: 'Database not yet created (will initialize on first use)' };
+    }
+
+    try {
+      const { DatabaseSync } = await import('node:sqlite');
+      const db = new DatabaseSync(dbPath);
+      let version = 'unknown';
+      try {
+        const row = db.prepare('SELECT value FROM memory_meta WHERE key = ?').get('schema_version') as { value: string };
+        if (row) version = row.value;
+      } catch {
+        version = '0 (unmigrated)';
+      }
+      db.close();
+
+      return {
+        id: 'schema_version',
+        ok: true,
+        detail: `Schema version: ${version} (Database: ${dbPath})`
+      };
+    } catch (err: any) {
+      return {
+        id: 'schema_version',
+        ok: false,
+        detail: `Failed to read schema version: ${err?.message || err}`,
+        fix: 'Ensure SQLite is available and the database file is not corrupted.'
+      };
+    }
+  }
+
   public async runAll(options: { fix?: boolean } = {}): Promise<DoctorReport> {
     const checks = [
       this.checkNodeVersion(),
@@ -376,6 +428,7 @@ export class DiagnosticService {
       this.checkSqliteVecExtension(),
       this.checkConfigFile(),
       this.checkModelCacheWritable(),
+      await this.checkSchemaVersion(),
       this.checkGlobalInstallStaleTempDirs(options.fix)
     ];
 

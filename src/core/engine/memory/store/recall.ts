@@ -95,7 +95,7 @@ export async function recall(
   embeddingService: EmbeddingService | null = null
 ): Promise<RecallResult> {
   const safeLimit = clampInt(limit, 10, 1, 50);
-  const filters: string[] = ['status = ?'];
+  const filters: string[] = ['status = ?', 'invalidated_at IS NULL'];
   const params: unknown[] = ['active'];
 
   if (agentId) {

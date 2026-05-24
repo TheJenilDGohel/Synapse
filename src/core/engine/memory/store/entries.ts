@@ -238,24 +238,21 @@ export async function storeEntry(store: MemoryStoreLike, input: StoreEntryInput)
   const id = generateMemoryId();
   const createdAt = nowIso();
 
-  // CONFLICT-01: Proactive conflict detection/invalidation
-  const conflictKeywords = ['migrated off', 'replaced', 'instead of', 'deprecated', 'no longer'];
-  const hasConflictSignal = conflictKeywords.some(k => content.toLowerCase().includes(k));
+  // CONFLICT-01: Proactive conflict detection/invalidation (Phase 2 - Option A)
+  // Find entries that are highly similar (>= 0.85) but were not caught as exact duplicates (>= 0.92)
+  const conflictCandidates = await checkDuplicate(store.adapter, store.embeddingService, content, {
+    threshold: 0.85,
+    nest,
+    branch,
+    projectPath: scope.project_path
+  });
   
-  if (hasConflictSignal) {
-    const candidates = await checkDuplicate(store.adapter, store.embeddingService, content, {
-      threshold: 0.65, // Lower threshold for identifying related facts to invalidate
-      nest,
-      branch,
-      projectPath: scope.project_path
-    });
-    
-    if (candidates.isDuplicate && candidates.match) {
-      await store.adapter.run(
-        "UPDATE memory_entries SET status = 'superseded', updated_at = ? WHERE id = ?",
-        [createdAt, candidates.match.id]
-      );
-    }
+  if (conflictCandidates.isDuplicate && conflictCandidates.match) {
+    // We found a highly similar entry. Mark the old fact as invalidated.
+    await store.adapter.run(
+      "UPDATE memory_entries SET status = 'invalidated', invalidated_at = ?, updated_at = ? WHERE id = ?",
+      [createdAt, createdAt, conflictCandidates.match.id]
+    );
   }
 
   await store.adapter.transaction(async (ad) => {
@@ -265,8 +262,8 @@ export async function storeEntry(store: MemoryStoreLike, input: StoreEntryInput)
         scope_root_path, scope_project_path, scope_branch_name, topic, feature,
         nest, branch, agent_id, actor_id,
         tags_json, search_terms_json, links_json, source_type, source_ref, fingerprint,
-        created_at, updated_at, last_recalled_at, recall_count
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, 0)`,
+        created_at, updated_at, last_recalled_at, invalidated_at, recall_count
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, 0)`,
       [
         id, kind, title, summary, content, status, importance, confidence,
         scope.root_path, scope.project_path, scope.branch_name, scope.topic, scope.feature,

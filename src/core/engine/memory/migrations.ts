@@ -1,9 +1,10 @@
+import fs from 'node:fs';
 import { stableJson } from './utils/formatting.js';
 import { buildSearchTerms } from './utils/search-scoring.js';
 import type { MigrationSpec, MigrationContext, Adapter } from './types/index.js';
 import { SCHEMA_VERSION } from './schema.js';
 
-export async function runMigrations({ adapter, getMeta }: MigrationContext): Promise<void> {
+export async function runMigrations({ adapter, getMeta, dbPath }: MigrationContext): Promise<void> {
   const currentVersion = Number.parseInt(await getMeta('schema_version') || '0', 10) || 0;
 
   if (currentVersion >= SCHEMA_VERSION) {
@@ -340,6 +341,17 @@ export async function runMigrations({ adapter, getMeta }: MigrationContext): Pro
         await ad.exec(`CREATE INDEX IF NOT EXISTS idx_fpl_technology ON failure_pattern_library(technology);`);
         await ad.exec(`CREATE INDEX IF NOT EXISTS idx_fpl_pattern ON failure_pattern_library(pattern);`);
       }
+    },
+    {
+      version: 17,
+      migrate: async (ad) => {
+        // Memory Conflict Resolution (Phase 2)
+        try {
+          await ad.exec(`ALTER TABLE memory_entries ADD COLUMN invalidated_at TEXT`);
+        } catch {
+          // Column already exists on fresh schema
+        }
+      }
     }
   ];
 
@@ -349,13 +361,31 @@ export async function runMigrations({ adapter, getMeta }: MigrationContext): Pro
       continue;
     }
     migrated = true;
-    await adapter.transaction(async (ad: Adapter) => {
-      await migrate(ad);
-      await ad.run(
-        "INSERT OR REPLACE INTO memory_meta(key, value) VALUES ('schema_version', ?)",
-        [String(version)]
-      );
-    });
+    
+    // Backup before migrating
+    let backupPath: string | null = null;
+    if (dbPath && fs.existsSync(dbPath)) {
+      backupPath = `${dbPath}.v${currentVersion}.backup`;
+      fs.copyFileSync(dbPath, backupPath);
+    }
+    
+    try {
+      await adapter.transaction(async (ad: Adapter) => {
+        await migrate(ad);
+        await ad.run(
+          "INSERT OR REPLACE INTO memory_meta(key, value) VALUES ('schema_version', ?)",
+          [String(version)]
+        );
+      });
+    } catch (error) {
+      // Restore from backup on failure
+      if (backupPath && fs.existsSync(backupPath)) {
+        try {
+          fs.copyFileSync(backupPath, dbPath!);
+        } catch { /* best-effort restore */ }
+      }
+      throw new Error(`Migration to version ${version} failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   // Update SQLite query planner statistics after schema changes
