@@ -14,6 +14,14 @@ Date range: 2026-05-24
 Gate passed: Yes — all 4 contradiction tests pass.
 Breaking change: DB Schema updated to v17 (added `invalidated_at` to `memory_entries`).
 Known issues: None.
+
+## Phase 3 — Automatic Knowledge Graph Extraction
+Status: COMPLETE
+Date range: 2026-05-24
+Gate passed: Yes — all 4 auto-extraction tests (Basic, Hypothetical, Negation, Persistence) pass using mock on-device inference.
+Breaking change: `MemoryStore` and `MemoryService` constructors now require `EnrichmentService` for auto-extraction support.
+Known issues: On-device extraction is asynchronous and depends on the user enabling the `EnrichmentService`.
+
 ## Phase 4 — Schema Migration System
 Status: COMPLETE
 Date range: 2026-05-24
@@ -38,8 +46,8 @@ Known issues: Full migration of all 100+ error messages to `SynapseError` class 
 ## Agentic Redesign Protocol Status
 - [x] Phase 1: Setup Experience Redesign
 - [x] Phase 2: Memory Conflict Resolution
+- [x] Phase 3: Auto KG Extraction
 - [x] Phase 4: Schema Migration System
 - [x] Phase 5: Benchmark Suite
 - [x] Phase 6: Developer Experience Polish
-- [ ] Phase 3: Auto KG Extraction (Next Priority)
 - [ ] Phase 7: Competitive Positioning (Ongoing)

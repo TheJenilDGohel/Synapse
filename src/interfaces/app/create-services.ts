@@ -151,7 +151,8 @@ export async function createServices(runtime: any): Promise<AppServices> {
     dbPath: runtime.memoryDbPath,
     autoCapture: runtime.memoryAutoCapture,
     consentDone: runtime.memoryConsentDone,
-    embeddingService: embeddingService as any
+    embeddingService: embeddingService as any,
+    enrichmentService
   });
 
   // Initialize on-device NER for entity extraction (opt-in, issue #67)

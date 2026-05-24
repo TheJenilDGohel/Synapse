@@ -31,8 +31,53 @@ Code:
 \`\`\`
 `;
 
+export const KG_EXTRACTION_PROMPT = `
+Extract entities and relationships from this statement for a technical knowledge graph.
+Statement: "{{statement}}"
+
+Return JSON only:
+{
+  "entities": [{"name": "...", "type": "service|project|team|technology|decision"}],
+  "relationships": [{"from": "...", "relation": "depends_on|owns|uses|decided", "to": "..."}],
+  "confidence": 0.0-1.0,
+  "is_hypothetical": true/false,
+  "is_negation": true/false
+}
+
+If confidence < 0.7 or is_hypothetical or is_negation: return empty arrays.
+`;
+
 export function buildEnrichmentPrompt(code: string): string {
   return ENRICHMENT_PROMPT.replace('{{code}}', code);
+}
+
+export function buildKgExtractionPrompt(statement: string): string {
+  return KG_EXTRACTION_PROMPT.replace('{{statement}}', statement);
+}
+
+export interface ExtractedGraphData {
+  entities: Array<{ name: string; type: string }>;
+  relationships: Array<{ from: string; relation: string; to: string }>;
+  confidence: number;
+  is_hypothetical: boolean;
+  is_negation: boolean;
+}
+
+export function parseKgExtractionResponse(response: string): ExtractedGraphData {
+  try {
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON found in LLM response');
+    const data = JSON.parse(jsonMatch[0]);
+    return {
+      entities: Array.isArray(data.entities) ? data.entities : [],
+      relationships: Array.isArray(data.relationships) ? data.relationships : [],
+      confidence: typeof data.confidence === 'number' ? data.confidence : 0,
+      is_hypothetical: !!data.is_hypothetical,
+      is_negation: !!data.is_negation
+    };
+  } catch (error) {
+    return { entities: [], relationships: [], confidence: 0, is_hypothetical: false, is_negation: false };
+  }
 }
 
 export function parseEnrichmentResponse(response: string): EnrichmentMetadata {

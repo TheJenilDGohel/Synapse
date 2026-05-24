@@ -76,6 +76,7 @@ interface MemoryStoreConfig {
   backend: string;
   dbPath: string;
   embeddingService?: EmbeddingService | null;
+  enrichmentService?: EnrichmentService | null;
 }
 
 interface BackendSelection {
@@ -87,12 +88,14 @@ import { DurableStore } from './DurableStore.js';
 import { KnowledgeGraphService } from '../knowledge-graph/KnowledgeGraphService.js';
 import { TaxonomyService } from '../taxonomy/TaxonomyService.js';
 import { IngestionEngine } from '../ingest/IngestionEngine.js';
+import { EnrichmentService } from '../../enrichment/service.js';
 
 export class MemoryStore {
   enabled: boolean;
   requestedBackend: string;
   dbPath: string;
   embeddingService: EmbeddingService | null;
+  enrichmentService: EnrichmentService | null;
   hooks: MemoryHooks;
   adapter: Adapter | null;
   selectedBackend: string | null;
@@ -107,12 +110,14 @@ export class MemoryStore {
     enabled,
     backend,
     dbPath,
-    embeddingService
+    embeddingService,
+    enrichmentService
   }: MemoryStoreConfig) {
     this.enabled = enabled;
     this.requestedBackend = backend || 'auto';
     this.dbPath = dbPath;
     this.embeddingService = embeddingService || null;
+    this.enrichmentService = enrichmentService || null;
     this.hooks = new MemoryHooks();
     this.adapter = null;
     this.selectedBackend = null;
@@ -156,6 +161,7 @@ export class MemoryStore {
     this.durableStore.requestedBackend = this.requestedBackend;
     this.durableStore.selectedBackend = this.selectedBackend;
     this.durableStore.embeddingService = this.embeddingService;
+    this.durableStore.enrichmentService = this.enrichmentService;
 
     this.kgService = new KnowledgeGraphService(this.adapter!);
     this.taxonomyService = new TaxonomyService(this.adapter!);

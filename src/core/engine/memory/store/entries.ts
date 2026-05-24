@@ -7,6 +7,7 @@ import {
 } from '../utils/index.js';
 import { checkDuplicate } from './dedup.js';
 import { extractAndLink } from '../knowledge-graph/auto-link.js';
+import { autoExtract } from '../knowledge-graph/auto-extract.js';
 import { ValidationError, NotFoundError } from '../../../types/errors.js';
 import type {
   Adapter, EmbeddingService, MemoryEntry, MemoryEntryRow, MemoryRevisionRow,
@@ -14,6 +15,7 @@ import type {
   UpdateEntryPatch, DeleteEntryResult, ListEntriesOpts, ListEntriesResult, StoreStatusResult,
   AutoLinkResult
 } from '../types/index.js';
+import type { EnrichmentService } from '../../enrichment/service.js';
 
 interface MemoryStoreLike {
   enabled: boolean;
@@ -22,6 +24,7 @@ interface MemoryStoreLike {
   selectedBackend: string | null;
   adapter: Adapter;
   embeddingService: EmbeddingService | null;
+  enrichmentService: EnrichmentService | null;
   init(): Promise<unknown>;
   getMeta(key: string): Promise<string | null>;
 }
@@ -297,6 +300,13 @@ export async function storeEntry(store: MemoryStoreLike, input: StoreEntryInput)
     autoLinkResult = await extractAndLink(store.adapter, id, content);
   } catch {
     // Non-blocking: auto-link failure does not prevent memory creation
+  }
+
+  // Phase 3: Automatic Knowledge Graph Extraction (Asynchronous)
+  if (store.enrichmentService) {
+    autoExtract(store.adapter, store.enrichmentService, id, content).catch(() => {
+      /* non-blocking background error */
+    });
   }
 
   return {

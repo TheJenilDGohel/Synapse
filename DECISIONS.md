@@ -30,6 +30,18 @@ This document records significant architectural decisions, the reasoning behind 
 - `synapse doctor` now explicitly reads and reports the `schema_version`.
 **Tradeoff:** Creating a full backup copy for each migration step temporarily consumes 2x disk space during the upgrade process, which could be noticeable for multi-gigabyte knowledge graphs. Given the typical size of text-based DBs, data safety outweighs disk usage.
 
+## [2026-05-24] Automatic Knowledge Graph Extraction (Phase 3)
+**Decision:** Implement a lightweight, prompt-driven auto-extraction pipeline for the Knowledge Graph.
+**Reason:** The Knowledge Graph was previously a manual-only feature ("Problem 4"), which drastically reduced its adoption. Automating entity and relationship extraction from memory writes allows the graph to "grow with the project" without user effort.
+**Taxonomy:**
+- **Entities:** `service`, `project`, `team`, `technology`, `decision`.
+- **Relationships:** `depends_on`, `owns`, `uses`, `decided`.
+**Logic:**
+- On every `storeEntry` operation, if the `EnrichmentService` (on-device LLM) is active, a specialized extraction prompt is run.
+- High-confidence entities and triples are automatically merged into the Knowledge Graph.
+- Low-confidence ( < 0.7), hypothetical ("if we use..."), or negative ("we don't use...") statements are ignored to maintain graph precision.
+**Tradeoff:** Auto-extraction adds minor latency to memory writes when the on-device model is loading/running. To mitigate this, extraction is performed asynchronously after the memory entry is committed.
+
 ## [2026-05-24] Error Message Quality & First-Run UX (Phase 6)
 **Decision:** Establish a strict error reporting standard and guided welcome experience.
 **Reason:** Cryptic stack traces and "silent" first-run failures are the primary cause of user churn in developer tools. Users need to know exactly why a failure occurred and how to fix it without reading the source code.

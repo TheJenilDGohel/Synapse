@@ -19,6 +19,7 @@ export class DurableStore implements IDurableStore {
   public requestedBackend: string = 'auto';
   public selectedBackend: string | null = null;
   public embeddingService: any = null;
+  public enrichmentService: any = null;
 
   constructor(private adapter: Adapter) {
     this.hooks = new MemoryHooks();

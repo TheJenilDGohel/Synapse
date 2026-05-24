@@ -71,6 +71,22 @@ export class EnrichmentService {
     });
   }
 
+  async extractGraph(id: string, statement: string): Promise<any> {
+    await this.initialize();
+
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, (result) => {
+        if (result instanceof Error) reject(result);
+        else resolve(result);
+      });
+
+      this.worker?.postMessage({
+        type: 'kg_extract',
+        payload: { id, statement }
+      });
+    });
+  }
+
   getStatus(): Record<string, any> {
     return {
       active: !!this.worker,

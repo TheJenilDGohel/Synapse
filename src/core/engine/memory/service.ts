@@ -21,6 +21,7 @@ interface MemoryServiceConfig {
   autoCapture: boolean;
   consentDone: boolean;
   embeddingService?: EmbeddingService | null;
+  enrichmentService?: any | null;
 }
 
 interface BackendDetection {
@@ -46,7 +47,8 @@ export class MemoryService {
     dbPath,
     autoCapture,
     consentDone,
-    embeddingService
+    embeddingService,
+    enrichmentService
   }: MemoryServiceConfig) {
     this.synapseHome = synapseHome;
     this.enabled = enabled;
@@ -58,7 +60,8 @@ export class MemoryService {
       enabled,
       backend,
       dbPath,
-      embeddingService: embeddingService || null
+      embeddingService: embeddingService || null,
+      enrichmentService: enrichmentService || null
     });
   }
 
