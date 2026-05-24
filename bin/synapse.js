@@ -9,17 +9,12 @@
  * Global flags: --json, --verbose, --quiet, --config <path>
  */
 
-import { SERVER_VERSION } from '../src/core/runtime/version.js';
-import { buildForwardArgv, hasVersionFlag, importRelative } from './_shared.js';
-import { parseGlobalOptions } from '../src/interfaces/cli/options.js';
-import { printHelp } from '../src/interfaces/cli/help.js';
-import { routeCommand } from '../src/interfaces/cli/router.js';
+import { buildForwardArgv, hasVersionFlag, importRelative, relaunchWithTsx } from './_shared.js';
+
+// Ensure tsx is active (e.g. if invoked as `node bin/synapse.js` directly)
+relaunchWithTsx();
 
 const rawArgs = process.argv.slice(2);
-const globalOpts = parseGlobalOptions(rawArgs);
-const args = globalOpts.args;
-const command = args[0] || '';
-const rest = args.slice(1);
 
 async function main() {
   // 0. Auto-start MCP server if spawned in stdio/sse mode by a client
@@ -28,6 +23,17 @@ async function main() {
     await startMcpServer();
     return;
   }
+
+  // Load modules that need tsx resolution
+  const { SERVER_VERSION } = await importRelative('../src/core/runtime/version.js', import.meta.url);
+  const { parseGlobalOptions } = await importRelative('../src/interfaces/cli/options.js', import.meta.url);
+  const { printHelp } = await importRelative('../src/interfaces/cli/help.js', import.meta.url);
+  const { routeCommand } = await importRelative('../src/interfaces/cli/router.js', import.meta.url);
+
+  const globalOpts = parseGlobalOptions(rawArgs);
+  const args = globalOpts.args;
+  const command = args[0] || '';
+  const rest = args.slice(1);
 
   // 1. --version / -v anywhere (even without a command)
   if (hasVersionFlag(rawArgs)) {
