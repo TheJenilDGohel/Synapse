@@ -8,6 +8,7 @@
  */
 
 import { c, symbol } from './ansi.js';
+import { SynapseError } from '../../core/types/errors.js';
 
 /**
  * Write JSON data to stdout with pretty-print.
@@ -19,8 +20,14 @@ export function writeJson(data: unknown): void {
 /**
  * Write an error message to stderr.
  */
-export function writeError(msg: string): void {
-  process.stderr.write(`${c.red('Error:')} ${msg}\n`);
+export function writeError(err: string | Error | SynapseError): void {
+  if (err instanceof SynapseError) {
+    process.stderr.write(c.red(err.format()) + '\n');
+  } else if (err instanceof Error) {
+    process.stderr.write(`${c.red('Error:')} ${err.message}\n`);
+  } else {
+    process.stderr.write(`${c.red('Error:')} ${err}\n`);
+  }
 }
 
 /**

@@ -1,33 +1,58 @@
 /**
- * Base class for all Synapse-specific errors.
+ * Error message quality standard (Phase 6.2).
+ * 
+ * Template:
+ * [synapse:component] What happened
+ *   Why: The most likely reason
+ *   Fix: The exact command or action to resolve it
+ *   Docs: URL to relevant documentation
  */
+
 export class SynapseError extends Error {
-  constructor(message: string, public readonly code: string, public readonly details?: any) {
-    super(message);
+  public component: string;
+  public why: string;
+  public fix: string;
+  public docs?: string;
+
+  constructor(opts: {
+    component: string;
+    message: string;
+    why: string;
+    fix: string;
+    docs?: string;
+  }) {
+    super(opts.message);
     this.name = 'SynapseError';
+    this.component = opts.component;
+    this.why = opts.why;
+    this.fix = opts.fix;
+    this.docs = opts.docs;
+  }
+
+  /**
+   * Format error message for human consumption in CLI.
+   */
+  public format(): string {
+    let out = `[synapse:${this.component}] ${this.message}\n`;
+    out += `  Why: ${this.why}\n`;
+    out += `  Fix: ${this.fix}`;
+    if (this.docs) {
+      out += `\n  Docs: ${this.docs}`;
+    }
+    return out;
   }
 }
 
-export class DatabaseError extends SynapseError {
-  constructor(message: string, details?: any) {
-    super(message, 'DATABASE_ERROR', details);
+export class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ValidationError';
   }
 }
 
-export class ValidationError extends SynapseError {
-  constructor(message: string, details?: any) {
-    super(message, 'VALIDATION_ERROR', details);
-  }
-}
-
-export class NotFoundError extends SynapseError {
-  constructor(message: string, details?: any) {
-    super(message, 'NOT_FOUND', details);
-  }
-}
-
-export class CapacityError extends SynapseError {
-  constructor(message: string, details?: any) {
-    super(message, 'CAPACITY_EXCEEDED', details);
+export class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotFoundError';
   }
 }

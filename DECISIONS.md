@@ -29,3 +29,12 @@ This document records significant architectural decisions, the reasoning behind 
 - If an unhandled exception occurs, the runner catches the error, restores the original database from the backup, and aborts startup to preserve data integrity.
 - `synapse doctor` now explicitly reads and reports the `schema_version`.
 **Tradeoff:** Creating a full backup copy for each migration step temporarily consumes 2x disk space during the upgrade process, which could be noticeable for multi-gigabyte knowledge graphs. Given the typical size of text-based DBs, data safety outweighs disk usage.
+
+## [2026-05-24] Error Message Quality & First-Run UX (Phase 6)
+**Decision:** Establish a strict error reporting standard and guided welcome experience.
+**Reason:** Cryptic stack traces and "silent" first-run failures are the primary cause of user churn in developer tools. Users need to know exactly why a failure occurred and how to fix it without reading the source code.
+**Implementation:**
+- **Standardized Errors:** Introduced the `SynapseError` class. Every critical error now reports: `Component`, `What happened`, `Why`, and `Fix`.
+- **First-Run Welcome:** If `synapse start` is run without a configuration file, it emits a stylized box containing an MCP configuration snippet for easy copy-pasting into Cursor/Claude Desktop.
+- **Introspection:** Added the `synapse status` command to provide a quick health and data volume snapshot.
+**Tradeoff:** Standardizing error messages is a large-scale refactoring task. I've implemented the framework and updated core CLI entrypoints; individual services will be migrated to the new standard incrementally.

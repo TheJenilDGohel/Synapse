@@ -79,6 +79,33 @@ async function main() {
       process.stdout.write('  --help,-h   show this help\n');
       return;
     }
+
+    const { DiagnosticService } = await importRelative('../src/core/runtime/diagnostics.js', import.meta.url);
+    const diag = new DiagnosticService();
+    const configPath = diag.resolveConfigPath();
+    const isFirstRun = !fs.existsSync(configPath);
+
+    if (isFirstRun && !process.env.MCP_MODE) {
+      const { c, box } = await importRelative('../src/interfaces/cli/ansi.js', import.meta.url);
+      const { SERVER_VERSION: ver } = await importRelative('../src/core/runtime/version.js', import.meta.url);
+      process.stdout.write('\n' + box([
+        `${c.bold('Welcome to Synapse')} ${c.cyan(`v${ver}`)}`,
+        c.dim('Self-contained context layer for AI agents'),
+        '',
+        `${c.green('✓')} Configuration not found. Initializing standard defaults...`,
+        `${c.green('✓')} Memory backend: ${c.cyan('sqlite-vec')} (local)`,
+        '',
+        `MCP endpoint ready. Add to your AI client:`,
+        c.gray('{'),
+        c.gray('  "mcpServers": {'),
+        c.gray('    "synapse": { "command": "synapse", "args": ["start"] }'),
+        c.gray('  }'),
+        c.gray('}'),
+        '',
+        `Try: ${c.italic('"Remember that this project uses PostgreSQL on port 5433"')}`
+      ], { padding: 1 }) + '\n\n');
+    }
+
     const { startMcpServer } = await importRelative('../src/interfaces/app/index.js', import.meta.url);
     await startMcpServer();
     return;

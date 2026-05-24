@@ -36,10 +36,12 @@ const CATEGORIES: CategoryDef[] = [
     color: c.green,
     commands: [
       { name: 'start', alias: 'serve', desc: 'Start MCP server (stdio)' },
+      { name: 'status', desc: 'Show server & database status' },
       { name: 'setup', desc: 'Run interactive setup wizard' },
       { name: 'onboard', desc: 'Guided first-run experience' },
       { name: 'upgrade', desc: 'Upgrade package and sync config' },
       { name: 'doctor', desc: 'Run health diagnostics' },
+      { name: 'bench', desc: 'Run performance benchmarks' },
       { name: 'selftest', desc: 'End-to-end pipeline validation' },
       { name: 'dashboard', desc: 'Show memory & KG overview' },
       { name: 'version', desc: 'Print version' },

@@ -32,6 +32,7 @@ const NOUN_MODULES: Map<string, string> = new Map([
   ['upgrade', '../src/interfaces/cli/commands/upgrade.js'],
   ['boost', '../src/interfaces/cli/commands/boost.js'],
   ['bench', '../src/interfaces/cli/commands/bench.js'],
+  ['status', '../src/interfaces/cli/commands/status.js'],
 ]);
 
 /** flat command -> script path (relative to bin/) */
