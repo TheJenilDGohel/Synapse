@@ -139,7 +139,7 @@ Synapse is purpose-built for **developers using AI coding agents** in long-runni
 
 **Choose Synapse if:** You are a solo developer or security-conscious team using Claude Code, Cursor, or Windsurf and want your AI to "remember" your architectural decisions and code context week-over-week without sending data to a third-party memory cloud.
 
-For full details, read [ARCHITECTURE.md](./ARCHITECTURE.md) and [PROJECT.md](./PROJECT.md).
+For full details, read [ARCHITECTURE.md](./docs/ARCHITECTURE.md) and [PROJECT.md](./docs/PROJECT.md).
 
 ---
 

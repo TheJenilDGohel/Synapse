@@ -41,10 +41,10 @@
     "src",
     "scripts",
     "skills",
+    "examples",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md",
-    ".mcp.json.example"
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=18.0.0"
