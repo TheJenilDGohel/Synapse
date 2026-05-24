@@ -7,6 +7,8 @@ Versioning: [CalVer](https://calver.org/) — `YYYY.MM.PATCH[-beta.N]`
 
 ## [Unreleased]
 
+## [2026.05.5-beta.0] - 2026-05-24
+
 ### Fixed
 - **CLI Bootstrap Resilience**: Re-engineered the CLI entrypoint (`bin/synapse.js`) to be completely dependency-free for core commands. `synapse --version` and `synapse help` now work even if `node_modules` is missing or corrupted.
 - **Robust Auto-Relaunch**: Improved the `tsx` relauncher to handle missing loader dependencies gracefully, providing actionable instructions instead of internal module resolution crashes.
@@ -15,6 +17,10 @@ Versioning: [CalVer](https://calver.org/) — `YYYY.MM.PATCH[-beta.N]`
 - **Incremental Delta-Indexing (S02)**: Implemented surgical index updates for only changed/deleted files, significantly reducing re-indexing overhead in large workspaces.
 - **Multi-Root Discovery (S03)**: Implemented recursive project detection in monorepo structures (depth limit: 3).
 - **Graceful Lite Mode**: Heavyweight native dependencies (`@huggingface/transformers`, `sqlite-vec`) are now optional. The system automatically detects missing backends and degrades to "Lite Mode" (Lexical search + KG) instead of failing to install or start in restricted environments.
+- **Automatic Knowledge Graph Extraction**: Introduced a background on-device extraction pipeline that automatically populates the Knowledge Graph from memory entries using local transformer models.
+- **System Introspection**: Added the `synapse status` command for detailed database and server health snapshots.
+- **Performance Benchmarks**: Implemented `synapse bench` and published a quantitative `BENCHMARKS.md` demonstrating sub-100ms P95 latencies for local operations.
+
 
 
 
