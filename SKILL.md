@@ -17,3 +17,4 @@ Operational guidance for AI agents interacting with a Synapse-equipped workspace
 - Prefer `synapse_search` (hybrid) for conceptual queries.
 - Use `synapse_symbol_query` when you have an exact symbol name.
 - Use `synapse_workspace_manage` for reading files with `mode: 'signatures'` when only structure is needed.
+- **Lite Mode Awareness**: If semantic search or reranking tools report "backend not found" or "disabled", Synapse is in **Lite Mode**. Fall back to `lexical` search (code mode) and knowledge graph queries.

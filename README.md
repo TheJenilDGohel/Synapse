@@ -123,6 +123,7 @@ Synapse is built on a **Clean Architecture** model, ensuring 100% local privacy 
 - **Zero Cloud / Local-First**: All data, embeddings, and relationships are stored in a local SQLite database (`~/.synapse/`). No telemetry, no external API calls.
 - **Dependency Inversion**: The core cognitive engine (`src/core/engine`) is entirely decoupled from the MCP and CLI delivery mechanisms (`src/interfaces`).
 - **High Performance**: Leverages `sqlite-vec` for blazing-fast vector similarity search and `ripgrep` for ultra-fast lexical filtering.
+- **Graceful Resilience (Lite Mode)**: Heavyweight native dependencies are optional. If native vector extensions or deep-learning runtimes fail to install (common in restricted or offline environments), Synapse automatically enters **Lite Mode**, maintaining full Knowledge Graph and Lexical (ripgrep) search capabilities.
 
 For full details, read [ARCHITECTURE.md](./ARCHITECTURE.md) and [PROJECT.md](./PROJECT.md).
 

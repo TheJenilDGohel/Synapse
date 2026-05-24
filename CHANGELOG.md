@@ -8,11 +8,14 @@ Versioning: [CalVer](https://calver.org/) — `YYYY.MM.PATCH[-beta.N]`
 ## [Unreleased]
 
 ### Fixed
-- **CLI Bootstrap Blocker**: Resolved a critical `ERR_MODULE_NOT_FOUND` crash when running the CLI directly with `node` (bypassing shebang). Implemented a robust `tsx` auto-relaunch mechanism in `bin/synapse.js`.
+- **CLI Bootstrap Resilience**: Re-engineered the CLI entrypoint (`bin/synapse.js`) to be completely dependency-free for core commands. `synapse --version` and `synapse help` now work even if `node_modules` is missing or corrupted.
+- **Robust Auto-Relaunch**: Improved the `tsx` relauncher to handle missing loader dependencies gracefully, providing actionable instructions instead of internal module resolution crashes.
 
 ### Added
 - **Incremental Delta-Indexing (S02)**: Implemented surgical index updates for only changed/deleted files, significantly reducing re-indexing overhead in large workspaces.
 - **Multi-Root Discovery (S03)**: Implemented recursive project detection in monorepo structures (depth limit: 3).
+- **Graceful Lite Mode**: Heavyweight native dependencies (`@huggingface/transformers`, `sqlite-vec`) are now optional. The system automatically detects missing backends and degrades to "Lite Mode" (Lexical search + KG) instead of failing to install or start in restricted environments.
+
 
 
 ## [2026.05.4] - 2026-05-22
