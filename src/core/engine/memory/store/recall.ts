@@ -11,7 +11,7 @@ import {
 import { cosineSimilarity, cosineToUnitScore } from '../../retrieval/core/relevance.js';
 import { extractEntities } from '../ingest/ingest.js';
 import { normalizeEntityId } from '../knowledge-graph/kg.js';
-import type { Adapter, MemoryEntryRow, RecallInput, RecallResult, RecallResultItem, MemoryEntry, RelatedFact } from '../types/index.js';
+import type { Adapter, MemoryEntryRow, RecallInput, RecallResult, RecallResultItem, MemoryEntry, RelatedFact, EmbeddingService } from '../types/index.js';
 
 function hasStrongQuerySignal(row: MemoryEntryRow, terms: string[], originalQuery: string): boolean {
   if (terms.length === 0) {

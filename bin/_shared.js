@@ -36,7 +36,7 @@ export function relaunchWithTsx() {
   try {
     const req = createRequire(new URL('../package.json', import.meta.url));
     tsxEsm = pathToFileURL(req.resolve('tsx/esm')).href;
-  } catch (error) {
+  } catch {
     // tsx not found. If this is a local checkout, we need it.
     // If this is a published package, bin/synapse.js shouldn't be called directly;
     // but if it is, we should warn.
@@ -44,7 +44,7 @@ export function relaunchWithTsx() {
   }
 
   try {
-    const result = execFileSync(process.execPath, [
+    execFileSync(process.execPath, [
       '--import', tsxEsm,
       ...process.argv.slice(1)
     ], {

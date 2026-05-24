@@ -55,7 +55,7 @@ benchmark-10m.db
 debug-chunk.ts
 debug-grammar.ts
 init_context.json
-reports/
+/reports/
 **/build_err.txt
 **/build_log.txt
 **/build_output.txt

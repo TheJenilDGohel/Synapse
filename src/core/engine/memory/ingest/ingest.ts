@@ -258,7 +258,8 @@ async function _ingestTurns(
     getMeta: async (key: string) => {
       const row = await adapter.get<{ value: string }>('SELECT value FROM memory_meta WHERE key = ?', [key]);
       return row ? row.value : null;
-    }
+    },
+    enrichmentService: null
   };
 
   for (const turn of turns) {
