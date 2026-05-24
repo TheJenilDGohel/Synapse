@@ -29,13 +29,22 @@ export function ensureTsx() {
  * fails because Node resolves it from CWD instead of the package dir.
  */
 export function relaunchWithTsx() {
-  const req = createRequire(new URL('../package.json', import.meta.url));
-  const tsxEsm = pathToFileURL(req.resolve('tsx/esm')).href;
   // Already relaunched — don't loop
   if (process.env.__SYNAPSE_TSX_RELAUNCHED === '1') return false;
 
+  let tsxEsm;
   try {
-    execFileSync(process.execPath, [
+    const req = createRequire(new URL('../package.json', import.meta.url));
+    tsxEsm = pathToFileURL(req.resolve('tsx/esm')).href;
+  } catch (error) {
+    // tsx not found. If this is a local checkout, we need it.
+    // If this is a published package, bin/synapse.js shouldn't be called directly;
+    // but if it is, we should warn.
+    return false; // Let the caller decide how to handle missing tsx
+  }
+
+  try {
+    const result = execFileSync(process.execPath, [
       '--import', tsxEsm,
       ...process.argv.slice(1)
     ], {

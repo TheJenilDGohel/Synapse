@@ -9,14 +9,51 @@
  * Global flags: --json, --verbose, --quiet, --config <path>
  */
 
+import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import { buildForwardArgv, hasVersionFlag, importRelative, relaunchWithTsx } from './_shared.js';
 
-// Ensure tsx is active (e.g. if invoked as `node bin/synapse.js` directly)
-relaunchWithTsx();
+const isRelaunched = process.env.__SYNAPSE_TSX_RELAUNCHED === '1';
+
+// 1. Try to relaunch with tsx if not already active
+const tsxFound = relaunchWithTsx();
 
 const rawArgs = process.argv.slice(2);
 
+// 2. Pre-parse basic options (like --json) for non-tsx paths
+const isJson = rawArgs.includes('--json');
+
+async function getLocalVersion() {
+  try {
+    const req = createRequire(import.meta.url);
+    const pkg = JSON.parse(fs.readFileSync(req.resolve('../package.json'), 'utf8'));
+    return pkg.version;
+  } catch {
+    return 'unknown';
+  }
+}
+
 async function main() {
+  // 3. Handle commands that don't REQUIRE tsx (e.g. version)
+  // This allows `node bin/synapse.js --version` to work even if node_modules is missing.
+  if (hasVersionFlag(rawArgs) || rawArgs[0] === 'version') {
+    const version = await getLocalVersion();
+    if (isJson) {
+      process.stdout.write(JSON.stringify({ version }) + '\n');
+    } else {
+      process.stdout.write(`${version}\n`);
+    }
+    process.exit(0);
+  }
+
+  // 4. If we reach here and tsx is NOT active, we cannot proceed with other commands
+  // unless we are in a compiled environment (which bin/synapse.js is not).
+  if (!tsxFound && !isRelaunched) {
+    process.stderr.write('[synapse] fatal: "tsx" loader not found. This usually means dependencies are not installed.\n');
+    process.stderr.write('Run "npm install" in the project root to fix this.\n');
+    process.exit(1);
+  }
+
   // 0. Auto-start MCP server if spawned in stdio/sse mode by a client
   if (process.env.MCP_MODE === 'stdio' || process.env.MCP_MODE === 'sse') {
     const { startMcpServer } = await importRelative('../src/interfaces/app/index.js', import.meta.url);
@@ -35,29 +72,9 @@ async function main() {
   const command = args[0] || '';
   const rest = args.slice(1);
 
-  // 1. --version / -v anywhere (even without a command)
-  if (hasVersionFlag(rawArgs)) {
-    if (globalOpts.json) {
-      process.stdout.write(JSON.stringify({ version: SERVER_VERSION }) + '\n');
-    } else {
-      process.stdout.write(`${SERVER_VERSION}\n`);
-    }
-    process.exit(0);
-  }
-
   // No command or explicit help
   if (command === '' || command === 'help' || command === '--help' || command === '-h') {
     printHelp();
-    process.exit(0);
-  }
-
-  // `synapse version`
-  if (command === 'version') {
-    if (globalOpts.json) {
-      process.stdout.write(JSON.stringify({ version: SERVER_VERSION }) + '\n');
-    } else {
-      process.stdout.write(`${SERVER_VERSION}\n`);
-    }
     process.exit(0);
   }
 
