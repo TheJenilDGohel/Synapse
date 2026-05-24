@@ -1,6 +1,6 @@
 interface VectorIndex {
-  checkStaleness(): Promise<{ stale: boolean; stale_count: number; total_indexed: number }>;
-  indexProject(opts: { allRoots: boolean; force: boolean }): Promise<unknown>;
+  checkStaleness(): Promise<{ stale: boolean; stale_count: number; total_indexed: number; stale_files: string[]; deleted_files: string[] }>;
+  indexFiles(opts: { paths: string[]; deleted_paths?: string[] }): Promise<unknown>;
 }
 
 type LogFn = (msg: string) => void;
@@ -21,10 +21,15 @@ export function startStalenessMonitor(
     try {
       const staleness = await vectorIndex.checkStaleness();
       if (!staleness.stale) return;
+
       log(
-        `[synapse-sweep] index stale (${staleness.stale_count}/${staleness.total_indexed} files changed) — re-indexing\n`
+        `[synapse-sweep] index stale (${staleness.stale_count}/${staleness.total_indexed} files changed) — re-indexing incrementally\n`
       );
-      await vectorIndex.indexProject({ allRoots: true, force: false });
+
+      await vectorIndex.indexFiles({
+        paths: staleness.stale_files,
+        deleted_paths: staleness.deleted_files
+      });
     } catch (err: unknown) {
       const error = err as { message?: string };
       log(`[synapse-sweep] error: ${error?.message || err}\n`);

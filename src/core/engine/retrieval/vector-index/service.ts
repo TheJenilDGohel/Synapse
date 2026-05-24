@@ -195,22 +195,39 @@ export class VectorIndexService {
     };
   }
 
-  async checkStaleness(): Promise<{ stale: boolean; stale_count: number; deleted_count: number; total_indexed: number }> {
+  async checkStaleness(): Promise<{
+    stale: boolean;
+    stale_count: number;
+    deleted_count: number;
+    total_indexed: number;
+    stale_files: string[];
+    deleted_files: string[];
+  }> {
     this.ensureLoaded();
     const docs = this.data?.documents || {};
-    let staleCount = 0;
-    let deletedCount = 0;
+    const staleFiles: string[] = [];
+    const deletedFiles: string[] = [];
     const entries = Object.entries(docs);
+
     for (const [filePath, doc] of entries) {
       try {
         const st = await fsp.stat(filePath);
-        if (makeFileSignature(st) !== doc.signature) staleCount += 1;
+        if (makeFileSignature(st) !== doc.signature) {
+          staleFiles.push(filePath);
+        }
       } catch {
-        deletedCount += 1;
-        staleCount += 1;
+        deletedFiles.push(filePath);
       }
     }
-    return { stale: staleCount > 0, stale_count: staleCount, deleted_count: deletedCount, total_indexed: entries.length };
+
+    return {
+      stale: staleFiles.length > 0 || deletedFiles.length > 0,
+      stale_count: staleFiles.length + deletedFiles.length,
+      deleted_count: deletedFiles.length,
+      total_indexed: entries.length,
+      stale_files: staleFiles,
+      deleted_files: deletedFiles
+    };
   }
 
   async indexProject({ projectPath, allRoots, force, maxFiles, onProgress }: {
@@ -283,6 +300,74 @@ export class VectorIndexService {
       total_chunks: this.data!.total_chunks,
       index_path: this.indexPath,
       embedding: this.embeddingService?.getStatus?.() || null
+    };
+  }
+
+  async indexFiles({ paths, deleted_paths, onProgress }: {
+    paths: string[];
+    deleted_paths?: string[];
+    onProgress?: (info: { scanned: number; total: number; phase: string }) => Promise<void>;
+  }): Promise<Partial<IndexProjectResult>> {
+    this.ensureLoaded();
+
+    let processed = 0;
+    let removed = 0;
+    const failedFiles: { path: string; error: string }[] = [];
+
+    // Handle deletions
+    if (deleted_paths) {
+      for (const filePath of deleted_paths) {
+        if (this.data!.documents[filePath]) {
+          delete this.data!.documents[filePath];
+          removed += 1;
+        }
+      }
+    }
+
+    // Index files
+    const total = paths.length;
+    let completed = 0;
+
+    for (const filePath of paths) {
+      try {
+        if (!fs.existsSync(filePath)) {
+          if (this.data!.documents[filePath]) {
+            delete this.data!.documents[filePath];
+            removed += 1;
+          }
+          continue;
+        }
+
+        const st = fs.statSync(filePath);
+        const signature = makeFileSignature(st);
+        const text = this.workspace.safeReadText(filePath);
+        const chunks = await this.chunkFile(filePath, text);
+        this.data!.documents[filePath] = { signature, chunks };
+        processed += 1;
+      } catch (err) {
+        failedFiles.push({ path: filePath, error: String((err as Error)?.message || err) });
+      } finally {
+        completed += 1;
+        if (typeof onProgress === 'function') {
+          await onProgress({ scanned: completed, total, phase: 'indexing_files' });
+        }
+      }
+    }
+
+    if (processed > 0 || removed > 0) {
+      this.rebuildStats();
+      if (typeof onProgress === 'function') {
+        await onProgress({ scanned: total, total, phase: 'rebuilding_stats' });
+      }
+      await this.persist();
+    }
+
+    return {
+      indexed_files: processed,
+      removed_files: removed,
+      failed_files: failedFiles,
+      total_files: this.data!.total_files,
+      total_chunks: this.data!.total_chunks
     };
   }
 

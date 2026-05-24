@@ -40,7 +40,11 @@ interface VectorIndexLike {
     force: boolean;
     maxFiles: number;
   }): Promise<{ indexed_files?: number; failed_files?: { path: string; error: string }[] }>;
-  checkStaleness(): Promise<{ stale: boolean }>;
+  indexFiles(opts: {
+    paths: string[];
+    deleted_paths?: string[];
+  }): Promise<{ indexed_files?: number; removed_files?: number; failed_files?: { path: string; error: string }[] }>;
+  checkStaleness(): Promise<{ stale: boolean; stale_files?: string[]; deleted_files?: string[] }>;
 }
 
 interface RerankerLike {

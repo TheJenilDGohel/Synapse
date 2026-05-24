@@ -7,9 +7,9 @@ Expand Synapse's reach and responsiveness by optimizing background adaptive inde
 
 - [x] **S01: Optimize Staleness Monitor** `risk:low` `depends:[]`
   > After this: The existing `Staleness Monitor` is more efficient, using hash-based checks to trigger delta-indexing without full project scans.
-- [ ] **S02: Incremental Delta-Indexing** `risk:high` `depends:[S01]`
+- [x] **S02: Incremental Delta-Indexing** `risk:high` `depends:[S01]`
   > After this: Detection of a stale file triggers an incremental re-index of *only* that file, visible in the `synapse_system_manage` index status.
-- [ ] **S03: Multi-Root Workspace Discovery** `risk:medium` `depends:[]`
+- [x] **S03: Multi-Root Workspace Discovery** `risk:medium` `depends:[]`
   > After this: The system correctly identifies and lists all available project roots in a complex directory structure.
 - [ ] **S04: Unified Multi-Root Search** `risk:medium` `depends:[S03]`
   > After this: `synapse_search` returns results from multiple roots in a single call when scoped to the workspace.

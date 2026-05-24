@@ -40,6 +40,8 @@ export interface StalenessResult {
   stale_count: number;
   deleted_count: number;
   total_indexed: number;
+  stale_files: string[];
+  deleted_files: string[];
 }
 
 export function getVecTableDefinition(service: SqliteVecServiceLike): string {
@@ -162,16 +164,24 @@ export function getSqliteVecExtensionStatus(service: SqliteVecServiceLike): Sqli
 export function checkStaleness(service: SqliteVecServiceLike): StalenessResult {
   service.ensureDb();
   const rows = service.db.prepare('SELECT path, signature FROM files').all() as { path: string; signature: string }[];
-  let staleCount = 0;
-  let deletedCount = 0;
+  const staleFiles: string[] = [];
+  const deletedFiles: string[] = [];
   for (const row of rows) {
     try {
       const st = fs.statSync(row.path);
-      if (makeFileSignature(st) !== row.signature) staleCount += 1;
+      if (makeFileSignature(st) !== row.signature) {
+        staleFiles.push(row.path);
+      }
     } catch {
-      deletedCount += 1;
-      staleCount += 1;
+      deletedFiles.push(row.path);
     }
   }
-  return { stale: staleCount > 0, stale_count: staleCount, deleted_count: deletedCount, total_indexed: rows.length };
+  return {
+    stale: staleFiles.length > 0 || deletedFiles.length > 0,
+    stale_count: staleFiles.length + deletedFiles.length,
+    deleted_count: deletedFiles.length,
+    total_indexed: rows.length,
+    stale_files: staleFiles,
+    deleted_files: deletedFiles
+  };
 }

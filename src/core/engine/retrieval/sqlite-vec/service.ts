@@ -432,17 +432,120 @@ export class SqliteVecIndexService {
       }
     }
 
-    // Phase 2: process each file independently
+    const toIndex: string[] = [];
     for (const filePath of files) {
-      try {
-        const st = fs.statSync(filePath);
-        const signature = makeFileSignature(st);
-        const existingSig = existingSignatures.get(filePath);
+      const signature = makeFileSignature(fs.statSync(filePath));
+      const existingSig = existingSignatures.get(filePath);
+      if (force || existingSig === undefined || existingSig !== signature) {
+        toIndex.push(filePath);
+      } else {
+        skipped += 1;
+      }
+    }
 
-        if (!force && existingSig !== undefined && existingSig === signature) {
-          skipped += 1;
+    const indexResult = await this.indexFiles({
+      paths: toIndex,
+      deleted_paths: toRemove,
+      onProgress
+    });
+
+    processed = indexResult.indexed_files || 0;
+    removed = indexResult.removed_files || 0;
+    failedFiles.push(...(indexResult.failed_files || []));
+
+    if (typeof onProgress === 'function') {
+      await onProgress({ scanned: total, total, phase: 'finalizing_index' });
+    }
+
+    const status = this.getStatus();
+    return {
+      backend: 'sqlite-vec',
+      bases,
+      scanned_files: files.length,
+      indexed_files: processed,
+      skipped_files: skipped,
+      removed_files: removed,
+      failed_files: failedFiles,
+      total_files: status.total_files as number,
+      total_chunks: status.total_chunks as number,
+      db_path: this.dbPath,
+      sqlite_vec_loaded: status.sqlite_vec_loaded as boolean | null,
+      sqlite_vec_extension: status.sqlite_vec_extension as SqliteVecExtensionStatus
+    };
+  }
+
+  async indexFiles({ paths, deleted_paths, onProgress }: {
+    paths: string[];
+    deleted_paths?: string[];
+    onProgress?: (info: { scanned: number; total: number; phase: string }) => Promise<void>;
+  }): Promise<Partial<IndexProjectResult>> {
+    this.ensureDb();
+    const dbRef = this.db as unknown as { prepare(sql: string): DbStatement };
+    const total = paths.length;
+    let completed = 0;
+    let processed = 0;
+    let removed = 0;
+    const failedFiles: { path: string; error: string }[] = [];
+
+    const stmtSelectChunkTermsByFile = dbRef.prepare('SELECT id, terms_json FROM chunks WHERE file_path = ?');
+    const stmtDeleteTermIndexByFile = dbRef.prepare('DELETE FROM term_index WHERE chunk_id IN (SELECT id FROM chunks WHERE file_path = ?)');
+    const stmtDeleteChunks = dbRef.prepare('DELETE FROM chunks WHERE file_path = ?');
+    const stmtUpsertFile = dbRef.prepare('INSERT OR REPLACE INTO files(path, signature, updated_at) VALUES (?, ?, ?)');
+    const stmtInsertChunk = dbRef.prepare(
+      'INSERT OR REPLACE INTO chunks(id, file_path, start_line, end_line, preview, terms_json, term_count, embedding_json, enrichment_json, norm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+    const stmtInsertTermIndex = dbRef.prepare('INSERT OR IGNORE INTO term_index(term, chunk_id) VALUES (?, ?)');
+
+    const beforeChunkCount = (dbRef.prepare('SELECT COUNT(*) AS c FROM chunks').get() as { c: number })?.c || 0;
+    const deltaDf = new Map<string, number>();
+    let deltaTotalChunks = 0;
+
+    // Phase 1: deletions
+    if (deleted_paths && deleted_paths.length > 0) {
+      const BATCH_SIZE = 100;
+      this.runInTransaction(() => {
+        for (let i = 0; i < deleted_paths.length; i += BATCH_SIZE) {
+          const batch = deleted_paths.slice(i, i + BATCH_SIZE);
+          const placeholders = batch.map(() => '?').join(',');
+
+          const oldRows = dbRef.prepare(`SELECT terms_json FROM chunks WHERE file_path IN (${placeholders})`).all(...batch) as { terms_json: string }[];
+          for (const oldRow of oldRows) {
+            applyDfDeltaFromTermsJson(oldRow.terms_json, -1, deltaDf);
+          }
+          deltaTotalChunks -= oldRows.length;
+
+          dbRef.prepare(`DELETE FROM term_index WHERE chunk_id IN (SELECT id FROM chunks WHERE file_path IN (${placeholders}))`).run(...batch);
+          dbRef.prepare(`DELETE FROM chunks WHERE file_path IN (${placeholders})`).run(...batch);
+          dbRef.prepare(`DELETE FROM files WHERE path IN (${placeholders})`).run(...batch);
+
+          removed += batch.length;
+        }
+      });
+    }
+
+    // Phase 2: index paths
+    for (const filePath of paths) {
+      try {
+        if (!fs.existsSync(filePath)) {
+          // Handle ghost files that were in stale list but deleted before indexing
+          const oldRows = stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[];
+          if (oldRows.length > 0) {
+            for (const oldRow of oldRows) {
+              applyDfDeltaFromTermsJson(oldRow.terms_json, -1, deltaDf);
+            }
+            deltaTotalChunks -= oldRows.length;
+          }
+          this.runInTransaction(() => {
+            stmtDeleteTermIndexByFile.run(filePath);
+            stmtDeleteChunks.run(filePath);
+            dbRef.prepare('DELETE FROM files WHERE path = ?').run(filePath);
+          });
+          removed += 1;
           continue;
         }
+
+        const st = fs.statSync(filePath);
+        const signature = makeFileSignature(st);
 
         const text = this.workspace.safeReadText(filePath);
         const rawChunks = await chunkFileFn(filePath, text, {
@@ -453,7 +556,6 @@ export class SqliteVecIndexService {
           maxTermsPerChunk: this.maxTermsPerChunk
         });
 
-        // Run enrichment in parallel for all chunks in the file
         const chunks = await Promise.all(rawChunks.map(async (chunk) => {
           let enrichment: any = null;
           if (this.enrichmentService) {
@@ -466,8 +568,7 @@ export class SqliteVecIndexService {
           return { ...chunk, enrichment };
         }));
 
-        const existingChunkRows = (existingSig !== undefined) ? stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[] : [];
-
+        const existingChunkRows = stmtSelectChunkTermsByFile.all(filePath) as { terms_json: string }[];
         if (existingChunkRows.length > 0) {
           for (const oldRow of existingChunkRows) {
             applyDfDeltaFromTermsJson(oldRow.terms_json, -1, deltaDf);
@@ -481,7 +582,6 @@ export class SqliteVecIndexService {
           stmtUpsertFile.run(filePath, signature, new Date().toISOString());
           for (const chunk of chunks) {
             applyDfDeltaFromTerms(chunk.terms, 1, deltaDf);
-
             stmtInsertChunk.run(
               chunk.id, filePath, chunk.start_line, chunk.end_line, chunk.preview,
               JSON.stringify(chunk.terms), chunk.term_count || 0,
@@ -507,45 +607,36 @@ export class SqliteVecIndexService {
       }
     }
 
-    const getDfFn = (term: string): number => this.getDf(term);
-    const runTxn = (work: () => void): void => this.runInTransaction(work);
-    const computeNormFn = (terms: TfPair[], totalChunks: number, dfFn?: (term: string) => number): number => computeNorm(terms, totalChunks, dfFn || getDfFn);
+    if (processed > 0 || removed > 0) {
+      const getDfFn = (term: string): number => this.getDf(term);
+      const runTxn = (work: () => void): void => this.runInTransaction(work);
+      const computeNormFn = (terms: TfPair[], totalChunks: number, dfFn?: (term: string) => number): number => computeNorm(terms, totalChunks, dfFn || getDfFn);
 
-    applyDfDeltas(dbRef as unknown as Parameters<typeof applyDfDeltas>[0], runTxn, deltaDf, getDfFn);
-    const changedTerms = new Set(Array.from(deltaDf.entries()).filter(([, delta]) => delta !== 0).map(([term]) => term));
-    refreshChunkNorms(dbRef as unknown as Parameters<typeof refreshChunkNorms>[0], runTxn, {
-      changedTerms,
-      totalChunksChanged: deltaTotalChunks !== 0,
-      totalChunks: beforeChunkCount + deltaTotalChunks
-    }, computeNormFn);
+      applyDfDeltas(dbRef as unknown as Parameters<typeof applyDfDeltas>[0], runTxn, deltaDf, getDfFn);
+      const changedTerms = new Set(Array.from(deltaDf.entries()).filter(([, delta]) => delta !== 0).map(([term]) => term));
+      refreshChunkNorms(dbRef as unknown as Parameters<typeof refreshChunkNorms>[0], runTxn, {
+        changedTerms,
+        totalChunksChanged: deltaTotalChunks !== 0,
+        totalChunks: beforeChunkCount + deltaTotalChunks
+      }, computeNormFn);
 
-    if (this.sqliteVecTableReady) {
-      try {
-        this.syncSqliteVecRowsFromChunks();
-      } catch (error) {
-        this.sqliteVecTableReady = false;
-        this.sqliteVecTableError = String((error as Error)?.message || error || '');
+      if (this.sqliteVecTableReady) {
+        try {
+          this.syncSqliteVecRowsFromChunks();
+        } catch (error) {
+          this.sqliteVecTableReady = false;
+          this.sqliteVecTableError = String((error as Error)?.message || error || '');
+        }
       }
-    }
-    this.setMeta('updated_at', new Date().toISOString());
-    if (typeof onProgress === 'function') {
-      await onProgress({ scanned: total, total, phase: 'finalizing_index' });
+      this.setMeta('updated_at', new Date().toISOString());
     }
 
-    const status = this.getStatus();
     return {
-      backend: 'sqlite-vec',
-      bases,
-      scanned_files: files.length,
       indexed_files: processed,
-      skipped_files: skipped,
       removed_files: removed,
       failed_files: failedFiles,
-      total_files: status.total_files as number,
-      total_chunks: status.total_chunks as number,
-      db_path: this.dbPath,
-      sqlite_vec_loaded: status.sqlite_vec_loaded as boolean | null,
-      sqlite_vec_extension: status.sqlite_vec_extension as SqliteVecExtensionStatus
+      total_files: (dbRef.prepare('SELECT COUNT(*) AS c FROM files').get() as { c: number })?.c || 0,
+      total_chunks: (dbRef.prepare('SELECT COUNT(*) AS c FROM chunks').get() as { c: number })?.c || 0
     };
   }
 

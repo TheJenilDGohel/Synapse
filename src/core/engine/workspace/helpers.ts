@@ -399,29 +399,58 @@ export function isUnderRoots(workspace: WorkspaceLike, targetPath: string): bool
 }
 
 export function splitRootIntoProjects(workspace: WorkspaceLike, rootPath: string): string[] {
-  let entries: fs.Dirent[];
-  try {
-    entries = fs.readdirSync(rootPath, { withFileTypes: true });
-  } catch {
+  const projects: string[] = [];
+  const maxDepth = 3;
+
+  function discover(currentPath: string, depth: number) {
+    if (depth > maxDepth) return;
+    if (projects.length >= workspace.maxAutoProjects) return;
+
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(currentPath, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    const subDirs: string[] = [];
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      if (entry.name.startsWith('.')) continue;
+      if (workspace.ignoreDirs.has(entry.name)) continue;
+
+      const full = path.join(currentPath, entry.name);
+      if (looksLikeProjectDir(workspace, full)) {
+        projects.push(full);
+      } else {
+        subDirs.push(full);
+      }
+    }
+
+    // If no projects found at this level, or we want to find all nested projects
+    // Currently, if we find a project, we don't recurse into it (to avoid nested projects within projects for now)
+    for (const subDir of subDirs) {
+      discover(subDir, depth + 1);
+    }
+  }
+
+  if (looksLikeProjectDir(workspace, rootPath)) {
     return [rootPath];
   }
 
-  const candidateChildren: string[] = [];
-  const projects: string[] = [];
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    if (entry.name.startsWith('.')) continue;
-    if (workspace.ignoreDirs.has(entry.name)) continue;
-
-    const full = path.join(rootPath, entry.name);
-    candidateChildren.push(full);
-    if (!looksLikeProjectDir(workspace, full)) continue;
-    projects.push(full);
-    if (projects.length >= workspace.maxAutoProjects) break;
-  }
+  discover(rootPath, 1);
 
   if (projects.length === 0 && workspace.forceSplitChildren) {
-    return candidateChildren.slice(0, workspace.maxAutoProjects);
+    // Fallback to immediate children if no projects found and forceSplit is on
+    try {
+      const entries = fs.readdirSync(rootPath, { withFileTypes: true });
+      return entries
+        .filter((e) => e.isDirectory() && !e.name.startsWith('.') && !workspace.ignoreDirs.has(e.name))
+        .map((e) => path.join(rootPath, e.name))
+        .slice(0, workspace.maxAutoProjects);
+    } catch {
+      return [rootPath];
+    }
   }
 
   return projects.length > 0 ? projects : [rootPath];
