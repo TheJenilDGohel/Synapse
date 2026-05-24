@@ -7,6 +7,14 @@ Versioning: [CalVer](https://calver.org/) — `YYYY.MM.PATCH[-beta.N]`
 
 ## [Unreleased]
 
+### Fixed
+- **CLI Bootstrap Blocker**: Resolved a critical `ERR_MODULE_NOT_FOUND` crash when running the CLI directly with `node` (bypassing shebang). Implemented a robust `tsx` auto-relaunch mechanism in `bin/synapse.js`.
+
+### Added
+- **Incremental Delta-Indexing (S02)**: Implemented surgical index updates for only changed/deleted files, significantly reducing re-indexing overhead in large workspaces.
+- **Multi-Root Discovery (S03)**: Implemented recursive project detection in monorepo structures (depth limit: 3).
+
+
 ## [2026.05.4] - 2026-05-22
 
 ### Changed

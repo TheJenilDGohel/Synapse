@@ -116,8 +116,10 @@ Given the bootstrap blocker in `bin/synapse.js`, complete execution of phases 2-
 
 
 ## Issue Tracker
-- [ ] Issue A filed: `[CRASH] Phase 1: synapse.js fails with ERR_MODULE_NOT_FOUND for src/core/runtime/version.js`
+- [x] Issue A resolved: `[CRASH] Phase 1: synapse.js fails with ERR_MODULE_NOT_FOUND for src/core/runtime/version.js` (Fixed in e04d324 via tsx auto-relaunch)
 - [ ] Issue B filed: `[BUG] Phase 1: npm install -g synapse-cortex@beta returns E403 from registry`
+  - *Note: This may be due to local npm configuration or registry authentication issues, as the package is confirmed to be public on npm.*
+
 - Additional issues from this session: **None beyond A/B**.
 
 ## Next Issues to Add (when blockers are fixed)
