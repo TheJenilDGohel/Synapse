@@ -13,41 +13,32 @@ import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import { buildForwardArgv, hasVersionFlag, importRelative, relaunchWithTsx } from './_shared.js';
 
-const isRelaunched = process.env.__SYNAPSE_TSX_RELAUNCHED === '1';
-
-// 1. Try to relaunch with tsx if not already active
-const tsxFound = relaunchWithTsx();
-
 const rawArgs = process.argv.slice(2);
-
-// 2. Pre-parse basic options (like --json) for non-tsx paths
 const isJson = rawArgs.includes('--json');
 
-async function getLocalVersion() {
+// 1. Absolute top-level check for version/help to ensure they work even if dependencies are missing
+if (hasVersionFlag(rawArgs) || rawArgs[0] === 'version') {
   try {
     const req = createRequire(import.meta.url);
     const pkg = JSON.parse(fs.readFileSync(req.resolve('../package.json'), 'utf8'));
-    return pkg.version;
-  } catch {
-    return 'unknown';
-  }
-}
-
-async function main() {
-  // 3. Handle commands that don't REQUIRE tsx (e.g. version)
-  // This allows `node bin/synapse.js --version` to work even if node_modules is missing.
-  if (hasVersionFlag(rawArgs) || rawArgs[0] === 'version') {
-    const version = await getLocalVersion();
+    const version = pkg.version || 'unknown';
     if (isJson) {
       process.stdout.write(JSON.stringify({ version }) + '\n');
     } else {
       process.stdout.write(`${version}\n`);
     }
-    process.exit(0);
+  } catch {
+    process.stdout.write('unknown\n');
   }
+  process.exit(0);
+}
 
-  // 4. If we reach here and tsx is NOT active, we cannot proceed with other commands
-  // unless we are in a compiled environment (which bin/synapse.js is not).
+// 2. Try to relaunch with tsx for any other command
+const isRelaunched = process.env.__SYNAPSE_TSX_RELAUNCHED === '1';
+const tsxFound = relaunchWithTsx();
+
+async function main() {
+  // 3. If we reach here and tsx is NOT active, we cannot proceed with other commands
   if (!tsxFound && !isRelaunched) {
     process.stderr.write('[synapse] fatal: "tsx" loader not found. This usually means dependencies are not installed.\n');
     process.stderr.write('Run "npm install" in the project root to fix this.\n');
@@ -62,7 +53,6 @@ async function main() {
   }
 
   // Load modules that need tsx resolution
-  const { SERVER_VERSION } = await importRelative('../src/core/runtime/version.js', import.meta.url);
   const { parseGlobalOptions } = await importRelative('../src/interfaces/cli/options.js', import.meta.url);
   const { printHelp } = await importRelative('../src/interfaces/cli/help.js', import.meta.url);
   const { routeCommand } = await importRelative('../src/interfaces/cli/router.js', import.meta.url);

@@ -125,7 +125,14 @@ export class EmbeddingService {
     this._pipelinePromise = (async () => {
       const { createRequire } = await import('node:module');
       const require = createRequire(import.meta.url);
-      const mod = require('@huggingface/transformers') as { env: { cacheDir: string }; pipeline: (task: string, model: string) => Promise<unknown> };
+      
+      let mod: any;
+      try {
+        mod = require('@huggingface/transformers');
+      } catch (error) {
+        throw new Error(`Embedding backend '@huggingface/transformers' not found. This is an optional dependency. Install it to enable semantic search: npm install @huggingface/transformers`);
+      }
+
       if (this.cacheDir) {
         mod.env.cacheDir = this.cacheDir;
       }

@@ -81,11 +81,14 @@ export class RerankerService {
     this._modelPromise = (async () => {
       const { createRequire } = await import('node:module');
       const require = createRequire(import.meta.url);
-      const mod = require('@huggingface/transformers') as {
-        env: { cacheDir: string };
-        AutoTokenizer: { from_pretrained: (model: string) => Promise<unknown> };
-        AutoModelForSequenceClassification: { from_pretrained: (model: string) => Promise<unknown> };
-      };
+      
+      let mod: any;
+      try {
+        mod = require('@huggingface/transformers');
+      } catch (error) {
+        throw new Error(`Reranker backend '@huggingface/transformers' not found. This is an optional dependency. Install it to enable reranking: npm install @huggingface/transformers`);
+      }
+
       const { AutoTokenizer, AutoModelForSequenceClassification } = mod;
       if (this.cacheDir) {
         mod.env.cacheDir = this.cacheDir;
