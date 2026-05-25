@@ -119,3 +119,9 @@ While data integrity is preserved (no crash or real SQL injection occurs), the l
 
 ## Reproduction Rate
 - [x] Always
+
+---
+
+## 2024-05-24 - [UPDATE] Beta 2026.5.5-beta.0 Regression Check
+The three bugs documented above (Missing Tools, AST Crash, UX Validation) were re-tested against the latest beta version (`2026.5.5-beta.0`).
+- **Result:** All three bugs are still present in `2026.5.5-beta.0`. The `synapse_memory_manage` tool is still missing, `tree-sitter` still crashes during indexing, and validation still throws raw MCP error exceptions.
