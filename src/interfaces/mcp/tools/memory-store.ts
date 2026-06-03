@@ -119,6 +119,7 @@ export function registerMemoryTools({
       }),
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_FREEFORM_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
       category: 'Memory Management'
     },
     async (args: Record<string, unknown>) => {
@@ -210,6 +211,7 @@ export function registerMemoryTools({
       }),
       annotations: READ_ONLY_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_FREEFORM_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
       category: 'Memory Management'
     },
     async (args: Record<string, unknown>) => {

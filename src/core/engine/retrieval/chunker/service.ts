@@ -172,7 +172,14 @@ export class AstChunker {
 
   collectCandidateNodes(root: TreeSitterNode, languageId: string, query?: any): TreeSitterNode[] {
     if (query) {
-      return query.captures(root).map((c: any) => c.node);
+      try {
+        return query.captures(root).map((c: any) => c.node);
+      } catch (err) {
+        if (process.env.SYNAPSE_DEBUG_AST) {
+          console.warn(`Query captures failed for ${languageId}:`, err);
+        }
+        return [];
+      }
     }
     const declTypes = DECL_TYPES_BY_LANG[languageId] || new Set<string>();
     const nodes: TreeSitterNode[] = [];
@@ -180,10 +187,16 @@ export class AstChunker {
     while (stack.length > 0) {
       const node = stack.pop();
       if (!node) continue;
-      if (declTypes.has(node.type)) nodes.push(node);
-      if (Array.isArray(node.namedChildren)) {
-        for (let i = node.namedChildren.length - 1; i >= 0; i -= 1) {
-          stack.push(node.namedChildren[i]);
+      try {
+        if (declTypes.has(node.type)) nodes.push(node);
+        if (Array.isArray(node.namedChildren)) {
+          for (let i = node.namedChildren.length - 1; i >= 0; i -= 1) {
+            stack.push(node.namedChildren[i]);
+          }
+        }
+      } catch (err) {
+        if (process.env.SYNAPSE_DEBUG_AST) {
+          console.warn(`Error processing node in ${languageId}:`, err);
         }
       }
     }
@@ -207,23 +220,38 @@ export class AstChunker {
 
       const lines = String(text || '').split(/\r?\n/);
       const tree = parser.parse(String(text || ''));
-      const root = tree?.rootNode;
+      let root: TreeSitterNode | undefined;
+      try {
+        root = tree?.rootNode;
+      } catch (err) {
+        if (process.env.SYNAPSE_DEBUG_AST) {
+          console.warn(`Failed to access tree.rootNode for ${languageId}:`, err);
+        }
+        return null;
+      }
       if (!root) return null;
 
       const importSummary = summarizeImports(text, languageId);
       const candidates: CandidateNode[] = this.collectCandidateNodes(root, languageId, query)
         .map((node) => {
-          const start = (node.startPosition?.row ?? 0) + 1;
-          const end = (node.endPosition?.row ?? 0) + 1;
-          const span = end - start + 1;
-          return {
-            start_line: start,
-            end_line: end,
-            span,
-            scope_path: buildScopePath(node, languageId)
-          };
+          try {
+            const start = (node.startPosition?.row ?? 0) + 1;
+            const end = (node.endPosition?.row ?? 0) + 1;
+            const span = end - start + 1;
+            return {
+              start_line: start,
+              end_line: end,
+              span,
+              scope_path: buildScopePath(node, languageId)
+            };
+          } catch (err) {
+            if (process.env.SYNAPSE_DEBUG_AST) {
+              console.warn(`Error parsing candidate node details for ${languageId}:`, err);
+            }
+            return null;
+          }
         })
-        .filter((item) => item.span >= 2)
+        .filter((item): item is CandidateNode => item !== null && item.span >= 2)
         .sort((a, b) => a.start_line - b.start_line || a.end_line - b.end_line);
 
       if (candidates.length === 0) return null;
@@ -288,7 +316,11 @@ export class AstChunker {
       this.stats.ast_chunks += deduped.length;
       return deduped;
     } catch (e) {
-      console.error('buildAstSlices error:', e);
+      if (process.env.SYNAPSE_DEBUG_AST) {
+        console.error('buildAstSlices error:', e);
+      } else {
+        console.warn(`AST parser fallback for ${languageId}: ${(e as Error)?.message || e}`);
+      }
       this.fallbackLanguages.add(languageId);
       return null;
     }

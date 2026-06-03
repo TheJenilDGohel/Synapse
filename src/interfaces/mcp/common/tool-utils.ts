@@ -290,7 +290,7 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
     { title, description, inputSchema, annotations, markdownTitle, outputSchema, level = ToolLevel.ADVANCED, category = 'General' }: ToolDefinition,
     handler: ToolHandler
   ): void {
-    const canonical = Array.isArray(names) ? names[0] : names;
+    const allNames = Array.isArray(names) ? names : [names];
     let schema: any = inputSchema;
 
     // Robustly extend schema with response_format, avoiding instanceof issues
@@ -321,34 +321,36 @@ export function createJsonToolRegistrar(server: McpServer, responseFormatSchema:
       annotations
     };
 
-    // Register with internal Synapse registry
-    toolRegistry.register({
-      name: canonical,
-      definition: toolOptions,
-      handler: async (args: Record<string, unknown>, extra: unknown) => {
-        const incoming = args || {};
-        const responseFormat = (incoming.response_format as string) || 'json';
-        const toolArgs = { ...incoming };
-        delete toolArgs.response_format;
-        const data = await handler(toolArgs, extra);
-        return toolResult(data, responseFormat, markdownTitle || title, undefined, synapseHome);
-      },
-      level,
-      category
-    });
+    // Register with internal Synapse registry and the MCP server
+    for (const name of allNames) {
+      toolRegistry.register({
+        name,
+        definition: toolOptions,
+        handler: async (args: Record<string, unknown>, extra: unknown) => {
+          const incoming = args || {};
+          const responseFormat = (incoming.response_format as string) || 'json';
+          const toolArgs = { ...incoming };
+          delete toolArgs.response_format;
+          const data = await handler(toolArgs, extra);
+          return toolResult(data, responseFormat, markdownTitle || title, undefined, synapseHome);
+        },
+        level,
+        category
+      });
 
-    // Only register Level 0 tools with the actual MCP server on initial boot.
-    // Level 1 tools are "discovered" later.
-    if (level === ToolLevel.CORE) {
-      server.registerTool(
-        canonical,
-        toolOptions,
-        async (args: Record<string, unknown>, extra: unknown) => {
-          const entry = toolRegistry.getEntry(canonical);
-          return entry!.handler(args, extra);
-        }
-      );
-      toolRegistry.activate(canonical);
+      // Only register Level 0 tools with the actual MCP server on initial boot.
+      // Level 1 tools are "discovered" later.
+      if (level === ToolLevel.CORE) {
+        server.registerTool(
+          name,
+          toolOptions,
+          async (args: Record<string, unknown>, extra: unknown) => {
+            const entry = toolRegistry.getEntry(name);
+            return entry!.handler(args, extra);
+          }
+        );
+        toolRegistry.activate(name);
+      }
     }
   };
 

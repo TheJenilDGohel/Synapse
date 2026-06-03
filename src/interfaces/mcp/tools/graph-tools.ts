@@ -36,7 +36,7 @@ export function registerGraphTools({
   // --- KG Manage Controller (synapse_kg_manage) ---
   // Refactored to flat z.object for Gemini compatibility
   registerJsonTool(
-    ['synapse_kg_manage'],
+    ['synapse_kg_manage', 'synapse_knowledge_graph_manage'],
     {
       title: 'KG Manage',
       description: 'Unified controller for all knowledge graph mutations (add, delete, ingest, branch management, diary write). Use "action" to select mode.',
@@ -79,6 +79,7 @@ export function registerGraphTools({
       }),
       annotations: WRITE_ANNOTATIONS,
       outputSchema: schemas.OUTPUT_BATCH_RESULT_SCHEMA,
+      level: ToolLevel.CORE,
       category: 'Knowledge Graph'
     },
     async (input: any) => {

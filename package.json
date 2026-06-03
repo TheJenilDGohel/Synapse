@@ -1,5 +1,7 @@
 {
   "name": "synapse-cortex",
+  "deprecated": true,
+  "discontinuedAt": "2025-06-03",
   "version": "2026.05.5-beta.0",
   "license": "MIT",
   "author": "Jenil",

@@ -35,6 +35,36 @@ export async function main(): Promise<void> {
     version: SERVER_VERSION
   });
 
+  // Intercept and format Zod validation errors to return clean business messages
+  const originalValidateToolInput = (server as any).validateToolInput.bind(server);
+  (server as any).validateToolInput = async function (tool: any, args: any, toolName: string) {
+    try {
+      return await originalValidateToolInput(tool, args, toolName);
+    } catch (error: any) {
+      if (error && error.message && error.message.includes('Input validation error:')) {
+        let cleanMessage = error.message
+          .replace(/^Input validation error:\s*/i, '')
+          .replace(/Invalid arguments for tool \w+:\s*/i, '');
+        
+        let detail = cleanMessage;
+        if (detail.toLowerCase().includes("required at 'action'")) {
+          detail = "Missing required parameter 'action'. Supported actions are: 'files', 'code', 'hybrid', 'find'.";
+        } else if (detail.toLowerCase().includes("required at 'query'")) {
+          detail = "Missing required parameter 'query'.";
+        } else {
+          detail = detail
+            .replace(/Required at '([^']+)'/g, "Missing required parameter '$1'")
+            .replace(/Invalid enum value\. Expected '([^']+)', received '([^']+)' at '([^']+)'/g, "Invalid value '$2' for parameter '$3'. Expected one of: $1")
+            .replace(/Expected string, received (\w+) at '([^']+)'/g, "Parameter '$2' must be a string (received $1)")
+            .replace(/Expected boolean, received (\w+) at '([^']+)'/g, "Parameter '$2' must be a boolean (received $1)")
+            .replace(/Expected number, received (\w+) at '([^']+)'/g, "Parameter '$2' must be a number (received $1)");
+        }
+        throw new Error(`Validation Error for tool '${toolName}': ${detail}`);
+      }
+      throw error;
+    }
+  };
+
   registerAppTools(server, runtime, services);
 
   if (!runtime.hasRipgrep) {

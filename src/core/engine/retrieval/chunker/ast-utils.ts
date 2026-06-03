@@ -96,36 +96,52 @@ export function getNodeName(node: TreeSitterNode | null, cache?: WeakMap<TreeSit
     // no-op
   }
 
-  const stack: (TreeSitterNode | null)[] = [node];
-  while (stack.length > 0) {
-    const cur = stack.pop();
-    if (!cur) continue;
-    if (cur.type === 'identifier' && typeof cur.text === 'string' && cur.text.trim()) {
-      const name = cur.text.trim();
-      cache?.set(node, name);
-      return name;
-    }
-    if (Array.isArray(cur.namedChildren)) {
-      for (let i = cur.namedChildren.length - 1; i >= 0; i -= 1) {
-        stack.push(cur.namedChildren[i]);
+  try {
+    const stack: (TreeSitterNode | null)[] = [node];
+    while (stack.length > 0) {
+      const cur = stack.pop();
+      if (!cur) continue;
+      try {
+        if (cur.type === 'identifier' && typeof cur.text === 'string' && cur.text.trim()) {
+          const name = cur.text.trim();
+          cache?.set(node, name);
+          return name;
+        }
+        if (Array.isArray(cur.namedChildren)) {
+          for (let i = cur.namedChildren.length - 1; i >= 0; i -= 1) {
+            stack.push(cur.namedChildren[i]);
+          }
+        }
+      } catch {
+        // no-op
       }
     }
+  } catch {
+    // no-op
   }
   return '';
 }
 
 export function buildScopePath(node: TreeSitterNode, languageId: string, cache?: WeakMap<TreeSitterNode, string>): string {
-  const declTypes = DECL_TYPES_BY_LANG[languageId] || new Set<string>();
-  const parts: string[] = [];
-  let cur: TreeSitterNode | null | undefined = node;
-  while (cur) {
-    if (declTypes.has(cur.type)) {
-      const name = getNodeName(cur, cache);
-      if (name) parts.push(name);
+  try {
+    const declTypes = DECL_TYPES_BY_LANG[languageId] || new Set<string>();
+    const parts: string[] = [];
+    let cur: TreeSitterNode | null | undefined = node;
+    while (cur) {
+      try {
+        if (declTypes.has(cur.type)) {
+          const name = getNodeName(cur, cache);
+          if (name) parts.push(name);
+        }
+        cur = cur.parent || null;
+      } catch {
+        break; // Stop climbing if we hit a native unmarshalling error
+      }
     }
-    cur = cur.parent || null;
+    return parts.reverse().join(' > ');
+  } catch {
+    return '';
   }
-  return parts.reverse().join(' > ');
 }
 
 /**
