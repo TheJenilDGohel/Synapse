@@ -1,5 +1,5 @@
 > ⚠️ **DISCONTINUED** — This project is no longer actively maintained.
-> Development ended June 2025. The repository is preserved for reference only.
+> Development ended June 2026. The repository is preserved for reference only.
 > No new features, bug fixes, or PRs will be reviewed.
 > Read the full story → [Medium article](https://medium.com/@thejenildgohel)
 
