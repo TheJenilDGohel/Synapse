@@ -111,7 +111,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^25.9.1",
+    "@types/node": "^26.0.1",
     "depcheck": "^1.4.7",
     "eslint": "^10.4.0",
     "globals": "^17.4.0",
